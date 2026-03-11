@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendario Editorial — Pizzería Popular España</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F0EBE0;--bg-card:#FAF7F2;--bg-hover:#F5EFE5;--bg-raised:#EDE5D8;
+  --border:rgba(57,46,44,0.10);--border-md:rgba(57,46,44,0.18);--border-hi:rgba(57,46,44,0.35);
+  --gold:#B8823A;--gold-dim:#8C6228;--gold-glow:rgba(184,130,58,0.12);
+  --cream:#392E2C;--cream-dim:rgba(57,46,44,0.70);--cream-mute:rgba(57,46,44,0.38);
+  --white:#392E2C;--mute:rgba(57,46,44,0.20);
+  --fuego:#E8775A;--voz:#6EA8D8;--saber:#76B887;--mesa:#D8A460;--story:#A882CC;
+  --r:14px;--r-sm:9px;--tr:0.18s ease;
+  --status-idea:#B0A89E;--status-prod:#6EA8D8;--status-ready:#76B887;--status-pub:#B8823A;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--cream);min-height:100vh;-webkit-font-smoothing:antialiased;}
+
+.header{padding:24px 32px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;border-bottom:1px solid var(--border);background:#2E2420;flex-wrap:wrap;}
+.header-left{display:flex;flex-direction:column;gap:4px;}
+.brand-label{font-family:'DM Mono',monospace;font-size:10px;color:#D8A460;text-transform:uppercase;letter-spacing:0.2em;}
+.header-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:600;color:#F9F5EC;line-height:1;display:flex;align-items:baseline;gap:10px;}
+.header-title em{font-style:italic;color:#D8A460;font-weight:400;}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px;}
+.view-tabs{display:flex;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:40px;padding:3px;gap:2px;}
+.view-tab{padding:7px 20px;border-radius:36px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;transition:all var(--tr);color:rgba(237,232,217,0.55);background:transparent;}
+.view-tab.active{background:var(--gold);color:var(--bg);font-weight:600;box-shadow:0 2px 12px rgba(216,164,96,0.35);}
+.post-counter{font-family:'DM Mono',monospace;font-size:11px;color:rgba(237,232,217,0.55);letter-spacing:0.05em;}
+.post-counter strong{color:#D8A460;font-size:13px;}
+.sync-status{font-family:'DM Mono',monospace;font-size:9px;color:rgba(237,232,217,0.4);letter-spacing:0.05em;}
+.sync-status.connected{color:rgba(118,184,135,0.8);}
+.sync-status.error{color:rgba(232,119,90,0.8);}
+
+.toolbar{padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:1px solid var(--border);}
+.nav-area{display:flex;align-items:center;gap:12px;}
+.nav-btn{width:36px;height:36px;border-radius:var(--r-sm);border:1px solid var(--border-md);background:#FFF;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--cream-dim);transition:all var(--tr);box-shadow:0 1px 3px rgba(57,46,44,0.08);}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+.period-display{display:flex;flex-direction:column;gap:1px;}
+.period-main{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--white);line-height:1;}
+.period-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);letter-spacing:0.1em;text-transform:uppercase;}
+.today-btn{padding:7px 16px;border-radius:var(--r-sm);border:1px solid var(--border-md);background:transparent;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;color:var(--cream-dim);letter-spacing:0.06em;transition:all var(--tr);text-transform:uppercase;}
+.today-btn:hover{border-color:var(--gold);color:var(--gold);}
+.toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filter-pill-group{display:flex;align-items:center;background:#FFF;border:1px solid var(--border);border-radius:40px;padding:3px;gap:2px;box-shadow:0 1px 3px rgba(57,46,44,0.08);}
+.filter-pill{padding:5px 14px;border-radius:36px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;transition:all var(--tr);color:var(--cream-mute);background:transparent;}
+.filter-pill.active{background:#2E2420;color:#EDE8D9;}
+.action-btn{padding:8px 16px;border-radius:var(--r-sm);border:1px solid var(--border-md);background:#FFF;cursor:pointer;font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;color:var(--cream-dim);transition:all var(--tr);display:flex;align-items:center;gap:6px;white-space:nowrap;box-shadow:0 1px 3px rgba(57,46,44,0.08);}
+.action-btn:hover{border-color:var(--border-hi);color:var(--cream);}
+.action-btn.primary{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600;}
+.action-btn.primary:hover{background:#C8944E;border-color:#C8944E;box-shadow:0 4px 16px rgba(216,164,96,0.3);}
+
+/* STATS BAR */
+.stats-bar{padding:10px 32px;display:flex;align-items:center;gap:16px;border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:wrap;}
+.stat-group{display:flex;align-items:center;gap:6px;}
+.stat-chip{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:10.5px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);}
+.stat-chip .s-icon{font-size:11px;}
+.stat-chip .s-count{font-weight:500;color:var(--cream);}
+.stat-chip .s-label{color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.06em;}
+.stat-divider{width:1px;height:20px;background:var(--border-md);}
+.stat-status{display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);}
+.stat-status .s-dot{width:7px;height:7px;border-radius:50%;}
+.stat-status .s-n{font-weight:500;color:var(--cream-dim);}
+.arc-summary{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.arc-pill{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:12px;border:1px solid var(--border);text-transform:uppercase;letter-spacing:0.06em;color:var(--cream-mute);}
+.arc-pill.covered{background:rgba(118,184,135,0.15);border-color:rgba(118,184,135,0.3);color:#4A8A5A;}
+.arc-pill.missing{background:rgba(232,119,90,0.1);border-color:rgba(232,119,90,0.25);color:#C0604A;}
+
+/* LEGEND */
+.legend{padding:10px 32px;display:flex;align-items:center;gap:24px;border-bottom:1px solid var(--border);overflow-x:auto;}
+.legend-item{display:flex;align-items:center;gap:7px;white-space:nowrap;}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+.legend-label{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--cream-mute);letter-spacing:0.06em;text-transform:uppercase;}
+
+/* MONTHLY */
+.calendar-wrap{padding:24px 32px 32px;}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:8px;}
+.cal-wday{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;padding:0 0 6px 4px;border-bottom:1px solid var(--border);}
+.cal-wday.weekend{color:var(--gold-dim);}
+.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;}
+.cal-day{background:#FFF;border:1px solid var(--border);border-radius:var(--r);min-height:138px;padding:12px 10px;cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;gap:7px;position:relative;overflow:hidden;box-shadow:0 1px 4px rgba(57,46,44,0.06);}
+.cal-day:hover{border-color:var(--border-md);background:#FDF8F2;}
+.cal-day.other-month{opacity:0.3;cursor:default;}
+.cal-day.today{border-color:var(--gold);background:#FFF8EE;box-shadow:0 0 0 1px rgba(184,130,58,0.2);}
+.cal-day.has-content{border-color:var(--border-md);}
+.cal-day.drag-over{border-color:var(--gold);background:rgba(184,130,58,0.08);box-shadow:0 0 0 2px rgba(184,130,58,0.25);}
+.day-top{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;}
+.day-num{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--cream-dim);line-height:1;transition:color var(--tr);}
+.cal-day:hover .day-num{color:var(--cream);}
+.cal-day.today .day-num{color:var(--gold);}
+.cal-day.other-month .day-num{color:var(--mute);}
+.day-wname{font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+.efem-tag{font-family:'DM Mono',monospace;font-size:8.5px;background:rgba(216,164,96,0.15);border:1px solid rgba(216,164,96,0.3);color:var(--gold);border-radius:5px;padding:2px 6px;line-height:1.5;max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chips-area{display:flex;flex-direction:column;gap:4px;flex:1;}
+.content-chip{border-radius:7px;padding:5px 8px;display:flex;align-items:center;gap:5px;overflow:hidden;transition:opacity var(--tr);cursor:grab;position:relative;}
+.content-chip:active{cursor:grabbing;opacity:0.7;}
+.content-chip.dragging{opacity:0.4;}
+.content-chip:hover{opacity:0.85;}
+.chip-icon{font-size:11px;flex-shrink:0;}
+.chip-inner{flex:1;overflow:hidden;}
+.chip-title{font-size:10.5px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.3;}
+.chip-meta{display:flex;align-items:center;gap:4px;}
+.chip-city{font-family:'DM Mono',monospace;font-size:8.5px;opacity:0.6;text-transform:uppercase;letter-spacing:0.06em;}
+.chip-status-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.more-chips{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--cream-mute);padding-left:3px;}
+.add-day-btn{position:absolute;bottom:8px;right:8px;width:22px;height:22px;border-radius:6px;background:transparent;border:1px dashed var(--border-md);color:var(--cream-mute);font-size:14px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all var(--tr);line-height:1;}
+.cal-day:hover .add-day-btn{display:flex;}
+.add-day-btn:hover{background:var(--gold-glow);border-color:var(--gold);color:var(--gold);border-style:solid;}
+
+/* LIST VIEW */
+.list-wrap{padding:24px 32px 32px;}
+.list-day{margin-bottom:16px;}
+.list-day-header{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:8px;}
+.list-day-date{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--cream);}
+.list-day-wday{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.1em;}
+.list-day-efem{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);background:rgba(216,164,96,0.12);padding:2px 8px;border-radius:10px;}
+.list-item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:var(--r-sm);margin-bottom:4px;cursor:pointer;transition:all var(--tr);}
+.list-item:hover{filter:brightness(0.97);}
+.list-item-icon{font-size:18px;flex-shrink:0;}
+.list-item-body{flex:1;min-width:0;}
+.list-item-title{font-size:13px;font-weight:500;color:var(--cream);}
+.list-item-sub{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--cream-mute);display:flex;gap:8px;margin-top:2px;}
+.list-item-status{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9.5px;padding:3px 10px;border-radius:12px;border:1px solid var(--border);flex-shrink:0;}
+.list-item-status .s-dot{width:6px;height:6px;border-radius:50%;}
+.list-item-arc{font-family:'DM Mono',monospace;font-size:9px;padding:3px 8px;border-radius:10px;border:1px solid var(--border);color:var(--cream-mute);flex-shrink:0;}
+.list-empty{text-align:center;padding:40px 0;color:var(--cream-mute);font-size:14px;}
+
+/* WEEKLY VIEW */
+.weekly-wrap{padding:24px 32px 32px;overflow-x:auto;}
+.weekly-outer{min-width:860px;}
+.weekly-day-headers{display:grid;grid-template-columns:90px repeat(7,1fr);gap:8px;margin-bottom:8px;}
+.w-day-header{padding:10px 12px 12px;border-radius:var(--r);background:#FFF;border:1px solid var(--border);box-shadow:0 1px 4px rgba(57,46,44,0.06);}
+.w-day-header.today-col{border-color:var(--gold);box-shadow:0 0 0 1px rgba(184,130,58,0.15);}
+.w-day-label{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:4px;}
+.w-day-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;color:var(--cream-dim);line-height:1;}
+.w-day-header.today-col .w-day-num{color:var(--gold);}
+.w-day-efem{font-family:'DM Mono',monospace;font-size:8.5px;color:var(--gold-dim);margin-top:4px;line-height:1.4;}
+.w-spacer{}
+.weekly-rows{display:flex;flex-direction:column;gap:8px;}
+.weekly-row{display:grid;grid-template-columns:90px repeat(7,1fr);gap:8px;}
+.row-type-label{border-radius:var(--r);background:#FFF;border:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;box-shadow:0 1px 4px rgba(57,46,44,0.06);}
+.row-type-icon{font-size:18px;}
+.row-type-name{font-family:'DM Mono',monospace;font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;color:var(--cream-mute);text-align:center;}
+.row-type-bar{width:20px;height:2px;border-radius:2px;margin-top:2px;}
+.weekly-cell{border-radius:var(--r);background:#FFF;border:1px solid var(--border);padding:8px;min-height:80px;cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;gap:4px;position:relative;box-shadow:0 1px 4px rgba(57,46,44,0.06);}
+.weekly-cell:hover{background:#FDF8F2;border-color:var(--border-md);}
+.weekly-cell.drag-over{border-color:var(--gold);background:rgba(184,130,58,0.08);}
+.weekly-cell .content-chip{width:100%;}
+.weekly-cell .add-day-btn{display:flex;opacity:0;position:static;width:100%;border-radius:6px;height:20px;justify-content:center;font-size:12px;margin-top:auto;}
+.weekly-cell:hover .add-day-btn{opacity:1;}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(40,30,25,0.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px);}
+.overlay.open{display:flex;}
+.modal{background:#FFF;border:1px solid var(--border-md);border-radius:18px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(57,46,44,0.25);animation:modalIn 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes modalIn{from{transform:translateY(24px) scale(0.96);opacity:0;}to{transform:translateY(0) scale(1);opacity:1;}}
+.modal-head{padding:22px 24px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:12px;background:#2E2420;border-radius:18px 18px 0 0;}
+.modal-eyebrow{font-family:'DM Mono',monospace;font-size:9.5px;color:#D8A460;text-transform:uppercase;letter-spacing:0.15em;margin-bottom:4px;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:#F9F5EC;line-height:1.15;}
+.modal-close{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);cursor:pointer;color:rgba(237,232,217,0.6);font-size:16px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);flex-shrink:0;margin-top:2px;}
+.modal-close:hover{background:rgba(255,255,255,0.12);color:var(--cream);}
+.modal-body{padding:24px 28px;}
+.efem-banner{background:rgba(216,164,96,0.1);border:1px solid rgba(216,164,96,0.25);border-radius:var(--r-sm);padding:10px 14px;margin-bottom:16px;font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);display:flex;align-items:center;gap:8px;}
+.modal-items{display:flex;flex-direction:column;gap:10px;}
+.modal-item{border-radius:var(--r-sm);padding:14px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:filter var(--tr);}
+.modal-item:hover{filter:brightness(0.96);}
+.modal-item-icon{font-size:22px;flex-shrink:0;}
+.modal-item-body{flex:1;}
+.modal-item-meta{display:flex;align-items:center;gap:8px;margin-bottom:5px;flex-wrap:wrap;}
+.modal-item-type{font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.1em;}
+.modal-item-city{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--cream-mute);background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 6px;border:1px solid var(--border);text-transform:uppercase;}
+.modal-item-status-badge{font-family:'DM Mono',monospace;font-size:8.5px;padding:2px 8px;border-radius:10px;display:flex;align-items:center;gap:4px;}
+.modal-item-status-badge .s-dot{width:5px;height:5px;border-radius:50%;}
+.modal-item-arc-badge{font-family:'DM Mono',monospace;font-size:8.5px;padding:2px 8px;border-radius:10px;border:1px solid var(--border);color:var(--cream-mute);}
+.modal-item-title{font-size:14px;font-weight:500;color:var(--cream);line-height:1.4;}
+.modal-item-notes{font-size:12px;color:var(--cream-mute);margin-top:4px;font-style:italic;}
+.modal-item-actions{display:flex;gap:4px;flex-shrink:0;}
+.modal-item-btn{background:none;border:none;cursor:pointer;color:var(--border-md);font-size:14px;padding:3px 5px;border-radius:5px;transition:color var(--tr);}
+.modal-item-btn:hover{color:var(--gold);}
+.modal-item-btn.del:hover{color:#e05050;}
+.modal-empty{text-align:center;padding:28px 0 12px;color:var(--cream-mute);font-size:14px;line-height:1.6;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+
+/* FORM */
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;}
+.form-select,.form-input,.form-textarea{width:100%;padding:12px 16px;border:1px solid var(--border-md);border-radius:var(--r-sm);font-family:'Outfit',sans-serif;font-size:15px;color:var(--cream);background:#F5F0E8;transition:border-color var(--tr);outline:none;line-height:1.5;}
+.form-select:focus,.form-input:focus,.form-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(216,164,96,0.1);}
+.form-textarea{resize:vertical;min-height:72px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.type-opt{border:1px solid var(--border-md);border-radius:var(--r-sm);padding:10px 6px 8px;cursor:pointer;text-align:center;transition:all var(--tr);background:#F5F0E8;}
+.type-opt:hover{background:#EDE5D8;}
+.type-opt.sel{background:#EDE5D8;}
+.type-opt .t-ic{font-size:18px;}
+.type-opt .t-nm{font-family:'DM Mono',monospace;font-size:8.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--cream-mute);display:block;margin-top:4px;}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.status-opt{border:1px solid var(--border-md);border-radius:var(--r-sm);padding:8px 6px;cursor:pointer;text-align:center;transition:all var(--tr);background:#F5F0E8;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.status-opt:hover{background:#EDE5D8;}
+.status-opt.sel{background:#EDE5D8;}
+.status-opt .st-dot{width:8px;height:8px;border-radius:50%;}
+.status-opt .st-nm{font-family:'DM Mono',monospace;font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;color:var(--cream-mute);}
+.arc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+.arc-opt{border:1px solid var(--border-md);border-radius:var(--r-sm);padding:8px 6px;cursor:pointer;text-align:center;transition:all var(--tr);background:#F5F0E8;}
+.arc-opt:hover{background:#EDE5D8;}
+.arc-opt.sel{background:#EDE5D8;}
+.arc-opt .a-ic{font-size:14px;}
+.arc-opt .a-nm{font-family:'DM Mono',monospace;font-size:8px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--cream-mute);display:block;margin-top:3px;}
+
+/* TEMPLATE FIELDS */
+.template-section{margin-top:12px;background:#F5F0E8;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.template-section-title{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold);text-transform:uppercase;letter-spacing:0.14em;padding:10px 16px;background:rgba(57,46,44,0.06);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;}
+.template-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.template-field{padding:12px 14px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+.template-field.full{grid-column:1/-1;border-right:none;}
+.template-field:nth-last-child(-n+2):not(.full){border-bottom:none;}
+.template-field:nth-last-child(1).full{border-bottom:none;}
+.template-field:nth-child(even):not(.full){border-right:none;}
+.template-field label{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+.template-field input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;color:var(--cream);background:#FFF;outline:none;transition:border-color var(--tr);line-height:1.5;}
+.template-field textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:7px;font-family:'Outfit',sans-serif;font-size:13.5px;color:var(--cream);background:#FFF;outline:none;transition:border-color var(--tr);line-height:1.6;resize:vertical;min-height:80px;}
+.template-field input:focus,.template-field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(184,130,58,0.1);}
+
+/* EXPORT */
+.export-pre{background:#F5F0E8;border:1px solid var(--border);border-radius:var(--r-sm);padding:16px;font-family:'DM Mono',monospace;font-size:11.5px;color:var(--cream-dim);max-height:380px;overflow-y:auto;line-height:1.7;white-space:pre-wrap;word-break:break-word;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:#2E2420;border:1px solid rgba(216,164,96,0.3);color:#EDE8D9;padding:12px 20px;border-radius:10px;font-size:13px;box-shadow:0 8px 32px rgba(57,46,44,0.25);z-index:300;transform:translateY(16px);opacity:0;transition:all 0.25s ease;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .header{padding:16px 16px 14px;}
+  .header-title{font-size:28px;}
+  .toolbar,.stats-bar,.legend,.calendar-wrap,.list-wrap,.weekly-wrap{padding-left:16px;padding-right:16px;}
+  .cal-days{grid-template-columns:repeat(7,1fr);gap:4px;}
+  .cal-day{min-height:90px;padding:6px 5px;}
+  .day-num{font-size:18px;}
+  .content-chip{padding:3px 5px;}
+  .chip-title{font-size:9px;}
+  .chip-city,.chip-meta{display:none;}
+  .efem-tag{font-size:7px;max-width:50px;padding:1px 4px;}
+  .filter-pill-group{display:none;}
+  .form-row{grid-template-columns:1fr;}
+  .type-grid{grid-template-columns:repeat(3,1fr);}
+  .status-grid{grid-template-columns:repeat(2,1fr);}
+  .arc-grid{grid-template-columns:repeat(2,1fr);}
+  .ai-format-grid{grid-template-columns:1fr;}
+  .ai-type-grid{grid-template-columns:repeat(3,1fr);}
+  .ai-actions{flex-direction:column;}
+  .ai-options-grid{grid-template-columns:1fr;}
+  .ai-row-2{grid-template-columns:1fr;}
+  .ai-row-2>div:first-child{border-right:none;border-bottom:1px solid var(--border);}
+}
+
+/* AI ASSISTANT */
+.ai-btn{background:linear-gradient(135deg,#2E2420,#3D2E28)!important;color:#D8A460!important;border-color:rgba(216,164,96,0.3)!important;font-weight:600!important;}
+.ai-btn:hover{box-shadow:0 4px 20px rgba(216,164,96,0.25)!important;border-color:var(--gold)!important;}
+.ai-format-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ai-format-opt{border:2px solid var(--border-md);border-radius:var(--r);padding:16px 14px;cursor:pointer;transition:all var(--tr);background:#F5F0E8;display:flex;flex-direction:column;gap:4px;}
+.ai-format-opt:hover{background:#EDE5D8;}
+.ai-format-opt.sel{border-color:var(--gold);background:#FFF8EE;box-shadow:0 0 0 3px rgba(184,130,58,0.1);}
+.ai-f-icon{font-size:24px;}
+.ai-f-name{font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--cream);}
+.ai-f-desc{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);}
+.ai.type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;}
+.ai-type-opt{border:1px solid var(--border-md);border-radius:var(--r-sm);padding:10px 6px;cursor:pointer;text-align:center;transition:all var(--tr);background:#F5F0E8;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:9.5px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;color:var(--cream-mute);}
+.ai-type-opt span:first-child{font-size:18px;}
+.ai-type-opt:hover{background:#EDE5D8;}
+.ai-type-opt.sel{border-color:var(--gold);background:#FFF8EE;}
+.ai-generate-btn{padding:12px 28px!important;font-size:14px!important;position:relative;}
+.ai-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(240,235,224,0.3);border-top-color:#F0EBE0;border-radius:50%;animation:spin 0.7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-back-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-size:13px;color:var(--cream-mute);padding:0;margin-bottom:16px;transition:color var(--tr);}
+.ai-back-btn:hover{color:var(--gold);}
+.ai-result-section{margin-bottom:20px;}
+.ai-result-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.ai-trends-box{background:rgba(216,164,96,0.08);border:1px solid rgba(216,164,96,0.2);border-radius:var(--r-sm);padding:14px;font-size:12.5px;color:var(--cream-dim);line-height:1.6;}
+.ai-result-header{margin-bottom:14px;padding:14px 18px;background:#2E2420;border-radius:var(--r);display:flex;align-items:center;gap:10px;}
+.ai-result-header .ai-rh-format{font-family:'DM Mono',monospace;font-size:10px;color:#D8A460;text-transform:uppercase;letter-spacing:0.1em;background:rgba(216,164,96,0.15);padding:3px 10px;border-radius:20px;}
+.ai-result-header .ai-rh-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:#F9F5EC;}
+.ai-content-card{background:#FFF;border:1px solid var(--border-md);border-radius:var(--r);padding:0;overflow:hidden;margin-bottom:16px;}
+.ai-field-group{padding:16px 18px;border-bottom:1px solid var(--border);}
+.ai-field-group:last-child{border-bottom:none;}
+.ai-field-group>label{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:8px;}
+.ai-field-value{font-size:13.5px;color:var(--cream);line-height:1.55;}
+/* Gancho - hero style */
+.ai-gancho-field{background:linear-gradient(135deg,rgba(216,164,96,0.08) 0%,rgba(216,164,96,0.02) 100%);padding:20px 18px;}
+.ai-gancho-value{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--cream);line-height:1.25;letter-spacing:-0.02em;}
+/* Guion timeline */
+.ai-guion-timeline{display:flex;flex-direction:column;gap:0;position:relative;}
+.ai-guion-block{display:flex;gap:12px;align-items:flex-start;position:relative;padding:10px 0;}
+.ai-guion-block:not(:last-child){border-bottom:1px dashed var(--border);}
+.ai-guion-time{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;color:#FFF;background:#2E2420;border-radius:6px;padding:4px 8px;flex-shrink:0;min-width:48px;text-align:center;margin-top:1px;}
+.ai-guion-text{font-size:13px;color:var(--cream);line-height:1.5;}
+.ai-guion-text strong,.ai-guion-text b{color:var(--gold-dim);font-weight:600;}
+/* Overlay pills */
+.ai-overlay-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.ai-overlay-pill{font-family:'DM Mono',monospace;font-size:11px;color:var(--cream);background:#F5F0E8;border:1px solid var(--border);border-radius:8px;padding:6px 12px;line-height:1.3;}
+/* CTA + Audio row */
+.ai-row-2{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+.ai-row-2>div{padding:16px 18px;}
+.ai-row-2>div:first-child{border-right:1px solid var(--border);}
+.ai-row-2>div label{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:6px;}
+.ai-row-2 .ai-field-value{font-size:13px;}
+.ai-cta-value{font-weight:500;color:var(--gold-dim);}
+.ai-audio-value{font-style:italic;color:var(--cream-dim);}
+/* Caption */
+.ai-field-value.ai-caption{font-size:12px;color:var(--cream-dim);white-space:pre-wrap;background:#F5F0E8;padding:12px 14px;border-radius:8px;margin-top:4px;border:1px solid var(--border);}
+/* Copy button */
+.ai-copy-btn{background:none;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:8px;color:var(--cream-mute);cursor:pointer;padding:2px 8px;margin-left:auto;text-transform:uppercase;letter-spacing:0.06em;transition:all var(--tr);}
+.ai-copy-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-glow);}
+/* Stories */
+.ai-stories-card{background:#FFF;border:1px solid var(--border-md);border-radius:var(--r);overflow:hidden;}
+.ai-story-item{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;}
+.ai-story-item:last-child{border-bottom:none;}
+.ai-story-num{font-family:'DM Mono',monospace;font-size:9px;color:var(--gold);background:rgba(216,164,96,0.12);border-radius:6px;padding:4px 10px;flex-shrink:0;font-weight:500;text-transform:uppercase;}
+.ai-story-body{flex:1;}
+.ai-story-desc{font-size:12.5px;color:var(--cream);line-height:1.4;}
+.ai-story-sticker{display:inline;font-family:'DM Mono',monospace;font-size:9px;color:var(--story);background:rgba(168,130,204,0.1);border-radius:4px;padding:2px 6px;margin-left:6px;}
+.ai-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:12px;border-top:1px solid var(--border);margin-top:8px;}
+.ai-error{background:rgba(232,119,90,0.1);border:1px solid rgba(232,119,90,0.25);border-radius:var(--r-sm);padding:14px;color:#C0604A;font-size:13px;margin-top:12px;}
+/* Audio input */
+.ai-idea-wrap{position:relative;}
+.ai-idea-wrap textarea{padding-right:52px;}
+.ai-mic-btn{position:absolute;right:8px;bottom:8px;width:36px;height:36px;border-radius:50%;border:1px solid var(--border-md);background:#FFF;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all var(--tr);box-shadow:0 1px 4px rgba(57,46,44,0.08);}
+.ai-mic-btn:hover{border-color:var(--gold);background:var(--gold-glow);}
+.ai-mic-btn.recording{background:#E8775A;border-color:#E8775A;animation:pulse-rec 1.2s infinite;}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(232,119,90,0.4)}50%{box-shadow:0 0 0 8px rgba(232,119,90,0)}}
+.ai-audio-status{display:flex;align-items:center;gap:8px;margin-top:8px;font-family:'DM Mono',monospace;font-size:11px;color:#E8775A;}
+.ai-rec-dot{width:8px;height:8px;border-radius:50%;background:#E8775A;animation:pulse-rec 1.2s infinite;}
+/* 3 Options grid */
+.ai-options-label{font-family:'DM Mono',monospace;font-size:10px;color:var(--cream-mute);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:12px;}
+.ai-options-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.ai-option-card{background:#FFF;border:2px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all var(--tr);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;}
+.ai-option-card:hover{border-color:var(--border-hi);background:#FDF8F2;}
+.ai-option-card.selected{border-color:var(--gold);background:#FFF8EE;box-shadow:0 0 0 3px rgba(184,130,58,0.12);}
+.ai-option-card.selected::after{content:'✓';position:absolute;top:10px;right:12px;font-size:16px;color:var(--gold);font-weight:700;}
+.ai-opt-letter{font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;font-weight:600;}
+.ai-opt-gancho{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:600;color:var(--cream);line-height:1.25;}
+.ai-opt-guion{font-size:11.5px;color:var(--cream-dim);line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;}
+.ai-opt-cta{font-family:'DM Mono',monospace;font-size:9.5px;color:var(--gold-dim);margin-top:auto;padding-top:6px;border-top:1px dashed var(--border);}
+.ai-selected-badge{display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:10px;color:var(--gold);background:rgba(216,164,96,0.1);border:1px solid rgba(216,164,96,0.25);border-radius:20px;padding:4px 14px;margin-bottom:14px;}
+/* Ideas */
+.ideas-btn{position:relative;}
+.ideas-btn .ideas-count{position:absolute;top:-4px;right:-4px;background:var(--gold);color:#FFF;font-size:9px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;}
+.ideas-input-wrap{display:flex;gap:8px;align-items:flex-start;margin-bottom:16px;}
+.ideas-input-wrap textarea{flex:1;}
+.ideas-list{display:flex;flex-direction:column;gap:6px;}
+.ideas-empty{text-align:center;padding:28px 0;color:var(--cream-mute);font-size:13px;line-height:1.6;}
+.idea-item{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;background:#F5F0E8;border:1px solid var(--border);border-radius:var(--r-sm);transition:all var(--tr);}
+.idea-item:hover{background:#EDE5D8;}
+.idea-text{flex:1;font-size:13px;color:var(--cream);line-height:1.5;}
+.idea-date{font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);flex-shrink:0;margin-top:2px;}
+.idea-actions{display:flex;gap:2px;flex-shrink:0;}
+.idea-action-btn{background:none;border:none;cursor:pointer;color:var(--cream-mute);font-size:14px;padding:2px 4px;border-radius:4px;transition:color var(--tr);}
+.idea-action-btn:hover{color:var(--gold);}
+.idea-action-btn.del:hover{color:#e05050;}
+.idea-action-btn.use:hover{color:var(--saber);}
+/* Drive link */
+.drive-link-badge{display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:10px;color:#4285F4;background:rgba(66,133,244,0.08);border:1px solid rgba(66,133,244,0.2);border-radius:6px;padding:4px 10px;cursor:pointer;transition:all var(--tr);text-decoration:none;margin-top:6px;}
+.drive-link-badge:hover{background:rgba(66,133,244,0.15);border-color:rgba(66,133,244,0.4);}
+.chip-drive-dot{width:4px;height:4px;border-radius:50%;background:#4285F4;flex-shrink:0;}
+
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(57,46,44,0.15);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--gold);}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="brand-label">Pizzería Popular España</div>
+    <div class="header-title">Calendario <em>Editorial</em></div>
+  </div>
+  <div class="header-right">
+    <div class="view-tabs">
+      <button class="view-tab active" onclick="switchView('monthly')">Mes</button>
+      <button class="view-tab" onclick="switchView('weekly')">Semana</button>
+      <button class="view-tab" onclick="switchView('list')">Lista</button>
+    </div>
+    <div class="post-counter"><strong id="post-count">0</strong> posts planificados</div>
+    <div class="sync-status" id="sync-status" title="Firebase sync">🔄 Conectando...</div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="nav-area">
+    <button class="nav-btn" onclick="navigate(-1)">‹</button>
+    <div class="period-display">
+      <div class="period-main" id="period-main"></div>
+      <div class="period-sub" id="period-sub"></div>
+    </div>
+    <button class="nav-btn" onclick="navigate(1)">›</button>
+    <button class="today-btn" onclick="goToday()">Hoy</button>
+  </div>
+  <div class="toolbar-right">
+    <div class="filter-pill-group">
+      <button class="filter-pill active" onclick="setFilter('all',this)">Todas</button>
+      <button class="filter-pill" onclick="setFilter('Nacional',this)">🇪🇸 Nacional</button>
+      <button class="filter-pill" onclick="setFilter('Valencia',this)">Valencia</button>
+      <button class="filter-pill" onclick="setFilter('Alicante',this)">Alicante</button>
+      <button class="filter-pill" onclick="setFilter('Madrid',this)">Madrid</button>
+    </div>
+    <button class="action-btn ideas-btn" onclick="openIdeas()">💡 Ideas</button>
+    <button class="action-btn ai-btn" onclick="openAIAssistant()">✨ Crear contenido</button>
+    <button class="action-btn" onclick="openExport()">↓ Exportar</button>
+    <button class="action-btn primary" onclick="openAddModal()">＋ Añadir</button>
+  </div>
+</div>
+
+<div class="stats-bar" id="stats-bar"></div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#E8775A"></div><span class="legend-label">🎭 Viral</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6EA8D8"></div><span class="legend-label">🎤 Comunidad</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#76B887"></div><span class="legend-label">🧠 Educativo</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#D8A460"></div><span class="legend-label">🛎️ CTA</span></div>
+  <div class="legend-item"><div class="legend-dot" style="background:#A882CC"></div><span class="legend-label">📱 Story Diaria</span></div>
+</div>
+
+<div id="view-monthly"><div class="calendar-wrap"><div class="cal-weekdays" id="cal-weekdays"></div><div class="cal-days" id="cal-days"></div></div></div>
+<div id="view-weekly" style="display:none"><div class="weekly-wrap"><div class="weekly-outer"><div class="weekly-day-headers" id="weekly-headers"></div><div class="weekly-rows" id="weekly-rows"></div></div></div></div>
+<div id="view-list" style="display:none"><div class="list-wrap" id="list-content"></div></div>
+
+<!-- DETAIL MODAL -->
+<div class="overlay" id="modal-detail">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow" id="d-eyebrow"></div><div class="modal-title" id="d-title"></div></div>
+      <button class="modal-close" onclick="closeModal('modal-detail')">×</button>
+    </div>
+    <div class="modal-body" id="d-body"></div>
+    <div class="modal-footer">
+      <button class="action-btn primary" onclick="addFromDetail()">＋ Añadir contenido</button>
+      <button class="action-btn" onclick="closeModal('modal-detail')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MODAL -->
+<div class="overlay" id="modal-add">
+  <div class="modal" style="max-width:740px">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow" id="add-modal-eyebrow">Nuevo contenido</div><div class="modal-title" id="add-date-label">Añadir entrada</div></div>
+      <button class="modal-close" onclick="closeModal('modal-add')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Tipo de contenido</label><div class="type-grid" id="type-grid"></div></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Ciudad</label><select class="form-select" id="add-city"><option value="Nacional">🇪🇸 Nacional</option><option value="Valencia">📍 Valencia</option><option value="Alicante">📍 Alicante</option><option value="Madrid">📍 Madrid</option></select></div>
+        <div class="form-group"><label class="form-label">Fecha</label><input type="date" class="form-input" id="add-date-input"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Estado</label><div class="status-grid" id="status-grid"></div></div>
+      <div class="form-group"><label class="form-label">Arco semanal</label><div class="arc-grid" id="arc-grid"></div></div>
+      <div class="form-group"><label class="form-label">Título de la idea</label><input type="text" class="form-input" id="add-title" placeholder="Ej: POV: lo que ve la pizza antes de salir del horno"></div>
+      <div id="template-container"></div>
+      <div class="form-group"><label class="form-label">Notas generales (opcional)</label><textarea class="form-textarea" id="add-notes" placeholder="Formato, referencias, indicaciones..."></textarea></div>
+      <div class="form-group"><label class="form-label">📁 Link Google Drive (opcional)</label><input type="url" class="form-input" id="add-drive" placeholder="https://drive.google.com/..."></div>
+    </div>
+    <div class="modal-footer">
+      <button class="action-btn" onclick="closeModal('modal-add')">Cancelar</button>
+      <button class="action-btn primary" id="save-btn" onclick="saveContent()">Guardar entrada</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT MODAL -->
+<div class="overlay" id="modal-export">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-head">
+      <div><div class="modal-eyebrow">Exportar</div><div class="modal-title" id="exp-title">Resumen del mes</div></div>
+      <button class="modal-close" onclick="closeModal('modal-export')">×</button>
+    </div>
+    <div class="modal-body"><pre class="export-pre" id="exp-content"></pre></div>
+    <div class="modal-footer">
+      <button class="action-btn primary" onclick="copyExport()">📋 Copiar</button>
+      <button class="action-btn" onclick="closeModal('modal-export')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- AI ASSISTANT MODAL -->
+<div class="overlay" id="modal-ai">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-head" style="background:linear-gradient(135deg,#2E2420 0%,#3D2E28 100%)">
+      <div>
+        <div class="modal-eyebrow">✨ Asistente de contenido</div>
+        <div class="modal-title">Crear con inteligencia</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-ai')">×</button>
+    </div>
+    <div class="modal-body" id="ai-body">
+      <!-- STEP 1: Config -->
+      <div id="ai-step-1">
+        <div class="form-group" id="ai-key-group">
+          <label class="form-label">🔑 API Key de Anthropic</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="password" class="form-input" id="ai-api-key" placeholder="sk-ant-..." style="flex:1;font-family:'DM Mono',monospace;font-size:12px;">
+            <button class="action-btn" onclick="toggleKeyVisibility()" id="key-toggle-btn" style="padding:8px 12px;font-size:14px" title="Mostrar/ocultar">👁</button>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--cream-mute);margin-top:6px;line-height:1.5">
+            Se guarda en tu navegador. Solo se envía a la API de Anthropic. Modelo: <strong>Claude Opus 4.6</strong><br>
+            <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--gold);text-decoration:none">→ Conseguir API key</a>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Formato del post</label>
+          <div class="ai-format-grid">
+            <div class="ai-format-opt sel" data-val="reel" onclick="selectAIFormat(this)">
+              <span class="ai-f-icon">🎬</span>
+              <span class="ai-f-name">Reel</span>
+              <span class="ai-f-desc">Video corto, máximo impacto visual</span>
+            </div>
+            <div class="ai-format-opt" data-val="carrusel" onclick="selectAIFormat(this)">
+              <span class="ai-f-icon">📑</span>
+              <span class="ai-f-name">Carrusel</span>
+              <span class="ai-f-desc">Slides informativos, más guardados</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de contenido</label>
+          <div class="ai-type-grid">
+            <div class="ai-type-opt sel" data-val="viral" onclick="selectAIType(this)">
+              <span>🎭</span><span>Viral</span>
+            </div>
+            <div class="ai-type-opt" data-val="educativo" onclick="selectAIType(this)">
+              <span>🧠</span><span>Educativo</span>
+            </div>
+            <div class="ai-type-opt" data-val="comunidad" onclick="selectAIType(this)">
+              <span>🎤</span><span>Comunidad</span>
+            </div>
+            <div class="ai-type-opt" data-val="cta" onclick="selectAIType(this)">
+              <span>🛎️</span><span>CTA / Venta</span>
+            </div>
+            <div class="ai-type-opt" data-val="story" onclick="selectAIType(this)">
+              <span>📱</span><span>Story</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ciudad</label>
+            <select class="form-select" id="ai-city">
+              <option value="Nacional">🇪🇸 Nacional (todas)</option>
+              <option value="Alicante" selected>📍 Alicante (Luceros)</option>
+              <option value="Valencia">📍 Valencia</option>
+              <option value="Madrid">📍 Madrid</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Fecha para el calendario</label>
+            <input type="date" class="form-input" id="ai-date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tu idea (no tiene que ser perfecta)</label>
+          <div class="ai-idea-wrap">
+            <textarea class="form-textarea" id="ai-idea" rows="3" placeholder="Escribí tu idea o grabá un audio con el botón del micrófono..."></textarea>
+            <button class="ai-mic-btn" id="ai-mic-btn" onclick="toggleRecording()" title="Grabar audio">🎙️</button>
+          </div>
+          <div class="ai-audio-status" id="ai-audio-status" style="display:none">
+            <span class="ai-rec-dot"></span>
+            <span id="ai-rec-text">Grabando...</span>
+            <span id="ai-rec-time">0:00</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px">
+          <button class="action-btn primary ai-generate-btn" onclick="generateContent()">
+            <span class="ai-btn-text">✨ Generar contenido</span>
+            <span class="ai-btn-loading" style="display:none">
+              <span class="ai-spinner"></span> Generando...
+            </span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Pick from 3 options -->
+      <div id="ai-step-2" style="display:none">
+        <button class="ai-back-btn" onclick="showAIStep(1)">← Volver a configurar</button>
+
+        <div class="ai-result-header" id="ai-result-header"></div>
+
+        <!-- 3 OPTIONS GRID -->
+        <div id="ai-options-view">
+          <div class="ai-options-label">Elegí la opción que más te guste</div>
+          <div class="ai-options-grid" id="ai-options-grid"></div>
+        </div>
+
+        <!-- SELECTED OPTION DETAIL -->
+        <div id="ai-detail-view" style="display:none">
+          <button class="ai-back-btn" onclick="backToOptions()">← Ver las 3 opciones</button>
+          <div class="ai-selected-badge" id="ai-selected-badge"></div>
+
+          <div class="ai-content-card">
+            <div class="ai-field-group ai-gancho-field">
+              <label>🎯 GANCHO <button class="ai-copy-btn" onclick="copyField('ai-out-gancho')">copiar</button></label>
+              <div class="ai-field-value ai-gancho-value" id="ai-out-gancho"></div>
+            </div>
+            <div class="ai-field-group">
+              <label>🎬 GUION</label>
+              <div class="ai-guion-timeline" id="ai-out-guion"></div>
+            </div>
+            <div class="ai-field-group">
+              <label>📝 TEXT OVERLAY</label>
+              <div class="ai-overlay-pills" id="ai-out-overlay"></div>
+            </div>
+            <div class="ai-row-2">
+              <div>
+                <label>📢 CTA</label>
+                <div class="ai-field-value ai-cta-value" id="ai-out-cta"></div>
+              </div>
+              <div>
+                <label>🎵 AUDIO</label>
+                <div class="ai-field-value ai-audio-value" id="ai-out-audio"></div>
+              </div>
+            </div>
+            <div class="ai-field-group">
+              <label>💬 CAPTION <button class="ai-copy-btn" onclick="copyField('ai-out-caption')">copiar</button></label>
+              <div class="ai-field-value ai-caption" id="ai-out-caption"></div>
+            </div>
+          </div>
+
+          <div class="ai-result-section" id="ai-stories-section">
+            <div class="ai-result-label">📱 Stories del día</div>
+            <div class="ai-stories-card" id="ai-stories-card"></div>
+          </div>
+        </div>
+
+        <div class="ai-actions">
+          <button class="action-btn" onclick="generateContent()">🔄 Regenerar</button>
+          <button class="action-btn primary" id="ai-save-btn" onclick="saveAIContent()" style="display:none">💾 Guardar al calendario</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- IDEAS MODAL -->
+<div class="overlay" id="modal-ideas">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-head" style="background:linear-gradient(135deg,#2E2420,#3A2A22)">
+      <div>
+        <div class="modal-eyebrow">💡 Banco de ideas</div>
+        <div class="modal-title">Anotá lo que se te ocurra</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-ideas')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="ideas-input-wrap">
+        <textarea class="form-textarea" id="idea-input" rows="2" placeholder="Ej: Hacer un reel mostrando cómo se ve la terraza de noche con las luces..."></textarea>
+        <button class="action-btn primary" onclick="addIdea()" style="flex-shrink:0;align-self:flex-end">＋ Guardar</button>
+      </div>
+      <div class="ideas-list" id="ideas-list"></div>
+      <div class="ideas-empty" id="ideas-empty" style="display:none">No tenés ideas guardadas todavía.<br>Anotá lo que se te vaya ocurriendo.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───
+const TYPES={fuego:{label:'VIRAL',icon:'🎭',color:'#E8775A',bg:'rgba(232,119,90,0.13)'},voz:{label:'COMUNIDAD',icon:'🎤',color:'#6EA8D8',bg:'rgba(110,168,216,0.13)'},saber:{label:'EDUCATIVO',icon:'🧠',color:'#76B887',bg:'rgba(118,184,135,0.13)'},mesa:{label:'CTA',icon:'🛎️',color:'#D8A460',bg:'rgba(216,164,96,0.13)'},story:{label:'STORY DIARIA',icon:'📱',color:'#A882CC',bg:'rgba(168,130,204,0.13)'},accion:{label:'ACCIÓN',icon:'⚡',color:'#E8C84A',bg:'rgba(232,200,74,0.13)'}};
+const STATUSES={idea:{label:'Idea',color:'#B0A89E',bg:'rgba(176,168,158,0.15)'},prod:{label:'En producción',color:'#6EA8D8',bg:'rgba(110,168,216,0.15)'},ready:{label:'Listo',color:'#76B887',bg:'rgba(118,184,135,0.15)'},pub:{label:'Publicado',color:'#B8823A',bg:'rgba(184,130,58,0.15)'}};
+const ARCS={none:{label:'Sin arco',icon:'—'},captar:{label:'Captar',icon:'🎯'},profundizar:{label:'Profundizar',icon:'🔍'},convertir:{label:'Convertir',icon:'🛎️'}};
+const MONTHS=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const WDAYS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const WDAYS_F=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+
+// Extended efemérides
+const EFE={
+  '01-01':'🎆 Año Nuevo','01-06':'👑 Reyes Magos','01-17':'🍕 Día Mundial de la Pizza',
+  '02-09':'🍕 National Pizza Day','02-14':'❤️ San Valentín',
+  '03-08':'♀ Día de la Mujer','03-14':'π Pi Day 🍕','03-15':'🔥 Inicio Fallas','03-19':'👨 Día Padre / Cremà',
+  '04-05':'✝ Semana Santa','04-22':'🌿 Día de la Tierra','04-23':'📚 Día del Libro',
+  '05-01':'✊ Día del Trabajo','05-04':'⭐ Star Wars Day','05-10':'👩 Día de la Madre','05-15':'🌸 San Isidro',
+  '06-18':'🔥 Inicio Hogueras','06-21':'☀ Inicio Verano','06-24':'🔥 Noche de San Juan',
+  '07-25':'🇪🇸 Santiago Apóstol',
+  '08-06':'🌴 Sta. Faz Alicante','08-15':'🏖️ Asunción',
+  '09-01':'📚 Vuelta al cole',
+  '10-09':'🏛️ Día C. Valenciana','10-12':'🇦🇷🇪🇸 Día Hispanidad','10-31':'🎃 Halloween',
+  '11-01':'⛪ Todos los Santos','11-28':'🛍️ Black Friday',
+  '12-06':'🇪🇸 Constitución','12-08':'🕊️ Inmaculada','12-24':'🎄 Nochebuena','12-25':'🎄 Navidad','12-31':'🎆 Nochevieja'
+};
+
+// Templates per type
+const TEMPLATES={
+  fuego:[
+    {id:'gancho',label:'Gancho (0-3s)',type:'input',placeholder:'Máx 15 palabras — interrupción + identificación + tensión'},
+    {id:'contexto',label:'Guion / Contexto',type:'textarea',placeholder:'Bloques temporales: 0-3s, 3-10s, 10-25s...'},
+    {id:'revelacion',label:'Revelación (15-40s)',type:'textarea',placeholder:'Contenido principal, diferencial de marca'},
+    {id:'cta',label:'CTA cierre (3-5s)',type:'input',placeholder:'Cierre potente + acción concreta'},
+    {id:'overlay',label:'Text overlay',type:'input',placeholder:'Texto en pantalla'},
+    {id:'audio',label:'Audio / Trending',type:'input',placeholder:'Canción o audio de referencia'},
+    {id:'caption',label:'Caption (copy para Instagram)',type:'textarea',placeholder:'Texto del post + hashtags'}
+  ],
+  voz:[
+    {id:'gancho',label:'Gancho / Pregunta',type:'input',placeholder:'Pregunta que active la comunidad'},
+    {id:'contexto',label:'Guion / Historia',type:'textarea',placeholder:'Historia o situación que genera identificación'},
+    {id:'cta',label:'CTA engagement',type:'input',placeholder:'Pregunta abierta, encuesta, sticker...'},
+    {id:'formato',label:'Formato',type:'input',placeholder:'Reel hablado, carrusel, story interactiva...'},
+    {id:'caption',label:'Caption (copy para Instagram)',type:'textarea',placeholder:'Texto del post + hashtags'}
+  ],
+  saber:[
+    {id:'titulo_edu',label:'Título educativo',type:'input',placeholder:'Lo que van a aprender'},
+    {id:'slides',label:'Estructura slides / puntos',type:'textarea',placeholder:'Slide 1: ... / Slide 2: ... (o bloques del reel)'},
+    {id:'dato_clave',label:'Dato clave / revelación',type:'input',placeholder:'El hecho sorprendente o poco conocido'},
+    {id:'cta',label:'CTA guardar/compartir',type:'input',placeholder:'Guarda esto para...'},
+    {id:'caption',label:'Caption (copy para Instagram)',type:'textarea',placeholder:'Texto del post + hashtags'}
+  ],
+  mesa:[
+    {id:'oferta',label:'Oferta / Propuesta',type:'input',placeholder:'Qué ofrecemos, promoción, evento'},
+    {id:'gancho',label:'Gancho',type:'input',placeholder:'Cómo abrimos — máx 15 palabras'},
+    {id:'urgencia',label:'Urgencia / escasez',type:'input',placeholder:'Plazas limitadas, solo este finde, hasta agotar...'},
+    {id:'cta',label:'CTA directo',type:'input',placeholder:'Reserva en link bio / Comenta PALABRA / WhatsApp'},
+    {id:'keyword',label:'Keyword trigger (si aplica)',type:'input',placeholder:'MENÚ, RESERVA, CARTA...'},
+    {id:'caption',label:'Caption (copy para Instagram)',type:'textarea',placeholder:'Texto del post + hashtags'}
+  ],
+  accion:[
+    {id:'descripcion',label:'Descripción de la acción',type:'textarea',placeholder:'Qué hay que hacer, dónde, cuándo, quién...'},
+    {id:'responsable',label:'Responsable',type:'input',placeholder:'Quién lo ejecuta'},
+    {id:'recursos',label:'Recursos necesarios',type:'input',placeholder:'Materiales, presupuesto, herramientas...'},
+    {id:'objetivo',label:'Objetivo',type:'input',placeholder:'Qué resultado se espera'}
+  ],
+  story:[
+    {id:'story_1',label:'Story 1 — Mañana',type:'input',placeholder:'Conexión / humanización / detrás de escena'},
+    {id:'story_2',label:'Story 2 — Mediodía',type:'input',placeholder:'Refuerzo feed / producto del día'},
+    {id:'story_3',label:'Story 3 — Tarde',type:'input',placeholder:'Interacción: encuesta, quiz, pregunta'},
+    {id:'story_extra',label:'Stories extra (opcional)',type:'textarea',placeholder:'Más stories si el día lo requiere'},
+    {id:'sticker',label:'Sticker interactivo',type:'input',placeholder:'Encuesta, slider, quiz, caja preguntas...'}
+  ]
+};
+
+// ─── STATE ───
+const _today = new Date();
+let view='monthly', cur=new Date(_today.getFullYear(), _today.getMonth(), 1), filter='all', addDate=null, selType='fuego', selStatus='idea', selArc='none';
+let editingKey=null, editingIdx=null; // for edit mode
+let data={};
+let dragData=null; // for drag & drop
+
+// ─── FIREBASE INIT ───
+const firebaseConfig = {
+  apiKey: "AIzaSyCeXRsDOSo5Bp2acODyOt8qKEtxLt7zL08",
+  authDomain: "calendario---pp.firebaseapp.com",
+  databaseURL: "https://calendario---pp-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "calendario---pp",
+  storageBucket: "calendario---pp.firebasestorage.app",
+  messagingSenderId: "1020572632214",
+  appId: "1:1020572632214:web:6c50993d0038e60f012eb7"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const calRef = db.ref('calendario');
+const ideasRef = db.ref('ideas');
+
+// ─── PERSISTENCE (FIREBASE + LOCAL FALLBACK) ───
+const STORAGE_KEY='pp-cal-data';
+let firebaseConnected = false;
+
+function saveData(){
+  // Always save to localStorage as fallback
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+  // Save to Firebase
+  try { calRef.set(data); } catch(e){ console.error('Firebase save error:',e); }
+}
+function loadData(){
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(saved) { data = JSON.parse(saved); return true; }
+  } catch(e){}
+  return false;
+}
+
+// Listen for real-time changes from Firebase
+calRef.on('value', (snapshot) => {
+  const val = snapshot.val();
+  if(val) {
+    data = val;
+    // Also update localStorage
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e){}
+    render();
+  }
+  if(!firebaseConnected){
+    firebaseConnected = true;
+    updateSyncStatus('connected');
+  }
+}, (error) => {
+  console.error('Firebase read error:', error);
+  updateSyncStatus('error');
+});
+
+// Listen for ideas real-time changes
+ideasRef.on('value', (snapshot) => {
+  const val = snapshot.val();
+  if(val) {
+    ideas = Array.isArray(val) ? val : Object.values(val);
+  } else {
+    ideas = [];
+  }
+  try { localStorage.setItem('pp-cal-ideas', JSON.stringify(ideas)); } catch(e){}
+  if(document.getElementById('ideas-list')) renderIdeasList();
+  updateIdeasCount();
+});
+
+// Connection status
+db.ref('.info/connected').on('value', (snap) => {
+  if(snap.val() === true){
+    firebaseConnected = true;
+    updateSyncStatus('connected');
+  } else {
+    updateSyncStatus('error');
+  }
+});
+
+function updateSyncStatus(state){
+  const el = document.getElementById('sync-status');
+  if(!el) return;
+  if(state==='connected'){el.textContent='☁️ Sincronizado';el.className='sync-status connected';}
+  else if(state==='error'){el.textContent='⚡ Offline (local)';el.className='sync-status error';}
+  else{el.textContent='🔄 Conectando...';el.className='sync-status';}
+}
+
+// Load or seed
+if(!loadData()){
+  // Seed with example data
+  [{date:'2026-04-06',type:'mesa',city:'Nacional',title:'Semana Santa: la familia se reúne en PP',notes:'CTA reservas grupos',status:'idea',arc:'convertir',tpl:{}},
+   {date:'2026-04-08',type:'voz',city:'Valencia',title:'¿Con o sin borde relleno?',notes:'Poll en Stories',status:'idea',arc:'captar',tpl:{}},
+   {date:'2026-04-10',type:'fuego',city:'Alicante',title:'POV: lo que ve la pizza antes de salir del horno',notes:'',status:'prod',arc:'profundizar',tpl:{gancho:'Lo que ve tu pizza antes de salir del horno',audio:'ASMR trending'}},
+   {date:'2026-04-14',type:'saber',city:'Nacional',title:'Nuestra masa fermenta 48h en frío',notes:'Educativo, carrusel',status:'ready',arc:'profundizar',tpl:{}},
+   {date:'2026-04-17',type:'mesa',city:'Madrid',title:'Madrid, os esperamos este finde',notes:'Foto local Boadilla',status:'idea',arc:'convertir',tpl:{}},
+   {date:'2026-04-19',type:'story',city:'Nacional',title:'Recap semanal + UGC cliente',notes:'',status:'idea',arc:'none',tpl:{}},
+   {date:'2026-04-22',type:'saber',city:'Nacional',title:'Ingredientes frescos: del campo al horno',notes:'Día de la Tierra',status:'idea',arc:'captar',tpl:{}}
+  ].forEach(e=>{
+    if(!data[e.date])data[e.date]=[];
+    data[e.date].push({type:e.type,city:e.city,title:e.title,notes:e.notes,status:e.status||'idea',arc:e.arc||'none',tpl:e.tpl||{}});
+  });
+  saveData();
+}
+
+// ─── HELPERS ───
+function dk(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+function efem(m,d){return EFE[`${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`]||null;}
+function isToday(y,m,d){const t=new Date();return t.getFullYear()===y&&t.getMonth()===m&&t.getDate()===d;}
+function filtered(key){const items=data[key]||[];return filter==='all'?items:items.filter(i=>i.city===filter);}
+function humanDate(key){const[y,m,d]=key.split('-').map(Number);const dt=new Date(y,m-1,d);const wd=WDAYS_F[(dt.getDay()+6)%7];const mo=MONTHS[m-1].toLowerCase();return`${wd} ${d} de ${mo} de ${y}`;}
+function getMonthKeys(y,m){const dim=new Date(y,m+1,0).getDate();const keys=[];for(let d=1;d<=dim;d++)keys.push(dk(y,m,d));return keys;}
+
+// ─── STATS ───
+function renderStats(){
+  const bar=document.getElementById('stats-bar');
+  const y=cur.getFullYear(),m=cur.getMonth();
+  const keys=getMonthKeys(y,m);
+  let allItems=[];
+  keys.forEach(k=>{const items=filtered(k);allItems.push(...items);});
+
+  // Counts by type
+  const typeCounts={};Object.keys(TYPES).forEach(t=>typeCounts[t]=0);
+  const statusCounts={};Object.keys(STATUSES).forEach(s=>statusCounts[s]=0);
+  const arcCounts={captar:0,profundizar:0,convertir:0};
+  allItems.forEach(it=>{
+    typeCounts[it.type]=(typeCounts[it.type]||0)+1;
+    statusCounts[it.status||'idea']=(statusCounts[it.status||'idea']||0)+1;
+    if(it.arc && it.arc!=='none') arcCounts[it.arc]=(arcCounts[it.arc]||0)+1;
+  });
+
+  let html='<div class="stat-group">';
+  Object.keys(TYPES).forEach(t=>{
+    const T=TYPES[t];
+    html+=`<div class="stat-chip"><span class="s-icon">${T.icon}</span><span class="s-count">${typeCounts[t]}</span></div>`;
+  });
+  html+='</div><div class="stat-divider"></div><div class="stat-group">';
+  Object.keys(STATUSES).forEach(s=>{
+    const S=STATUSES[s];
+    html+=`<div class="stat-status"><span class="s-dot" style="background:${S.color}"></span><span class="s-n">${statusCounts[s]}</span></div>`;
+  });
+  html+='</div>';
+
+  // Weekly arc coverage for current week
+  const weekNum=getISOWeek(cur);
+  html+=`<div class="arc-summary">`;
+  html+=`<div class="arc-pill ${arcCounts.captar>0?'covered':'missing'}">🎯 ${arcCounts.captar}</div>`;
+  html+=`<div class="arc-pill ${arcCounts.profundizar>0?'covered':'missing'}">🔍 ${arcCounts.profundizar}</div>`;
+  html+=`<div class="arc-pill ${arcCounts.convertir>0?'covered':'missing'}">🛎️ ${arcCounts.convertir}</div>`;
+  html+=`</div>`;
+
+  bar.innerHTML=html;
+}
+function getISOWeek(d){const dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);const w1=new Date(dt.getFullYear(),0,4);return 1+Math.round(((dt-w1)/86400000-3+(w1.getDay()+6)%7)/7);}
+
+// ─── CHIP BUILDER ───
+function chip(item, key, idx){
+  const t=TYPES[item.type];
+  const s=STATUSES[item.status||'idea'];
+  const el=document.createElement('div');
+  el.className='content-chip';
+  el.style.background=t.bg;
+  el.draggable=true;
+  el.dataset.key=key;
+  el.dataset.idx=idx;
+  el.innerHTML=`<span class="chip-icon">${t.icon}</span><div class="chip-inner" style="color:${t.color}"><div class="chip-title">${item.title}</div><div class="chip-meta"><span class="chip-city">${item.city}</span><span class="chip-status-dot" style="background:${s.color}" title="${s.label}"></span>${item.drive?'<span class="chip-drive-dot" title="Tiene Drive"></span>':''}</div></div>`;
+  el.addEventListener('dragstart',e=>{
+    dragData={key,idx:parseInt(idx)};
+    el.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+  });
+  el.addEventListener('dragend',()=>{el.classList.remove('dragging');dragData=null;});
+  el.addEventListener('click',e=>{
+    e.stopPropagation();
+    openEditModal(key,parseInt(idx));
+  });
+  return el;
+}
+
+// ─── DRAG & DROP ───
+function setupDropZone(el, targetKey){
+  el.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='move';el.classList.add('drag-over');});
+  el.addEventListener('dragleave',()=>{el.classList.remove('drag-over');});
+  el.addEventListener('drop',e=>{
+    e.preventDefault();el.classList.remove('drag-over');
+    if(!dragData)return;
+    const{key:srcKey,idx:srcIdx}=dragData;
+    if(srcKey===targetKey)return;
+    const items=data[srcKey];
+    if(!items||!items[srcIdx])return;
+    const item={...items[srcIdx]};
+    items.splice(srcIdx,1);
+    if(items.length===0)delete data[srcKey];
+    if(!data[targetKey])data[targetKey]=[];
+    data[targetKey].push(item);
+    saveData();render();
+    showToast('✓ Movido a '+humanDate(targetKey).split(',')[0]);
+  });
+}
+
+// ─── VIEW SWITCHING ───
+function switchView(v){
+  view=v;
+  document.getElementById('view-monthly').style.display=v==='monthly'?'block':'none';
+  document.getElementById('view-weekly').style.display=v==='weekly'?'block':'none';
+  document.getElementById('view-list').style.display=v==='list'?'block':'none';
+  document.querySelectorAll('.view-tab').forEach((b,i)=>{
+    b.classList.toggle('active',(i===0&&v==='monthly')||(i===1&&v==='weekly')||(i===2&&v==='list'));
+  });
+  render();
+}
+function navigate(dir){
+  if(view==='monthly'||view==='list')cur=new Date(cur.getFullYear(),cur.getMonth()+dir,1);
+  else cur=new Date(cur.getTime()+dir*7*86400000);
+  render();
+}
+function goToday(){cur=new Date();render();}
+function setFilter(city,btn){filter=city;document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');render();}
+
+// ─── RENDER MONTHLY ───
+function renderMonthly(){
+  const y=cur.getFullYear(),m=cur.getMonth();
+  document.getElementById('period-main').textContent=`${MONTHS[m]} ${y}`;
+  document.getElementById('period-sub').textContent='Vista mensual';
+  const wh=document.getElementById('cal-weekdays');wh.innerHTML='';
+  WDAYS.forEach((d,i)=>{const el=document.createElement('div');el.className=`cal-wday${i>=5?' weekend':''}`;el.textContent=d;wh.appendChild(el);});
+  const dim=new Date(y,m+1,0).getDate();
+  const fw=new Date(y,m,1).getDay();const off=fw===0?6:fw-1;
+  const pd=new Date(y,m,0).getDate();
+  const c=document.getElementById('cal-days');c.innerHTML='';
+  let pc=0;for(let d=1;d<=dim;d++)pc+=filtered(dk(y,m,d)).length;
+  document.getElementById('post-count').textContent=pc;
+  for(let i=off-1;i>=0;i--){const day=document.createElement('div');day.className='cal-day other-month';day.innerHTML=`<div class="day-top"><span class="day-num">${pd-i}</span></div>`;c.appendChild(day);}
+  for(let d=1;d<=dim;d++){
+    const key=dk(y,m,d);const items=filtered(key);const ef=efem(m,d);const today=isToday(y,m,d);
+    const wdi=(new Date(y,m,d).getDay()+6)%7;
+    const day=document.createElement('div');
+    day.className=`cal-day${today?' today':''}${items.length>0?' has-content':''}`;
+    day.onclick=e=>{if(e.target.classList.contains('add-day-btn'))return;openDetail(key);};
+    setupDropZone(day,key);
+    day.innerHTML=`<div class="day-top"><div><div class="day-num">${d}</div><div class="day-wname">${WDAYS_F[wdi]}</div></div>${ef?`<div class="efem-tag" title="${ef}">${ef}</div>`:''}</div><div class="chips-area"></div><button class="add-day-btn" onclick="event.stopPropagation();openAddForDate('${key}')">+</button>`;
+    const ca=day.querySelector('.chips-area');
+    items.slice(0,3).forEach((it,idx)=>{
+      const origIdx=(data[key]||[]).indexOf(it);
+      ca.appendChild(chip(it,key,origIdx));
+    });
+    if(items.length>3){const more=document.createElement('div');more.className='more-chips';more.textContent=`+${items.length-3} más`;ca.appendChild(more);}
+    c.appendChild(day);
+  }
+  const tot=off+dim;const rem=tot%7===0?0:7-(tot%7);
+  for(let d=1;d<=rem;d++){const day=document.createElement('div');day.className='cal-day other-month';day.innerHTML=`<div class="day-top"><span class="day-num">${d}</span></div>`;c.appendChild(day);}
+}
+
+// ─── RENDER LIST ───
+function renderList(){
+  const y=cur.getFullYear(),m=cur.getMonth();
+  document.getElementById('period-main').textContent=`${MONTHS[m]} ${y}`;
+  document.getElementById('period-sub').textContent='Vista lista';
+  const dim=new Date(y,m+1,0).getDate();
+  const wrap=document.getElementById('list-content');wrap.innerHTML='';
+  let pc=0;let hasDays=false;
+  for(let d=1;d<=dim;d++){
+    const key=dk(y,m,d);const items=filtered(key);if(!items.length)continue;
+    hasDays=true;pc+=items.length;
+    const ef=efem(m,d);const wdi=(new Date(y,m,d).getDay()+6)%7;
+    const section=document.createElement('div');section.className='list-day';
+    let hdr=`<div class="list-day-header"><span class="list-day-date">${d} ${MONTHS[m]}</span><span class="list-day-wday">${WDAYS_F[wdi]}</span>`;
+    if(ef)hdr+=`<span class="list-day-efem">${ef}</span>`;
+    hdr+=`</div>`;
+    section.innerHTML=hdr;
+    items.forEach(it=>{
+      const t=TYPES[it.type];const s=STATUSES[it.status||'idea'];const a=ARCS[it.arc||'none'];
+      const origIdx=(data[key]||[]).indexOf(it);
+      const row=document.createElement('div');row.className='list-item';row.style.background=t.bg;
+      row.onclick=()=>openEditModal(key,origIdx);
+      row.innerHTML=`<span class="list-item-icon">${t.icon}</span><div class="list-item-body"><div class="list-item-title">${it.title}</div><div class="list-item-sub"><span>${t.label}</span><span>${it.city}</span>${it.notes?`<span style="opacity:0.6">${it.notes.substring(0,40)}${it.notes.length>40?'…':''}</span>`:''}</div></div><div class="list-item-status"><span class="s-dot" style="background:${s.color}"></span>${s.label}</div>${it.arc&&it.arc!=='none'?`<div class="list-item-arc">${a.icon} ${a.label}</div>`:''}`;
+      section.appendChild(row);
+    });
+    wrap.appendChild(section);
+  }
+  if(!hasDays){wrap.innerHTML='<div class="list-empty">No hay contenido planificado para este mes con los filtros actuales.</div>';}
+  document.getElementById('post-count').textContent=pc;
+}
+
+// ─── RENDER WEEKLY ───
+function renderWeekly(){
+  const d=new Date(cur);const wd=d.getDay();const diff=d.getDate()-wd+(wd===0?-6:1);
+  const monday=new Date(d.setDate(diff));const days=[];
+  for(let i=0;i<7;i++){const dd=new Date(monday);dd.setDate(monday.getDate()+i);days.push(dd);}
+  const s=days[0],e=days[6];
+  document.getElementById('period-main').textContent=`${s.getDate()} ${MONTHS[s.getMonth()].substring(0,3).toLowerCase()} — ${e.getDate()} ${MONTHS[e.getMonth()].substring(0,3).toLowerCase()} ${e.getFullYear()}`;
+  document.getElementById('period-sub').textContent='Vista semanal';
+  let pc=0;days.forEach(dd=>pc+=filtered(dk(dd.getFullYear(),dd.getMonth(),dd.getDate())).length);
+  document.getElementById('post-count').textContent=pc;
+  const he=document.getElementById('weekly-headers');he.innerHTML='';
+  const sp=document.createElement('div');sp.className='w-spacer';he.appendChild(sp);
+  days.forEach((dd,i)=>{
+    const today=isToday(dd.getFullYear(),dd.getMonth(),dd.getDate());
+    const ef=efem(dd.getMonth(),dd.getDate());
+    const el=document.createElement('div');el.className=`w-day-header${today?' today-col':''}`;
+    el.innerHTML=`<div class="w-day-label">${WDAYS[i]}</div><div class="w-day-num">${dd.getDate()}</div>${ef?`<div class="w-day-efem">${ef}</div>`:''}`;
+    he.appendChild(el);
+  });
+  const re=document.getElementById('weekly-rows');re.innerHTML='';
+  Object.keys(TYPES).forEach(tk=>{
+    const t=TYPES[tk];const row=document.createElement('div');row.className='weekly-row';
+    const label=document.createElement('div');label.className='row-type-label';
+    label.innerHTML=`<div class="row-type-icon">${t.icon}</div><div class="row-type-name">${t.label}</div><div class="row-type-bar" style="background:${t.color}"></div>`;
+    row.appendChild(label);
+    days.forEach(dd=>{
+      const key=dk(dd.getFullYear(),dd.getMonth(),dd.getDate());
+      const allI=data[key]||[];
+      const items=allI.filter(it=>it.type===tk&&(filter==='all'||it.city===filter));
+      const cell=document.createElement('div');cell.className='weekly-cell';
+      setupDropZone(cell,key);
+      cell.onclick=e=>{if(e.target.classList.contains('add-day-btn'))return;openDetail(key);};
+      items.forEach(it=>{const origIdx=allI.indexOf(it);cell.appendChild(chip(it,key,origIdx));});
+      const ab=document.createElement('button');ab.className='add-day-btn';ab.textContent='+';
+      ab.onclick=e=>{e.stopPropagation();selType=tk;openAddForDate(key);};
+      cell.appendChild(ab);row.appendChild(cell);
+    });
+    re.appendChild(row);
+  });
+}
+
+// ─── RENDER ───
+function render(){
+  if(view==='monthly')renderMonthly();
+  else if(view==='weekly')renderWeekly();
+  else renderList();
+  renderStats();
+}
+
+// ─── MODALS ───
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');editingKey=null;editingIdx=null;}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeModal(o.id);}));
+
+// Detail modal
+function openDetail(key){
+  addDate=key;
+  const items=filtered(key);
+  const ef=(()=>{const[y,m,d]=key.split('-').map(Number);return efem(m-1,d);})();
+  document.getElementById('d-eyebrow').textContent=humanDate(key);
+  document.getElementById('d-title').textContent=`${items.length} entrada${items.length!==1?'s':''} planificada${items.length!==1?'s':''}`;
+  const body=document.getElementById('d-body');body.innerHTML='';
+  if(ef){const b=document.createElement('div');b.className='efem-banner';b.innerHTML=`<span>🗓</span> ${ef}`;body.appendChild(b);}
+  if(items.length===0){body.innerHTML+='<div class="modal-empty">Ningún contenido planificado para este día.<br>Haz clic en "Añadir contenido" para comenzar.</div>';}
+  else{
+    const list=document.createElement('div');list.className='modal-items';
+    items.forEach((item,idx)=>{
+      const t=TYPES[item.type];const s=STATUSES[item.status||'idea'];const a=ARCS[item.arc||'none'];
+      const origIdx=(data[key]||[]).indexOf(item);
+      const el=document.createElement('div');el.className='modal-item';el.style.background=t.bg;
+      el.onclick=()=>{closeModal('modal-detail');openEditModal(key,origIdx);};
+      el.innerHTML=`<span class="modal-item-icon">${t.icon}</span>
+        <div class="modal-item-body">
+          <div class="modal-item-meta">
+            <span class="modal-item-type" style="color:${t.color}">${t.label}</span>
+            <span class="modal-item-city">${item.city}</span>
+            <span class="modal-item-status-badge" style="background:${s.bg}"><span class="s-dot" style="background:${s.color}"></span>${s.label}</span>
+            ${item.arc&&item.arc!=='none'?`<span class="modal-item-arc-badge">${a.icon} ${a.label}</span>`:''}
+          </div>
+          <div class="modal-item-title">${item.title}</div>
+          ${item.notes?`<div class="modal-item-notes">${item.notes}</div>`:''}
+          ${item.drive?`<a class="drive-link-badge" href="${item.drive}" target="_blank" onclick="event.stopPropagation()">📁 Google Drive</a>`:''}
+        </div>
+        <div class="modal-item-actions">
+          <button class="modal-item-btn" onclick="event.stopPropagation();closeModal('modal-detail');openEditModal('${key}',${origIdx})" title="Editar">✎</button>
+          <button class="modal-item-btn del" onclick="event.stopPropagation();deleteItem('${key}',${origIdx})" title="Eliminar">✕</button>
+        </div>`;
+      list.appendChild(el);
+    });
+    body.appendChild(list);
+  }
+  openModal('modal-detail');
+}
+function deleteItem(key,idx){if(!data[key])return;data[key].splice(idx,1);if(data[key].length===0)delete data[key];saveData();closeModal('modal-detail');render();showToast('Entrada eliminada');}
+function addFromDetail(){closeModal('modal-detail');openAddModal(addDate);}
+
+// ─── ADD/EDIT MODAL ───
+function buildTypeGrid(){
+  const grid=document.getElementById('type-grid');grid.innerHTML='';
+  Object.keys(TYPES).forEach(k=>{
+    const t=TYPES[k];const opt=document.createElement('div');
+    opt.className=`type-opt${k===selType?' sel':''}`;
+    if(k===selType)opt.style.borderColor=t.color;
+    opt.innerHTML=`<div class="t-ic">${t.icon}</div><span class="t-nm">${t.label}</span>`;
+    opt.onclick=()=>{selType=k;document.querySelectorAll('#type-grid .type-opt').forEach(o=>{o.classList.remove('sel');o.style.borderColor='';});opt.classList.add('sel');opt.style.borderColor=t.color;renderTemplate();};
+    grid.appendChild(opt);
+  });
+}
+function buildStatusGrid(){
+  const grid=document.getElementById('status-grid');grid.innerHTML='';
+  Object.keys(STATUSES).forEach(k=>{
+    const s=STATUSES[k];const opt=document.createElement('div');
+    opt.className=`status-opt${k===selStatus?' sel':''}`;
+    if(k===selStatus)opt.style.borderColor=s.color;
+    opt.innerHTML=`<span class="st-dot" style="background:${s.color}"></span><span class="st-nm">${s.label}</span>`;
+    opt.onclick=()=>{selStatus=k;document.querySelectorAll('#status-grid .status-opt').forEach(o=>{o.classList.remove('sel');o.style.borderColor='';});opt.classList.add('sel');opt.style.borderColor=s.color;};
+    grid.appendChild(opt);
+  });
+}
+function buildArcGrid(){
+  const grid=document.getElementById('arc-grid');grid.innerHTML='';
+  Object.keys(ARCS).forEach(k=>{
+    const a=ARCS[k];const opt=document.createElement('div');
+    opt.className=`arc-opt${k===selArc?' sel':''}`;
+    if(k===selArc&&k!=='none')opt.style.borderColor=TYPES.mesa.color;
+    opt.innerHTML=`<span class="a-ic">${a.icon}</span><span class="a-nm">${a.label}</span>`;
+    opt.onclick=()=>{selArc=k;document.querySelectorAll('#arc-grid .arc-opt').forEach(o=>{o.classList.remove('sel');o.style.borderColor='';});opt.classList.add('sel');if(k!=='none')opt.style.borderColor=TYPES.mesa.color;};
+    grid.appendChild(opt);
+  });
+}
+function renderTemplate(){
+  const container=document.getElementById('template-container');
+  const fields=TEMPLATES[selType];
+  if(!fields){container.innerHTML='';return;}
+  const icons={gancho:'🎯',contexto:'🎬',revelacion:'✨',cta:'📣',overlay:'🖊',audio:'🎵',caption:'💬',formato:'📐',slides:'📋',dato_clave:'💡',titulo_edu:'📚',oferta:'🎁',urgencia:'⚡',keyword:'🔑',story_1:'🌅',story_2:'☀️',story_3:'🌇',story_extra:'➕',sticker:'✨'};
+  const fullFields=new Set(['contexto','revelacion','caption','slides','story_extra']);
+  let html=`<div class="template-section"><div class="template-section-title">🗂 Plantilla ${TYPES[selType].label} — Estructura</div><div class="template-grid">`;
+  fields.forEach(f=>{
+    const rawVal=editingKey?((data[editingKey]||[])[editingIdx]?.tpl?.[f.id]||''):'';
+    const escaped=rawVal.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const isFull=fullFields.has(f.id)||f.type==='textarea';
+    const icon=icons[f.id]||'·';
+    html+=`<div class="template-field${isFull?' full':''}"><label>${icon} ${f.label}</label>`;
+    if(f.type==='textarea'||isFull)html+=`<textarea id="tpl-${f.id}" placeholder="${f.placeholder}" rows="${f.id==='caption'||f.id==='slides'?4:2}">${escaped}</textarea>`;
+    else html+=`<input id="tpl-${f.id}" placeholder="${f.placeholder}" value="${escaped}">`;
+    html+=`</div>`;
+  });
+  html+=`</div></div>`;
+  container.innerHTML=html;
+}
+function openAddModal(key){
+  editingKey=null;editingIdx=null;
+  if(key)addDate=key;
+  if(!addDate){const t=new Date();addDate=dk(t.getFullYear(),t.getMonth(),t.getDate());}
+  document.getElementById('add-modal-eyebrow').textContent='Nuevo contenido';
+  document.getElementById('add-date-label').textContent=humanDate(addDate);
+  document.getElementById('add-title').value='';
+  document.getElementById('add-notes').value='';
+  document.getElementById('add-drive').value='';
+  document.getElementById('add-date-input').value=addDate||'';
+  document.getElementById('save-btn').textContent='Guardar entrada';
+  selType='fuego';selStatus='idea';selArc='none';
+  buildTypeGrid();buildStatusGrid();buildArcGrid();renderTemplate();
+  openModal('modal-add');
+}
+function openAddForDate(key){addDate=key;openAddModal(key);}
+function openEditModal(key,idx){
+  const item=(data[key]||[])[idx];if(!item)return;
+  editingKey=key;editingIdx=idx;addDate=key;
+  selType=item.type;selStatus=item.status||'idea';selArc=item.arc||'none';
+  document.getElementById('add-modal-eyebrow').textContent='Editar contenido';
+  document.getElementById('add-date-label').textContent=humanDate(key);
+  document.getElementById('add-date-input').value=key;
+  document.getElementById('add-title').value=item.title;
+  document.getElementById('add-notes').value=item.notes||'';
+  document.getElementById('add-drive').value=item.drive||'';
+  document.getElementById('add-city').value=item.city;
+  document.getElementById('save-btn').textContent='Guardar cambios';
+  buildTypeGrid();buildStatusGrid();buildArcGrid();renderTemplate();
+  openModal('modal-add');
+}
+function saveContent(){
+  const title=document.getElementById('add-title').value.trim();
+  if(!title){showToast('⚠ El título es obligatorio');return;}
+  const dateVal=document.getElementById('add-date-input').value;
+  const targetDate=dateVal||addDate;
+  if(!targetDate&&!dateVal){showToast('⚠ Selecciona un día');return;}
+  const city=document.getElementById('add-city').value;
+  const notes=document.getElementById('add-notes').value.trim();
+  const drive=document.getElementById('add-drive').value.trim();
+  const tpl={};
+  const fields=TEMPLATES[selType]||[];
+  fields.forEach(f=>{
+    const el=document.getElementById('tpl-'+f.id);
+    if(el&&el.value.trim())tpl[f.id]=el.value.trim();
+  });
+  const entry={type:selType,city,title,notes,status:selStatus,arc:selArc,tpl};
+  if(drive) entry.drive=drive;
+
+  if(editingKey!==null&&editingIdx!==null){
+    if(editingKey===targetDate){
+      data[editingKey][editingIdx]=entry;
+    } else {
+      data[editingKey].splice(editingIdx,1);
+      if(data[editingKey].length===0)delete data[editingKey];
+      if(!data[targetDate])data[targetDate]=[];
+      data[targetDate].push(entry);
+    }
+    showToast('✓ Cambios guardados');
+  } else {
+    if(!data[targetDate])data[targetDate]=[];
+    data[targetDate].push(entry);
+    showToast('✓ Entrada guardada');
+  }
+  saveData();closeModal('modal-add');render();
+}
+
+// ─── EXPORT ───
+function openExport(){
+  const y=cur.getFullYear(),m=cur.getMonth();
+  const dim=new Date(y,m+1,0).getDate();
+  let txt=`PIZZERÍA POPULAR ESPAÑA\nCALENDARIO DE CONTENIDOS — ${MONTHS[m].toUpperCase()} ${y}\n${'═'.repeat(56)}\n\n`;
+  let total=0;
+  for(let d=1;d<=dim;d++){
+    const key=dk(y,m,d);const items=filtered(key);if(!items.length)continue;
+    const ef=efem(m,d);
+    txt+=`📅 ${humanDate(key).toUpperCase()}`;if(ef)txt+=` — ${ef}`;txt+=`\n${'─'.repeat(48)}\n`;
+    items.forEach(it=>{
+      const t=TYPES[it.type];const s=STATUSES[it.status||'idea'];const a=ARCS[it.arc||'none'];
+      txt+=`  ${t.icon} [${t.label}] ${it.city} | ${s.label}`;
+      if(it.arc&&it.arc!=='none')txt+=` | Arco: ${a.label}`;
+      txt+=`\n     → ${it.title}\n`;
+      if(it.notes)txt+=`     ✎ ${it.notes}\n`;
+      // Template fields
+      const fields=TEMPLATES[it.type]||[];
+      fields.forEach(f=>{
+        if(it.tpl&&it.tpl[f.id])txt+=`     📋 ${f.label}: ${it.tpl[f.id]}\n`;
+      });
+      total++;
+    });
+    txt+='\n';
+  }
+  txt+=`${'═'.repeat(56)}\nTOTAL: ${total} post${total!==1?'s':''} en ${MONTHS[m]} ${y}\n`;
+  // Stats summary
+  const keys=getMonthKeys(y,m);let allItems=[];
+  keys.forEach(k=>{const items=filtered(k);allItems.push(...items);});
+  const tc={};Object.keys(TYPES).forEach(t=>tc[t]=0);
+  const sc={};Object.keys(STATUSES).forEach(s=>sc[s]=0);
+  allItems.forEach(it=>{tc[it.type]++;sc[it.status||'idea']++;});
+  txt+=`\nPOR TIPO: `;Object.keys(TYPES).forEach(t=>{txt+=`${TYPES[t].icon} ${tc[t]}  `;});
+  txt+=`\nPOR ESTADO: `;Object.keys(STATUSES).forEach(s=>{txt+=`${STATUSES[s].label}: ${sc[s]}  `;});
+  txt+='\n';
+
+  document.getElementById('exp-title').textContent=`${MONTHS[m]} ${y} — ${total} posts`;
+  document.getElementById('exp-content').textContent=txt;
+  openModal('modal-export');
+}
+function copyExport(){navigator.clipboard.writeText(document.getElementById('exp-content').textContent).then(()=>showToast('📋 Copiado')).catch(()=>showToast('No se pudo copiar'));}
+
+// ─── TOAST ───
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+// ─── AI ASSISTANT ───
+let aiFormat='reel', aiType='viral', aiLastResult=null, aiSelectedIdx=null, aiOptions=[];
+const API_KEY_STORAGE='pp-cal-apikey';
+
+// Audio recording
+let speechRecognition=null, isRecording=false, recTimer=null, recSeconds=0;
+
+(function(){try{const s=localStorage.getItem(API_KEY_STORAGE);if(s)setTimeout(()=>{const el=document.getElementById('ai-api-key');if(el)el.value=s;},100);}catch(e){}})();
+
+function toggleKeyVisibility(){const i=document.getElementById('ai-api-key'),b=document.getElementById('key-toggle-btn');if(i.type==='password'){i.type='text';b.textContent='🔒';}else{i.type='password';b.textContent='👁';}}
+function selectAIFormat(el){document.querySelectorAll('.ai-format-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');aiFormat=el.dataset.val;}
+function selectAIType(el){document.querySelectorAll('.ai-type-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');aiType=el.dataset.val;}
+function openAIAssistant(){
+  document.getElementById('ai-idea').value='';
+  document.getElementById('ai-date').value=addDate||dk(cur.getFullYear(),cur.getMonth(),new Date().getDate());
+  try{const s=localStorage.getItem(API_KEY_STORAGE);if(s)document.getElementById('ai-api-key').value=s;}catch(e){}
+  showAIStep(1);openModal('modal-ai');
+}
+function showAIStep(n){
+  document.getElementById('ai-step-1').style.display=n===1?'block':'none';
+  document.getElementById('ai-step-2').style.display=n===2?'block':'none';
+  if(n===2){document.getElementById('ai-options-view').style.display='block';document.getElementById('ai-detail-view').style.display='none';document.getElementById('ai-save-btn').style.display='none';}
+}
+
+// ── AUDIO RECORDING ──
+function toggleRecording(){
+  const btn=document.getElementById('ai-mic-btn');
+  const status=document.getElementById('ai-audio-status');
+  const textarea=document.getElementById('ai-idea');
+
+  // Check if already recording — stop
+  if(speechRecognition && isRecording){
+    speechRecognition.stop();
+    return;
+  }
+
+  // Check browser support
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SpeechRecognition){
+    showToast('⚠ Tu navegador no soporta reconocimiento de voz. Usá Chrome.');
+    return;
+  }
+
+  speechRecognition=new SpeechRecognition();
+  speechRecognition.lang='es-ES';
+  speechRecognition.continuous=true;
+  speechRecognition.interimResults=true;
+
+  let finalTranscript=textarea.value?textarea.value+' ':'';
+  
+  speechRecognition.onstart=()=>{
+    isRecording=true;
+    btn.classList.add('recording');btn.textContent='⏹️';
+    status.style.display='flex';
+    recSeconds=0;
+    document.getElementById('ai-rec-time').textContent='0:00';
+    document.getElementById('ai-rec-text').textContent='Escuchando...';
+    recTimer=setInterval(()=>{
+      recSeconds++;
+      const m=Math.floor(recSeconds/60),s=recSeconds%60;
+      document.getElementById('ai-rec-time').textContent=`${m}:${String(s).padStart(2,'0')}`;
+    },1000);
+  };
+
+  speechRecognition.onresult=(e)=>{
+    let interim='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal){
+        finalTranscript+=e.results[i][0].transcript+' ';
+      } else {
+        interim+=e.results[i][0].transcript;
+      }
+    }
+    textarea.value=finalTranscript+(interim?'[...'+interim+'...]':'');
+  };
+
+  speechRecognition.onerror=(e)=>{
+    console.error('Speech error:',e.error);
+    if(e.error!=='no-speech') showToast('⚠ Error de micrófono: '+e.error);
+  };
+
+  speechRecognition.onend=()=>{
+    isRecording=false;
+    btn.classList.remove('recording');btn.textContent='🎙️';
+    status.style.display='none';
+    clearInterval(recTimer);
+    textarea.value=finalTranscript.trim();
+    if(finalTranscript.trim()) showToast('✓ Transcripción lista — revisá el texto');
+  };
+
+  speechRecognition.start();
+}
+
+// ── GENERATE 3 OPTIONS ──
+async function generateContent(){
+  const idea=document.getElementById('ai-idea').value.trim();
+  if(!idea){showToast('⚠ Escribí tu idea primero');return;}
+  const apiKey=document.getElementById('ai-api-key').value.trim();
+  if(!apiKey||!apiKey.startsWith('sk-')){showToast('⚠ Necesitás una API key válida');document.getElementById('ai-api-key').focus();return;}
+  try{localStorage.setItem(API_KEY_STORAGE,apiKey);}catch(e){}
+
+  const city=document.getElementById('ai-city').value;
+  const btn=document.querySelector('.ai-generate-btn');
+  const btnText=btn.querySelector('.ai-btn-text');
+  const btnLoad=btn.querySelector('.ai-btn-loading');
+  btnText.style.display='none';btnLoad.style.display='inline-flex';btn.disabled=true;btn.style.opacity='0.7';
+  document.querySelectorAll('.ai-error').forEach(e=>e.remove());
+  aiSelectedIdx=null;aiOptions=[];
+
+  const typeLabels={viral:'Viral / Entretenimiento',educativo:'Educativo / Valor',comunidad:'Comunidad / Engagement',cta:'CTA / Venta directa',story:'Story / Día a día'};
+
+  const systemPrompt=`Eres el estratega de contenido de Pizzería Popular España — pizzerías de horno a leña, origen argentino. Locales en Alicante (Luceros, Playa San Juan), Valencia (Russafa, Santa Clara) y Madrid (Boadilla).
+
+MARCA: Tono cercano y cálido. Horno a leña protagonista, masa 48h fermentación en frío. Instagram @pizzeriapopular.es (22K). Público 25-45. Top: Pepperoni, Americana, 4 Formaggi, Rúcula, Empanadas, Milanesas.
+
+REGLAS:
+- Gancho: SIEMPRE menos de 15 palabras
+- Una pieza = una idea
+- Mostrar > Contar
+- Copy en español de España
+- Sé CONCISO. Frases cortas. Esto lo lee alguien que tiene que grabar YA.
+
+Genera TRES opciones diferentes para la misma idea. Cada opción con un enfoque/ángulo distinto.
+
+Responde ÚNICAMENTE en JSON válido, sin markdown ni backticks:
+{
+  "opciones": [
+    {
+      "titulo": "Título corto",
+      "gancho": "Máx 15 palabras",
+      "guion": "Guion corto por bloques temporales, separados por salto de línea",
+      "overlay": "Textos pantalla separados por |",
+      "cta": "Frase cierre, 1 línea",
+      "audio": "Sugerencia audio, 1 línea",
+      "caption": "Caption + hashtags (máx 6), máx 3 líneas",
+      "stories": [
+        {"momento": "Mañana", "que": "1 frase"},
+        {"momento": "Mediodía", "que": "1 frase", "sticker": "si aplica"},
+        {"momento": "Tarde", "que": "1 frase", "sticker": "si aplica"}
+      ]
+    },
+    { "...segunda opción..." : "mismo formato" },
+    { "...tercera opción..." : "mismo formato" }
+  ]
+}`;
+
+  const userPrompt=`FORMATO: ${aiFormat.toUpperCase()} | TIPO: ${typeLabels[aiType]} | CIUDAD: ${city}
+
+IDEA: ${idea}
+
+${aiFormat==='carrusel'?'Estructura por slides en el guion.':'Estructura por bloques temporales en el guion.'}
+
+Dame 3 opciones con enfoques DIFERENTES. Sé práctico y corto.`;
+
+  try {
+    const response=await fetch("https://api.anthropic.com/v1/messages",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      body:JSON.stringify({model:"claude-opus-4-6",max_tokens:6000,system:systemPrompt,tools:[{"type":"web_search_20250305","name":"web_search","max_uses":3}],messages:[{role:"user",content:userPrompt}]})
+    });
+    if(!response.ok){const b=await response.text();let m=`Error ${response.status}`;try{const j=JSON.parse(b);m=j.error?.message||m;}catch(e){}throw new Error(m);}
+
+    const apiData=await response.json();
+    let fullText='';
+    if(apiData.content){apiData.content.forEach(block=>{if(block.type==='text'&&block.text)fullText+=block.text;});}
+
+    // Sanitize: fix control chars inside JSON strings that break parsing
+    function sanitizeJSON(str){
+      // Extract JSON object
+      const match=str.match(/\{[\s\S]*\}/);
+      if(!match) return str;
+      let j=match[0];
+      // Replace unescaped control characters inside string values
+      j=j.replace(/"(?:[^"\\]|\\.)*"/g, m => m.replace(/[\n\r\t]/g, c => c==='\n'?'\\n':c==='\r'?'\\r':'\\t'));
+      return j;
+    }
+
+    let result;
+    try{result=JSON.parse(sanitizeJSON(fullText));}catch(e){
+      try{
+        // Fallback: more aggressive cleanup
+        let cleaned=fullText.match(/\{[\s\S]*\}/);
+        if(cleaned){
+          let s=cleaned[0].replace(/[\x00-\x1F\x7F]/g,' ').replace(/\s{2,}/g,' ');
+          result=JSON.parse(s);
+        } else {throw e;}
+      }catch(e2){throw new Error('No se pudo parsear. Intentá de nuevo.');}
+    }
+
+    aiOptions=result.opciones||[result];
+    if(!Array.isArray(aiOptions)||aiOptions.length===0) throw new Error('No se generaron opciones');
+
+    // Header
+    const hdr=document.getElementById('ai-result-header');
+    const fmtIcon=aiFormat==='reel'?'🎬':'📑';
+    hdr.innerHTML=`<span class="ai-rh-format">${fmtIcon} ${aiFormat}</span><span class="ai-rh-title">3 opciones generadas</span>`;
+
+    // Render 3 option cards
+    const grid=document.getElementById('ai-options-grid');
+    grid.innerHTML='';
+    const letters=['A','B','C'];
+    aiOptions.slice(0,3).forEach((opt,i)=>{
+      const card=document.createElement('div');
+      card.className='ai-option-card';
+      card.onclick=()=>selectOption(i);
+      card.innerHTML=`
+        <div class="ai-opt-letter">Opción ${letters[i]}</div>
+        <div class="ai-opt-gancho">${opt.gancho||''}</div>
+        <div class="ai-opt-guion">${(opt.guion||'').replace(/\n/g,'<br>')}</div>
+        <div class="ai-opt-cta">📢 ${opt.cta||''}</div>`;
+      grid.appendChild(card);
+    });
+
+    document.getElementById('ai-options-view').style.display='block';
+    document.getElementById('ai-detail-view').style.display='none';
+    document.getElementById('ai-save-btn').style.display='none';
+    showAIStep(2);
+
+  }catch(err){
+    console.error('AI error:',err);
+    const d=document.createElement('div');d.className='ai-error';
+    d.innerHTML=`<strong>Error:</strong> ${err.message}`;
+    document.getElementById('ai-step-1').appendChild(d);
+  }finally{
+    btnText.style.display='inline';btnLoad.style.display='none';btn.disabled=false;btn.style.opacity='1';
+  }
+}
+
+// ── SELECT OPTION ──
+function selectOption(idx){
+  aiSelectedIdx=idx;
+  const opt=aiOptions[idx];
+  if(!opt) return;
+  aiLastResult=opt;
+
+  // Highlight card
+  document.querySelectorAll('.ai-option-card').forEach((c,i)=>c.classList.toggle('selected',i===idx));
+
+  // Show detail
+  const letters=['A','B','C'];
+  document.getElementById('ai-selected-badge').innerHTML=`✓ Opción ${letters[idx]} seleccionada`;
+  document.getElementById('ai-out-gancho').textContent=opt.gancho||'';
+
+  // Guion timeline
+  const guionEl=document.getElementById('ai-out-guion');guionEl.innerHTML='';
+  (opt.guion||'').split('\n').filter(l=>l.trim()).forEach(line=>{
+    const block=document.createElement('div');block.className='ai-guion-block';
+    const ci=line.indexOf(':');
+    if(ci>0&&ci<12){block.innerHTML=`<span class="ai-guion-time">${line.substring(0,ci).trim()}</span><span class="ai-guion-text">${line.substring(ci+1).trim()}</span>`;}
+    else{block.innerHTML=`<span class="ai-guion-text">${line}</span>`;}
+    guionEl.appendChild(block);
+  });
+
+  // Overlay pills
+  const ov=document.getElementById('ai-out-overlay');ov.innerHTML='';
+  (opt.overlay||'').split('|').map(s=>s.trim()).filter(Boolean).forEach(t=>{
+    const p=document.createElement('span');p.className='ai-overlay-pill';p.textContent=t;ov.appendChild(p);
+  });
+
+  document.getElementById('ai-out-cta').textContent=opt.cta||'';
+  document.getElementById('ai-out-audio').textContent=opt.audio||'';
+  document.getElementById('ai-out-caption').textContent=opt.caption||'';
+
+  // Stories
+  const sc=document.getElementById('ai-stories-card');sc.innerHTML='';
+  if(opt.stories&&Array.isArray(opt.stories)){
+    opt.stories.forEach(s=>{
+      const item=document.createElement('div');item.className='ai-story-item';
+      item.innerHTML=`<span class="ai-story-num">${s.momento||''}</span><div class="ai-story-body"><div class="ai-story-desc">${s.que||s.contenido||''}</div>${s.sticker?`<div class="ai-story-sticker">🔘 ${s.sticker}</div>`:''}</div>`;
+      sc.appendChild(item);
+    });
+    document.getElementById('ai-stories-section').style.display='block';
+  }
+
+  document.getElementById('ai-detail-view').style.display='block';
+  document.getElementById('ai-save-btn').style.display='flex';
+}
+
+function backToOptions(){
+  document.getElementById('ai-detail-view').style.display='none';
+  document.getElementById('ai-options-view').style.display='block';
+  document.getElementById('ai-save-btn').style.display=aiSelectedIdx!==null?'flex':'none';
+}
+
+function saveAIContent(){
+  if(!aiLastResult) return;
+  const dateVal = document.getElementById('ai-date').value;
+  const city = document.getElementById('ai-city').value;
+  if(!dateVal){showToast('⚠ Seleccioná una fecha');return;}
+
+  const typeMap = {viral:'fuego', educativo:'saber', comunidad:'voz', cta:'mesa', story:'story'};
+  const calType = typeMap[aiType] || 'fuego';
+
+  // Map AI result fields → correct template fields per content type
+  // Templates: fuego=[gancho,contexto,revelacion,cta,overlay,audio,caption]
+  //            saber=[titulo_edu,slides,dato_clave,cta,caption]
+  //            voz=[gancho,contexto,cta,formato,caption]
+  //            mesa=[oferta,gancho,urgencia,cta,keyword,caption]
+  //            story=[story_1,story_2,story_3,story_extra,sticker]
+  const r = aiLastResult;
+  const tpl = {};
+
+  if(aiType === 'educativo') {
+    if(r.titulo || r.gancho) tpl.titulo_edu = r.titulo || r.gancho;
+    if(r.guion) tpl.slides = r.guion;
+    if(r.overlay) tpl.dato_clave = r.overlay.split('|')[0].trim();
+    if(r.cta) tpl.cta = r.cta;
+    if(r.caption) tpl.caption = r.caption;
+  } else if(aiType === 'cta') {
+    if(r.gancho) tpl.gancho = r.gancho;
+    if(r.guion) tpl.oferta = r.guion.split('\n')[0] || r.guion;
+    if(r.cta) tpl.cta = r.cta;
+    if(r.overlay) tpl.urgencia = r.overlay.split('|')[0].trim();
+    if(r.caption) tpl.caption = r.caption;
+  } else if(aiType === 'comunidad') {
+    if(r.gancho) tpl.gancho = r.gancho;
+    if(r.guion) tpl.contexto = r.guion;
+    if(r.cta) tpl.cta = r.cta;
+    if(r.audio) tpl.formato = r.audio;
+    if(r.caption) tpl.caption = r.caption;
+  } else {
+    // viral/fuego — direct mapping
+    if(r.gancho) tpl.gancho = r.gancho;
+    if(r.guion) tpl.contexto = r.guion;
+    if(r.overlay) tpl.revelacion = r.overlay.split('|').join('\n');
+    if(r.cta) tpl.cta = r.cta;
+    if(r.overlay) tpl.overlay = r.overlay;
+    if(r.audio) tpl.audio = r.audio;
+    if(r.caption) tpl.caption = r.caption;
+  }
+
+  const title = r.titulo || r.gancho || 'Contenido IA';
+  const notes = `${aiFormat.toUpperCase()} | ${aiType}${r.caption?'\n'+r.caption:''}`;
+
+  if(!data[dateVal]) data[dateVal] = [];
+  data[dateVal].push({type:calType, city, title, notes, status:'idea', arc:'none', tpl});
+
+  if(aiLastResult.stories && aiLastResult.stories.length > 0){
+    const storyTpl = {};
+    aiLastResult.stories.forEach((s, i) => {
+      const key = i===0?'story_1':i===1?'story_2':i===2?'story_3':'story_extra';
+      const txt = `${s.momento}: ${s.que||s.contenido||''}${s.sticker?' ['+s.sticker+']':''}`;
+      if(i<=2) storyTpl[key]=txt;
+      else storyTpl.story_extra=(storyTpl.story_extra||'')+txt+'\n';
+    });
+    data[dateVal].push({type:'story',city,title:`Stories: ${title}`,notes:'IA',status:'idea',arc:'none',tpl:storyTpl});
+  }
+  
+  saveData();
+  closeModal('modal-ai');
+  render();
+  showToast('✓ Post + Stories guardados en el calendario');
+}
+
+// ─── IDEAS BANK ───
+const IDEAS_KEY='pp-cal-ideas';
+let ideas=[];
+
+function loadIdeas(){try{const s=localStorage.getItem(IDEAS_KEY);if(s)ideas=JSON.parse(s);}catch(e){ideas=[];}}
+function saveIdeas(){
+  try{localStorage.setItem(IDEAS_KEY,JSON.stringify(ideas));}catch(e){}
+  try{ideasRef.set(ideas);}catch(e){console.error('Firebase ideas save error:',e);}
+}
+loadIdeas();
+
+function openIdeas(){
+  renderIdeasList();
+  openModal('modal-ideas');
+}
+function addIdea(){
+  const input=document.getElementById('idea-input');
+  const text=input.value.trim();
+  if(!text){showToast('⚠ Escribí algo primero');return;}
+  ideas.unshift({text,date:new Date().toISOString().slice(0,10),id:Date.now()});
+  saveIdeas();
+  input.value='';
+  renderIdeasList();
+  showToast('💡 Idea guardada');
+}
+function deleteIdea(id){
+  ideas=ideas.filter(i=>i.id!==id);
+  saveIdeas();renderIdeasList();
+  showToast('Idea eliminada');
+}
+function useIdea(id){
+  const idea=ideas.find(i=>i.id===id);
+  if(!idea)return;
+  closeModal('modal-ideas');
+  openAIAssistant();
+  setTimeout(()=>{document.getElementById('ai-idea').value=idea.text;},150);
+}
+function renderIdeasList(){
+  const list=document.getElementById('ideas-list');
+  const empty=document.getElementById('ideas-empty');
+  list.innerHTML='';
+  if(ideas.length===0){empty.style.display='block';return;}
+  empty.style.display='none';
+  ideas.forEach(idea=>{
+    const el=document.createElement('div');
+    el.className='idea-item';
+    el.innerHTML=`
+      <div class="idea-text">${idea.text}</div>
+      <div class="idea-date">${idea.date}</div>
+      <div class="idea-actions">
+        <button class="idea-action-btn use" onclick="useIdea(${idea.id})" title="Usar en asistente IA">✨</button>
+        <button class="idea-action-btn del" onclick="deleteIdea(${idea.id})" title="Eliminar">✕</button>
+      </div>`;
+    list.appendChild(el);
+  });
+  // Update count badge on toolbar button
+  updateIdeasCount();
+}
+function updateIdeasCount(){
+  const btn=document.querySelector('.ideas-btn');
+  let badge=btn.querySelector('.ideas-count');
+  if(ideas.length>0){
+    if(!badge){badge=document.createElement('span');badge.className='ideas-count';btn.appendChild(badge);btn.style.position='relative';}
+    badge.textContent=ideas.length;
+  } else if(badge){badge.remove();}
+}
+updateIdeasCount();
+
+function copyField(id){
+  const text=document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(()=>showToast('📋 Copiado')).catch(()=>showToast('No se pudo copiar'));
+}
+
+// ─── INIT ───
+render();
+</script>
+</body>
+</html>
