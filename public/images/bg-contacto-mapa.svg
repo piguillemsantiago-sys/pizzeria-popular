@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <radialGradient id="pinGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C5A572" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#C5A572" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#C5A572" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinGlowSmall" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C5A572" stop-opacity="0.7"/>
+      <stop offset="50%" stop-color="#C5A572" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#C5A572" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Iberian peninsula outline (approximated) -->
+  <path d="M 110,185
+           Q 100,135 138,108
+           Q 205,82 285,92
+           Q 362,96 440,100
+           Q 518,96 582,122
+           Q 640,172 622,214
+           Q 585,244 565,282
+           Q 545,322 515,342
+           Q 472,362 422,372
+           Q 362,382 292,390
+           Q 222,390 162,370
+           Q 112,340 102,282
+           Q 92,232 110,185 Z"
+        fill="none" stroke="#C5A572" stroke-width="1.5" opacity="0.14"/>
+
+  <!-- Subtle inner outline for depth -->
+  <path d="M 115,188
+           Q 106,138 142,112
+           Q 208,86 288,96
+           Q 362,100 440,104
+           Q 516,100 578,124
+           Q 634,172 618,212
+           Q 582,240 562,278
+           Q 542,318 512,338
+           Q 470,358 420,368
+           Q 360,378 292,386
+           Q 222,386 164,366
+           Q 114,336 106,280
+           Q 96,232 115,188 Z"
+        fill="none" stroke="#C5A572" stroke-width="0.8" opacity="0.08"/>
+
+  <!-- Dotted connecting lines between pin groups -->
+  <g stroke="#C5A572" stroke-width="1" stroke-dasharray="2 6" opacity="0.28" fill="none">
+    <line x1="345" y1="228" x2="538" y2="252"/>
+    <line x1="538" y1="252" x2="510" y2="300"/>
+  </g>
+
+  <!-- Pins with halo -->
+  <!-- Boadilla (Madrid) -->
+  <circle cx="345" cy="228" r="38" fill="url(#pinGlow)"/>
+  <circle cx="345" cy="228" r="6" fill="#C5A572"/>
+  <circle cx="345" cy="228" r="3" fill="#fff" opacity="0.75"/>
+
+  <!-- Santa Clara (Valencia) -->
+  <circle cx="538" cy="252" r="34" fill="url(#pinGlow)"/>
+  <circle cx="538" cy="252" r="5.5" fill="#C5A572"/>
+  <circle cx="538" cy="252" r="2.6" fill="#fff" opacity="0.75"/>
+
+  <!-- Russafa (Valencia) -->
+  <circle cx="552" cy="262" r="28" fill="url(#pinGlowSmall)"/>
+  <circle cx="552" cy="262" r="4.5" fill="#C5A572"/>
+  <circle cx="552" cy="262" r="2.2" fill="#fff" opacity="0.75"/>
+
+  <!-- Playa San Juan (Alicante) -->
+  <circle cx="510" cy="300" r="34" fill="url(#pinGlow)"/>
+  <circle cx="510" cy="300" r="5.5" fill="#C5A572"/>
+  <circle cx="510" cy="300" r="2.6" fill="#fff" opacity="0.75"/>
+
+  <!-- Luceros (Alicante) -->
+  <circle cx="522" cy="310" r="28" fill="url(#pinGlowSmall)"/>
+  <circle cx="522" cy="310" r="4.5" fill="#C5A572"/>
+  <circle cx="522" cy="310" r="2.2" fill="#fff" opacity="0.75"/>
+
+  <!-- City labels (very subtle) -->
+  <g font-family="Montserrat, sans-serif" font-size="11" font-weight="600" fill="#C5A572" opacity="0.55" letter-spacing="1">
+    <text x="308" y="210" text-anchor="end">MADRID</text>
+    <text x="580" y="248">VALENCIA</text>
+    <text x="560" y="308">ALICANTE</text>
+  </g>
+</svg>

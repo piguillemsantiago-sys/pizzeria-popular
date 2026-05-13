@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+  <text x="50" y="80" font-family="Georgia, serif" font-size="50" fill="#C5A572" fill-opacity="0.13" transform="rotate(-10 60 65)">★</text>
+  <text x="290" y="100" font-family="Georgia, serif" font-size="28" fill="#C5A572" fill-opacity="0.15" transform="rotate(15 300 90)">★</text>
+  <text x="180" y="200" font-family="Georgia, serif" font-size="42" fill="#C5A572" fill-opacity="0.10" transform="rotate(-5 195 185)">★</text>
+  <text x="345" y="245" font-family="Georgia, serif" font-size="22" fill="#C5A572" fill-opacity="0.14" transform="rotate(20 354 235)">★</text>
+  <text x="80" y="320" font-family="Georgia, serif" font-size="36" fill="#C5A572" fill-opacity="0.12" transform="rotate(-15 95 305)">★</text>
+  <text x="320" y="370" font-family="Georgia, serif" font-size="20" fill="#C5A572" fill-opacity="0.11" transform="rotate(8 328 360)">★</text>
+</svg>

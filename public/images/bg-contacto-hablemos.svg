@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="pinGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#C5A572" stop-opacity="0.95"/>
+      <stop offset="35%" stop-color="#C5A572" stop-opacity="0.45"/>
+      <stop offset="70%" stop-color="#C5A572" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#C5A572" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="pinCore" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#F5E4BE" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#C5A572" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#8B6F3F" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#0d0d0d"/>
+
+  <!-- Giant HABLEMOS -->
+  <text x="800" y="560" text-anchor="middle"
+        font-family="'Playfair Display','Abril Fatface',Georgia,serif"
+        font-size="360" font-weight="900" font-style="italic"
+        fill="#C5A572" opacity="0.11"
+        letter-spacing="12">HABLEMOS</text>
+
+  <!-- Subtle underline swoosh -->
+  <path d="M 220,620 Q 800,680 1380,620" stroke="#C5A572" stroke-width="2"
+        fill="none" opacity="0.15" stroke-linecap="round"/>
+
+  <!-- Dotted trails connecting pins -->
+  <g stroke="#C5A572" stroke-width="1.8" stroke-dasharray="4 9" opacity="0.32" fill="none">
+    <path d="M 280,200 Q 560,160 860,290"/>
+    <path d="M 860,290 Q 1080,400 1300,480"/>
+    <path d="M 280,200 Q 320,480 440,720"/>
+    <path d="M 1300,480 Q 1100,650 870,760"/>
+    <path d="M 440,720 Q 660,760 870,760"/>
+  </g>
+
+  <!-- 5 pins -->
+  <g>
+    <!-- Pin 1 — Santa Clara -->
+    <circle cx="280" cy="200" r="90" fill="url(#pinGlow)"/>
+    <circle cx="280" cy="200" r="38" fill="url(#pinGlow)"/>
+    <circle cx="280" cy="200" r="14" fill="url(#pinCore)"/>
+    <circle cx="280" cy="200" r="4" fill="#fff"/>
+
+    <!-- Pin 2 — Russafa -->
+    <circle cx="860" cy="290" r="90" fill="url(#pinGlow)"/>
+    <circle cx="860" cy="290" r="38" fill="url(#pinGlow)"/>
+    <circle cx="860" cy="290" r="14" fill="url(#pinCore)"/>
+    <circle cx="860" cy="290" r="4" fill="#fff"/>
+
+    <!-- Pin 3 — Playa San Juan -->
+    <circle cx="1300" cy="480" r="90" fill="url(#pinGlow)"/>
+    <circle cx="1300" cy="480" r="38" fill="url(#pinGlow)"/>
+    <circle cx="1300" cy="480" r="14" fill="url(#pinCore)"/>
+    <circle cx="1300" cy="480" r="4" fill="#fff"/>
+
+    <!-- Pin 4 — Luceros -->
+    <circle cx="440" cy="720" r="90" fill="url(#pinGlow)"/>
+    <circle cx="440" cy="720" r="38" fill="url(#pinGlow)"/>
+    <circle cx="440" cy="720" r="14" fill="url(#pinCore)"/>
+    <circle cx="440" cy="720" r="4" fill="#fff"/>
+
+    <!-- Pin 5 — Boadilla -->
+    <circle cx="870" cy="760" r="90" fill="url(#pinGlow)"/>
+    <circle cx="870" cy="760" r="38" fill="url(#pinGlow)"/>
+    <circle cx="870" cy="760" r="14" fill="url(#pinCore)"/>
+    <circle cx="870" cy="760" r="4" fill="#fff"/>
+  </g>
+
+  <!-- Labels with city names -->
+  <g font-family="Montserrat, sans-serif" font-size="17" font-weight="700" fill="#C5A572" letter-spacing="3.5">
+    <g opacity="0.85">
+      <text x="280" y="118" text-anchor="middle">SANTA CLARA</text>
+      <text x="280" y="138" text-anchor="middle" font-size="12" font-weight="500" opacity="0.6" letter-spacing="2">VALENCIA</text>
+    </g>
+    <g opacity="0.85">
+      <text x="860" y="208" text-anchor="middle">RUSSAFA</text>
+      <text x="860" y="228" text-anchor="middle" font-size="12" font-weight="500" opacity="0.6" letter-spacing="2">VALENCIA</text>
+    </g>
+    <g opacity="0.85">
+      <text x="1300" y="398" text-anchor="middle">PLAYA SAN JUAN</text>
+      <text x="1300" y="418" text-anchor="middle" font-size="12" font-weight="500" opacity="0.6" letter-spacing="2">ALICANTE</text>
+    </g>
+    <g opacity="0.85">
+      <text x="440" y="838" text-anchor="middle">LUCEROS</text>
+      <text x="440" y="858" text-anchor="middle" font-size="12" font-weight="500" opacity="0.6" letter-spacing="2">ALICANTE</text>
+    </g>
+    <g opacity="0.85">
+      <text x="870" y="678" text-anchor="middle">BOADILLA</text>
+      <text x="870" y="698" text-anchor="middle" font-size="12" font-weight="500" opacity="0.6" letter-spacing="2">MADRID</text>
+    </g>
+  </g>
+</svg>
