@@ -1758,3 +1758,409 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
 @media (max-width: 480px) {
   .productos-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   MOBILE OPTIMIZATION — full responsive pass (added 2026-05)
+   Breakpoints: 1100 / 900 / 700 / 480
+   ─ all pages (ES + EN)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── GLOBAL SAFETY ─── */
+html, body { max-width: 100%; overflow-x: hidden; }
+img, video, iframe { max-width: 100%; height: auto; }
+
+/* Disable parallax / fixed bg on mobile (iOS rendering bug) */
+@media (max-width: 900px) {
+  body.bg-fixed { background-attachment: scroll !important; }
+}
+
+/* ─── TABLET (≤1100) ─── */
+@media (max-width: 1100px) {
+  .locales-grid { grid-template-columns: repeat(2, 1fr); padding: 0; }
+  .locales-6 { grid-template-columns: repeat(3, 1fr); }
+  .locales-inner, .restaurantes-grid { grid-template-columns: repeat(2, 1fr); padding: 0 1rem; }
+  .franquicias-grid, .franquicias-models, .franq-models { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 2fr 1fr 1fr; }
+  .stars-row { gap: 1rem; }
+}
+
+/* ─── NAV COLLAPSE (≤900) ─── */
+@media (max-width: 900px) {
+  nav { padding: 12px 4%; }
+  nav.scrolled { padding: 10px 4%; }
+  .nav-logo img { height: 50px; }
+  .nav-links { display: none !important; }
+  .nav-right .delivery-wrap,
+  .nav-right .lang-switch,
+  .nav-right .nav-cta { display: none !important; }
+  .hamburger { display: flex !important; }
+  .mobile-menu a { font-size: 1.7rem; padding: .5rem 1rem; min-height: 44px; display: flex; align-items: center; }
+}
+
+/* ─── HERO + PAGE-HEADERS (≤900) ─── */
+@media (max-width: 900px) {
+  .hero { padding: 130px 5% 60px; min-height: 100vh; }
+  .hero-eyebrow {
+    font-size: .6rem; letter-spacing: .2em;
+    padding: .35rem .8rem; margin-bottom: 1.4rem;
+    text-align: center; line-height: 1.5;
+    white-space: normal; max-width: 95%;
+  }
+  .hbien-title { font-size: clamp(2.5rem, 11vw, 4rem); line-height: .95; }
+  .hbien-sub   { font-size: clamp(1.3rem, 6.5vw, 2.4rem); }
+  .hero-title  { font-size: clamp(2.5rem, 11vw, 4rem); }
+  .hero-sub, .hero-desc {
+    font-size: clamp(.85rem, 3.4vw, 1rem);
+    line-height: 1.7; max-width: 95%; padding: 0 .5rem;
+  }
+  .hero-btns {
+    flex-direction: column; align-items: stretch;
+    max-width: 320px; margin: 0 auto; gap: .7rem;
+  }
+  .hero-btns .btn-primary, .hero-btns .btn-outline,
+  .hero-btns .btn { width: 100%; padding: 1rem 1.2rem; min-height: 44px; justify-content: center; }
+  .hero-stats {
+    display: grid !important; grid-template-columns: repeat(3, 1fr);
+    gap: .6rem !important; margin-top: 2.2rem;
+    max-width: 100%;
+  }
+  .stat-num, .hero-stat-number { font-size: 1.5rem; }
+  .stat-label, .hero-stat-label { font-size: .54rem; letter-spacing: .12em; }
+
+  .page-header { padding: 100px 5% 28px; }
+  .page-title { font-size: clamp(2rem, 9vw, 3rem); }
+  .page-header-desc { font-size: .85rem; line-height: 1.7; }
+  .section-title { font-size: clamp(1.8rem, 7vw, 2.6rem); }
+}
+
+/* ─── MOBILE GRANDE (≤700) ─── */
+@media (max-width: 700px) {
+
+  /* Logo aún más chico */
+  .nav-logo img { height: 44px; }
+
+  /* Marquee */
+  .marquee-band { padding: .8rem 0; }
+  .marquee-track { animation-duration: 26s; }
+  .marquee-track span { font-size: .82rem; padding: 0 1.1rem; }
+
+  /* Manifesto */
+  .manifesto, .manifesto-section { padding: 40px 5%; }
+  .manifesto-quote, .manifesto-title { font-size: clamp(1.6rem, 6.5vw, 2.4rem); line-height: 1.2; }
+  .manifesto-body, .manifesto-text { font-size: .88rem; line-height: 1.85; }
+  .manifesto-values { grid-template-columns: 1fr; gap: 1rem; margin-top: 2rem; }
+  .hola { font-size: 1.25rem; margin-top: 1.8rem; }
+
+  /* Photo-full */
+  .photo-full { height: 55vh; min-height: 340px; }
+  .photo-full-content { padding: 2rem 5%; }
+
+  /* Diferenciales */
+  .diferenciales { padding: 40px 5%; }
+  .dif-grid { grid-template-columns: 1fr; gap: 1px; }
+  .dif-card { padding: 1.8rem 1.4rem; }
+  .dif-header { flex-direction: column; align-items: flex-start; text-align: left; gap: 1rem; }
+
+  /* Split section */
+  .split-section { grid-template-columns: 1fr; }
+  .split-content { padding: 2.5rem 1.5rem; }
+
+  /* HOMEPAGE LOCALES (6 cards → 1 col) */
+  .locales { padding: 40px 4%; }
+  .locales-grid { grid-template-columns: 1fr !important; gap: 1.1rem; padding: 0; }
+  .locales-5, .locales-6 { grid-template-columns: 1fr !important; }
+  .local-card { padding: 1.4rem; }
+  .local-name { font-size: 1.4rem; }
+  .local-rating { font-size: .8rem; }
+  .local-rating .rating-num { font-size: 1.3rem; }
+  .local-btns, .local-buttons, .restaurante-btns { flex-direction: column; gap: 8px; }
+  .local-btn, .local-btn-primary, .local-btn-wa {
+    width: 100%; padding: .9rem 1rem; font-size: .78rem;
+    min-height: 44px; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Restaurantes / Locales subpage */
+  .locales-section, .restaurantes-section { padding: 30px 4% 45px; }
+  .locales-inner, .restaurantes-grid {
+    grid-template-columns: 1fr !important; gap: 1.2rem;
+    padding: 0 .25rem;
+  }
+  .local-info, .restaurante-info { padding: 1.4rem; }
+  .local-info h3, .restaurante-info h2 { font-size: 1.3rem; }
+
+  /* CARTA — categorías 3 cols, productos 1 col */
+  .carta-section { padding: 30px 4%; }
+  .carta-inner { padding: 0; }
+  .carta-header {
+    grid-template-columns: 1fr; gap: 1.4rem;
+    text-align: center; padding-bottom: 1.4rem; margin-bottom: 1.4rem;
+  }
+  .carta-title { font-size: clamp(1.6rem, 6.5vw, 2.2rem); }
+  .carta-cats {
+    display: grid !important; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; justify-content: stretch;
+  }
+  .cat-item { width: 100%; gap: 6px; }
+  .cat-icon { width: 46px; height: 46px; font-size: 18px; }
+  .cat-label { font-size: .6rem; letter-spacing: .02em; }
+  .productos-grid { grid-template-columns: 1fr !important; gap: 14px; }
+  .producto-img { aspect-ratio: 16/10; }
+  .destacados-title, .sucursales-title { font-size: 1rem; }
+  .sucursales-btns, .carta-links-grid {
+    flex-direction: column; gap: 8px; align-items: stretch;
+  }
+  .suc-btn, .carta-link-card {
+    width: 100%; min-width: 0; padding: 12px 14px;
+    font-size: .78rem; min-height: 44px;
+  }
+  /* Carta subpage */
+  .carta-category { padding: 1.8rem 4%; }
+  .carta-category-title { font-size: 1.5rem; }
+  .carta-grid, .carta-destacados .carta-grid { grid-template-columns: 1fr !important; }
+  .carta-categories {
+    display: grid !important; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; padding: 0 .25rem; margin: 0 auto 2rem;
+  }
+  .carta-cat {
+    width: 100%; justify-content: center; padding: .65rem .8rem;
+    font-size: .68rem; letter-spacing: .08em;
+  }
+  .carta-destacados { padding: 1.8rem 4%; }
+  .carta-sucursales { padding: 2rem 4%; }
+  .carta-nav { padding: 1.2rem 4%; gap: .4rem; }
+  .carta-tab { padding: .5rem 1rem; font-size: .68rem; }
+
+  /* PROMOS — 4 → 1 col */
+  .promos, .promos-section, .promos-page-section { padding: 40px 4% 50px; }
+  .promos-grid,
+  .promos-section .promos-grid,
+  .promos-page-section .promos-grid {
+    grid-template-columns: 1fr !important; gap: 1.2rem; max-width: 100%;
+  }
+  .promo-card > .promo-badge,
+  .promo-card > .promo-icon,
+  .promo-card > h3,
+  .promo-card > p,
+  .promo-card > a { margin-left: 1.4rem; margin-right: 1.4rem; }
+  .promo-card > .promo-badge { margin-top: 1.4rem; }
+  .promo-card > a:last-child { margin-bottom: 1.4rem; }
+  .promo-info { padding: 1.4rem; }
+  .promo-img { height: 180px; }
+  .promo-title, .promo-card h3 { font-size: 1.3rem; }
+  .promo-desc, .promo-info p { font-size: .85rem; }
+  .promo-btn, .promo-cta { padding: .85rem 1.4rem; min-height: 44px; }
+
+  /* Promo modals — full-screen-ish on mobile */
+  .promo-modal-overlay { padding: 12px; }
+  .promo-modal, .promo-modal-wide {
+    padding: 36px 18px 24px; max-width: 100%; border-radius: 14px;
+  }
+  .promo-modal-title { font-size: 1.35rem; }
+  .promo-modal-sub { font-size: .8rem; margin-bottom: 1.4rem; }
+  .promo-modal-locales {
+    grid-template-columns: 1fr !important; gap: .65rem;
+  }
+  .promo-modal-local { padding: 1.1rem .9rem; min-height: 44px; }
+  .promo-modal-local .loc-name { font-size: 1.15rem; }
+  .menu-tabs { gap: .35rem; margin-bottom: 1rem; }
+  .menu-tab { font-size: .7rem; padding: .45rem .85rem; min-height: 36px; }
+  .menu-display {
+    min-height: 240px; padding: 4px;
+    border-radius: 10px; max-width: 100%; overflow: hidden;
+  }
+  .menu-image {
+    width: 100% !important; max-width: 100% !important;
+    height: auto !important; object-fit: contain; display: block;
+  }
+  .menu-fallback { padding: 50px 16px; min-height: 240px; }
+  .menu-fallback p { font-size: 1.1rem; }
+
+  /* FRANQUICIAS — stats 2x2, form full-width */
+  .franquicias, .franquicias-section, .franquicias-page { padding: 30px 4% 45px; }
+  .franq-stats, .franquicias-stats {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: .7rem !important;
+    max-width: 100%;
+  }
+  .franq-stat, .franquicia-stat, .franquicias-page .franq-stat {
+    min-width: 0 !important; padding: 1.1rem .8rem !important; width: 100%;
+  }
+  .franq-stat-num, .franq-stat-number,
+  .franquicia-stat .stat-number, .franquicia-stat .stat-num,
+  .franquicias-page .franq-stat-num { font-size: 1.7rem !important; }
+  .franq-stat-label, .franquicia-stat .stat-label,
+  .franquicias-page .franq-stat-label { font-size: .55rem; letter-spacing: .1em; }
+  .franquicias-grid, .franquicias-models, .franq-models, .franq-benefits-grid {
+    grid-template-columns: 1fr; gap: 1px;
+  }
+  .franq-card, .franquicia-card, .franq-model-card { padding: 1.7rem 1.3rem; }
+  .franq-form-wrap { padding: 1.8rem 1.1rem; border-radius: 12px; }
+  .franq-form-title { font-size: 1.4rem; }
+  .franq-form-grid { grid-template-columns: 1fr !important; gap: 1rem; }
+  .franq-form-actions { width: 100%; }
+  .franq-form input, .franq-form select, .franq-form textarea {
+    padding: .9rem 1rem; font-size: .92rem; min-height: 44px;
+    width: 100%; box-sizing: border-box;
+  }
+  .franq-submit {
+    width: 100%; padding: 1rem 1.2rem; min-height: 44px;
+    box-sizing: border-box;
+  }
+  .franquicias-btn { padding: .95rem 1.6rem; min-height: 44px; width: 100%; max-width: 320px; }
+
+  /* CONTACTO — inputs apilados full-width */
+  .contacto-section, .contacto-section.contacto-section { padding: 30px 4% 45px; }
+  .contacto-grid, .contacto-section .contacto-grid {
+    grid-template-columns: 1fr !important; gap: 2.2rem;
+  }
+  .contacto-form-wrap h2, .contacto-info h2 { font-size: 1.35rem; }
+  .contacto-form input, .contacto-form select, .contacto-form textarea {
+    padding: .9rem 1rem; font-size: .92rem; min-height: 44px;
+    width: 100%; box-sizing: border-box;
+  }
+  .form-submit, .contacto-form .btn-primary {
+    width: 100%; align-self: stretch; min-height: 44px;
+    padding: 1rem 1.2rem; box-sizing: border-box;
+  }
+  .contacto-locales-info { margin-top: 1rem; }
+  .contacto-local { padding-bottom: 1.2rem; margin-bottom: 1.2rem; }
+
+  /* BLOG */
+  .blog-section { padding: 30px 4% 45px; }
+  .blog-grid { grid-template-columns: 1fr !important; gap: 1.3rem; }
+  .blog-card { width: 100%; }
+  .blog-img-wrap, .blog-img-placeholder { aspect-ratio: 16/9; }
+  .blog-img-wrap img, .blog-img-placeholder img { max-width: 100%; height: auto; }
+  .blog-body { padding: 16px 18px 18px; }
+  .blog-title { font-size: 1rem; }
+
+  /* Blog modal */
+  .blog-modal-overlay { padding: 12px; }
+  .blog-modal { max-width: 100%; border-radius: 14px; }
+  .blog-modal .bm-hero { padding: 42px 18px 28px; }
+  .blog-modal .bm-content { padding: 30px 18px 36px; }
+  .blog-modal .bm-cta { padding: 32px 18px; }
+
+  /* RESEÑAS / REVIEWS */
+  .resenas-section { padding: 25px 4%; }
+  .reviews-grid, .rv-grid, .resenas-grid {
+    grid-template-columns: 1fr !important; gap: 12px;
+  }
+  .review-card, .rv-card, .resena-card { padding: 16px 18px; }
+  .review-text, .rv-text, .resena-text { font-size: .82rem; }
+
+  /* GOOGLE STATS — 6 cards en 2 cols (3x2) */
+  .google-stats { padding: 35px 4%; }
+  .stars-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: .65rem !important; margin-top: 1.3rem;
+    max-width: 420px; margin-left: auto; margin-right: auto;
+  }
+  .star-item { min-width: 0; padding: 1rem .6rem; }
+  .star-val { font-size: 1.7rem; }
+  .star-ico { font-size: .8rem; }
+  .star-local { font-size: .58rem; letter-spacing: .08em; }
+  .google-badge { font-size: .75rem; padding: .55rem 1.1rem; }
+
+  /* RESERVAS */
+  .reservas { padding: 40px 4%; }
+  .reservas-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px; max-width: 100%;
+  }
+  .res-card { padding: 14px 10px; }
+  .res-name { font-size: .9rem; }
+  .res-btn { padding: 12px 8px; min-height: 44px; }
+  .vida-linda { font-size: clamp(2.4rem, 11vw, 4.5rem); }
+
+  /* HISTORIA / TIMELINE (subpage Nosotros) */
+  .historia, .historia-section { padding: 30px 0; }
+  .historia-header { padding: 0 5%; }
+  .timeline {
+    padding: 1.5rem 5%; gap: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .timeline-item {
+    flex: 0 0 90vw; min-width: 80vw; max-width: 92vw;
+    scroll-snap-align: center;
+  }
+  .timeline-img { height: 180px; }
+  .timeline-content { padding: 16px 14px; }
+  .timeline-year { font-size: 1.5rem; }
+  .timeline-text { font-size: .85rem; line-height: 1.55; }
+
+  /* FOOTER */
+  footer { padding: 50px 5% 24px; }
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem; padding-bottom: 2rem;
+  }
+  .footer-desc { max-width: 100%; }
+  .footer-col h4 { margin-bottom: 1rem; }
+  .footer-bottom {
+    flex-direction: column; text-align: center;
+    gap: .8rem; padding-top: 1.8rem;
+  }
+
+  /* Menu cats (home) */
+  .menu-section { padding: 40px 4%; }
+  .menu-cats { gap: .5rem; margin: 2rem 0; }
+  .menu-cat { padding: .5rem 1rem; font-size: .7rem; }
+  .menu-items { grid-template-columns: 1fr; }
+
+  /* Float CTA — keep circle, smaller offset */
+  .float-cta { bottom: 1.2rem; right: 1.2rem; width: 54px; height: 54px; }
+}
+
+/* ─── MOBILE CHICO (≤480) ─── */
+@media (max-width: 480px) {
+  .nav-logo img { height: 40px; }
+  .hero { padding: 110px 4% 50px; }
+  .hero-eyebrow { font-size: .55rem; padding: .3rem .7rem; }
+  .hbien-title { font-size: clamp(2.3rem, 12vw, 3rem); }
+  .hbien-sub   { font-size: clamp(1.2rem, 7vw, 1.9rem); }
+  .hero-title  { font-size: clamp(2.2rem, 12vw, 3rem); }
+  .hero-sub, .hero-desc { font-size: .85rem; line-height: 1.7; }
+  .hero-stats { gap: .5rem !important; margin-top: 1.8rem; }
+  .stat-num, .hero-stat-number { font-size: 1.25rem; }
+  .stat-label, .hero-stat-label { font-size: .48rem; letter-spacing: .08em; }
+
+  .page-header { padding: 90px 4% 24px; }
+  .page-title { font-size: clamp(1.8rem, 10vw, 2.6rem); }
+
+  /* Carta categories 2 col-fluid */
+  .carta-categories { grid-template-columns: repeat(2, 1fr) !important; }
+  .carta-cat { font-size: .64rem; padding: .55rem .6rem; }
+  .carta-cats { grid-template-columns: repeat(3, 1fr) !important; gap: 10px; }
+  .cat-icon { width: 42px; height: 42px; font-size: 16px; }
+  .cat-label { font-size: .55rem; }
+
+  /* Reservas 2 cols stays */
+  .res-card { padding: 12px 8px; }
+  .res-name { font-size: .82rem; }
+
+  /* Productos */
+  .productos-grid { grid-template-columns: 1fr !important; }
+
+  /* Manifesto values stay 1 col */
+  .manifesto-quote { font-size: clamp(1.4rem, 7vw, 2rem); }
+
+  /* Promo modal padding tighter */
+  .promo-modal { padding: 32px 14px 20px; }
+}
+
+/* ─── TAP TARGETS (touch devices) ─── */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary, .btn-outline, .btn, .btn-reserva, .nav-cta,
+  .promo-btn, .promo-cta, .franquicias-btn, .franq-submit,
+  .form-submit, .local-btn, .local-btn-primary, .local-btn-wa,
+  .res-btn, .suc-btn, .carta-link-card, .lang-btn,
+  .promo-modal-local, .blog-modal-close, .promo-modal-close,
+  .mobile-menu a, .hamburger, .menu-cat, .menu-tab, .carta-tab,
+  .float-cta {
+    min-height: 44px;
+  }
+}
