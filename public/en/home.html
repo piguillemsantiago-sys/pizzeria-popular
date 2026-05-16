@@ -158,6 +158,20 @@
         <div class="stat-label">Locations in Spain</div>
       </div>
     </div>
+    <div class="hero-actions-mobile">
+      <a href="/en/restaurants/" class="hero-action-btn">
+        <span class="hero-action-icon">🍕</span>
+        <span class="hero-action-label">Book</span>
+      </a>
+      <a href="/en/menu/" class="hero-action-btn">
+        <span class="hero-action-icon">📖</span>
+        <span class="hero-action-label">Menu</span>
+      </a>
+      <button type="button" class="hero-action-btn" data-promo-modal="deliveryModal">
+        <span class="hero-action-icon">🛵</span>
+        <span class="hero-action-label">Delivery</span>
+      </button>
+    </div>
   </div>
   <div class="scroll-hint"><div class="scroll-line"></div>scroll</div>
 </section>
@@ -557,6 +571,51 @@
       <img class="menu-image" id="menuImage" src="/images/menus/menu-benidorm.png" alt="Menu Benidorm">
       <div class="menu-fallback" id="menuFallback">
         <p>Menu <span id="menuFallbackName">Benidorm</span> — coming soon</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="promo-modal-overlay" id="deliveryModal" role="dialog" aria-modal="true" aria-labelledby="deliveryModalTitle">
+  <div class="promo-modal">
+    <button type="button" class="promo-modal-close" data-modal-close aria-label="Close">×</button>
+    <h3 class="promo-modal-title" id="deliveryModalTitle">Order Delivery</h3>
+    <p class="promo-modal-sub">Choose your nearest location:</p>
+    <div class="delivery-locales-list">
+      <div class="delivery-local">
+        <h4>Santa Clara · Valencia</h4>
+        <div class="delivery-platforms">
+          <a class="delivery-glovo" href="https://glovoapp.com/es/es/valencia/pizzeria-popular-santa-clara/" target="_blank" rel="noopener noreferrer">Glovo</a>
+          <a class="delivery-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-santa-clara/" target="_blank" rel="noopener noreferrer">Uber Eats</a>
+        </div>
+      </div>
+      <div class="delivery-local">
+        <h4>Russafa · Valencia</h4>
+        <div class="delivery-platforms">
+          <a class="delivery-glovo" href="https://glovoapp.com/es/es/valencia/pizzeria-popular-russafa/" target="_blank" rel="noopener noreferrer">Glovo</a>
+          <a class="delivery-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-russafa/" target="_blank" rel="noopener noreferrer">Uber Eats</a>
+        </div>
+      </div>
+      <div class="delivery-local">
+        <h4>Playa San Juan · Alicante</h4>
+        <div class="delivery-platforms">
+          <a class="delivery-glovo" href="https://glovoapp.com/es/es/alicante/pizzeria-popular-playa-san-juan/" target="_blank" rel="noopener noreferrer">Glovo</a>
+          <a class="delivery-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-playa-san-juan/" target="_blank" rel="noopener noreferrer">Uber Eats</a>
+        </div>
+      </div>
+      <div class="delivery-local">
+        <h4>Luceros · Alicante</h4>
+        <div class="delivery-platforms">
+          <a class="delivery-glovo" href="https://glovoapp.com/es/es/alicante/pizzeria-popular-luceros/" target="_blank" rel="noopener noreferrer">Glovo</a>
+          <a class="delivery-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-luceros/" target="_blank" rel="noopener noreferrer">Uber Eats</a>
+        </div>
+      </div>
+      <div class="delivery-local">
+        <h4>Boadilla del Monte · Madrid</h4>
+        <div class="delivery-platforms">
+          <a class="delivery-glovo" href="https://glovoapp.com/es/es/madrid/pizzeria-popular-boadilla/" target="_blank" rel="noopener noreferrer">Glovo</a>
+          <a class="delivery-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-boadilla/" target="_blank" rel="noopener noreferrer">Uber Eats</a>
+        </div>
       </div>
     </div>
   </div>

@@ -199,6 +199,25 @@ window.addEventListener('scroll', () => {
   });
 });
 
+// ─── PIZZA GIRATORIA (mobile, todas las páginas) ───
+(function () {
+  if (!window.matchMedia('(max-width: 768px)').matches) return;
+  var wrap = document.createElement('div');
+  wrap.className = 'spinning-pizza';
+  wrap.setAttribute('aria-hidden', 'true');
+  wrap.innerHTML = '<span class="pizza-emoji">🍕</span>';
+  document.body.appendChild(wrap);
+  var pizza = wrap.querySelector('.pizza-emoji');
+  var rotation = 0;
+  var lastY = window.scrollY || window.pageYOffset;
+  window.addEventListener('scroll', function () {
+    var y = window.scrollY || window.pageYOffset;
+    rotation += (y - lastY) * 0.5;   // scroll abajo → horario, arriba → antihorario
+    pizza.style.transform = 'rotate(' + rotation + 'deg)';
+    lastY = y;
+  }, { passive: true });
+})();
+
 // ─── TIMELINE DRAG SCROLL ───
 document.querySelectorAll('.tl-outer').forEach(outer => {
   let isDown = false;

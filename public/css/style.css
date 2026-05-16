@@ -1683,6 +1683,93 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
 }
 .promo-modal-local:hover .loc-city { color: rgba(57,46,44,.7); }
 
+/* ─── DELIVERY MODAL — lista de locales (Glovo / Uber Eats) ─── */
+.delivery-locales-list { display: flex; flex-direction: column; gap: .8rem; }
+.delivery-local {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(216,164,96,0.2);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+}
+.delivery-local h4 {
+  font-family: 'Abril Fatface', serif; font-weight: 400;
+  font-size: 1.05rem; color: var(--cream);
+  margin: 0 0 .7rem; text-align: center;
+}
+.delivery-platforms { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.delivery-platforms a {
+  display: flex; align-items: center; justify-content: center;
+  padding: .6rem .5rem; min-height: 44px;
+  border-radius: 9px; text-decoration: none;
+  font-size: .82rem; font-weight: 700; letter-spacing: .02em;
+  transition: transform .15s ease;
+}
+.delivery-platforms a:active { transform: scale(.96); }
+.delivery-glovo { background: #FFC244; color: #1a1a1a; }
+.delivery-uber  { background: #06C167; color: #ffffff; }
+
+/* ─── HERO ACTIONS MOBILE + PIZZA GIRATORIA ─── */
+.hero-actions-mobile { display: none; }
+.spinning-pizza { display: none; }
+@media (max-width: 768px) {
+  .hero-actions-mobile {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 2rem auto 1rem;
+    max-width: 100%;
+    padding: 0 16px;
+  }
+  .hero-action-btn {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.4rem;
+    padding: 0.9rem 0.5rem;
+    background: rgba(197,165,114,0.15);
+    border: 1px solid rgba(197,165,114,0.5);
+    border-radius: 14px;
+    color: #EDE8D9; text-decoration: none;
+    min-height: 80px; cursor: pointer;
+    transition: all 0.25s ease;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    -webkit-tap-highlight-color: transparent;
+    font-family: inherit;
+  }
+  .hero-action-btn:active {
+    background: rgba(197,165,114,0.3);
+    transform: scale(0.97);
+  }
+  .hero-action-icon { font-size: 1.4rem; }
+  .hero-action-label {
+    font-size: 0.7rem; letter-spacing: 0.1em;
+    text-transform: uppercase; font-weight: 600;
+    color: #C5A572;
+  }
+  /* Ocultar los botones originales y el indicador scroll en mobile */
+  .hero-btns { display: none !important; }
+  .scroll-hint { display: none !important; }
+
+  /* Pizza giratoria — esquina inferior izquierda (no choca con .float-cta) */
+  .spinning-pizza {
+    display: flex; align-items: center; justify-content: center;
+    position: fixed;
+    bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    left: 1.5rem;
+    width: 72px; height: 72px;
+    background: rgba(197,165,114,0.95);
+    border-radius: 50%;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3), 0 0 0 3px rgba(197,165,114,0.25);
+    z-index: 60; pointer-events: none;
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .pizza-emoji {
+    font-size: 2.2rem; line-height: 1;
+    will-change: transform; transition: none;
+  }
+}
+
 /* Menu tabs + image display */
 .menu-tabs {
   display: flex; flex-wrap: wrap; gap: .5rem;
