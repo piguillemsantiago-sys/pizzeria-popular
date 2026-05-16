@@ -217,6 +217,21 @@ nav.scrolled .hamburger span { background: var(--dark); }
 .mobile-menu a { font-family: 'Abril Fatface', serif; font-size: 2rem; color: var(--cream); text-decoration: none; transition: color .2s; }
 .mobile-menu a:hover { color: var(--gold); }
 .mobile-close { position: absolute; top: 20px; right: 5%; font-size: 2rem; color: var(--cream); cursor: pointer; background: none; border: none; }
+.mobile-lang { display: flex; gap: .6rem; margin-top: 1rem; }
+.mobile-menu a.mobile-lang-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  letter-spacing: .15em;
+  padding: 0 1.5rem;
+  min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(197,165,114,.5);
+  border-radius: 999px;
+  color: var(--cream);
+}
+.mobile-menu a.mobile-lang-btn.active {
+  background: var(--gold); color: var(--dark); border-color: var(--gold);
+}
 
 /* ─── HERO ─── */
 .hero {
@@ -1802,7 +1817,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   footer { padding-left: 16px; padding-right: 16px; }
 
   /* ─── SPACING VERTICAL SISTEMÁTICO ─── */
-  .hero { padding-top: 110px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; }
+  .hero { padding-top: 55px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; }
   .locales, .locales-section, .restaurantes-section,
   .carta-section, .promos, .promos-section, .promos-page-section,
   .franquicias, .franquicias-section, .franquicias-page,
@@ -1838,10 +1853,14 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   /* Hero desc: ocultar texto largo, mostrar frase corta */
   .hero-desc-desktop { display: none; }
-  .hero-desc-mobile { display: inline; }
+  .hero-desc-mobile {
+    display: inline;
+    color: #f3ead7;
+    text-shadow: 0 0 12px rgba(197, 165, 114, 0.4), 0 2px 8px rgba(0,0,0,0.6);
+  }
   /* "Bienvenidos a pasear el alma" +20% solo mobile */
   .hbien-title { font-size: clamp(2.4rem, 9.6vw, 3.6rem); line-height: .95; }
-  .hbien-sub   { font-size: clamp(1.584rem, 7.2vw, 2.592rem); line-height: 1.15; }
+  .hbien-sub   { font-size: clamp(1.9rem, 8.64vw, 3.11rem); line-height: 1.15; }
   .hero-title  { font-size: clamp(2rem, 8vw, 3rem); line-height: .95; }
   .hero-sub, .hero-desc {
     font-size: .9rem; line-height: 1.6;
