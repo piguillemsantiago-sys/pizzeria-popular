@@ -1972,6 +1972,13 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
   .historia-subpage .historia-header .section-label { display: flex; }
   .historia-subpage .historia-header h2 { display: block; }
   .historia.historia-subpage { padding-top: 96px; }
+
+  /* Reducir la luminosidad del fondo de la sección Historia (~25% más oscuro) */
+  .historia::before {
+    background:
+      linear-gradient(rgba(45,30,25,0.25), rgba(45,30,25,0.25)),
+      rgba(237,232,217,0.83);
+  }
 }
 @media (max-width: 600px) {
   .blog-modal .bm-hero { padding: 48px 20px 32px; }
