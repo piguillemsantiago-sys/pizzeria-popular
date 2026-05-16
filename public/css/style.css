@@ -864,6 +864,13 @@ a.tl-card { text-decoration: none; color: inherit; }
 .tl-item.up:hover .tl-card, .tl-item.down:hover .tl-card { overflow: visible; }
 .tl-item:hover .tl-text { -webkit-line-clamp: unset; display: block; }
 
+/* Indicador de swipe del timeline (solo visible en mobile) */
+.tl-swipe-hint { display: none; }
+@keyframes tlSwipeNudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+
 /* ─── CARTA SECTION ─── */
 .carta-section { padding: 40px 5%; position: relative; background: var(--dark2); }
 .carta-section::before { content: ''; position: absolute; inset: 0; background: rgba(14,8,6,0.55); z-index: 0; pointer-events: none; }
@@ -1843,17 +1850,88 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
   .float-cta span.float-text { display: none; }
   .float-cta { padding: .9rem 1rem; border-radius: 50%; width: 54px; height: 54px; justify-content: center; }
 }
-@media (max-width: 720px) {
-  .tl-outer { overflow-x: visible; padding: 0 5%; }
-  .tl-track { flex-direction: column; min-width: unset; gap: 32px; padding-left: 48px; position: relative; }
-  .tl-track::before { top: 0; bottom: 0; left: 16px; right: auto; width: 2px; height: auto; background: linear-gradient(to bottom, transparent, var(--gold) 4%, var(--gold) 96%, transparent); }
-  .tl-item { flex-direction: row; height: auto; gap: 12px; }
-  .tl-top, .tl-bot { height: auto; width: 100%; justify-content: center; }
-  .tl-conn-top, .tl-conn-bot { display: none; }
-  .tl-mid { height: auto; width: 36px; flex-shrink: 0; position: absolute; left: -48px; top: 8px; }
-  .tl-year { font-size: 1rem; margin-top: 3px; }
-  .tl-card { width: 100%; text-align: left; }
-  .tl-img { height: 140px; }
+@media (max-width: 768px) {
+  /* ─── TIMELINE HISTORIA → carrusel horizontal con snap (mobile) ─── */
+  .tl-outer {
+    overflow-x: auto; overflow-y: hidden;
+    padding: 4px 0 6px;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: default;
+  }
+  .tl-outer::-webkit-scrollbar { display: none; }
+  .tl-track {
+    flex-direction: row;
+    min-width: 0; width: max-content;
+    gap: 16px; padding: 16px;
+    position: static;
+  }
+  /* Quitar línea de tiempo, puntos y conectores del diseño zigzag */
+  .tl-track::before,
+  .tl-conn-top, .tl-conn-bot, .tl-mid { display: none; }
+
+  .tl-item {
+    flex: 0 0 85vw; max-width: 340px;
+    height: auto;
+    display: flex; flex-direction: column;
+    align-items: stretch; gap: 12px;
+    scroll-snap-align: center;
+    padding: 14px;
+    background: rgba(32,22,20,.95);
+    border: 1px solid rgba(216,164,96,.38);
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(0,0,0,.35);
+  }
+  /* Desenrollar los contenedores intermedios para reordenar el contenido */
+  .tl-top, .tl-bot, .tl-card { display: contents; }
+  .tl-top:empty, .tl-bot:empty { display: none; }
+
+  /* Orden vertical: imagen · año · texto · nombre */
+  .tl-img  { order: 1; }
+  .tl-year { order: 2; }
+  .tl-text { order: 3; }
+  .tl-name { order: 4; }
+
+  .tl-img {
+    width: 100%; height: auto !important;
+    aspect-ratio: 4 / 3; object-fit: cover;
+    display: block; margin: 0; border: none;
+    border-radius: 16px;
+  }
+  .tl-year {
+    transform: none; height: auto;
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.8rem; font-weight: 700; line-height: 1;
+    color: var(--gold);
+    background: none; box-shadow: none; padding: 0;
+    display: block; text-align: left; white-space: normal;
+  }
+  .tl-text {
+    font-size: .95rem; line-height: 1.5;
+    color: rgba(237,232,217,.85);
+    display: block; overflow: visible;
+    -webkit-line-clamp: unset;
+  }
+  .tl-name {
+    font-weight: 600; color: var(--gold);
+    font-size: .9rem; padding-top: 0; margin-top: 0;
+  }
+
+  /* Indicador "Desliza →" */
+  .tl-swipe-hint {
+    display: block; text-align: center;
+    margin: 2px 0 6px;
+    font-size: .75rem; letter-spacing: .04em;
+    color: var(--gold); opacity: .6;
+  }
+  .tl-swipe-hint .tl-swipe-arrow {
+    display: inline-block;
+    animation: tlSwipeNudge 1.3s ease-in-out infinite;
+  }
+
+  /* Título de la sección más grande (solo homepage) */
+  .historia .historia-header h2 { font-size: clamp(2.5rem, 10vw, 3.5rem); }
 }
 @media (max-width: 600px) {
   .blog-modal .bm-hero { padding: 48px 20px 32px; }
