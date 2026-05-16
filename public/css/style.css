@@ -867,9 +867,19 @@ a.tl-card { text-decoration: none; color: inherit; }
 /* Indicador de swipe del carrusel (solo visible en mobile, ver media query) */
 .swipe-indicator { display: none; transition: opacity .4s ease; }
 .swipe-indicator.hidden { opacity: 0; pointer-events: none; }
-@keyframes swipeArrow {
+@keyframes swipeArrowMove {
   0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(6px); }
+  50% { transform: translateX(8px); }
+}
+@keyframes pulseSwipe {
+  0%, 100% {
+    box-shadow: 0 6px 24px rgba(197,165,114,0.4), 0 0 0 1px rgba(197,165,114,0.3);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(197,165,114,0.65), 0 0 0 1px rgba(197,165,114,0.5);
+    transform: scale(1.03);
+  }
 }
 /* Subpáginas /nosotros/ y /en/about-us/: eyebrow + H2 de la sección historia
    solo se muestran en mobile (en desktop la cabecera la da el .page-header) */
@@ -1882,19 +1892,18 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     flex: 0 0 85vw; max-width: 340px;
     height: auto;
     display: flex; flex-direction: column;
-    align-items: stretch; gap: 12px;
+    align-items: stretch;
     scroll-snap-align: center;
-    padding: 14px;
-    background: rgba(32,22,20,.95);
-    border: 1px solid rgba(216,164,96,.38);
+    background: rgba(45,30,25,.85);
+    border: none; box-shadow: none;
     border-radius: 18px;
-    box-shadow: 0 8px 28px rgba(0,0,0,.35);
+    overflow: hidden;
   }
   /* Desenrollar los contenedores intermedios para reordenar el contenido */
   .tl-top, .tl-bot, .tl-card { display: contents; }
   .tl-top:empty, .tl-bot:empty { display: none; }
 
-  /* Orden vertical: imagen · año · texto · nombre */
+  /* Orden vertical idéntico en las 7 cards: imagen · año · texto · nombre */
   .tl-img  { order: 1; }
   .tl-year { order: 2; }
   .tl-text { order: 3; }
@@ -1903,48 +1912,59 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
   .tl-img {
     width: 100%; height: auto !important;
     aspect-ratio: 4 / 3; object-fit: cover;
-    display: block; margin: 0; border: none;
-    border-radius: 16px;
+    display: block; margin: 0;
+    border: none; border-radius: 0;
   }
-  .tl-year {
+  /* Año: centrado, dentro de la card, debajo de la imagen (sin offsets up/down) */
+  .tl-year,
+  .tl-item.up .tl-year,
+  .tl-item.down .tl-year {
     transform: none; height: auto;
     font-family: 'Abril Fatface', serif;
-    font-size: 1.8rem; font-weight: 700; line-height: 1;
-    color: var(--gold);
-    background: none; box-shadow: none; padding: 0;
-    display: block; text-align: left; white-space: normal;
+    font-size: 1.6rem; font-weight: 700;
+    line-height: 1; letter-spacing: .02em;
+    color: #C5A572;
+    background: none; box-shadow: none;
+    border-radius: 0; white-space: normal;
+    display: block; text-align: center;
+    padding: 1.2rem 1rem .5rem; margin: 0;
   }
   .tl-text {
-    font-size: .95rem; line-height: 1.5;
-    color: rgba(237,232,217,.85);
+    font-size: .92rem; line-height: 1.5;
+    color: #EDE8D9; text-align: center;
+    padding: 0 1.5rem; margin: 0;
     display: block; overflow: visible;
-    -webkit-line-clamp: unset;
+    -webkit-line-clamp: unset; flex: none;
   }
   .tl-name {
-    font-weight: 600; color: var(--gold);
-    font-size: .9rem; padding-top: 0; margin-top: 0;
+    font-size: .85rem; font-weight: 700;
+    letter-spacing: .02em;
+    color: #C5A572; text-align: center;
+    padding: .8rem 1rem 1.4rem; margin: 0;
+    display: block;
   }
 
-  /* Indicador de swipe — pill prominente, encima del carrusel */
+  /* Indicador de swipe — banner sólido dorado, encima del carrusel */
   .swipe-indicator {
     display: flex;
     align-items: center; justify-content: center;
-    gap: 0.7rem;
+    gap: 0.6rem;
     margin: 0 auto 1.5rem;
-    padding: 0.7rem 1.4rem;
-    background: rgba(197,165,114,0.18);
-    border: 1px solid rgba(197,165,114,0.5);
+    padding: 0.9rem 1.4rem;
+    background: linear-gradient(135deg, #D8B575 0%, #C5A572 50%, #A88B5C 100%);
     border-radius: 50px;
-    width: fit-content; max-width: 90%;
-    color: #C5A572;
-    font-size: 0.75rem; font-weight: 600;
-    letter-spacing: 0.05em; text-transform: uppercase;
+    width: fit-content; max-width: 92%;
+    color: #1a0f0d;
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
     text-align: center;
+    box-shadow: 0 6px 24px rgba(197,165,114,0.4), 0 0 0 1px rgba(197,165,114,0.3);
+    animation: pulseSwipe 2.2s ease-in-out infinite;
   }
-  .swipe-indicator svg {
+  .swipe-icon { font-size: 1rem; }
+  .swipe-arrow {
     flex-shrink: 0;
-    color: #C5A572;
-    animation: swipeArrow 1.4s ease-in-out infinite;
+    animation: swipeArrowMove 1.2s ease-in-out infinite;
   }
 
   /* Subpáginas: ocultar el page-header y mostrar la cabecera de historia */
