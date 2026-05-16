@@ -58,7 +58,7 @@ document.querySelectorAll('.mobile-menu a').forEach((a) => {
 document.querySelectorAll('.tl-outer').forEach((outer) => {
   outer.addEventListener('scroll', () => {
     if (outer.scrollLeft > 24) {
-      document.querySelectorAll('.timeline-swipe-hint').forEach((h) => h.classList.add('hidden'));
+      document.querySelectorAll('.swipe-indicator').forEach((h) => h.classList.add('hidden'));
     }
   }, { passive: true });
 });

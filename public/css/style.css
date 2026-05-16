@@ -864,12 +864,12 @@ a.tl-card { text-decoration: none; color: inherit; }
 .tl-item.up:hover .tl-card, .tl-item.down:hover .tl-card { overflow: visible; }
 .tl-item:hover .tl-text { -webkit-line-clamp: unset; display: block; }
 
-/* Indicador de swipe del timeline (solo visible en mobile, ver media query) */
-.timeline-swipe-hint { display: none; transition: opacity .4s ease; }
-.timeline-swipe-hint.hidden { opacity: 0 !important; pointer-events: none; }
-@keyframes swipeRight {
+/* Indicador de swipe del carrusel (solo visible en mobile, ver media query) */
+.swipe-indicator { display: none; transition: opacity .4s ease; }
+.swipe-indicator.hidden { opacity: 0; pointer-events: none; }
+@keyframes swipeArrow {
   0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(8px); }
+  50% { transform: translateX(6px); }
 }
 /* Subpáginas /nosotros/ y /en/about-us/: eyebrow + H2 de la sección historia
    solo se muestran en mobile (en desktop la cabecera la da el .page-header) */
@@ -1925,34 +1925,31 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     font-size: .9rem; padding-top: 0; margin-top: 0;
   }
 
-  /* Indicador de swipe — pill dorado, fuera del scroll del carrusel */
-  .timeline-swipe-hint {
+  /* Indicador de swipe — pill prominente, encima del carrusel */
+  .swipe-indicator {
     display: flex;
     align-items: center; justify-content: center;
     gap: 0.7rem;
-    margin: 1.5rem auto 1rem;
-    padding: 0.6rem 1.4rem;
-    width: fit-content;
-    background: rgba(197,165,114,0.12);
-    border: 1px solid rgba(197,165,114,0.3);
+    margin: 0 auto 1.5rem;
+    padding: 0.7rem 1.4rem;
+    background: rgba(197,165,114,0.18);
+    border: 1px solid rgba(197,165,114,0.5);
     border-radius: 50px;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    width: fit-content; max-width: 90%;
+    color: #C5A572;
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    text-align: center;
   }
-  .timeline-swipe-hint-text {
-    font-size: 0.72rem; letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #C5A572; font-weight: 600;
-  }
-  .timeline-swipe-hint-arrow {
-    font-size: 1.1rem; color: #C5A572;
-    display: inline-block; font-weight: 700;
-    animation: swipeRight 1.5s ease-in-out infinite;
+  .swipe-indicator svg {
+    flex-shrink: 0;
+    color: #C5A572;
+    animation: swipeArrow 1.4s ease-in-out infinite;
   }
 
   /* Subpáginas: ocultar el page-header y mostrar la cabecera de historia */
   .page-header-historia { display: none; }
-  .historia-subpage .historia-header .section-label,
+  .historia-subpage .historia-header .section-label { display: flex; }
   .historia-subpage .historia-header h2 { display: block; }
   .historia.historia-subpage { padding-top: 96px; }
 }
@@ -2105,27 +2102,31 @@ img, video, iframe { max-width: 100%; height: auto; }
   .page-label { font-size: .58rem; letter-spacing: .22em; margin-bottom: .5rem; }
   .page-header-desc { font-size: .85rem; line-height: 1.6; }
   .section-title { font-size: clamp(1.5rem, 6.5vw, 2.4rem); line-height: 1.1; }
-  .section-label { font-size: .58rem; letter-spacing: .22em; }
-  /* Eyebrow "NUESTRA HISTORIA" — editorial, una sola línea con guiones laterales */
-  .historia-eyebrow {
-    display: block;
-    font-size: clamp(1rem, 4.5vw, 1.5rem);
-    letter-spacing: 0.3em;
+  /* Eyebrows estandarizados — centrados y uniformes, con guiones decorativos */
+  .section-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 1.2rem;
+    font-size: clamp(0.75rem, 3.5vw, 1rem);
     font-weight: 500;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
     text-transform: uppercase;
     color: #C5A572;
-    margin-bottom: 1.2rem;
-    white-space: nowrap;
+    text-align: center;
   }
-  .historia-eyebrow::before,
-  .historia-eyebrow::after {
+  .section-label::before,
+  .section-label::after {
     content: '';
     display: inline-block;
-    width: 24px; height: 1px;
+    flex-shrink: 0;
+    width: 30px; height: 1px;
     background: #C5A572;
-    vertical-align: middle;
-    margin: 0 0.8rem;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   /* ─── MARQUEE ─── */
