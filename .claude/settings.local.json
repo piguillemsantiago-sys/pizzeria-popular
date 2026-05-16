@@ -80,7 +80,11 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(grep -E \"\\\\.env$|^node_modules\")",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(head -n 1760 /c/Dev/pizzeria-popular/public/css/style.css)",
+      "Bash(mv /tmp/style.css.tmp /c/Dev/pizzeria-popular/public/css/style.css)",
+      "Bash(awk { for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\)o++; else if\\(c==\"}\"\\)cl++} } END { print \"open:\",o,\" close:\",cl } *)"
     ]
   }
 }

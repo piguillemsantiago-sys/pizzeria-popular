@@ -112,9 +112,20 @@
 
 <!-- ======================== HERO ======================== -->
 <section class="hero" id="inicio">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="/images/extracted/historia-bg.jpg">
-    <source src="/images/hero-video.mp4?v=20260510-720p" type="video/mp4">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="/images/extracted/historia-bg.jpg" id="heroVideo">
+    <source src="" type="video/mp4" id="heroVideoSource">
   </video>
+  <script>
+  (function() {
+    var source = document.getElementById('heroVideoSource');
+    var video = document.getElementById('heroVideo');
+    var isMobile = window.matchMedia('(max-width: 768px)').matches;
+    source.src = isMobile
+      ? '/images/hero-video-mobile.mp4?v=mobile-v1'
+      : '/images/hero-video.mp4?v=20260510-720p';
+    video.load();
+  })();
+  </script>
   <div class="hero-video-overlay"></div>
   <div class="hero-content">
     <p class="hero-eyebrow">🔥 Horno de leña · Cocina argentina <img src="https://flagcdn.com/20x15/ar.png" alt="Argentina" style="display:inline;vertical-align:middle;height:13px;margin:0 2px;border-radius:2px;"> en España <img src="https://flagcdn.com/20x15/es.png" alt="España" style="display:inline;vertical-align:middle;height:13px;margin:0 2px;border-radius:2px;"></p>
