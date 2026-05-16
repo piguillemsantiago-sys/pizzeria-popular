@@ -20,15 +20,24 @@ const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const mobileClose = document.getElementById('mobileClose');
 
+let mobileCloseTimer;
+
 function openMobile() {
   if (!mobileMenu) return;
+  clearTimeout(mobileCloseTimer);
+  mobileMenu.classList.remove('closing');
   mobileMenu.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 function closeMobile() {
-  if (!mobileMenu) return;
-  mobileMenu.classList.remove('open');
+  if (!mobileMenu || !mobileMenu.classList.contains('open')) return;
+  // animación de salida inversa antes de ocultar
+  mobileMenu.classList.add('closing');
   document.body.style.overflow = '';
+  clearTimeout(mobileCloseTimer);
+  mobileCloseTimer = setTimeout(() => {
+    mobileMenu.classList.remove('open', 'closing');
+  }, 380);
 }
 
 if (hamburger) hamburger.addEventListener('click', openMobile);

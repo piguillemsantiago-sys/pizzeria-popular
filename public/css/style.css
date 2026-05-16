@@ -208,23 +208,136 @@ nav.scrolled .lang-btn.active { background: var(--gold); color: var(--dark); }
 .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
 .hamburger span { width: 24px; height: 2px; background: var(--cream); display: block; transition: background .3s; }
 nav.scrolled .hamburger span { background: var(--dark); }
+/* ─── MOBILE MENU OVERLAY ─── */
 .mobile-menu {
-  display: none; position: fixed; inset: 0; z-index: 1000;
-  background: var(--dark2); flex-direction: column;
-  align-items: center; justify-content: center; gap: .5rem;
+  display: flex; position: fixed; inset: 0; z-index: 1000;
+  flex-direction: column;
+  align-items: center; justify-content: center; gap: 1.4rem;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: calc(env(safe-area-inset-top) + 72px) 1rem calc(env(safe-area-inset-bottom) + 32px);
+  padding: calc(env(safe-area-inset-top) + 56px) 1rem calc(env(safe-area-inset-bottom) + 36px);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(216,164,96,.10), transparent 70%),
+    rgba(36,28,26,.92);
+  opacity: 0; visibility: hidden;
+  -webkit-backdrop-filter: blur(0);
+  backdrop-filter: blur(0);
+  transition: opacity .3s ease, visibility .3s ease,
+              -webkit-backdrop-filter .3s ease, backdrop-filter .3s ease;
 }
-.mobile-menu.open { display: flex; }
-.mobile-menu a { font-family: 'Abril Fatface', serif; font-size: 2rem; color: var(--cream); text-decoration: none; transition: color .2s; }
-.mobile-menu a:hover, .mobile-menu a:active { color: var(--gold); }
-.mobile-menu a.mobile-cta { color: var(--gold); }
+.mobile-menu.open {
+  opacity: 1; visibility: visible;
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+/* Textura sutil de fondo (patrón del footer) */
+.mobile-menu::before {
+  content: ''; position: absolute; inset: 0;
+  background: url('/images/bg-footer-pattern.svg');
+  background-size: 300px;
+  opacity: .05; pointer-events: none;
+}
+/* Etiqueta superior */
+.mobile-menu::after {
+  content: 'MENÚ'; position: absolute;
+  top: calc(env(safe-area-inset-top) + 28px); left: 0; right: 0;
+  text-align: center; pointer-events: none;
+  font-family: 'Montserrat', sans-serif; font-weight: 600;
+  font-size: .7rem; letter-spacing: .42em; text-indent: .42em;
+  color: var(--gold); opacity: .7;
+}
+html[lang="en"] .mobile-menu::after { content: 'MENU'; }
+
+/* Items */
+.mobile-menu a {
+  position: relative;
+  font-family: 'Abril Fatface', serif; font-size: 2rem;
+  color: var(--cream); text-decoration: none;
+  letter-spacing: .02em;
+  opacity: 0; transform: translateY(10px);
+  transition: color .3s ease, letter-spacing .3s ease, background .3s ease;
+}
+.mobile-menu a:first-of-type { margin-top: auto; }
+.mobile-menu a:last-of-type { margin-bottom: auto; }
+.mobile-menu a:not(.mobile-cta):hover,
+.mobile-menu a:not(.mobile-cta):active { color: var(--gold); letter-spacing: .05em; }
+
+/* Subrayado dorado animado desde el centro */
+.mobile-menu a:not(.mobile-cta)::after {
+  content: ''; position: absolute;
+  left: 50%; bottom: .1rem;
+  width: 42%; height: 2px; background: var(--gold);
+  transform: translateX(-50%) scaleX(0); transform-origin: center;
+  transition: transform .3s cubic-bezier(.16,1,.3,1);
+}
+.mobile-menu a:not(.mobile-cta):hover::after,
+.mobile-menu a:not(.mobile-cta):active::after { transform: translateX(-50%) scaleX(1); }
+
+/* Iconos */
+.mobile-menu a:not(.mobile-cta)::before {
+  margin-right: .55rem; font-size: .78em; opacity: .9;
+}
+.mobile-menu a[href="/"]::before { content: '🏠'; }
+.mobile-menu a[href="/nosotros/"]::before { content: '✨'; }
+.mobile-menu a[href="/restaurantes/"]:not(.mobile-cta)::before { content: '📍'; }
+.mobile-menu a[href="/carta/"]::before { content: '🍕'; }
+.mobile-menu a[href="/promos/"]::before { content: '🔥'; }
+.mobile-menu a[href="/franquicias/"]::before { content: '💼'; }
+.mobile-menu a[href="/blog/"]::before { content: '📝'; }
+.mobile-menu a[href="/contacto/"]::before { content: '✉️'; }
+.mobile-menu a[href="/en/home/"]::before { content: '🏠'; }
+.mobile-menu a[href="/en/about-us/"]::before { content: '✨'; }
+.mobile-menu a[href="/en/restaurants/"]:not(.mobile-cta)::before { content: '📍'; }
+.mobile-menu a[href="/en/menu/"]::before { content: '🍕'; }
+.mobile-menu a[href="/en/promos/"]::before { content: '🔥'; }
+.mobile-menu a[href="/en/franchises/"]::before { content: '💼'; }
+.mobile-menu a[href="/en/blog/"]::before { content: '📝'; }
+.mobile-menu a[href="/en/contact/"]::before { content: '✉️'; }
+
+/* CTA destacada (pill dorada) */
+.mobile-menu a.mobile-cta {
+  color: var(--dark); background: var(--gold);
+  padding: 1.1rem 2.5rem; border-radius: 50px;
+  margin-top: 2rem; box-shadow: 0 4px 20px rgba(216,164,96,.3);
+}
+.mobile-menu a.mobile-cta:hover,
+.mobile-menu a.mobile-cta:active { background: var(--cream); color: var(--dark); }
+
+/* Stagger de entrada (estilo iOS) */
+@keyframes menuItemIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes menuItemOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(10px); }
+}
+.mobile-menu.open a { animation: menuItemIn .55s cubic-bezier(.16,1,.3,1) both; }
+.mobile-menu.open a:nth-of-type(1) { animation-delay: .12s; }
+.mobile-menu.open a:nth-of-type(2) { animation-delay: .17s; }
+.mobile-menu.open a:nth-of-type(3) { animation-delay: .22s; }
+.mobile-menu.open a:nth-of-type(4) { animation-delay: .27s; }
+.mobile-menu.open a:nth-of-type(5) { animation-delay: .32s; }
+.mobile-menu.open a:nth-of-type(6) { animation-delay: .37s; }
+.mobile-menu.open a:nth-of-type(7) { animation-delay: .42s; }
+.mobile-menu.open a:nth-of-type(8) { animation-delay: .47s; }
+.mobile-menu.open a:nth-of-type(9) { animation-delay: .52s; }
+/* Cierre: stagger inverso */
+.mobile-menu.open.closing a { animation: menuItemOut .22s cubic-bezier(.16,1,.3,1) both; }
+.mobile-menu.open.closing a:nth-of-type(1) { animation-delay: .12s; }
+.mobile-menu.open.closing a:nth-of-type(2) { animation-delay: .105s; }
+.mobile-menu.open.closing a:nth-of-type(3) { animation-delay: .09s; }
+.mobile-menu.open.closing a:nth-of-type(4) { animation-delay: .075s; }
+.mobile-menu.open.closing a:nth-of-type(5) { animation-delay: .06s; }
+.mobile-menu.open.closing a:nth-of-type(6) { animation-delay: .045s; }
+.mobile-menu.open.closing a:nth-of-type(7) { animation-delay: .03s; }
+.mobile-menu.open.closing a:nth-of-type(8) { animation-delay: .015s; }
+.mobile-menu.open.closing a:nth-of-type(9) { animation-delay: 0s; }
+
 .mobile-close {
   position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 5%;
   z-index: 1001; width: 44px; height: 44px;
   font-size: 2rem; line-height: 1; color: var(--cream);
   cursor: pointer; background: none; border: none;
+  transition: color .25s ease, transform .25s ease;
 }
+.mobile-close:hover, .mobile-close:active { color: var(--gold); transform: rotate(90deg); }
 
 /* ─── HERO ─── */
 .hero {
@@ -1839,9 +1952,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .lang-btn:not(.active) { color: rgba(237,232,217,.6); }
   nav.scrolled .lang-btn:not(.active) { color: rgba(57,46,44,.5); }
-  .mobile-menu { gap: .25rem; padding-top: calc(env(safe-area-inset-top) + 64px); }
   .mobile-menu a {
-    font-family: 'Abril Fatface', serif;
     font-size: 1.35rem; padding: .5rem 1rem;
     min-height: 44px; display: flex; align-items: center;
     justify-content: center; text-align: center;
