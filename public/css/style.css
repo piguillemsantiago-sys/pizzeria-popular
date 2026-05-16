@@ -1776,7 +1776,7 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
   .hero-btns { display: none !important; }
   .scroll-hint { display: none !important; }
 
-  /* Pizza flotante — porción SVG que cambia de sabor por sección */
+  /* Pizza flotante — emoji girando con glow pulsante */
   .spinning-pizza {
     display: flex; align-items: center; justify-content: center;
     position: fixed;
@@ -1792,11 +1792,10 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
     z-index: 60; pointer-events: none;
     animation: pizzaGlowPulse 2s ease-in-out infinite;
   }
-  .pizza-img {
-    width: 36px; height: 36px;
-    object-fit: contain; display: block;
+  .pizza-emoji {
+    font-size: 1.5rem; line-height: 1;
+    display: inline-block;
     will-change: transform;
-    transition: opacity 0.25s ease;
   }
 }
 
@@ -1982,7 +1981,8 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
   .footer-grid { grid-template-columns: 1fr 1fr; }
   .stars-row { gap: 1rem; }
   .float-cta span.float-text { display: none; }
-  .float-cta { padding: .9rem 1rem; border-radius: 50%; width: 54px; height: 54px; justify-content: center; }
+  /* Ocultar el CTA flotante en mobile — queda solo la pizza flotante */
+  .float-cta { display: none !important; }
 }
 @media (max-width: 768px) {
   /* ─── TIMELINE HISTORIA → carrusel horizontal con snap (mobile) ─── */
@@ -2156,7 +2156,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   footer { padding-left: 16px; padding-right: 16px; }
 
   /* ─── SPACING VERTICAL SISTEMÁTICO ─── */
-  .hero { padding: 14px 16px 1.5rem; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; align-items: stretch; }
+  .hero { padding: 88px 16px 1.5rem; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; align-items: stretch; }
   .locales, .locales-section, .restaurantes-section,
   .carta-section, .promos, .promos-section, .promos-page-section,
   .franquicias, .franquicias-section, .franquicias-page,

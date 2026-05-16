@@ -199,65 +199,24 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ─── PIZZA FLOTANTE — porción SVG que gira y cambia de sabor por sección (mobile) ───
+// ─── PIZZA FLOTANTE — emoji girando con glow pulsante (mobile, todas las páginas) ───
 (function () {
   if (!window.matchMedia('(max-width: 768px)').matches) return;
   var wrap = document.createElement('div');
   wrap.className = 'spinning-pizza';
   wrap.id = 'spinningPizza';
   wrap.setAttribute('aria-hidden', 'true');
-  wrap.innerHTML = '<img src="/images/pizzas/pizza-margarita.svg" alt="" class="pizza-img" id="pizzaImg">';
+  wrap.innerHTML = '<span class="pizza-emoji">🍕</span>';
   document.body.appendChild(wrap);
-  var pizzaImg = document.getElementById('pizzaImg');
-
-  // Rotación al hacer scroll (abajo → horario, arriba → antihorario)
+  var pizza = wrap.querySelector('.pizza-emoji');
   var rotation = 0;
   var lastY = window.scrollY || window.pageYOffset;
   window.addEventListener('scroll', function () {
     var y = window.scrollY || window.pageYOffset;
-    rotation += (y - lastY) * 0.7;
-    pizzaImg.style.transform = 'rotate(' + rotation + 'deg)';
+    rotation += (y - lastY) * 0.7;   // scroll abajo → horario, arriba → antihorario
+    pizza.style.transform = 'rotate(' + rotation + 'deg)';
     lastY = y;
   }, { passive: true });
-
-  // Cambio de sabor según la sección visible
-  var sectionPizzas = {
-    hero: 'margarita', inicio: 'margarita',
-    historia: 'napolitana', nosotros: 'napolitana',
-    locales: 'pepperoni', restaurantes: 'pepperoni',
-    carta: 'cuatroquesos', menu: 'cuatroquesos',
-    promos: 'hawaiana', promociones: 'hawaiana',
-    'google-stats': 'prosciutto', valoracion: 'prosciutto',
-    testimonios: 'vegetales', resenas: 'vegetales',
-    franquicias: 'funghi',
-    contacto: 'pepperoni', contact: 'pepperoni',
-    blog: 'margarita'
-  };
-  var current = 'margarita';
-  var swapTimer;
-  var sections = document.querySelectorAll('section[id], div[id]');
-  if (!sections.length) return;
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (!entry.isIntersecting || entry.intersectionRatio < 0.4) return;
-      var id = entry.target.id.toLowerCase();
-      for (var key in sectionPizzas) {
-        if (id.indexOf(key) === -1) continue;
-        var flavor = sectionPizzas[key];
-        if (flavor !== current) {
-          current = flavor;
-          pizzaImg.style.opacity = '0';
-          clearTimeout(swapTimer);
-          swapTimer = setTimeout(function () {
-            pizzaImg.setAttribute('src', '/images/pizzas/pizza-' + flavor + '.svg');
-            pizzaImg.style.opacity = '1';
-          }, 220);
-        }
-        break;
-      }
-    });
-  }, { threshold: [0.4, 0.6] });
-  sections.forEach(function (s) { observer.observe(s); });
 })();
 
 // ─── TIMELINE DRAG SCROLL ───
