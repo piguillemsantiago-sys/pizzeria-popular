@@ -218,7 +218,7 @@ nav.scrolled .hamburger span { background: var(--dark); }
   /* Fondo custom con identidad de marca */
   background-color: #1a0f0d;
   background-image:
-    radial-gradient(circle at 50% 42%, rgba(197,165,114,.06), transparent 60%),
+    radial-gradient(circle at 50% 42%, rgba(197,165,114,.10), transparent 60%),
     url('/images/bg-menu-pattern.svg');
   background-repeat: no-repeat, repeat;
   background-position: center center, top left;

@@ -3,7 +3,7 @@
   <rect width="560" height="560" fill="#1a0f0d"/>
 
   <!-- Capa 1: watermark "P" de Pizzería Popular, disperso y rotado -->
-  <g fill="#C5A572" opacity="0.04" font-family="Georgia, 'Times New Roman', serif" font-weight="700">
+  <g fill="#C5A572" opacity="0.13" font-family="Georgia, 'Times New Roman', serif" font-weight="700">
     <text x="40" y="205" font-size="150" transform="rotate(-8 95 160)">P</text>
     <text x="395" y="150" font-size="100" transform="rotate(13 420 120)">P</text>
     <text x="295" y="430" font-size="155" transform="rotate(-6 350 380)">P</text>
@@ -11,8 +11,8 @@
   </g>
 
   <!-- Capa 2: doodles iconográficos argentino-italiano-festivos, line-art -->
-  <g stroke="#C5A572" fill="none" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"
-     opacity="0.095" vector-effect="non-scaling-stroke">
+  <g stroke="#C5A572" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+     opacity="0.16" vector-effect="non-scaling-stroke">
     <!-- llama estilizada -->
     <g transform="translate(250,58) scale(1.1)">
       <path d="M18 2 C24 10 30 18 26 28 C23 35 11 36 9 28 C7 22 13 19 13 13 C16 17 21 15 18 9 C17 6 17 4 18 2 Z"/>
