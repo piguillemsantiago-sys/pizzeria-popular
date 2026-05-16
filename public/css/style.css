@@ -215,9 +215,14 @@ nav.scrolled .hamburger span { background: var(--dark); }
   align-items: center; justify-content: center; gap: 1.4rem;
   overflow-y: auto; -webkit-overflow-scrolling: touch;
   padding: calc(env(safe-area-inset-top) + 56px) 1rem calc(env(safe-area-inset-bottom) + 36px);
-  background:
-    radial-gradient(circle at 50% 42%, rgba(216,164,96,.10), transparent 70%),
-    rgba(36,28,26,.92);
+  /* Fondo custom con identidad de marca */
+  background-color: #1a0f0d;
+  background-image:
+    radial-gradient(circle at 50% 42%, rgba(197,165,114,.06), transparent 60%),
+    url('/images/bg-menu-pattern.svg');
+  background-repeat: no-repeat, repeat;
+  background-position: center center, top left;
+  background-attachment: scroll, scroll;
   opacity: 0; visibility: hidden;
   -webkit-backdrop-filter: blur(0);
   backdrop-filter: blur(0);
@@ -228,13 +233,6 @@ nav.scrolled .hamburger span { background: var(--dark); }
   opacity: 1; visibility: visible;
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
-}
-/* Textura sutil de fondo (patrón del footer) */
-.mobile-menu::before {
-  content: ''; position: absolute; inset: 0;
-  background: url('/images/bg-footer-pattern.svg');
-  background-size: 300px;
-  opacity: .05; pointer-events: none;
 }
 /* Etiqueta superior */
 .mobile-menu::after {
