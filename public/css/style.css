@@ -1841,19 +1841,20 @@ img, video, iframe { max-width: 100%; height: auto; }
   .hero-desc-mobile { display: inline; }
   /* "Bienvenidos a pasear el alma" +20% solo mobile */
   .hbien-title { font-size: clamp(2.4rem, 9.6vw, 3.6rem); line-height: .95; }
-  .hbien-sub   { font-size: clamp(1.32rem, 6vw, 2.16rem); line-height: 1.15; }
+  .hbien-sub   { font-size: clamp(1.584rem, 7.2vw, 2.592rem); line-height: 1.15; }
   .hero-title  { font-size: clamp(2rem, 8vw, 3rem); line-height: .95; }
   .hero-sub, .hero-desc {
     font-size: .9rem; line-height: 1.6;
     max-width: 100%; margin-bottom: 1.4rem;
   }
   .hero-btns {
-    flex-direction: column; align-items: stretch;
-    max-width: 320px; margin: 0 auto; gap: .65rem;
+    flex-direction: column; align-items: center;
+    max-width: 240px; margin: 0 auto; gap: .65rem;
   }
+  /* CTAs hero -30% solo mobile */
   .hero-btns .btn-primary, .hero-btns .btn-outline, .hero-btns .btn {
-    width: 100%; padding: .85rem 1.2rem;
-    font-size: .82rem; font-weight: 600;
+    width: 100%; padding: .7rem .85rem;
+    font-size: .7rem; font-weight: 600;
     min-height: 44px; justify-content: center;
   }
   .hero-stats {
@@ -2263,7 +2264,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   .manifesto-values { grid-template-columns: repeat(3, 1fr); }
 
   /* Hero más holgado */
-  .hero-btns { max-width: 380px; }
+  .hero-btns { max-width: 260px; }
   .hbien-title { font-size: clamp(2.88rem, 10.8vw, 4.08rem); }
 }
 
