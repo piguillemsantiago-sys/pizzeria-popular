@@ -1050,6 +1050,8 @@ body.bg-fixed .local-card { background-color: rgba(0,0,0,.78); }
 .page-header > * { position: relative; z-index: 1; }
 .page-header .section-label { color: var(--gold); }
 .page-header .section-title { color: var(--cream); margin-bottom: .5rem; }
+/* /nosotros/ + /en/about-us/: header con fondo claro (igual a sección Historia) → título oscuro */
+.page-header-historia .page-title { color: var(--dark); }
 .page-header-desc { color: rgba(237,232,217,.6); max-width: 550px; margin: 0 auto; line-height: 1.8; font-size: .95rem; font-weight: 300; }
 
 /* ─── LEGAL PAGES ─── */
@@ -1930,8 +1932,6 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     animation: tlSwipeNudge 1.3s ease-in-out infinite;
   }
 
-  /* Título de la sección más grande (solo homepage) */
-  .historia .historia-header h2 { font-size: clamp(2.5rem, 10vw, 3.5rem); }
 }
 @media (max-width: 600px) {
   .blog-modal .bm-hero { padding: 48px 20px 32px; }
@@ -2083,6 +2083,9 @@ img, video, iframe { max-width: 100%; height: auto; }
   .page-header-desc { font-size: .85rem; line-height: 1.6; }
   .section-title { font-size: clamp(1.5rem, 6.5vw, 2.4rem); line-height: 1.1; }
   .section-label { font-size: .58rem; letter-spacing: .22em; }
+  /* Eyebrow "Nuestra Historia" x3 (home historia + page-header de /nosotros/) */
+  .historia .historia-header .section-label,
+  .page-label-historia { font-size: 1.74rem; line-height: 1.3; }
 
   /* ─── MARQUEE ─── */
   .marquee-band { padding: .8rem 0; }
