@@ -276,6 +276,9 @@ nav.scrolled .hamburger span { background: var(--dark); }
   line-height: 1.8; font-weight: 300;
   animation: fadeIn 1s .5s both;
 }
+/* Hero desc: texto largo en desktop, frase corta en mobile (≤768px) */
+.hero-desc-desktop { display: inline; }
+.hero-desc-mobile { display: none; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .hero-btns {
   display: flex; gap: 1rem; justify-content: center;
@@ -1833,8 +1836,12 @@ img, video, iframe { max-width: 100%; height: auto; }
     line-height: 1.6; text-align: center;
     white-space: normal; max-width: 92%;
   }
-  .hbien-title { font-size: clamp(2rem, 8vw, 3rem); line-height: .95; }
-  .hbien-sub   { font-size: clamp(1.1rem, 5vw, 1.8rem); line-height: 1.15; }
+  /* Hero desc: ocultar texto largo, mostrar frase corta */
+  .hero-desc-desktop { display: none; }
+  .hero-desc-mobile { display: inline; }
+  /* "Bienvenidos a pasear el alma" +20% solo mobile */
+  .hbien-title { font-size: clamp(2.4rem, 9.6vw, 3.6rem); line-height: .95; }
+  .hbien-sub   { font-size: clamp(1.32rem, 6vw, 2.16rem); line-height: 1.15; }
   .hero-title  { font-size: clamp(2rem, 8vw, 3rem); line-height: .95; }
   .hero-sub, .hero-desc {
     font-size: .9rem; line-height: 1.6;
@@ -1853,9 +1860,10 @@ img, video, iframe { max-width: 100%; height: auto; }
     display: grid !important; grid-template-columns: repeat(3, 1fr);
     gap: 12px !important; margin-top: 2rem; max-width: 100%;
   }
-  .stat-num, .hero-stat-number { font-size: 1.4rem; }
+  /* Stats valoración Google +20% solo mobile */
+  .stat-num, .hero-stat-number { font-size: 1.68rem; }
   .stat-label, .hero-stat-label {
-    font-size: .55rem; letter-spacing: .12em;
+    font-size: .66rem; letter-spacing: .12em;
     text-transform: uppercase; margin-top: .3rem;
   }
 
@@ -2209,7 +2217,7 @@ img, video, iframe { max-width: 100%; height: auto; }
    MOBILE ESTÁNDAR (≥380px and ≤768px) — slight tweaks
    ═════════════════════════════════════════════════ */
 @media (min-width: 380px) and (max-width: 768px) {
-  .stat-num, .hero-stat-number { font-size: 1.5rem; }
+  .stat-num, .hero-stat-number { font-size: 1.8rem; }
   .nav-logo img { height: 46px; }
   .promo-img { height: 150px; }
   .timeline-img { height: 160px; }
@@ -2256,7 +2264,7 @@ img, video, iframe { max-width: 100%; height: auto; }
 
   /* Hero más holgado */
   .hero-btns { max-width: 380px; }
-  .hbien-title { font-size: clamp(2.4rem, 9vw, 3.4rem); }
+  .hbien-title { font-size: clamp(2.88rem, 10.8vw, 4.08rem); }
 }
 
 /* ═════════════════════════════════════════════════
