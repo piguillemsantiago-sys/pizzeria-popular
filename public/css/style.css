@@ -864,12 +864,17 @@ a.tl-card { text-decoration: none; color: inherit; }
 .tl-item.up:hover .tl-card, .tl-item.down:hover .tl-card { overflow: visible; }
 .tl-item:hover .tl-text { -webkit-line-clamp: unset; display: block; }
 
-/* Indicador de swipe del timeline (solo visible en mobile) */
-.tl-swipe-hint { display: none; }
-@keyframes tlSwipeNudge {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(5px); }
+/* Indicador de swipe del timeline (solo visible en mobile, ver media query) */
+.timeline-swipe-hint { display: none; transition: opacity .4s ease; }
+.timeline-swipe-hint.hidden { opacity: 0 !important; pointer-events: none; }
+@keyframes swipeRight {
+  0%, 100% { transform: translateX(0); opacity: 0.6; }
+  50% { transform: translateX(10px); opacity: 1; }
 }
+/* Subpáginas /nosotros/ y /en/about-us/: eyebrow + H2 de la sección historia
+   solo se muestran en mobile (en desktop la cabecera la da el .page-header) */
+.historia-subpage .historia-header .section-label,
+.historia-subpage .historia-header h2 { display: none; }
 
 /* ─── CARTA SECTION ─── */
 .carta-section { padding: 40px 5%; position: relative; background: var(--dark2); }
@@ -1920,18 +1925,30 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     font-size: .9rem; padding-top: 0; margin-top: 0;
   }
 
-  /* Indicador "Desliza →" */
-  .tl-swipe-hint {
-    display: block; text-align: center;
-    margin: 2px 0 6px;
-    font-size: .75rem; letter-spacing: .04em;
-    color: var(--gold); opacity: .6;
+  /* Indicador de swipe animado */
+  .timeline-swipe-hint {
+    display: flex;
+    align-items: center; justify-content: center;
+    gap: 0.6rem;
+    margin: 1rem auto 0;
+    opacity: 0.75;
   }
-  .tl-swipe-hint .tl-swipe-arrow {
+  .timeline-swipe-hint-text {
+    font-size: 0.7rem; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream);
+  }
+  .timeline-swipe-hint-arrow {
+    font-size: 1rem; color: #C5A572;
     display: inline-block;
-    animation: tlSwipeNudge 1.3s ease-in-out infinite;
+    animation: swipeRight 1.5s ease-in-out infinite;
   }
 
+  /* Subpáginas: ocultar el page-header y mostrar la cabecera de historia */
+  .page-header-historia { display: none; }
+  .historia-subpage .historia-header .section-label,
+  .historia-subpage .historia-header h2 { display: block; }
+  .historia.historia-subpage { padding-top: 96px; }
 }
 @media (max-width: 600px) {
   .blog-modal .bm-hero { padding: 48px 20px 32px; }

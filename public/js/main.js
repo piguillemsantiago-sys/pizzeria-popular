@@ -54,6 +54,15 @@ document.querySelectorAll('.mobile-menu a').forEach((a) => {
   a.addEventListener('click', closeMobile);
 });
 
+// ─── TIMELINE: ocultar el indicador de swipe al desplazar el carrusel ───
+document.querySelectorAll('.tl-outer').forEach((outer) => {
+  outer.addEventListener('scroll', () => {
+    if (outer.scrollLeft > 24) {
+      document.querySelectorAll('.timeline-swipe-hint').forEach((h) => h.classList.add('hidden'));
+    }
+  }, { passive: true });
+});
+
 // ─── SCROLL REVEAL ───
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
