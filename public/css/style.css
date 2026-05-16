@@ -209,14 +209,22 @@ nav.scrolled .lang-btn.active { background: var(--gold); color: var(--dark); }
 .hamburger span { width: 24px; height: 2px; background: var(--cream); display: block; transition: background .3s; }
 nav.scrolled .hamburger span { background: var(--dark); }
 .mobile-menu {
-  display: none; position: fixed; inset: 0; z-index: 190;
+  display: none; position: fixed; inset: 0; z-index: 1000;
   background: var(--dark2); flex-direction: column;
-  align-items: center; justify-content: center; gap: 2rem;
+  align-items: center; justify-content: center; gap: .5rem;
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
+  padding: calc(env(safe-area-inset-top) + 72px) 1rem calc(env(safe-area-inset-bottom) + 32px);
 }
 .mobile-menu.open { display: flex; }
 .mobile-menu a { font-family: 'Abril Fatface', serif; font-size: 2rem; color: var(--cream); text-decoration: none; transition: color .2s; }
-.mobile-menu a:hover { color: var(--gold); }
-.mobile-close { position: absolute; top: 20px; right: 5%; font-size: 2rem; color: var(--cream); cursor: pointer; background: none; border: none; }
+.mobile-menu a:hover, .mobile-menu a:active { color: var(--gold); }
+.mobile-menu a.mobile-cta { color: var(--gold); }
+.mobile-close {
+  position: fixed; top: calc(env(safe-area-inset-top) + 14px); right: 5%;
+  z-index: 1001; width: 44px; height: 44px;
+  font-size: 2rem; line-height: 1; color: var(--cream);
+  cursor: pointer; background: none; border: none;
+}
 
 /* ─── HERO ─── */
 .hero {
@@ -1831,10 +1839,12 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .lang-btn:not(.active) { color: rgba(237,232,217,.6); }
   nav.scrolled .lang-btn:not(.active) { color: rgba(57,46,44,.5); }
+  .mobile-menu { gap: .25rem; padding-top: calc(env(safe-area-inset-top) + 64px); }
   .mobile-menu a {
     font-family: 'Abril Fatface', serif;
-    font-size: 1.5rem; padding: .75rem 1rem;
+    font-size: 1.35rem; padding: .5rem 1rem;
     min-height: 44px; display: flex; align-items: center;
+    justify-content: center; text-align: center;
   }
 
   /* ─── HERO ─── */

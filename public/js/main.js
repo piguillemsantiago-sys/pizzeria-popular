@@ -20,19 +20,30 @@ const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
 const mobileClose = document.getElementById('mobileClose');
 
-if (hamburger) {
-  hamburger.addEventListener('click', () => {
-    mobileMenu.classList.add('open');
-  });
-}
-if (mobileClose) {
-  mobileClose.addEventListener('click', () => {
-    mobileMenu.classList.remove('open');
-  });
+function openMobile() {
+  if (!mobileMenu) return;
+  mobileMenu.classList.add('open');
+  document.body.style.overflow = 'hidden';
 }
 function closeMobile() {
-  if (mobileMenu) mobileMenu.classList.remove('open');
+  if (!mobileMenu) return;
+  mobileMenu.classList.remove('open');
+  document.body.style.overflow = '';
 }
+
+if (hamburger) hamburger.addEventListener('click', openMobile);
+if (mobileClose) mobileClose.addEventListener('click', closeMobile);
+
+// Cerrar al tocar el backdrop (overlay vacío, fuera de los links)
+if (mobileMenu) {
+  mobileMenu.addEventListener('click', (e) => {
+    if (e.target === mobileMenu) closeMobile();
+  });
+}
+// Cerrar al cliquear cualquier link del menú
+document.querySelectorAll('.mobile-menu a').forEach((a) => {
+  a.addEventListener('click', closeMobile);
+});
 
 // ─── SCROLL REVEAL ───
 const revealObserver = new IntersectionObserver((entries) => {
