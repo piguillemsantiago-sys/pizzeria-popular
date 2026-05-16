@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- corteza (silueta de la porción) -->
+  <path d="M100 188 L40 64 Q100 36 160 64 Z" fill="#C5A572" stroke="#4A2E1E" stroke-width="4" stroke-linejoin="round"/>
+  <!-- base (salsa / queso) -->
+  <path d="M100 180 L54 84 Q100 60 146 84 Z" fill="#C73E2E"/>
+  <!-- ingredientes -->
+  <circle cx="94" cy="102" r="13" fill="#75502E"/>
+  <circle cx="76" cy="134" r="10" fill="#75502E"/>
+  <circle cx="120" cy="134" r="10" fill="#75502E"/>
+  <circle cx="100" cy="160" r="9" fill="#75502E"/>
+</svg>

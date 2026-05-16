@@ -1708,9 +1708,11 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
 .delivery-glovo { background: #FFC244; color: #1a1a1a; }
 .delivery-uber  { background: #06C167; color: #ffffff; }
 
-/* ─── HERO ACTIONS MOBILE + PIZZA GIRATORIA ─── */
+/* ─── HERO MOBILE LAYOUT + ACTIONS + PIZZA FLOTANTE ─── */
 .hero-actions-mobile { display: none; }
 .spinning-pizza { display: none; }
+/* En desktop los wrappers son transparentes: no alteran el layout existente */
+.hero-top, .hero-bottom { display: contents; }
 @keyframes pizzaGlowPulse {
   0%, 100% {
     box-shadow:
@@ -1725,26 +1727,32 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
       inset 0 1px 3px rgba(255,255,255,0.3);
   }
 }
-@keyframes pizzaBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-}
 @media (max-width: 768px) {
+  /* Hero: grupo superior arriba, grupo inferior abajo, video visible al centro */
+  .hero-content {
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    width: 100%; max-width: 100%;
+  }
+  .hero-top { display: block; flex-shrink: 0; }
+  .hero-bottom {
+    display: flex; flex-direction: column;
+    gap: 1.2rem; flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
   .hero-actions-mobile {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
-    margin: 2rem auto 1rem;
-    max-width: 100%;
-    padding: 0 16px;
+    width: 100%; padding: 0;
   }
   .hero-action-btn {
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     gap: 0.4rem;
     padding: 0.9rem 0.5rem;
-    background: rgba(197,165,114,0.15);
-    border: 1px solid rgba(197,165,114,0.5);
+    background: rgba(197,165,114,0.18);
+    border: 1px solid rgba(197,165,114,0.55);
     border-radius: 14px;
     color: #EDE8D9; text-decoration: none;
     min-height: 80px; cursor: pointer;
@@ -1758,7 +1766,7 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
     background: rgba(197,165,114,0.3);
     transform: scale(0.97);
   }
-  .hero-action-icon { font-size: 1.4rem; }
+  .hero-action-icon { font-size: 1.4rem; line-height: 1; }
   .hero-action-label {
     font-size: 0.7rem; letter-spacing: 0.1em;
     text-transform: uppercase; font-weight: 600;
@@ -1768,7 +1776,7 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
   .hero-btns { display: none !important; }
   .scroll-hint { display: none !important; }
 
-  /* Pizza giratoria — derecha, centro vertical de la pantalla */
+  /* Pizza flotante — porción SVG que cambia de sabor por sección */
   .spinning-pizza {
     display: flex; align-items: center; justify-content: center;
     position: fixed;
@@ -1782,20 +1790,13 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
       0 0 0 2px rgba(255,255,255,0.15),
       inset 0 1px 3px rgba(255,255,255,0.3);
     z-index: 60; pointer-events: none;
-    /* glow pulsante (solo box-shadow → no pisa el translateY) */
     animation: pizzaGlowPulse 2s ease-in-out infinite;
   }
-  /* Capa de rotación: el JS le aplica transform: rotate() */
-  .pizza-rotor {
-    display: flex; align-items: center; justify-content: center;
+  .pizza-img {
+    width: 36px; height: 36px;
+    object-fit: contain; display: block;
     will-change: transform;
-  }
-  /* Emoji: breathing scale, independiente de la rotación */
-  .pizza-emoji {
-    font-size: 1.5rem; line-height: 1;
-    display: inline-block;
-    will-change: transform;
-    animation: pizzaBreathe 2s ease-in-out infinite;
+    transition: opacity 0.25s ease;
   }
 }
 
@@ -2155,7 +2156,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   footer { padding-left: 16px; padding-right: 16px; }
 
   /* ─── SPACING VERTICAL SISTEMÁTICO ─── */
-  .hero { padding-top: 14px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; }
+  .hero { padding: 14px 16px 1.5rem; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; align-items: stretch; }
   .locales, .locales-section, .restaurantes-section,
   .carta-section, .promos, .promos-section, .promos-page-section,
   .franquicias, .franquicias-section, .franquicias-page,
@@ -2224,7 +2225,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .hero-stats {
     display: grid !important; grid-template-columns: repeat(3, 1fr);
-    gap: 12px !important; margin-top: 4rem; max-width: 100%;
+    gap: 12px !important; margin: 0 auto; width: 100%; max-width: 100%;
   }
   /* Stats valoración Google +20% solo mobile */
   .stat-num, .hero-stat-number { font-size: 1.68rem; }
