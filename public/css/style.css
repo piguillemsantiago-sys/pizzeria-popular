@@ -1972,13 +1972,6 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
   .historia-subpage .historia-header .section-label { display: flex; }
   .historia-subpage .historia-header h2 { display: block; }
   .historia.historia-subpage { padding-top: 96px; }
-
-  /* Reducir la luminosidad del fondo de la sección Historia (~25% más oscuro) */
-  .historia::before {
-    background:
-      linear-gradient(rgba(45,30,25,0.25), rgba(45,30,25,0.25)),
-      rgba(237,232,217,0.83);
-  }
 }
 @media (max-width: 600px) {
   .blog-modal .bm-hero { padding: 48px 20px 32px; }
@@ -2154,6 +2147,18 @@ img, video, iframe { max-width: 100%; height: auto; }
     width: 30px; height: 1px;
     background: #C5A572;
     opacity: 0.5;
+  }
+  /* "NUESTRA HISTORIA" — más legible sobre el fondo claro de la sección */
+  .historia-eyebrow {
+    color: #9A7B3F;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+  .historia-eyebrow::before,
+  .historia-eyebrow::after {
+    width: 38px; height: 2px;
+    background: #9A7B3F;
+    opacity: 0.85;
   }
 
   /* ─── MARQUEE ─── */
