@@ -1894,7 +1894,7 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     display: flex; flex-direction: column;
     align-items: stretch;
     scroll-snap-align: center;
-    background: rgba(45,30,25,.85);
+    background: #0d0d0d;
     border: none; box-shadow: none;
     border-radius: 18px;
     overflow: hidden;
