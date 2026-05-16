@@ -1921,7 +1921,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   footer { padding-left: 16px; padding-right: 16px; }
 
   /* ─── SPACING VERTICAL SISTEMÁTICO ─── */
-  .hero { padding-top: 55px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; }
+  .hero { padding-top: 28px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; }
   .locales, .locales-section, .restaurantes-section,
   .carta-section, .promos, .promos-section, .promos-page-section,
   .franquicias, .franquicias-section, .franquicias-page,

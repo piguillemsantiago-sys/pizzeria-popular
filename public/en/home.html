@@ -113,18 +113,23 @@
 
 <!-- ======================== HERO ======================== -->
 <section class="hero" id="inicio">
-  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="/images/extracted/historia-bg.jpg" id="heroVideo">
-    <source src="" type="video/mp4" id="heroVideoSource">
+  <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="" id="heroVideo">
+    <source src="/images/hero-video-mobile.mp4?v=mobile-v1" type="video/mp4" id="heroVideoSource">
   </video>
   <script>
   (function() {
     var source = document.getElementById('heroVideoSource');
     var video = document.getElementById('heroVideo');
     var isMobile = window.matchMedia('(max-width: 768px)').matches;
-    source.src = isMobile
+    var desired = isMobile
       ? '/images/hero-video-mobile.mp4?v=mobile-v1'
       : '/images/hero-video.mp4?v=20260510-720p';
-    video.load();
+    // El HTML ya apunta al video mobile, así que en mobile carga sin esperar al JS.
+    // Solo se corrige (sin fetch desperdiciado) si el dispositivo no es mobile.
+    if (source.getAttribute('src') !== desired) {
+      source.src = desired;
+      video.load();
+    }
   })();
   </script>
   <div class="hero-video-overlay"></div>
