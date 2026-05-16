@@ -205,15 +205,16 @@ window.addEventListener('scroll', () => {
   var wrap = document.createElement('div');
   wrap.className = 'spinning-pizza';
   wrap.setAttribute('aria-hidden', 'true');
-  wrap.innerHTML = '<span class="pizza-emoji">🍕</span>';
+  // .pizza-rotor recibe la rotación; .pizza-emoji tiene el breathing (scale) por CSS
+  wrap.innerHTML = '<span class="pizza-rotor"><span class="pizza-emoji">🍕</span></span>';
   document.body.appendChild(wrap);
-  var pizza = wrap.querySelector('.pizza-emoji');
+  var rotor = wrap.querySelector('.pizza-rotor');
   var rotation = 0;
   var lastY = window.scrollY || window.pageYOffset;
   window.addEventListener('scroll', function () {
     var y = window.scrollY || window.pageYOffset;
-    rotation += (y - lastY) * 0.5;   // scroll abajo → horario, arriba → antihorario
-    pizza.style.transform = 'rotate(' + rotation + 'deg)';
+    rotation += (y - lastY) * 0.7;   // scroll abajo → horario, arriba → antihorario
+    rotor.style.transform = 'rotate(' + rotation + 'deg)';
     lastY = y;
   }, { passive: true });
 })();
