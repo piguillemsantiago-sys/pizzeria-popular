@@ -868,8 +868,8 @@ a.tl-card { text-decoration: none; color: inherit; }
 .timeline-swipe-hint { display: none; transition: opacity .4s ease; }
 .timeline-swipe-hint.hidden { opacity: 0 !important; pointer-events: none; }
 @keyframes swipeRight {
-  0%, 100% { transform: translateX(0); opacity: 0.6; }
-  50% { transform: translateX(10px); opacity: 1; }
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
 }
 /* Subpáginas /nosotros/ y /en/about-us/: eyebrow + H2 de la sección historia
    solo se muestran en mobile (en desktop la cabecera la da el .page-header) */
@@ -1925,22 +1925,28 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     font-size: .9rem; padding-top: 0; margin-top: 0;
   }
 
-  /* Indicador de swipe animado */
+  /* Indicador de swipe — pill dorado, fuera del scroll del carrusel */
   .timeline-swipe-hint {
     display: flex;
     align-items: center; justify-content: center;
-    gap: 0.6rem;
-    margin: 1rem auto 0;
-    opacity: 0.75;
+    gap: 0.7rem;
+    margin: 1.5rem auto 1rem;
+    padding: 0.6rem 1.4rem;
+    width: fit-content;
+    background: rgba(197,165,114,0.12);
+    border: 1px solid rgba(197,165,114,0.3);
+    border-radius: 50px;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
   }
   .timeline-swipe-hint-text {
-    font-size: 0.7rem; letter-spacing: 0.15em;
+    font-size: 0.72rem; letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--cream);
+    color: #C5A572; font-weight: 600;
   }
   .timeline-swipe-hint-arrow {
-    font-size: 1rem; color: #C5A572;
-    display: inline-block;
+    font-size: 1.1rem; color: #C5A572;
+    display: inline-block; font-weight: 700;
     animation: swipeRight 1.5s ease-in-out infinite;
   }
 
@@ -2100,9 +2106,27 @@ img, video, iframe { max-width: 100%; height: auto; }
   .page-header-desc { font-size: .85rem; line-height: 1.6; }
   .section-title { font-size: clamp(1.5rem, 6.5vw, 2.4rem); line-height: 1.1; }
   .section-label { font-size: .58rem; letter-spacing: .22em; }
-  /* Eyebrow "Nuestra Historia" x3 (home historia + page-header de /nosotros/) */
-  .historia .historia-header .section-label,
-  .page-label-historia { font-size: 1.74rem; line-height: 1.3; }
+  /* Eyebrow "NUESTRA HISTORIA" — editorial, una sola línea con guiones laterales */
+  .historia-eyebrow {
+    display: block;
+    font-size: clamp(1rem, 4.5vw, 1.5rem);
+    letter-spacing: 0.3em;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #C5A572;
+    margin-bottom: 1.2rem;
+    white-space: nowrap;
+  }
+  .historia-eyebrow::before,
+  .historia-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 24px; height: 1px;
+    background: #C5A572;
+    vertical-align: middle;
+    margin: 0 0.8rem;
+    opacity: 0.6;
+  }
 
   /* ─── MARQUEE ─── */
   .marquee-band { padding: .8rem 0; }
