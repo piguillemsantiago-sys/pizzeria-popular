@@ -1921,7 +1921,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   footer { padding-left: 16px; padding-right: 16px; }
 
   /* ─── SPACING VERTICAL SISTEMÁTICO ─── */
-  .hero { padding-top: 14px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; }
+  .hero { padding-top: 7px; padding-bottom: 50px; min-height: 100vh; min-height: 100dvh; background-color: #1a0f0d; }
   .locales, .locales-section, .restaurantes-section,
   .carta-section, .promos, .promos-section, .promos-page-section,
   .franquicias, .franquicias-section, .franquicias-page,
@@ -1959,7 +1959,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   /* ─── HERO ─── */
   .hero-eyebrow {
     font-size: .58rem; letter-spacing: .18em;
-    padding: .35rem .8rem; margin-bottom: 2.8rem;
+    padding: .35rem .8rem; margin-bottom: 5.6rem;
     line-height: 1.6; text-align: center;
     white-space: normal; max-width: 92%;
   }
@@ -1976,7 +1976,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   .hero-title  { font-size: clamp(2rem, 8vw, 3rem); line-height: .95; }
   .hero-sub, .hero-desc {
     font-size: .9rem; line-height: 1.6;
-    max-width: 100%; margin-bottom: 2.8rem;
+    max-width: 100%; margin-bottom: 5.6rem;
   }
   .hero-btns {
     flex-direction: column; align-items: center;
@@ -1990,7 +1990,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .hero-stats {
     display: grid !important; grid-template-columns: repeat(3, 1fr);
-    gap: 12px !important; margin-top: 4rem; max-width: 100%;
+    gap: 12px !important; margin-top: 8rem; max-width: 100%;
   }
   /* Stats valoración Google +20% solo mobile */
   .stat-num, .hero-stat-number { font-size: 1.68rem; }
