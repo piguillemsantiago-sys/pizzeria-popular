@@ -3224,29 +3224,52 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 /* ═══ TESTIMONIOS — carousel horizontal con scroll-jacking ═══ */
 .testimonials-section { position: relative; }
-.testimonials-heading { padding-bottom: 0.3rem; margin-bottom: 0; }
 .testimonials-pin-wrapper {
   position: relative;
   height: 300vh;
-  margin-top: 0;
+  margin-top: -2rem;
   padding-top: 0;
 }
 @media (min-width: 769px) {
   .testimonials-pin-wrapper { height: 500vh; }
 }
-/* top:15vh + height:70vh → la card queda centrada verticalmente en pantalla
-   (sticky con top en vh NO se rompe; transform sí lo rompería) */
+@media (max-width: 768px) {
+  .testimonials-pin-wrapper { margin-top: -1rem; }
+}
+/* Heading + cards van DENTRO del sticky → el título queda fijo arriba
+   mientras las cards se desplazan en horizontal (column flex).
+   sticky con top en vh NO se rompe; transform sí lo rompería. */
 .testimonials-sticky {
   position: sticky;
-  top: 15vh;
-  height: 70vh;
+  top: 8vh;
+  height: 80vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 2rem;
+  gap: 1.5rem;
+}
+@media (max-width: 768px) {
+  .testimonials-sticky { top: 10vh; height: 75vh; padding-top: 1rem; gap: 1rem; }
+}
+.testimonials-heading {
+  text-align: center;
+  flex-shrink: 0;
+  z-index: 2;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+/* contenedor del carousel: ocupa el alto restante del sticky y recorta
+   el desborde horizontal SIN ser ancestro scroll-container del sticky */
+.testimonials-track-wrapper {
+  flex: 1;
   width: 100%;
   overflow: hidden;
   display: flex;
   align-items: center;
-}
-@media (max-width: 768px) {
-  .testimonials-sticky { top: 20vh; height: 60vh; }
 }
 .testimonials-track {
   display: flex;
@@ -3284,7 +3307,8 @@ img, video, iframe { max-width: 100%; height: auto; }
 }
 /* Fallback sin scroll-jacking para prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
-  .testimonials-pin-wrapper { height: auto !important; }
-  .testimonials-sticky { position: static !important; height: auto !important; overflow: visible; }
+  .testimonials-pin-wrapper { height: auto !important; margin-top: 0 !important; }
+  .testimonials-sticky { position: static !important; height: auto !important; overflow: visible; padding-top: 0; }
+  .testimonials-track-wrapper { flex: none; overflow: visible; }
   .testimonials-track { flex-wrap: wrap; justify-content: center; transform: none !important; }
 }
