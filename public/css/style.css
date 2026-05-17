@@ -3226,12 +3226,12 @@ img, video, iframe { max-width: 100%; height: auto; }
 .testimonials-section { position: relative; }
 .testimonials-pin-wrapper {
   position: relative;
-  height: 300vh;
+  height: 250vh;
   margin-top: -2rem;
   padding-top: 0;
 }
 @media (min-width: 769px) {
-  .testimonials-pin-wrapper { height: 500vh; }
+  .testimonials-pin-wrapper { height: 450vh; }
 }
 @media (max-width: 768px) {
   .testimonials-pin-wrapper { margin-top: -1rem; }
@@ -3242,25 +3242,25 @@ img, video, iframe { max-width: 100%; height: auto; }
 .testimonials-sticky {
   position: sticky;
   top: 8vh;
-  height: 80vh;
+  height: 60vh;
   width: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 2rem;
-  gap: 1.5rem;
+  padding: 1rem 0;
+  gap: 0.75rem;
 }
 @media (max-width: 768px) {
-  .testimonials-sticky { top: 10vh; height: 75vh; padding-top: 1rem; gap: 1rem; }
+  .testimonials-sticky { top: 10vh; height: 55vh; padding: 0.5rem 0; gap: 0.5rem; }
 }
 .testimonials-heading {
   text-align: center;
   flex-shrink: 0;
   z-index: 2;
+  margin: 0;
   padding-bottom: 0;
-  margin-bottom: 0;
 }
 /* contenedor del carousel: ocupa el alto restante del sticky y recorta
    el desborde horizontal SIN ser ancestro scroll-container del sticky */
