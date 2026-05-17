@@ -897,7 +897,14 @@ a.tl-card { text-decoration: none; color: inherit; }
 .carta-inner { max-width: 1300px; margin: 0 auto; position: relative; z-index: 1; }
 .carta-header { display: grid; grid-template-columns: 280px 1fr; align-items: center; gap: 40px; padding-bottom: 24px; border-bottom: 1px solid rgba(237,232,217,.15); margin-bottom: 30px; }
 .carta-title { font-family: 'Abril Fatface', serif; font-size: clamp(2.2rem, 4vw, 3.2rem); color: var(--cream); line-height: 1.1; }
-.carta-cats { display: flex; align-items: flex-start; gap: clamp(16px, 3vw, 40px); flex-wrap: wrap; }
+.carta-cats {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 10px;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
 .cat-item { display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; transition: opacity .2s; }
 .cat-item:hover { opacity: .7; }
 .cat-icon { width: 54px; height: 54px; border: 1.5px solid rgba(237,232,217,.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: border-color .2s, background .2s; }
@@ -2353,12 +2360,12 @@ img, video, iframe { max-width: 100%; height: auto; }
   .carta-header { grid-template-columns: 1fr; gap: 1.2rem; text-align: center; padding-bottom: 1.2rem; margin-bottom: 1.4rem; border-bottom-width: 0; }
   .carta-title { font-size: clamp(1.5rem, 6.5vw, 2rem); }
   .carta-cats {
-    display: grid !important; grid-template-columns: repeat(3, 1fr);
-    gap: 10px; justify-content: stretch;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 6px;
   }
-  .cat-item { width: 100%; gap: 5px; }
-  .cat-icon { width: 44px; height: 44px; font-size: 18px; }
-  .cat-label { font-size: .58rem; letter-spacing: .04em; }
+  .cat-item { width: 100%; min-width: 0; gap: 5px; }
+  .cat-icon { width: 38px; height: 38px; font-size: 16px; }
+  .cat-label { font-size: 0.55rem; letter-spacing: 0.05em; line-height: 1.2; }
   /* Productos destacados: 2 cols mobile, gap 12px */
   .productos-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px; }
   .producto-img { aspect-ratio: 1/1; margin-bottom: 8px; }
