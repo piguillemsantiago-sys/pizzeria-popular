@@ -59,6 +59,10 @@
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Preload de imágenes de productos destacados (recomprimidas) -->
+  <link rel="preload" as="image" href="/images/extracted/producto-pizza-argentina.jpg">
+  <link rel="preload" as="image" href="/images/extracted/producto-milanesa-ternera.jpg">
 </head>
 <body>
 
@@ -482,13 +486,13 @@
   <div class="productos-grid">
     <div class="producto-card">
       <div class="producto-img">
-        <img src="/images/extracted/producto-pizza-argentina.jpg" alt="Pizza Argentina al molde" loading="lazy">
+        <img src="/images/extracted/producto-pizza-argentina.jpg" alt="Pizza Argentina al molde" loading="eager" fetchpriority="high">
       </div>
       <p class="producto-name">Pizza Argentina<br>al molde</p>
     </div>
     <div class="producto-card">
       <div class="producto-img">
-        <img src="/images/extracted/producto-milanesa-ternera.jpg" alt="Milanesa de ternera a caballo con patatas" loading="lazy">
+        <img src="/images/extracted/producto-milanesa-ternera.jpg" alt="Milanesa de ternera a caballo con patatas" loading="eager" fetchpriority="high">
       </div>
       <p class="producto-name">Milanesa de ternera<br>a caballo con patatas</p>
     </div>
@@ -870,18 +874,63 @@
     <p class="section-label reveal" style="text-align:center;color:#D8A460;">Testimonios de nuestros clientes</p>
     <h2 class="section-title reveal reveal-d1" style="text-align:center;">Lo que piensan de nosotros</h2>
   </div>
-  <div class="testimonials-grid" id="testimonialsGrid">
+  <div class="testimonials-carousel" id="testimonialsCarousel">
     <!-- Cards renderizadas desde /data/google-ratings.json -->
   </div>
   <script>
   (function() {
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
     function trunc(s, n) { s = String(s == null ? '' : s); return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s; }
+    function initTestimonialsCarousel(carousel) {
+      var cards = Array.prototype.slice.call(carousel.querySelectorAll('.testimonial-card'));
+      if (!cards.length) return;
+      var isMobile = window.matchMedia('(max-width: 768px)').matches;
+      var cardsPerView = isMobile ? 2 : 3;
+      var intervalMs = 5000;
+      var currentIndex = 0;
+      var totalSlides = Math.ceil(cards.length / cardsPerView);
+      function showSlide(slideIndex) {
+        cards.forEach(function (card, i) {
+          var inThisSlide = i >= slideIndex * cardsPerView && i < (slideIndex + 1) * cardsPerView;
+          if (inThisSlide) {
+            card.classList.remove('is-hidden');
+            card.classList.add('is-entering');
+            setTimeout(function () {
+              card.classList.remove('is-entering');
+              card.classList.add('is-active');
+            }, 50);
+          } else {
+            card.classList.add('is-hidden');
+            card.classList.remove('is-active', 'is-entering');
+          }
+        });
+      }
+      function nextSlide() {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        showSlide(currentIndex);
+      }
+      showSlide(0);
+      var rotationTimer = setInterval(nextSlide, intervalMs);
+      window.addEventListener('resize', function () {
+        var newIsMobile = window.matchMedia('(max-width: 768px)').matches;
+        if (newIsMobile !== isMobile) {
+          isMobile = newIsMobile;
+          cardsPerView = isMobile ? 2 : 3;
+          totalSlides = Math.ceil(cards.length / cardsPerView);
+          currentIndex = 0;
+          showSlide(0);
+        }
+      });
+      if (!isMobile) {
+        carousel.addEventListener('mouseenter', function () { clearInterval(rotationTimer); });
+        carousel.addEventListener('mouseleave', function () { rotationTimer = setInterval(nextSlide, intervalMs); });
+      }
+    }
     fetch('/data/google-ratings.json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var grid = document.getElementById('testimonialsGrid');
-        if (!grid || !data || !Array.isArray(data.locals)) return;
+        var carousel = document.getElementById('testimonialsCarousel');
+        if (!carousel || !data || !Array.isArray(data.locals)) return;
         var html = data.locals
           .filter(function(l) { return l.topReview && l.topReview.text; })
           .map(function(l) {
@@ -901,7 +950,7 @@
               '<p class="rv-text">"' + esc(trunc(r.text, 280)) + '"</p>' +
             '</div>';
           }).join('');
-        if (html) { grid.innerHTML = html; }
+        if (html) { carousel.innerHTML = html; initTestimonialsCarousel(carousel); }
       })
       .catch(function() {});
   })();
