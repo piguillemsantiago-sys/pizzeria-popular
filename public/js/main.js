@@ -287,18 +287,43 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
 // ─── TESTIMONIOS — scroll-jacking: el scroll vertical mueve el carousel horizontal ───
 (function () {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var wrapper = document.getElementById('testimonialsPinWrapper');
-  var track = document.getElementById('testimonialsTrack');
-  if (!wrapper || !track) return;
-  function updateTrackPosition() {
-    var maxScroll = wrapper.offsetHeight - window.innerHeight;
-    if (maxScroll <= 0) { track.style.transform = 'translate3d(0,0,0)'; return; }
-    var scrolled = -wrapper.getBoundingClientRect().top;
-    var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
+
+  function handleTestimonialsScroll() {
+    var wrapper = document.querySelector('.testimonials-pin-wrapper');
+    var track = document.querySelector('.testimonials-track');
+    if (!wrapper || !track) return;
+
+    var rect = wrapper.getBoundingClientRect();
+    var viewportHeight = window.innerHeight;
+    var wrapperHeight = wrapper.offsetHeight;
+    var travel = wrapperHeight - viewportHeight;
     var maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth);
+
+    // Aún no llegamos a la sección
+    if (rect.top > 0 || travel <= 0) {
+      track.style.transform = 'translate3d(0, 0, 0)';
+      return;
+    }
+    // Ya pasamos la sección → dejar el track en su posición final
+    if (rect.top < -travel) {
+      track.style.transform = 'translate3d(' + (-maxTranslate) + 'px, 0, 0)';
+      return;
+    }
+    // Progress 0 → 1 durante el pinning
+    var progress = Math.max(0, Math.min(1, -rect.top / travel));
     track.style.transform = 'translate3d(' + (-progress * maxTranslate) + 'px, 0, 0)';
   }
-  window.addEventListener('scroll', updateTrackPosition, { passive: true });
-  window.addEventListener('resize', updateTrackPosition);
-  updateTrackPosition();
+
+  var ticking = false;
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(function () {
+        handleTestimonialsScroll();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+  window.addEventListener('resize', handleTestimonialsScroll);
+  handleTestimonialsScroll();
 })();
