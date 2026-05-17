@@ -2727,6 +2727,8 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 /* CAMBIO 3 — botón "Ver más" oculto por defecto (sólo aparece en mobile) */
 .local-see-more { display: none; }
+/* Provincia / tag "Nuevo": solo se ven en las cards compactas del home (mobile) */
+.local-province, .local-new-tag { display: none; }
 
 /* CAMBIO 3 — modal de detalle de local */
 .local-detail-modal {
@@ -2796,15 +2798,15 @@ img, video, iframe { max-width: 100%; height: auto; }
     gap: 12px;
   }
   .locales-home .local-card {
-    aspect-ratio: 1 / 1.15;
+    aspect-ratio: 1 / 1.2;
     display: flex; flex-direction: column; justify-content: space-between;
-    padding: 1.9rem 0.85rem 1rem;
-    border: 1px solid rgba(197,165,114,0.4);
+    padding: 1rem 0.9rem;
+    border: 1px solid rgba(197,165,114,0.35);
     border-radius: 14px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0.55);
     background-size: cover;
     background-position: center;
     background-blend-mode: multiply;
@@ -2812,7 +2814,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   .locales-home .local-card::before {
     content: '';
     position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.75) 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 100%);
     transform: none;
     z-index: 1;
   }
@@ -2823,35 +2825,43 @@ img, video, iframe { max-width: 100%; height: auto; }
   .locales-home .local-card[data-local="playa-san-juan"] { background-image: url('/images/extracted/tl-playa-san-juan.jpg'); }
   .locales-home .local-card[data-local="luceros"]        { background-image: url('/images/extracted/tl-luceros.png'); }
   .locales-home .local-card[data-local="boadilla"]       { background-image: url('/images/extracted/tl-boadilla.jpg'); }
-  .locales-home .local-new-badge {
-    display: inline-block;
-    position: absolute;
-    top: 0.5rem; right: 0.5rem;
-    background: linear-gradient(135deg, #E8C87A 0%, #C5A572 50%, #A88B5C 100%);
-    color: #1a0f0d;
-    font-size: 0.55rem; font-weight: 800;
-    letter-spacing: 0.08em;
-    padding: 0.3rem 0.55rem;
-    border-radius: 50px;
+  /* Sin badges flotantes — el layout limpio usa texto en flujo */
+  .locales-home .province-badge,
+  .locales-home .local-new-badge { display: none !important; }
+  /* Provincia: texto fino dorado uppercase, arriba del nombre */
+  .locales-home .local-card .local-province {
+    display: block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    z-index: 3;
-    box-shadow: 0 2px 8px rgba(197,165,114,0.5);
-    animation: badgePulse 2s ease-in-out infinite;
-  }
-  .locales-home .local-card .local-city {
-    font-size: 0.6rem; letter-spacing: 0.15em;
-    text-transform: uppercase; color: #C5A572;
-    font-weight: 600; margin: 0;
+    color: #C5A572;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    line-height: 1;
   }
   .locales-home .local-card .local-name {
-    font-family: 'Abril Fatface', serif;
-    font-size: 1.2rem; font-weight: 700;
-    color: #EDE8D9; margin: 0.3rem 0; line-height: 1.1;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem; font-weight: 700;
+    color: #EDE8D9; margin: 0 0 0.3rem 0; line-height: 1.15;
+  }
+  /* "— Nuevo" como accent italic al lado del nombre (solo Benidorm) */
+  .locales-home .local-card .local-new-tag {
+    display: inline-block;
+    font-size: 0.7rem; font-style: italic;
+    color: #C5A572; font-weight: 500;
+    letter-spacing: 0.02em;
   }
   .locales-home .local-card .local-rating {
     font-size: 0.85rem; color: #C5A572;
-    font-weight: 600; margin: 0.2rem 0;
+    font-weight: 600; margin: 0.3rem 0 0.15rem;
     justify-content: center;
+  }
+  /* Cantidad de opiniones en una segunda línea */
+  .locales-home .local-card .local-rating span {
+    display: block;
+    font-size: 0.7rem; font-weight: 400;
+    color: rgba(237,232,217,0.75);
+    margin-top: 0.1rem;
   }
   .locales-home .local-card .local-address,
   .locales-home .local-card .local-tags,
@@ -2860,14 +2870,15 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .locales-home .local-card .local-see-more {
     display: block; width: 100%;
-    padding: 0.6rem 0.8rem;
-    background: rgba(197,165,114,0.85);
+    margin-top: auto;
+    padding: 0.55rem 0.8rem;
+    background: rgba(197,165,114,0.9);
     color: #1a0f0d; border: none; border-radius: 8px;
-    font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
     cursor: pointer; min-height: 36px;
     -webkit-tap-highlight-color: transparent;
-    margin-top: auto; font-family: inherit;
+    font-family: inherit;
   }
   .locales-home .local-card .local-see-more:active { transform: scale(0.97); }
 
