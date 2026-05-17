@@ -2127,8 +2127,9 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── iOS / viewport safety (all viewports) ── */
-html, body { max-width: 100%; overflow-x: hidden; }
-body { overscroll-behavior: none; min-height: 100vh; min-height: 100dvh; }
+/* overflow-x: clip evita crear scroll-container (que rompe el scroll vertical / rueda) */
+html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
+body { overflow-y: auto; overscroll-behavior: none; min-height: 100vh; min-height: 100dvh; }
 img, video, iframe { max-width: 100%; height: auto; }
 * { -webkit-tap-highlight-color: transparent; }
 
@@ -2865,7 +2866,12 @@ img, video, iframe { max-width: 100%; height: auto; }
 
   /* CAMBIO 2 — heading rediseñado, ajustes mobile */
   .locales-heading { padding: 1.8rem 1rem 1.5rem; }
-  .locales-heading-eyebrow { font-size: 0.7rem; margin-bottom: 0.8rem; }
+  .locales-heading-eyebrow {
+    font-size: 0.82rem;
+    letter-spacing: 0.25em;
+    padding: 0.4rem 1rem;
+    margin-bottom: 1rem;
+  }
   .locales-heading-title { font-size: clamp(2rem, 9vw, 2.8rem); }
   .locales-heading-subtitle { font-size: 0.82rem; }
 }
@@ -2879,12 +2885,18 @@ img, video, iframe { max-width: 100%; height: auto; }
 }
 .locales-heading-eyebrow {
   display: inline-block;
-  font-size: 0.78rem;
-  letter-spacing: 0.3em;
+  font-size: 0.95rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: #C5A572;
-  font-weight: 600;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  margin-bottom: 1.4rem;
+  padding: 0.5rem 1.2rem;
+  background: rgba(197,165,114,0.12);
+  border: 1px solid rgba(197,165,114,0.4);
+  border-radius: 50px;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 .locales-heading-title {
   font-family: 'Playfair Display', serif;
@@ -2912,4 +2924,25 @@ img, video, iframe { max-width: 100%; height: auto; }
 @keyframes badgePulse {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.06); }
+}
+
+/* ═══ CAMBIO 3 — sección Carta del home unificada con /carta/ (mobile) ═══ */
+.carta-eyebrow { display: none; }
+@media (max-width: 768px) {
+  /* Mismo fondo limpio que /carta/ (sin la foto del home) */
+  .carta-section {
+    background-image: none !important;
+    background-color: var(--dark2) !important;
+  }
+  /* Eyebrow sobre el H2, igual que el page-header de /carta/ */
+  .carta-eyebrow {
+    display: block;
+    text-align: center;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #C5A572;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+  }
 }

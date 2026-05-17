@@ -87,7 +87,8 @@
       "Bash(awk { for\\(i=1;i<=length\\($0\\);i++\\){c=substr\\($0,i,1\\); if\\(c==\"{\"\\)o++; else if\\(c==\"}\"\\)cl++} } END { print \"open:\",o,\" close:\",cl } *)",
       "Bash(grep -rn '<\\\\\\\\a>\\\\|href=\"\\\\\\\\' public/ --include=*.html)",
       "Bash(echo \"=== count broken <\\\\\\\\a> ===\")",
-      "Bash(grep -rc '<\\\\\\\\a>' public/ --include=*.html)"
+      "Bash(grep -rc '<\\\\\\\\a>' public/ --include=*.html)",
+      "Bash(grep -n \"^html\\\\|^body\\\\|^html,\\\\|html, body\\\\|^\\\\* {\" public/css/style.css)"
     ]
   }
 }
