@@ -32,7 +32,8 @@
           return;
         }
         if (key === 'total-reviews') {
-          el.textContent = '+' + data.totalReviews.toLocaleString('es-ES');
+          // El "+" ya está hardcodeado en el HTML antes del <span> → no duplicarlo
+          el.textContent = data.totalReviews.toLocaleString('es-ES');
           return;
         }
 

@@ -292,12 +292,11 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   if (!wrapper || !track) return;
   function updateTrackPosition() {
     var maxScroll = wrapper.offsetHeight - window.innerHeight;
-    if (maxScroll <= 0) { track.style.transform = 'translateX(0)'; return; }
+    if (maxScroll <= 0) { track.style.transform = 'translate3d(0,0,0)'; return; }
     var scrolled = -wrapper.getBoundingClientRect().top;
     var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
-    var maxTranslate = track.scrollWidth - window.innerWidth;
-    if (maxTranslate < 0) maxTranslate = 0;
-    track.style.transform = 'translateX(' + (-progress * maxTranslate) + 'px)';
+    var maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth);
+    track.style.transform = 'translate3d(' + (-progress * maxTranslate) + 'px, 0, 0)';
   }
   window.addEventListener('scroll', updateTrackPosition, { passive: true });
   window.addEventListener('resize', updateTrackPosition);

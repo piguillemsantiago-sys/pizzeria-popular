@@ -3222,10 +3222,15 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 /* ═══ TESTIMONIOS — carousel horizontal con scroll-jacking ═══ */
 .testimonials-section { position: relative; }
-.testimonials-heading { padding-bottom: 0.5rem; }
-.testimonials-pin-wrapper { position: relative; height: 200vh; }
+.testimonials-heading { padding-bottom: 0.3rem; margin-bottom: 0; }
+.testimonials-pin-wrapper {
+  position: relative;
+  height: 350vh;
+  margin-top: 0;
+  padding-top: 0;
+}
 @media (min-width: 769px) {
-  .testimonials-pin-wrapper { height: 350vh; }
+  .testimonials-pin-wrapper { height: 600vh; }
 }
 .testimonials-sticky {
   position: sticky;
@@ -3233,7 +3238,8 @@ img, video, iframe { max-width: 100%; height: auto; }
   height: 100vh;
   overflow: hidden;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 0.5rem;
 }
 .testimonials-track {
   display: flex;
