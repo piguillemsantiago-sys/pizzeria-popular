@@ -2794,6 +2794,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   .locales-home .locales-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px;
+    margin-top: 1rem;
   }
   .locales-home .local-card {
     aspect-ratio: 1 / 1.15;
@@ -2881,6 +2882,9 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .locales-heading-title { font-size: clamp(2rem, 9vw, 2.8rem); }
   .locales-heading-subtitle { font-size: 0.82rem; }
+  /* Home: padding arriba/abajo a la mitad + título en una sola línea */
+  .locales-home .locales-heading { padding: 0.9rem 1rem 0.75rem; }
+  .locales-home .locales-heading-title { white-space: nowrap; }
 }
 
 /* ═══ CAMBIO 2 — bloque heading "Nuestros Locales" (desktop + mobile) ═══ */
