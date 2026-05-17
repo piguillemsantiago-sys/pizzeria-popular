@@ -3223,12 +3223,15 @@ img, video, iframe { max-width: 100%; height: auto; }
 }
 
 /* ═══ TESTIMONIOS — carousel horizontal con scroll-jacking ═══ */
-.testimonials-section { position: relative; }
+/* El patrón de comillas vive SOLO en el sticky (alto real de las cards).
+   Sección y pin-wrapper transparentes → no se ve patrón "vacío" durante el pin. */
+.testimonials-section { position: relative; background: transparent; }
 .testimonials-pin-wrapper {
   position: relative;
   height: 180vh;
   margin-top: -2rem;
   padding-top: 0;
+  background: transparent;
 }
 @media (min-width: 769px) {
   .testimonials-pin-wrapper { height: 300vh; }
@@ -3248,6 +3251,9 @@ img, video, iframe { max-width: 100%; height: auto; }
   max-height: 90vh;
   width: 100%;
   overflow: hidden;
+  background-color: #FAF3E8;
+  background-image: url('/images/bg-resenas-pattern.svg');
+  background-repeat: repeat;
   display: flex;
   flex-direction: column;
   align-items: center;
