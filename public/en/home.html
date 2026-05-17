@@ -866,18 +866,12 @@
 
 <!-- ======================== RESEÑAS ======================== -->
 <section class="resenas-section testimonials-section">
-  <div class="testimonials-pin-wrapper" id="testimonialsPinWrapper">
-    <div class="testimonials-sticky">
-      <div class="testimonials-heading">
-        <p class="section-label reveal" style="text-align:center;color:#D8A460;">Customer testimonials</p>
-        <h2 class="section-title reveal reveal-d1" style="text-align:center;">What they think of us</h2>
-      </div>
-      <div class="testimonials-track-wrapper">
-        <div class="testimonials-track" id="testimonialsTrack">
-          <!-- Cards rendered from /data/google-ratings.json -->
-        </div>
-      </div>
-    </div>
+  <div class="testimonials-heading">
+    <p class="section-label reveal" style="text-align:center;color:#D8A460;">Customer testimonials</p>
+    <h2 class="section-title reveal reveal-d1" style="text-align:center;">What they think of us</h2>
+  </div>
+  <div class="testimonials-grid" id="testimonialsGrid">
+    <!-- Cards rendered from /data/google-ratings.json -->
   </div>
   <script>
   (function() {
@@ -886,8 +880,8 @@
     fetch('/data/google-ratings.json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var track = document.getElementById('testimonialsTrack');
-        if (!track || !data || !Array.isArray(data.locals)) return;
+        var grid = document.getElementById('testimonialsGrid');
+        if (!grid || !data || !Array.isArray(data.locals)) return;
         var html = data.locals
           .filter(function(l) { return l.topReview && l.topReview.text; })
           .map(function(l) {
@@ -907,7 +901,7 @@
               '<p class="rv-text">"' + esc(trunc(r.text, 280)) + '"</p>' +
             '</div>';
           }).join('');
-        if (html) { track.innerHTML = html; window.dispatchEvent(new Event('resize')); }
+        if (html) { grid.innerHTML = html; }
       })
       .catch(function() {});
   })();

@@ -3222,75 +3222,28 @@ img, video, iframe { max-width: 100%; height: auto; }
   .twinkle-star { font-size: 1.7rem; }
 }
 
-/* ═══ TESTIMONIOS — carousel horizontal con scroll-jacking ═══ */
-/* El patrón de comillas vive SOLO en el sticky (alto real de las cards).
-   Sección y pin-wrapper transparentes → no se ve patrón "vacío" durante el pin. */
-.testimonials-section { position: relative; background: transparent; }
-.testimonials-pin-wrapper {
-  position: relative;
-  height: 180vh;
-  margin-top: -2rem;
-  padding-top: 0;
-  background: transparent;
-}
-@media (min-width: 769px) {
-  .testimonials-pin-wrapper { height: 300vh; }
-}
-@media (max-width: 768px) {
-  .testimonials-pin-wrapper { margin-top: -1rem; }
-}
-/* Heading + cards van DENTRO del sticky → el título queda fijo arriba
-   mientras las cards se desplazan en horizontal (column flex).
-   sticky con top en vh NO se rompe; transform sí lo rompería. */
-/* height:auto → el sticky toma el alto exacto del contenido (heading + cards),
-   sin aire muerto debajo del último comentario. max-height = tope de seguridad. */
-.testimonials-sticky {
-  position: sticky;
-  top: 8vh;
-  height: auto;
-  max-height: 90vh;
-  width: 100%;
-  overflow: hidden;
+/* ═══ TESTIMONIOS — grilla estática (3 mobile / 6 desktop) ═══ */
+.testimonials-section {
+  padding: 3rem 1rem;
   background-color: #FAF3E8;
   background-image: url('/images/bg-resenas-pattern.svg');
   background-repeat: repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 1rem 0;
-  gap: 0.75rem;
-}
-@media (max-width: 768px) {
-  .testimonials-sticky { top: 10vh; max-height: 85vh; padding: 0.5rem 0; gap: 0.5rem; }
 }
 .testimonials-heading {
   text-align: center;
-  flex-shrink: 0;
-  z-index: 2;
-  margin: 0;
-  padding-bottom: 0;
+  margin-bottom: 1.5rem;
 }
-/* contenedor del carousel: ocupa el alto restante del sticky y recorta
-   el desborde horizontal SIN ser ancestro scroll-container del sticky */
-.testimonials-track-wrapper {
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
-.testimonials-track {
-  display: flex;
-  gap: 1.5rem;
-  padding: 0 5vw;
-  will-change: transform;
-  align-items: stretch;
+@media (min-width: 769px) {
+  .testimonials-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
 }
 .testimonial-card {
-  flex-shrink: 0;
-  width: 85vw;
-  max-width: 360px;
-  max-height: 70vh;
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(197, 165, 114, 0.3);
@@ -3301,9 +3254,6 @@ img, video, iframe { max-width: 100%; height: auto; }
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
-@media (min-width: 769px) {
-  .testimonial-card { width: 30vw; max-width: 420px; }
-}
 /* Texto del comentario, legible sobre la card oscura */
 .testimonial-card .rv-name  { color: #EDE8D9; }
 .testimonial-card .rv-local { color: #C5A572; }
@@ -3313,12 +3263,4 @@ img, video, iframe { max-width: 100%; height: auto; }
 /* 3 cards en mobile / 6 en desktop */
 @media (max-width: 768px) {
   .testimonial-card:nth-child(n+4) { display: none; }
-  .testimonial-card { max-height: 65vh; }
-}
-/* Fallback sin scroll-jacking para prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .testimonials-pin-wrapper { height: auto !important; margin-top: 0 !important; }
-  .testimonials-sticky { position: static !important; height: auto !important; overflow: visible; padding-top: 0; }
-  .testimonials-track-wrapper { flex: none; overflow: visible; }
-  .testimonials-track { flex-wrap: wrap; justify-content: center; transform: none !important; }
 }
