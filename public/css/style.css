@@ -3089,3 +3089,40 @@ img, video, iframe { max-width: 100%; height: auto; }
     margin-bottom: 0 !important;
   }
 }
+
+/* ═══ PROMOS — subtítulo, legibilidad, título en una línea, spacing ═══ */
+.promo-subtitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #C5A572;
+  margin: 0.3rem 0 0.8rem;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+}
+.promo-title { text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+.promo-desc {
+  color: #fff !important;
+  font-weight: 500;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  line-height: 1.5;
+}
+.promo-card .promo-conditions {
+  color: rgba(255,255,255,0.85) !important;
+  font-size: 0.72rem;
+  font-style: italic;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+.promo-info { position: relative; z-index: 2; }
+
+/* Título "Nuestras Promociones" en una sola línea */
+.promos-title { white-space: nowrap; }
+@media (max-width: 480px) {
+  .promos-title { white-space: normal; font-size: clamp(1.6rem, 8vw, 2.2rem); }
+}
+
+/* Menos espacio arriba del eyebrow en la sección Promos del home (mobile) */
+@media (max-width: 768px) {
+  #promos { padding-top: 1.5rem; }
+  #promos .page-header { padding-top: 0.6rem; padding-bottom: 0.5rem; }
+}
