@@ -865,11 +865,17 @@
 </section>
 
 <!-- ======================== RESEÑAS ======================== -->
-<section class="resenas-section" style="background-color:#FAF3E8;background-image:url('/images/bg-resenas-pattern.svg');background-repeat:repeat;">
-  <p class="section-label reveal" style="text-align:center;color:#D8A460;">Customer testimonials</p>
-  <h2 class="section-title reveal reveal-d1" style="text-align:center;">What they think of us</h2>
-  <div class="rv-grid reveal reveal-d1" id="reviewsGrid">
-    <!-- Cards rendered dynamically from /data/google-ratings.json -->
+<section class="resenas-section testimonials-section" style="background-color:#FAF3E8;background-image:url('/images/bg-resenas-pattern.svg');background-repeat:repeat;">
+  <div class="testimonials-heading">
+    <p class="section-label reveal" style="text-align:center;color:#D8A460;">Customer testimonials</p>
+    <h2 class="section-title reveal reveal-d1" style="text-align:center;">What they think of us</h2>
+  </div>
+  <div class="testimonials-pin-wrapper" id="testimonialsPinWrapper">
+    <div class="testimonials-sticky">
+      <div class="testimonials-track" id="testimonialsTrack">
+        <!-- Cards rendered from /data/google-ratings.json -->
+      </div>
+    </div>
   </div>
   <script>
   (function() {
@@ -878,8 +884,8 @@
     fetch('/data/google-ratings.json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var grid = document.getElementById('reviewsGrid');
-        if (!grid || !data || !Array.isArray(data.locals)) return;
+        var track = document.getElementById('testimonialsTrack');
+        if (!track || !data || !Array.isArray(data.locals)) return;
         var html = data.locals
           .filter(function(l) { return l.topReview && l.topReview.text; })
           .map(function(l) {
@@ -887,7 +893,7 @@
             var initial = (r.author || '?').charAt(0).toUpperCase();
             var rating = Math.round(r.rating || 0);
             var stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-            return '<div class="rv-card">' +
+            return '<div class="testimonial-card">' +
               '<div class="rv-header">' +
                 '<div class="rv-avatar">' + esc(initial) + '</div>' +
                 '<div class="rv-info">' +
@@ -899,7 +905,7 @@
               '<p class="rv-text">"' + esc(trunc(r.text, 280)) + '"</p>' +
             '</div>';
           }).join('');
-        if (html) grid.innerHTML = html;
+        if (html) { track.innerHTML = html; window.dispatchEvent(new Event('resize')); }
       })
       .catch(function() {});
   })();

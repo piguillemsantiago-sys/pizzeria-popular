@@ -283,3 +283,23 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   }, { threshold: 0.25 });
   stars.forEach(function (s) { observer.observe(s); });
 })();
+
+// ─── TESTIMONIOS — scroll-jacking: el scroll vertical mueve el carousel horizontal ───
+(function () {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var wrapper = document.getElementById('testimonialsPinWrapper');
+  var track = document.getElementById('testimonialsTrack');
+  if (!wrapper || !track) return;
+  function updateTrackPosition() {
+    var maxScroll = wrapper.offsetHeight - window.innerHeight;
+    if (maxScroll <= 0) { track.style.transform = 'translateX(0)'; return; }
+    var scrolled = -wrapper.getBoundingClientRect().top;
+    var progress = Math.max(0, Math.min(1, scrolled / maxScroll));
+    var maxTranslate = track.scrollWidth - window.innerWidth;
+    if (maxTranslate < 0) maxTranslate = 0;
+    track.style.transform = 'translateX(' + (-progress * maxTranslate) + 'px)';
+  }
+  window.addEventListener('scroll', updateTrackPosition, { passive: true });
+  window.addEventListener('resize', updateTrackPosition);
+  updateTrackPosition();
+})();
