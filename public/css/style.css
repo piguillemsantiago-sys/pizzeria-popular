@@ -2707,3 +2707,141 @@ img, video, iframe { max-width: 100%; height: auto; }
     transition: transform .08s ease;
   }
 }
+
+/* ═══ LOCALES HOME: modal delivery + cabecera + cards compactas + botón mapa ═══ */
+
+/* CAMBIO 4 — botón "Cómo llegar" (desktop + mobile) */
+.local-btn-map { background: #4285F4; color: #fff; }
+.local-btn-map:hover { opacity: .85; }
+
+/* CAMBIO 3 — botón "Ver más" oculto por defecto (sólo aparece en mobile) */
+.local-see-more { display: none; }
+
+/* CAMBIO 3 — modal de detalle de local */
+.local-detail-modal {
+  background-color: #1a0f0d;
+  background-image: url('/images/bg-menu-pattern.svg');
+  background-repeat: repeat;
+  background-attachment: scroll;
+}
+.local-modal-content {
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 0.6rem;
+}
+.local-modal-city {
+  font-size: 0.72rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: #C5A572; font-weight: 600;
+}
+.local-modal-name {
+  font-family: 'Abril Fatface', serif;
+  font-size: 1.9rem; color: #EDE8D9; margin: 0;
+}
+.local-modal-address {
+  font-size: 0.85rem; color: #EDE8D9; line-height: 1.5; margin: 0;
+}
+.local-modal-rating {
+  font-size: 0.88rem; color: #C5A572; font-weight: 600; margin: 0.3rem 0;
+}
+.local-modal-tag {
+  font-size: 0.78rem; color: #C5A572; font-style: italic; margin: 0;
+}
+.local-modal-features {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 0.4rem; margin: 0.4rem 0;
+}
+.local-modal-features span {
+  background: rgba(197,165,114,0.15);
+  border: 1px solid rgba(197,165,114,0.4);
+  padding: 0.3rem 0.7rem; border-radius: 50px;
+  font-size: 0.7rem; color: #EDE8D9;
+}
+.local-modal-actions {
+  display: flex; flex-direction: column; gap: 0.5rem;
+  width: 100%; margin-top: 0.8rem;
+}
+.local-modal-btn {
+  padding: 0.8rem 1rem; border-radius: 10px;
+  font-size: 0.85rem; font-weight: 600;
+  text-decoration: none; text-align: center;
+  min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.local-modal-btn-primary { background: #C5A572; color: #1a0f0d; }
+.local-modal-btn-wa { background: #25D366; color: #fff; }
+.local-modal-btn-map { background: #4285F4; color: #fff; }
+
+@media (max-width: 768px) {
+  /* CAMBIO 1 — fondo de marca del modal delivery */
+  #deliveryModal .promo-modal {
+    background-color: #1a0f0d;
+    background-image: url('/images/bg-menu-pattern.svg');
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+
+  /* CAMBIO 2 — cabecera "Nuestros Locales" del home idéntica a /restaurantes/ */
+  .locales-home .section-label {
+    display: block; text-align: center;
+    font-size: .58rem; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--gold);
+    font-weight: 700; text-indent: 0;
+    margin: 0 auto .5rem;
+  }
+  .locales-home .section-label::before,
+  .locales-home .section-label::after { display: none; }
+  .locales-home .section-title {
+    font-family: 'Abril Fatface', serif;
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+    color: var(--cream); line-height: 1.05;
+    text-align: center;
+  }
+
+  /* CAMBIO 3 — cards compactas del home (2 columnas) */
+  .locales-home .locales-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+  .locales-home .local-card {
+    aspect-ratio: 1 / 1.15;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 1rem 0.85rem;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(197,165,114,0.3);
+    border-radius: 14px;
+    text-align: center;
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+  .locales-home .local-card .local-city {
+    font-size: 0.6rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: #C5A572;
+    font-weight: 600; margin: 0;
+  }
+  .locales-home .local-card .local-name {
+    font-family: 'Abril Fatface', serif;
+    font-size: 1.2rem; font-weight: 700;
+    color: #EDE8D9; margin: 0.3rem 0; line-height: 1.1;
+  }
+  .locales-home .local-card .local-rating {
+    font-size: 0.85rem; color: #C5A572;
+    font-weight: 600; margin: 0.2rem 0;
+    justify-content: center;
+  }
+  .locales-home .local-card .local-address,
+  .locales-home .local-card .local-tags,
+  .locales-home .local-card .local-btns {
+    display: none !important;
+  }
+  .locales-home .local-card .local-see-more {
+    display: block; width: 100%;
+    padding: 0.6rem 0.8rem;
+    background: rgba(197,165,114,0.85);
+    color: #1a0f0d; border: none; border-radius: 8px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; min-height: 36px;
+    -webkit-tap-highlight-color: transparent;
+    margin-top: auto; font-family: inherit;
+  }
+  .locales-home .local-card .local-see-more:active { transform: scale(0.97); }
+}
