@@ -13,7 +13,7 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--dark); overflow-x: hidden; }
+body { font-family: 'Montserrat', sans-serif; background: var(--cream); color: var(--dark); }
 
 /* ─── ABRIL FATFACE LETTER SPACING ─── */
 .hero-title, .hbien-title, .page-title, .section-title, .page-404 h1,
@@ -2134,9 +2134,11 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
    ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── iOS / viewport safety (all viewports) ── */
-/* overflow-x: clip evita crear scroll-container (que rompe el scroll vertical / rueda) */
+/* overflow-x: clip recorta el desborde horizontal SIN crear scroll-container
+   (clip no rompe ni el scroll de la rueda ni position:sticky;
+   overflow-y queda 'visible' → el viewport es el scroll container → sticky funciona) */
 html, body { max-width: 100%; overflow-x: hidden; overflow-x: clip; }
-body { overflow-y: auto; overscroll-behavior: none; min-height: 100vh; min-height: 100dvh; }
+body { overscroll-behavior: none; min-height: 100vh; min-height: 100dvh; }
 img, video, iframe { max-width: 100%; height: auto; }
 * { -webkit-tap-highlight-color: transparent; }
 

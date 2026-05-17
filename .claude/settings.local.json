@@ -88,7 +88,8 @@
       "Bash(grep -rn '<\\\\\\\\a>\\\\|href=\"\\\\\\\\' public/ --include=*.html)",
       "Bash(echo \"=== count broken <\\\\\\\\a> ===\")",
       "Bash(grep -rc '<\\\\\\\\a>' public/ --include=*.html)",
-      "Bash(grep -n \"^html\\\\|^body\\\\|^html,\\\\|html, body\\\\|^\\\\* {\" public/css/style.css)"
+      "Bash(grep -n \"^html\\\\|^body\\\\|^html,\\\\|html, body\\\\|^\\\\* {\" public/css/style.css)",
+      "Bash(grep -n \"^html\\\\|^body\\\\|html, body\\\\|html {\" public/css/style.css)"
     ]
   }
 }
