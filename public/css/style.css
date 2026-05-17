@@ -3092,13 +3092,28 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 /* ═══ PROMOS — subtítulo, legibilidad, título en una línea, spacing ═══ */
 .promo-subtitle {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #C5A572;
-  margin: 0.3rem 0 0.8rem;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+  font-size: 0.92rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  color: #F5C66B !important;
+  margin: 0.4rem 0 0.9rem !important;
+  text-shadow:
+    0 0 12px rgba(245, 198, 107, 0.5),
+    0 2px 6px rgba(0, 0, 0, 0.85) !important;
+  display: inline-block !important;
+  padding: 0.25rem 0.7rem !important;
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-radius: 6px !important;
+  -webkit-backdrop-filter: blur(2px) !important;
+  backdrop-filter: blur(2px) !important;
+}
+@media (max-width: 768px) {
+  .promo-subtitle {
+    font-size: 0.78rem !important;
+    padding: 0.22rem 0.6rem !important;
+    letter-spacing: 0.12em !important;
+  }
 }
 .promo-title { text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
 .promo-desc {
