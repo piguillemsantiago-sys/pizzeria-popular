@@ -208,9 +208,8 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ─── PIZZA FLOTANTE — emoji girando con glow pulsante (mobile, todas las páginas) ───
+// ─── PIZZA FLOTANTE — emoji girando con glow pulsante (todas las páginas) ───
 (function () {
-  if (!window.matchMedia('(max-width: 768px)').matches) return;
   var wrap = document.createElement('div');
   wrap.className = 'spinning-pizza';
   wrap.id = 'spinningPizza';

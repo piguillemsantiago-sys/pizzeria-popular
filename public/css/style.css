@@ -428,14 +428,6 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
 .stat { text-align: center; }
 .stat-num { font-family: 'Abril Fatface', serif; font-size: 2.4rem; color: var(--gold); line-height: 1; }
 .stat-label { font-size: .68rem; letter-spacing: .2em; text-transform: uppercase; color: rgba(237,232,217,.65); margin-top: .35rem; }
-.scroll-hint {
-  z-index: 2;
-  position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
-  display: flex; flex-direction: column; align-items: center; gap: .5rem;
-  color: rgba(237,232,217,.55); font-size: .65rem; letter-spacing: .2em;
-  text-transform: uppercase; animation: fadeIn 1s 1.2s both;
-}
-.scroll-line { width: 1px; height: 44px; background: linear-gradient(var(--gold), transparent); animation: scrollAnim 2s 1.5s ease-in-out infinite; }
 @keyframes scrollAnim {
   0% { transform: scaleY(0); transform-origin: top; }
   50% { transform: scaleY(1); transform-origin: top; }
@@ -1720,7 +1712,37 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
 
 /* ─── HERO MOBILE LAYOUT + ACTIONS + PIZZA FLOTANTE ─── */
 .hero-actions-mobile { display: none; }
-.spinning-pizza { display: none; }
+/* Pizza flotante — emoji girando con glow pulsante (mobile + desktop) */
+.spinning-pizza {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #E8C87A 0%, #C5A572 50%, #A88B5C 100%);
+  border-radius: 50%;
+  box-shadow:
+    0 4px 20px rgba(197, 165, 114, 0.5),
+    0 0 0 2px rgba(255, 255, 255, 0.15),
+    inset 0 1px 3px rgba(255, 255, 255, 0.3);
+  z-index: 60;
+  pointer-events: none;
+  animation: pizzaGlowPulse 2s ease-in-out infinite;
+}
+@media (min-width: 769px) {
+  .spinning-pizza { right: 1.5rem; width: 60px; height: 60px; }
+  .pizza-emoji { font-size: 1.8rem; }
+}
+.pizza-emoji {
+  font-size: 1.5rem;
+  line-height: 1;
+  display: inline-block;
+  will-change: transform;
+}
 /* En desktop los wrappers son transparentes: no alteran el layout existente */
 .hero-top, .hero-bottom { display: contents; }
 @keyframes pizzaGlowPulse {
@@ -1784,29 +1806,6 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
   }
   /* Ocultar los botones originales y el indicador scroll en mobile */
   .hero-btns { display: none !important; }
-  .scroll-hint { display: none !important; }
-
-  /* Pizza flotante — emoji girando con glow pulsante */
-  .spinning-pizza {
-    display: flex; align-items: center; justify-content: center;
-    position: fixed;
-    right: 0.6rem; top: 45%; bottom: auto;
-    transform: translateY(-50%);
-    width: 50px; height: 50px;
-    background: linear-gradient(135deg, #E8C87A 0%, #C5A572 50%, #A88B5C 100%);
-    border-radius: 50%;
-    box-shadow:
-      0 4px 20px rgba(197,165,114,0.5),
-      0 0 0 2px rgba(255,255,255,0.15),
-      inset 0 1px 3px rgba(255,255,255,0.3);
-    z-index: 60; pointer-events: none;
-    animation: pizzaGlowPulse 2s ease-in-out infinite;
-  }
-  .pizza-emoji {
-    font-size: 1.5rem; line-height: 1;
-    display: inline-block;
-    will-change: transform;
-  }
 }
 
 /* Menu tabs + image display */
