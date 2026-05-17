@@ -538,6 +538,11 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
 .locales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; padding: 0 1rem; }
 .locales-5 { grid-template-columns: repeat(5, 1fr); }
 .locales-6 { grid-template-columns: repeat(6, 1fr); }
+/* Desktop real (≥1024px): 6 locales en 3×2 — sin esto caían a 6 columnas
+   ultra-angostas (los breakpoints ≤1023px ya bajan a 2-3 cols). */
+@media (min-width: 1024px) {
+  .locales-6 { grid-template-columns: repeat(3, 1fr); }
+}
 .local-card {
   background: rgba(0,0,0,0.78); padding: 2.6rem 1.5rem 1.5rem;
   position: relative; overflow: hidden;
