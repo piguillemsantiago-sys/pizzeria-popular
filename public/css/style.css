@@ -3039,3 +3039,25 @@ img, video, iframe { max-width: 100%; height: auto; }
     margin-top: 0.7rem !important;
   }
 }
+
+/* ═══ Cards compactas del home: layout más compacto, sin espacio muerto ═══ */
+@media (max-width: 768px) {
+  .locales-home .local-card {
+    min-height: auto !important;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    padding: 0.9rem 0.85rem !important;
+  }
+  .locales-home .local-card-inner {
+    gap: 0.3rem !important;
+    justify-content: flex-start !important;
+    height: auto !important;
+  }
+  .locales-home .local-see-more {
+    margin-top: 0.6rem !important;
+  }
+  .locales-home .local-reviews,
+  .locales-home .en-google {
+    margin-bottom: 0 !important;
+  }
+}
