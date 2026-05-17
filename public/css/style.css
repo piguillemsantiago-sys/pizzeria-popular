@@ -3286,3 +3286,27 @@ img, video, iframe { max-width: 100%; height: auto; }
 .testimonial-card .rv-text  { color: rgba(237,232,217,0.85); }
 .testimonial-card .rv-avatar { background: #C5A572; color: #1a0f0d; }
 .testimonial-card .rv-stars { color: #F5C66B; }
+
+/* ─── Cards de Valoración Google: clickeables → perfil de Google Maps ─── */
+.star-item {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.star-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Home: menos aire arriba del eyebrow de Promociones / Franquicias ───
+   Reusan el componente .page-header (padding-top 120px de subpágina); acá se
+   reduce ~a la mitad. Scoped con marker class → /promos/ y /franquicias/ intactas. */
+section.promos-home,
+section.franquicias-home { padding-top: 1rem; }
+section.promos-home .page-header,
+section.franquicias-home .page-header { padding-top: 60px; }
+@media (max-width: 768px) {
+  section.promos-home .page-header,
+  section.franquicias-home .page-header { padding-top: 40px; }
+}

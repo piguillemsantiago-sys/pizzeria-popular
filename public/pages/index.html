@@ -144,7 +144,7 @@
       <span class="hbien-title">BIENVENIDOS</span>
       <span class="hbien-sub">a pasear el alma</span>
     </div>
-    <p class="hero-sub"><span class="hero-desc-desktop">Somos más que una pizzería, somos familia, amigos, una primera cita y festejos infinitos. Desde Argentina hasta tu ciudad. Hecho con fuego, ingredientes frescos y mucho amor.</span><span class="hero-desc-mobile">Somos más que una pizzería,<br>somos una familia.</span></p>
+    <p class="hero-sub"><span class="hero-desc-desktop">Somos más que una pizzería, somos una familia.</span><span class="hero-desc-mobile">Somos más que una pizzería,<br>somos una familia.</span></p>
     </div>
     <div class="hero-bottom">
     <div class="hero-btns">
@@ -525,7 +525,7 @@
 </div></section>
 
 <!-- ======================== PROMOCIONES (mirror de /promos/) ======================== -->
-<section class="promos-section promos-page-section" id="promos" style="background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.72)),url('/images/bg-promos.jpg') center/cover no-repeat;">
+<section class="promos-section promos-page-section promos-home" id="promos" style="background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.72)),url('/images/bg-promos.jpg') center/cover no-repeat;">
   <div class="page-header" style="background:transparent;">
     <div class="page-header-inner">
       <span class="page-label">Ofertas especiales</span>
@@ -841,24 +841,24 @@
   <p class="section-label reveal">Valoración en Google</p>
   <h2 class="section-title reveal reveal-d1">+<span data-rating="total-reviews">4.600</span> opiniones.<br>Una sola conclusión.</h2>
   <div class="stars-row">
-    <div class="star-item reveal">
+    <a href="https://maps.app.goo.gl/QbWVoejfhqHQK3BD7" target="_blank" rel="noopener" class="star-item reveal">
       <div class="star-val" data-rating="benidorm" data-field="rating">5.0</div><div class="star-ico" data-rating="benidorm" data-field="stars">★★★★★</div><div class="star-local">Benidorm</div>
-    </div>
-    <div class="star-item reveal">
+    </a>
+    <a href="https://maps.app.goo.gl/vY9CHPyLEvZ1GW1e9" target="_blank" rel="noopener" class="star-item reveal">
       <div class="star-val" data-rating="santa-clara" data-field="rating">4.8</div><div class="star-ico" data-rating="santa-clara" data-field="stars">★★★★★</div><div class="star-local">Santa Clara</div>
-    </div>
-    <div class="star-item reveal reveal-d1">
+    </a>
+    <a href="https://maps.app.goo.gl/2m8VYyFLwzMwoTJ56" target="_blank" rel="noopener" class="star-item reveal reveal-d1">
       <div class="star-val" data-rating="luceros" data-field="rating">4.8</div><div class="star-ico" data-rating="luceros" data-field="stars">★★★★★</div><div class="star-local">Luceros</div>
-    </div>
-    <div class="star-item reveal reveal-d2">
+    </a>
+    <a href="https://maps.app.goo.gl/ew6Z6eyAUxpMjuxp9" target="_blank" rel="noopener" class="star-item reveal reveal-d2">
       <div class="star-val" data-rating="boadilla" data-field="rating">4.7</div><div class="star-ico" data-rating="boadilla" data-field="stars">★★★★★</div><div class="star-local">Boadilla</div>
-    </div>
-    <div class="star-item reveal reveal-d3">
+    </a>
+    <a href="https://maps.app.goo.gl/CsvUNhWe8ZyKx17a7" target="_blank" rel="noopener" class="star-item reveal reveal-d3">
       <div class="star-val" data-rating="russafa" data-field="rating">4.6</div><div class="star-ico" data-rating="russafa" data-field="stars">★★★★☆</div><div class="star-local">Ruzafa</div>
-    </div>
-    <div class="star-item reveal reveal-d4">
+    </a>
+    <a href="https://maps.app.goo.gl/zswqwdn2NyyWdtcz7" target="_blank" rel="noopener" class="star-item reveal reveal-d4">
       <div class="star-val" data-rating="playa-san-juan" data-field="rating">4.6</div><div class="star-ico" data-rating="playa-san-juan" data-field="stars">★★★★☆</div><div class="star-local">Playa San Juan</div>
-    </div>
+    </a>
   </div>
   <div class="reveal reveal-d2">
     <div class="google-badge">
@@ -889,7 +889,7 @@
       var slides = [];
       var currentIndex = 0;
       var slideHeight = 0;
-      var intervalMs = 5000;
+      var intervalMs = 4500;
       var rotationTimer = null;
       var lastMobile = null;
       var resizeTimer;
@@ -898,7 +898,7 @@
 
       // Slides de 3 cards en desktop / 2 en mobile — se reagrupan al cruzar el breakpoint
       function buildSlides() {
-        var perSlide = isMobile() ? 2 : 3;
+        var perSlide = isMobile() ? 1 : 3;
         var html = '';
         for (var i = 0; i < cardsHtml.length; i += perSlide) {
           html += '<div class="testimonials-slide">' + cardsHtml.slice(i, i + perSlide).join('') + '</div>';
@@ -988,7 +988,7 @@
 </section>
 
 <!-- ======================== FRANQUICIAS (mirror de /franquicias/) ======================== -->
-<section class="franquicias-section" id="franquicias" style="background: linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.85)),url('/images/extracted/tl-russafa.jpg') center/cover no-repeat;">
+<section class="franquicias-section franquicias-home" id="franquicias" style="background: linear-gradient(rgba(0,0,0,0.75),rgba(0,0,0,0.85)),url('/images/extracted/tl-russafa.jpg') center/cover no-repeat;">
   <div class="page-header" style="background:transparent;">
     <div class="page-header-inner">
       <span class="page-label">Crece con nosotros</span>
