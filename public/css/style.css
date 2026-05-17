@@ -3226,12 +3226,12 @@ img, video, iframe { max-width: 100%; height: auto; }
 .testimonials-section { position: relative; }
 .testimonials-pin-wrapper {
   position: relative;
-  height: 250vh;
+  height: 180vh;
   margin-top: -2rem;
   padding-top: 0;
 }
 @media (min-width: 769px) {
-  .testimonials-pin-wrapper { height: 450vh; }
+  .testimonials-pin-wrapper { height: 300vh; }
 }
 @media (max-width: 768px) {
   .testimonials-pin-wrapper { margin-top: -1rem; }
