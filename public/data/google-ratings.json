@@ -1,7 +1,7 @@
 {
-  "updatedAt": "2026-05-13T17:56:36.880Z",
+  "updatedAt": "2026-05-17T13:57:09.947Z",
   "averageRating": 4.7,
-  "totalReviews": 5282,
+  "totalReviews": 5327,
   "locals": [
     {
       "slug": "santa-clara",
@@ -25,7 +25,7 @@
       "city": "Valencia",
       "placeId": "ChIJPf6aOQVJYA0ReMmA9smrqzg",
       "rating": 4.6,
-      "reviews": 1253,
+      "reviews": 1255,
       "topReview": {
         "author": "Miss Juli",
         "photo": "https://lh3.googleusercontent.com/a/ACg8ocKj0p4AC_0f1kxB-YSPrNM5vm95Y6BCNQFh74g11-emsdNhnw=s128-c0x00000000-cc-rp-mo",
@@ -41,7 +41,7 @@
       "city": "Alicante",
       "placeId": "ChIJnWet4i05Yg0RcM5_vfzbOnI",
       "rating": 4.6,
-      "reviews": 1771,
+      "reviews": 1786,
       "topReview": {
         "author": "Milagros Cerutti",
         "photo": "https://lh3.googleusercontent.com/a/ACg8ocLhh_CDhQKIisAicU_9IJ5G46jBRZh1SyXrTmtYpX4yq9wcog=s128-c0x00000000-cc-rp-mo",
@@ -57,7 +57,7 @@
       "city": "Alicante",
       "placeId": "ChIJN9SR7T43Yg0RyDEoXFTQTRM",
       "rating": 4.8,
-      "reviews": 958,
+      "reviews": 961,
       "topReview": {
         "author": "Sergio Dayas",
         "photo": "https://lh3.googleusercontent.com/a-/ALV-UjUU5GVBDP0AOnSLeUnvGwcH5zIMN_DRPSMMIYsF_sS4Gjeh-3nNBQ=s128-c0x00000000-cc-rp-mo-ba5",
@@ -73,13 +73,13 @@
       "city": "Madrid",
       "placeId": "ChIJG0-H9OeFQQ0RbxxA1Jb2OdE",
       "rating": 4.7,
-      "reviews": 915,
+      "reviews": 925,
       "topReview": {
         "author": "Maryam Escalona",
         "photo": "https://lh3.googleusercontent.com/a/ACg8ocLDtkkAbcpOh_lrNesz-P_l0RECNRTzx0m_-EO_kvmOYS1AI_Xd=s128-c0x00000000-cc-rp-mo-ba3",
         "rating": 5,
         "text": "Visitamos el restaurante un sábado a las 15:15 para celebrar un cumpleaños; éramos ocho comensales, y la experiencia fue sobresaliente de principio a fin. A pesar de tratarse de fin de semana, el acceso y el aparcamiento resultaron relativamente sencillos, un detalle que se agradece.\n\nLa atención fue exquisita: profesional, cercana y perfectamente coordinada, incluso con una mesa numerosa. El equipo demostró una gran capacidad para atender con eficacia, discreción y amabilidad, haciendo que la comida transcurriera con absoluta comodidad.\n\nLa propuesta gastronómica, que va mucho más allá de la pizza, destacó por la excelente calidad de sus platos. Todos ellos estaban cuidadosamente elaborados, bien presentados y con sabores equilibrados, evidenciando un gran respeto por el producto y una cocina hecha con criterio y mimo.\n\nEl espacio es amplio, elegante y extremadamente pulcro. Todo el local transmite orden, limpieza y una atmósfera agradable que invita a disfrutar sin prisas. El ambiente resulta ideal tanto para celebraciones como para comidas tranquilas en buena compañía.\n\nEn conjunto, una experiencia redonda:\ncomida, servicio y ambiente, cinco estrellas.\nUn lugar totalmente recomendable y, sin duda, para repetir.",
-        "relativeTime": "Hace 4 meses",
+        "relativeTime": "Hace 5 meses",
         "publishTime": "2025-12-15T00:32:06.319966957Z"
       }
     },
@@ -89,14 +89,14 @@
       "city": "Alicante",
       "placeId": "ChIJ09Kfg5sFYg0R6DG-MaS9Wpk",
       "rating": 5,
-      "reviews": 13,
+      "reviews": 28,
       "topReview": {
-        "author": "Gastón Bornancini",
-        "photo": "https://lh3.googleusercontent.com/a/ACg8ocLeByw5uiFnJ8m_io7qX5CoWalbIUhUcY1gL38o3VuX1jhY=s128-c0x00000000-cc-rp-mo-ba2",
+        "author": "Manuela Reta",
+        "photo": "https://lh3.googleusercontent.com/a-/ALV-UjV5mEPCX1uxoY8t-RNP3d6CPZgz0wNaOsvhSkrYdQDMnKS0W64zzQ=s128-c0x00000000-cc-rp-mo",
         "rating": 5,
-        "text": "Todo espectacular\nLas vistas de este sitio son las mejores de Bendiorm, sin lugar a dudas\nLas pizzas, los sándwiches de milanesa, las empanadas, todo lo que pidas, un 10\nLa atención del personal inmejorable\nUn sitio para volver siempre\nMuy recomendable",
+        "text": "Excelente atención, muy acogedor. Te transporta a Argentina y te hace sentir como en casa con sus deliciosos platos. Muy recomendado",
         "relativeTime": "en la última semana",
-        "publishTime": "2026-05-13T14:27:32.898390016Z"
+        "publishTime": "2026-05-15T22:02:45.121959914Z"
       }
     }
   ]
