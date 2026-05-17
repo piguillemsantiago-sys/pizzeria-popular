@@ -2794,7 +2794,6 @@ img, video, iframe { max-width: 100%; height: auto; }
   .locales-home .locales-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px;
-    margin-top: 1rem;
   }
   .locales-home .local-card {
     aspect-ratio: 1 / 1.15;
@@ -2872,19 +2871,21 @@ img, video, iframe { max-width: 100%; height: auto; }
   }
   .locales-home .local-card .local-see-more:active { transform: scale(0.97); }
 
-  /* CAMBIO 2 — heading rediseñado, ajustes mobile */
-  .locales-heading { padding: 1.8rem 1rem 1.5rem; }
+  /* CAMBIO 2 — heading rediseñado, ajustes mobile (home + /restaurantes/) */
+  .locales-heading { padding: 0.9rem 1rem 0.75rem; }
   .locales-heading-eyebrow {
     font-size: 0.82rem;
     letter-spacing: 0.25em;
     padding: 0.4rem 1rem;
     margin-bottom: 1rem;
   }
-  .locales-heading-title { font-size: clamp(2rem, 9vw, 2.8rem); }
+  .locales-heading-title {
+    font-size: clamp(2rem, 9vw, 2.8rem);
+    white-space: nowrap;
+  }
   .locales-heading-subtitle { font-size: 0.82rem; }
-  /* Home: padding arriba/abajo a la mitad + título en una sola línea */
-  .locales-home .locales-heading { padding: 0.9rem 1rem 0.75rem; }
-  .locales-home .locales-heading-title { white-space: nowrap; }
+  /* Menos distancia subtítulo → cards (home + /restaurantes/) */
+  .locales .locales-grid { margin-top: 1rem; }
 }
 
 /* ═══ CAMBIO 2 — bloque heading "Nuestros Locales" (desktop + mobile) ═══ */
