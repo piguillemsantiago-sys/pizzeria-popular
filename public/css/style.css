@@ -2729,6 +2729,8 @@ img, video, iframe { max-width: 100%; height: auto; }
 .local-see-more { display: none; }
 /* Provincia / tag "Nuevo": solo se ven en las cards compactas del home (mobile) */
 .local-province, .local-new-tag { display: none; }
+/* Wrapper de card: transparente en desktop, flex en mobile */
+.local-card-inner { display: contents; }
 
 /* CAMBIO 3 — modal de detalle de local */
 .local-detail-modal {
@@ -2798,19 +2800,31 @@ img, video, iframe { max-width: 100%; height: auto; }
     gap: 12px;
   }
   .locales-home .local-card {
-    aspect-ratio: 1 / 1.3;
-    min-height: 280px;
-    display: flex; flex-direction: column; justify-content: space-between;
+    aspect-ratio: auto;
+    min-height: 320px;
+    height: 100%;
+    display: flex; flex-direction: column;
     padding: 1rem 0.9rem;
     border: 1px solid rgba(197,165,114,0.35);
     border-radius: 14px;
-    text-align: center;
     position: relative;
     overflow: hidden;
     background-color: rgba(0,0,0,0.55);
     background-size: cover;
     background-position: center;
     background-blend-mode: multiply;
+  }
+  /* Wrapper interno: centra y distribuye el contenido (provincia arriba, botón abajo) */
+  .locales-home .local-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+    gap: 0.4rem;
   }
   .locales-home .local-card::before {
     content: '';
@@ -2837,13 +2851,13 @@ img, video, iframe { max-width: 100%; height: auto; }
     text-transform: uppercase;
     color: #C5A572;
     font-weight: 700;
-    margin-bottom: 0.4rem;
+    margin: 0;
     line-height: 1;
   }
   .locales-home .local-card .local-name {
     font-family: 'Playfair Display', serif;
-    font-size: 1.25rem; font-weight: 700;
-    color: #EDE8D9; margin: 0 0 0.3rem 0; line-height: 1.15;
+    font-size: 1.2rem; font-weight: 700;
+    color: #EDE8D9; margin: 0; line-height: 1.15;
   }
   /* "— Nuevo" como accent italic al lado del nombre (solo Benidorm) */
   .locales-home .local-card .local-new-tag {
@@ -2860,7 +2874,7 @@ img, video, iframe { max-width: 100%; height: auto; }
     font-size: 1.1rem; font-weight: 800;
     color: #F0C674;
     text-shadow: 0 0 12px rgba(240,198,116,0.4);
-    margin: 0.4rem 0 0.2rem;
+    margin: 0;
     letter-spacing: 0.02em;
   }
   .locales-home .local-card .local-rating .rating-num,
