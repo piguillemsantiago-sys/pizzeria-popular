@@ -249,3 +249,21 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     outer.scrollLeft = scrollLeft - walk;
   });
 });
+
+// ─── SHINE DEL PILL "ENCUÉNTRANOS" — se dispara al entrar al viewport ───
+(function () {
+  var pills = document.querySelectorAll('.locales-heading-eyebrow');
+  if (!pills.length) return;
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('shine-active');
+        void entry.target.offsetWidth; // reflow → reinicia la animación
+        entry.target.classList.add('shine-active');
+      } else {
+        entry.target.classList.remove('shine-active');
+      }
+    });
+  }, { threshold: 0.6 });
+  pills.forEach(function (p) { observer.observe(p); });
+})();

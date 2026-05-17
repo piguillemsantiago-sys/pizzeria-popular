@@ -2957,7 +2957,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   position: relative;
   overflow: hidden;
 }
-/* Destello dorado recorriendo el pill */
+/* Destello dorado — se dispara al entrar la sección al viewport (clase .shine-active) */
 .locales-heading-eyebrow::after {
   content: '';
   position: absolute;
@@ -2968,17 +2968,20 @@ img, video, iframe { max-width: 100%; height: auto; }
   background: linear-gradient(
     90deg,
     transparent 0%,
-    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0.45) 50%,
     transparent 100%
   );
   transform: skewX(-25deg);
-  animation: pillShine 3.5s ease-in-out infinite;
   pointer-events: none;
+  opacity: 0;
 }
-@keyframes pillShine {
-  0% { left: -75%; }
-  60% { left: 150%; }
-  100% { left: 150%; }
+.locales-heading-eyebrow.shine-active::after {
+  animation: pillShineSweep 1.4s ease-out forwards;
+  opacity: 1;
+}
+@keyframes pillShineSweep {
+  0% { left: -75%; opacity: 1; }
+  100% { left: 150%; opacity: 1; }
 }
 .locales-heading-title {
   font-family: 'Playfair Display', serif;
