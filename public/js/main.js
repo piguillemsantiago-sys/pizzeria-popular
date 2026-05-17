@@ -290,27 +290,23 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
 
   function handleTestimonialsScroll() {
     var wrapper = document.querySelector('.testimonials-pin-wrapper');
+    var sticky = document.querySelector('.testimonials-sticky');
     var track = document.querySelector('.testimonials-track');
-    if (!wrapper || !track) return;
+    if (!wrapper || !sticky || !track) return;
 
     var rect = wrapper.getBoundingClientRect();
-    var viewportHeight = window.innerHeight;
-    var wrapperHeight = wrapper.offsetHeight;
-    var travel = wrapperHeight - viewportHeight;
+    // El pin dura mientras el wrapper recorre (su alto − el alto del sticky).
+    // El pin arranca cuando el wrapper top alcanza el 'top' del sticky (15vh/20vh).
+    var stickyTop = parseFloat(getComputedStyle(sticky).top) || 0;
+    var travel = wrapper.offsetHeight - sticky.offsetHeight;
     var maxTranslate = Math.max(0, track.scrollWidth - window.innerWidth);
 
-    // Aún no llegamos a la sección
-    if (rect.top > 0 || travel <= 0) {
+    if (travel <= 0) {
       track.style.transform = 'translate3d(0, 0, 0)';
       return;
     }
-    // Ya pasamos la sección → dejar el track en su posición final
-    if (rect.top < -travel) {
-      track.style.transform = 'translate3d(' + (-maxTranslate) + 'px, 0, 0)';
-      return;
-    }
-    // Progress 0 → 1 durante el pinning
-    var progress = Math.max(0, Math.min(1, -rect.top / travel));
+    // progress 0→1: clamp resuelve los estados "antes" y "después" del pin
+    var progress = Math.max(0, Math.min(1, (stickyTop - rect.top) / travel));
     track.style.transform = 'translate3d(' + (-progress * maxTranslate) + 'px, 0, 0)';
   }
 

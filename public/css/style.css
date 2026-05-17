@@ -3227,21 +3227,26 @@ img, video, iframe { max-width: 100%; height: auto; }
 .testimonials-heading { padding-bottom: 0.3rem; margin-bottom: 0; }
 .testimonials-pin-wrapper {
   position: relative;
-  height: 350vh;
+  height: 300vh;
   margin-top: 0;
   padding-top: 0;
 }
 @media (min-width: 769px) {
-  .testimonials-pin-wrapper { height: 600vh; }
+  .testimonials-pin-wrapper { height: 500vh; }
 }
+/* top:15vh + height:70vh → la card queda centrada verticalmente en pantalla
+   (sticky con top en vh NO se rompe; transform sí lo rompería) */
 .testimonials-sticky {
   position: sticky;
-  top: 0;
-  height: 100vh;
+  top: 15vh;
+  height: 70vh;
+  width: 100%;
   overflow: hidden;
   display: flex;
-  align-items: flex-start;
-  padding-top: 0.5rem;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .testimonials-sticky { top: 20vh; height: 60vh; }
 }
 .testimonials-track {
   display: flex;
