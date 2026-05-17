@@ -2933,14 +2933,12 @@ img, video, iframe { max-width: 100%; height: auto; }
   50% { transform: scale(1.06); }
 }
 
-/* ═══ CAMBIO 3 — sección Carta del home unificada con /carta/ (mobile) ═══ */
+/* ═══ Sección Carta del home ═══ */
 .carta-eyebrow { display: none; }
+/* CAMBIO 1 — separación entre el heading y los íconos (solo home) */
+.carta-home .carta-header { margin-bottom: 2.5rem !important; }
+.carta-home .carta-cats { margin-top: 1rem; }
 @media (max-width: 768px) {
-  /* Mismo fondo limpio que /carta/ (sin la foto del home) */
-  .carta-section {
-    background-image: none !important;
-    background-color: var(--dark2) !important;
-  }
   /* Eyebrow sobre el H2, igual que el page-header de /carta/ */
   .carta-eyebrow {
     display: block;
@@ -2952,4 +2950,5 @@ img, video, iframe { max-width: 100%; height: auto; }
     font-weight: 700;
     margin-bottom: 0.6rem;
   }
+  .carta-home .carta-header { margin-bottom: 1.8rem !important; }
 }
