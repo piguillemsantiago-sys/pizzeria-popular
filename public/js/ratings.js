@@ -11,7 +11,7 @@
  */
 (function () {
   var isEn = location.pathname.indexOf('/en/') === 0;
-  var googleBadge = isEn ? 'ON GOOGLE' : 'EN GOOGLE';
+  var googleBadge = isEn ? 'on Google' : 'en Google';
 
   fetch('/data/google-ratings.json')
     .then(function (r) { return r.json(); })
@@ -58,8 +58,10 @@
           el.innerHTML =
             '<span class="rating-num">' + local.rating.toFixed(1) + '</span>' +
             '<span class="rating-stars">' + stars + '</span>' +
-            '<span class="rating-reviews">' + local.reviews.toLocaleString('es-ES') + ' ' + reviewsLabel + '</span>' +
-            '<span class="rating-badge">' + googleBadge + '</span>';
+            '<span class="reviews-line">' +
+              '<span class="reviews-count">' + local.reviews.toLocaleString('es-ES') + ' ' + reviewsLabel + '</span>' +
+              '<span class="google-label">' + googleBadge + '</span>' +
+            '</span>';
         }
       });
     })
