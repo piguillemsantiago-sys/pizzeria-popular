@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-17T14:46:52.682Z",
+  "updatedAt": "2026-05-17T18:46:11.298Z",
   "averageRating": 4.7,
   "totalReviews": 5327,
   "locals": [
@@ -15,9 +15,51 @@
         "photo": "https://lh3.googleusercontent.com/a/ACg8ocLGo88-HTVJ9OTWi0kTqkNtgfMD1y7tO8jIM28qxIn9TDfE=s128-c0x00000000-cc-rp-mo",
         "rating": 5,
         "text": "Servicio muy agradable, comida real y de calidad superior por el precio que te cobran! Sin dudas para repetir y probar el resto de milanesas y pizzas!! 🫶🏻 🍕",
-        "relativeTime": "Hace 3 meses",
+        "relativeTime": "Hace 4 meses",
         "publishTime": "2026-01-17T14:50:03.137020020Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Diego Villalba",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocLGo88-HTVJ9OTWi0kTqkNtgfMD1y7tO8jIM28qxIn9TDfE=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Servicio muy agradable, comida real y de calidad superior por el precio que te cobran! Sin dudas para repetir y probar el resto de milanesas y pizzas!! 🫶🏻 🍕",
+          "relativeTime": "Hace 4 meses",
+          "publishTime": "2026-01-17T14:50:03.137020020Z"
+        },
+        {
+          "author": "Juan Pisani",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjVeXEdjV5Stw6uTHUuWrQBBhgoJ0XgnXHRPPfwu0dIr_FL5_GEbAQ=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Todo muy rico! Excelente servicio y muy amable la camarera.",
+          "relativeTime": "Hace 3 meses",
+          "publishTime": "2026-02-16T15:31:29.535113015Z"
+        },
+        {
+          "author": "JORGELINA HERNANDEZ",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocITb0kcAaHKpN1zN-2bKh9FmcZwmpPxWemP2HDuU2nENwT37Q=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Excelente lugar. Los ingredientes frescos y el sabor increíble. La atención fue rápida y muy cordial, incluso con el local lleno. Buen ambiente familiar y precios acordes a la calidad. ¡Súper recomendable!",
+          "relativeTime": "Hace 6 meses",
+          "publishTime": "2025-10-28T22:09:21.586871733Z"
+        },
+        {
+          "author": "Brian Cassoli",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjUNn6utH8ELbZE0XeYNXN-2jBHB1h0NA0Kh8XLvvGveWoLmlFSSRQ=s128-c0x00000000-cc-rp-mo-ba2",
+          "rating": 5,
+          "text": "Nos atendió Melanie, super amable y atenta!\n\nLa comida un 10 como siempre! Pedimos pizza y una milanesa napolitana. Tremendas ambas!\n\nEl lugar muy lindo, limpio y super tranquilo.",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-11-24T21:03:37.795438680Z"
+        },
+        {
+          "author": "Sofi Valdes Iribarren",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjWhmnXZRVvSGm3M_wnITkPnToIS5b0uINXByc5DgjHbfxjtgqFxpw=s128-c0x00000000-cc-rp-mo-ba3",
+          "rating": 5,
+          "text": "Me encanto! Vinimos a probar el sandwich de milanesa y nos pareció buenísimo!! Muy rico y super llenador. Las papas muy ricas, recién hechas. Nos atendieron muy bien también .Nos vamos chochos como siempre , gracias!!",
+          "relativeTime": "Hace 4 meses",
+          "publishTime": "2026-01-14T13:56:18.056690037Z"
+        }
+      ]
     },
     {
       "slug": "russafa",
@@ -33,7 +75,41 @@
         "text": "Pedí una pizza y la verdad es que estaba deliciosa, con buen sabor y bien horneada. La trajeron bastante rápido y se notaba que estaba hecha al momento. La atención fue grata, el personal fue amable y todo resultó sencillo desde que entré. Los precios me parecieron buenos para una comida informal sin gastar demasiado. El local tiene un ambiente cómodo, ideal para parar un rato y comer tranquilo. Es una opción que merece la pena si te apetece pizza y estás por la zona sin planear mucho.",
         "relativeTime": "Hace 2 meses",
         "publishTime": "2026-02-27T15:18:16.959627830Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Miss Juli",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocKj0p4AC_0f1kxB-YSPrNM5vm95Y6BCNQFh74g11-emsdNhnw=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Pedí una pizza y la verdad es que estaba deliciosa, con buen sabor y bien horneada. La trajeron bastante rápido y se notaba que estaba hecha al momento. La atención fue grata, el personal fue amable y todo resultó sencillo desde que entré. Los precios me parecieron buenos para una comida informal sin gastar demasiado. El local tiene un ambiente cómodo, ideal para parar un rato y comer tranquilo. Es una opción que merece la pena si te apetece pizza y estás por la zona sin planear mucho.",
+          "relativeTime": "Hace 2 meses",
+          "publishTime": "2026-02-27T15:18:16.959627830Z"
+        },
+        {
+          "author": "Isaac Giménez",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjVQhMfVRrqhkaLNWuCS1iVQe1dN4uq8-ycfwDVRBXSfCtj00qGT=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Fuimos el miércoles para aprovechar el 2x1 en milanesas un grupo de 4 persones, de 20:30 a 22:15, y muy buena experiencia.\n\nLas milanesas estaban estupendas, contundentes (pedimos la Véneto, fugazzeta, Americana y Nápoles), y los postres (pedimos brownie de chocolate y pancake de dulce de leche) también.\n\nEn general, siempre que podemos, un miércoles al.mes venimos para disfrutar de la experiencia\n\nLo único que nos sorprendió es que no pudiéramos aprovechar el 2x1 del Happy hour que hay hasta las 20:30, dado que llegamos antes, dado que ya aprovechabamos la oferta de milanesas",
+          "relativeTime": "Hace 3 meses",
+          "publishTime": "2026-02-05T09:20:21.760382606Z"
+        },
+        {
+          "author": "JuLi PappaLarDo",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjX_LqsQsa1e8vgck4Aj5LEn3t_V05qGNME2XW6ilm8sNRV7SKE-YA=s128-c0x00000000-cc-rp-mo-ba4",
+          "rating": 5,
+          "text": "Excelente experiencia!\nLa atención es buenísima, todos nos atendieron de manera muy amigable 🤩\nLa comida tiene una calidad que es difícil de encontrar: las milanesas son espectaculares!!! Pedimos una popular y una  napoletana… un 10 las dos! Las empanadas de carne y la provoleta también son muy ricas!!!! Y ni hablar del brownie que es súper casero y húmedo.\nPara volver y repetir siempre! ☺️",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-12-13T15:01:46.547997491Z"
+        },
+        {
+          "author": "Luis David Andrade",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjWBQXvhplipW3n2HaBaBxk9mACz1V7RTUXZrkXZglXl-4_HQ95H=s128-c0x00000000-cc-rp-mo-ba4",
+          "rating": 5,
+          "text": "El recibimiento es bastante cálido, los camareros son muy amables y atentos.\n\nLas pizzas y las milanesas son muy ricas, tenia tiempo sin probarlas con esa calidad. Las porciones son bastante abundantes.\n\nEl ambiente es super tranquilo y de muy buena iluminación.\n\nDefinitivamente iré con frecuencia a comer a este lugar",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-12-09T14:50:39.125806824Z"
+        }
+      ]
     },
     {
       "slug": "playa-san-juan",
@@ -49,7 +125,41 @@
         "text": "La Pizzería Popular nunca falla. Arrancamos con una pizza margarita que estaba tremenda: masa fina, sabor perfecto y ese toque casero que engancha. Para acompañar, un vino tinto de Mendoza, Argentina. 🤩\n\nDe plato principal pedimos milanesa a la napolitana y milanesa Veneto. Las porciones eran enormes, súper contundentes, de esas que te hacen feliz solo de verlas. Y además, deliciosas.\n\nEl servicio de diez: rápidos, atentos y con muy buena onda\nSitio para repetir sin duda. 🍕🍷🔥",
         "relativeTime": "Hace 5 meses",
         "publishTime": "2025-11-21T11:53:34.530307626Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Milagros Cerutti",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocLhh_CDhQKIisAicU_9IJ5G46jBRZh1SyXrTmtYpX4yq9wcog=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "La Pizzería Popular nunca falla. Arrancamos con una pizza margarita que estaba tremenda: masa fina, sabor perfecto y ese toque casero que engancha. Para acompañar, un vino tinto de Mendoza, Argentina. 🤩\n\nDe plato principal pedimos milanesa a la napolitana y milanesa Veneto. Las porciones eran enormes, súper contundentes, de esas que te hacen feliz solo de verlas. Y además, deliciosas.\n\nEl servicio de diez: rápidos, atentos y con muy buena onda\nSitio para repetir sin duda. 🍕🍷🔥",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-11-21T11:53:34.530307626Z"
+        },
+        {
+          "author": "Kora SC",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjXusWTqE7YTFaAXwjbJP2fy9y1cTQCMMiiT9kiupNxk7LE0vitC=s128-c0x00000000-cc-rp-mo-ba5",
+          "rating": 5,
+          "text": "Todo estaba buenísimo, se nota la calidad en los platos. Buen precio, buena atención y un lugar muy agradable con vistas al mar.\nSalimos muy contentos, repetiremos sin duda.",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-12-14T19:48:20.284584572Z"
+        },
+        {
+          "author": "sofia casas",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocK0jR0Xj8WVk0WkBN9l2WW7yAzkadFOsNVzf9efcZwfaXrK-A=s128-c0x00000000-cc-rp-mo-ba3",
+          "rating": 5,
+          "text": "Fuimos por el cumpleaños de un amigo y la verdad que el servicio fue excelente. La comida estaba muy rica, tenéis que pedir la milanesa Nápoles y la pizza de pistacho y burrata estaba brutal",
+          "relativeTime": "Hace 7 meses",
+          "publishTime": "2025-10-11T06:58:36.006987103Z"
+        },
+        {
+          "author": "Jose DAlessandro",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjVJXWmjQXZqvGaLZ4j94VhO5tFp_Bg2j2fYcs-v6cZt-5mHXXUJdA=s128-c0x00000000-cc-rp-mo-ba5",
+          "rating": 5,
+          "text": "Una experiencia fantástica en Pizzería Popular.\n\nEmpezamos con una capressa burrata deliciosa y después cada uno pidió una pizza diferente (éramos 4), todas espectaculares y con mucho sabor. Acompañamos con unas cervezas bien frías.\n\nEl ambiente también suma muchísimo: comer en frente de la playa, con la brisa y las vistas, convierte la visita en algo especial.\n\nLa atención de Joaquín fue impecable, muy amable y pendiente de cada detalle.\n\nEn resumen, un lugar muy recomendable si buscas buena pizza, platos con calidad y un trato excelente en un entorno privilegiado frente al mar. Seguro que repetiremos.",
+          "relativeTime": "Hace 8 meses",
+          "publishTime": "2025-08-28T20:33:06.451088012Z"
+        }
+      ]
     },
     {
       "slug": "luceros",
@@ -65,7 +175,41 @@
         "text": "Fui a cenar con mi familia y la atención por la camarera fue excepcional. Las pizzas bastante buenas , el postre una pasada y el restaurante muy cómodo y confortable. Gracias a todos el equipo . Sin duda lo recomiendo.",
         "relativeTime": "Hace 3 meses",
         "publishTime": "2026-01-30T08:45:15.173338131Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Sergio Dayas",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjUU5GVBDP0AOnSLeUnvGwcH5zIMN_DRPSMMIYsF_sS4Gjeh-3nNBQ=s128-c0x00000000-cc-rp-mo-ba5",
+          "rating": 5,
+          "text": "Fui a cenar con mi familia y la atención por la camarera fue excepcional. Las pizzas bastante buenas , el postre una pasada y el restaurante muy cómodo y confortable. Gracias a todos el equipo . Sin duda lo recomiendo.",
+          "relativeTime": "Hace 3 meses",
+          "publishTime": "2026-01-30T08:45:15.173338131Z"
+        },
+        {
+          "author": "Manuel Carnerero",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjXC2fuWiWlm8gDtY4migKU7dqVzlnx5ektZuJ43ugWFGCiyxiQ=s128-c0x00000000-cc-rp-mo-ba5",
+          "rating": 5,
+          "text": "Tremenda calidad de pizzas a la piedra. Muy bien logradas, al mejor estilo argentino. El sandwich de milanesa muy bueno. La vedette es el panqueque de dulce de leche, enorme, completamente relleno con abundante dulce de leche (uno alcanza para 3 personas). La atención es inmejorable en un ambiente argentino! Muy recomendable!",
+          "relativeTime": "Hace 6 meses",
+          "publishTime": "2025-11-16T19:36:05.159918879Z"
+        },
+        {
+          "author": "G. B.",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjXUNDUHaprtckTL1czf0G0NjtG9dO1ph93vmcEG6U_nt7828RRO=s128-c0x00000000-cc-rp-mo-ba4",
+          "rating": 5,
+          "text": "Cena sábado pronto. Nos atiende Joaquín maravillosamente bien.\nNos escucha, recomienda, etc. Muy muy amable!\nPedimos el pan de la casa, una empanada para probar y una milanesa buenos aires. Todo increíble! Para 2 no nos quedamos con hambre.\nVolveremos sin duda. Tienen menú del día que pinta genial.\n\nBuen combo entre restaurante con gran cuidado de los detalles, bien servidos, buen producto y buen trato.\nGRACIAS!",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-11-29T21:07:21.157175687Z"
+        },
+        {
+          "author": "Patricia Marquez",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjVXlIqm0-B_e5647cJzsQgiMAfmVp-UWx-fdT5fjIWyWughcPE=s128-c0x00000000-cc-rp-mo-ba4",
+          "rating": 5,
+          "text": "Un restaurante precioso, con una decoración encantadora y ambiente acogedor. La atención de las camareras fue impecable: amables, rápidas y siempre atentas. La comida, deliciosa en todos los sentidos, con sabores bien cuidados y presentaciones muy cuidadas. Todo fue fabuloso.\n\nLo único a mejorar sería el aire en el interior, que en días calurosos de verano se queda un poco corto.\n\n¡Aun así, totalmente recomendable! Volveré sin dudar.",
+          "relativeTime": "Hace 6 meses",
+          "publishTime": "2025-11-06T12:04:29.156586249Z"
+        }
+      ]
     },
     {
       "slug": "boadilla",
@@ -81,7 +225,41 @@
         "text": "Visitamos el restaurante un sábado a las 15:15 para celebrar un cumpleaños; éramos ocho comensales, y la experiencia fue sobresaliente de principio a fin. A pesar de tratarse de fin de semana, el acceso y el aparcamiento resultaron relativamente sencillos, un detalle que se agradece.\n\nLa atención fue exquisita: profesional, cercana y perfectamente coordinada, incluso con una mesa numerosa. El equipo demostró una gran capacidad para atender con eficacia, discreción y amabilidad, haciendo que la comida transcurriera con absoluta comodidad.\n\nLa propuesta gastronómica, que va mucho más allá de la pizza, destacó por la excelente calidad de sus platos. Todos ellos estaban cuidadosamente elaborados, bien presentados y con sabores equilibrados, evidenciando un gran respeto por el producto y una cocina hecha con criterio y mimo.\n\nEl espacio es amplio, elegante y extremadamente pulcro. Todo el local transmite orden, limpieza y una atmósfera agradable que invita a disfrutar sin prisas. El ambiente resulta ideal tanto para celebraciones como para comidas tranquilas en buena compañía.\n\nEn conjunto, una experiencia redonda:\ncomida, servicio y ambiente, cinco estrellas.\nUn lugar totalmente recomendable y, sin duda, para repetir.",
         "relativeTime": "Hace 5 meses",
         "publishTime": "2025-12-15T00:32:06.319966957Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Maryam Escalona",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocLDtkkAbcpOh_lrNesz-P_l0RECNRTzx0m_-EO_kvmOYS1AI_Xd=s128-c0x00000000-cc-rp-mo-ba3",
+          "rating": 5,
+          "text": "Visitamos el restaurante un sábado a las 15:15 para celebrar un cumpleaños; éramos ocho comensales, y la experiencia fue sobresaliente de principio a fin. A pesar de tratarse de fin de semana, el acceso y el aparcamiento resultaron relativamente sencillos, un detalle que se agradece.\n\nLa atención fue exquisita: profesional, cercana y perfectamente coordinada, incluso con una mesa numerosa. El equipo demostró una gran capacidad para atender con eficacia, discreción y amabilidad, haciendo que la comida transcurriera con absoluta comodidad.\n\nLa propuesta gastronómica, que va mucho más allá de la pizza, destacó por la excelente calidad de sus platos. Todos ellos estaban cuidadosamente elaborados, bien presentados y con sabores equilibrados, evidenciando un gran respeto por el producto y una cocina hecha con criterio y mimo.\n\nEl espacio es amplio, elegante y extremadamente pulcro. Todo el local transmite orden, limpieza y una atmósfera agradable que invita a disfrutar sin prisas. El ambiente resulta ideal tanto para celebraciones como para comidas tranquilas en buena compañía.\n\nEn conjunto, una experiencia redonda:\ncomida, servicio y ambiente, cinco estrellas.\nUn lugar totalmente recomendable y, sin duda, para repetir.",
+          "relativeTime": "Hace 5 meses",
+          "publishTime": "2025-12-15T00:32:06.319966957Z"
+        },
+        {
+          "author": "Paola Morali Rojo",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjWwe-JR8MheXHfQzToWh1EcG0j9XMx7Jmkwqk57TON4fA_q9AE=s128-c0x00000000-cc-rp-mo-ba3",
+          "rating": 5,
+          "text": "Hoy venimos por primera vez y nos encantó todo. El aperitivo del principio está deli, los\nñoquis, la pizza. Todo súper rico. Mateo súper lindo y atento con nosotros. Seguro volvemos",
+          "relativeTime": "Hace 4 meses",
+          "publishTime": "2025-12-18T20:38:58.676353876Z"
+        },
+        {
+          "author": "Alejando Villar",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocJBCtnmvgnxEBe3eG8pdVM07027hA8lluc4ZuX0ZpihBH1BBA=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Impresionante la milanesas. Comimos la fugazzeta y la veneto. Muy ricas.\nBuena atención.\nMuy recomendable para volver a la milanesa argenta.\nVolveré con amigos y la familia.",
+          "relativeTime": "Hace 4 meses",
+          "publishTime": "2026-01-08T14:54:10.894902939Z"
+        },
+        {
+          "author": "Alfredo G. Lanzarot",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjXe7Y0ZyD_YcpAR_pNAQ5E3IKSfllxjOSxqVZujGVyLVcfGRcs9Wg=s128-c0x00000000-cc-rp-mo-ba5",
+          "rating": 5,
+          "text": "Ambiente muy agradable, un servicio muy atento y rápido. Los platos está bien presentados y tienen bastante variedad. Es una carta diferente a otras pizzería en cuanto a tipo de pizzas con su esencia de italiano, por su puesto.\nEs acogedor y tiene bastante espacio. Las mesas no están muy juntas, así que no hay agobios.",
+          "relativeTime": "Hace 6 meses",
+          "publishTime": "2025-11-09T13:54:49.871229743Z"
+        }
+      ]
     },
     {
       "slug": "benidorm",
@@ -97,7 +275,49 @@
         "text": "Excelente atención, muy acogedor. Te transporta a Argentina y te hace sentir como en casa con sus deliciosos platos. Muy recomendado",
         "relativeTime": "en la última semana",
         "publishTime": "2026-05-15T22:02:45.121959914Z"
-      }
+      },
+      "topReviews": [
+        {
+          "author": "Manuela Reta",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjV5mEPCX1uxoY8t-RNP3d6CPZgz0wNaOsvhSkrYdQDMnKS0W64zzQ=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Excelente atención, muy acogedor. Te transporta a Argentina y te hace sentir como en casa con sus deliciosos platos. Muy recomendado",
+          "relativeTime": "en la última semana",
+          "publishTime": "2026-05-15T22:02:45.121959914Z"
+        },
+        {
+          "author": "Morena Gimenez Scorolli",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocIox00_gZDhByj-9NrGv-hFzTWXphm09uDaevy2VpjN5nM3Hg=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Excelente atención y muy rica comida.\nLugar super recomendado para una experiencia gastronomica Argentina de calidad.",
+          "relativeTime": "en la última semana",
+          "publishTime": "2026-05-15T21:59:38.793952745Z"
+        },
+        {
+          "author": "M R",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocIfni3n5f3Li3AZBpKKw5YYMlymj_mT9y7mRdZVRvwjL7UmuQ=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Pizzeria abierta hace un par de meses, en un lugar privilegiado y con unas maravillosas vistas\nGracias Juan Carlos por tu amabilidad ,buen trato y simpatía , ojalá sigan existiendo camareros tan atentos como tu\nEspero que todo vaya genial por qué te lo mereces",
+          "relativeTime": "en la última semana",
+          "publishTime": "2026-05-15T17:02:05.564796860Z"
+        },
+        {
+          "author": "Victoria",
+          "photo": "https://lh3.googleusercontent.com/a-/ALV-UjVj1HJBPBpQTnIef46rICB4XUZ11aLYGqjmviO_3921V3h3X_6W6Q=s128-c0x00000000-cc-rp-mo-ba7",
+          "rating": 5,
+          "text": "Las vistas del restaurante hacia el puerto, la playa de poniente y la cala del mal pas merecen la pena. Además, es acogedor y te atienden con mucha amabilidad. Lo mejor, sus pizzas espectaculares, también las milanesas de varios tipos. Nos ha encantado",
+          "relativeTime": "en la última semana",
+          "publishTime": "2026-05-15T12:13:58.056235618Z"
+        },
+        {
+          "author": "Maria Asunción Alvarez",
+          "photo": "https://lh3.googleusercontent.com/a/ACg8ocInRc8bSdqvsxtsHROk4cKUb7FN9bOOJlajuZlg0ExVFdRu4A=s128-c0x00000000-cc-rp-mo",
+          "rating": 5,
+          "text": "Todo increíble, con unas vistas espectaculares y un servicio de 10! Volveremos",
+          "relativeTime": "en la última semana",
+          "publishTime": "2026-05-14T21:31:40.964748196Z"
+        }
+      ]
     }
   ]
 }

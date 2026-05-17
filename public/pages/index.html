@@ -873,112 +873,153 @@
     <h2 class="section-title reveal reveal-d1" style="text-align:center;">Lo que piensan de nosotros</h2>
   </div>
   <div class="testimonials-viewport" id="testimonialsViewport">
-    <div class="testimonials-track" id="testimonialsTrack">
-      <!-- Slides + cards renderizados desde /data/google-ratings.json -->
+    <div class="testimonials-slots-container" id="testimonialsSlots">
+      <!-- 3 slots; cada uno rota su card. Cards desde /data/google-ratings.json -->
+      <div class="testimonial-slot" data-slot="0"></div>
+      <div class="testimonial-slot" data-slot="1"></div>
+      <div class="testimonial-slot" data-slot="2"></div>
     </div>
   </div>
   <script>
   (function() {
     function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
     function trunc(s, n) { s = String(s == null ? '' : s); return s.length > n ? s.slice(0, n).replace(/\s+\S*$/, '') + '…' : s; }
-    function initTestimonialsCarousel(viewport, cardsHtml) {
-      var track = viewport.querySelector('.testimonials-track');
-      if (!track || !cardsHtml.length) return;
-      var slides = [];
-      var currentIndex = 0;
-      var slideHeight = 0;
-      var intervalMs = 4500;
-      var rotationTimer = null;
-      var lastMobile = null;
-      var resizeTimer;
+    function initSlotsCarousel(container, cardHtml) {
+      var slots = Array.prototype.slice.call(container.querySelectorAll('.testimonial-slot'));
+      if (!slots.length || !cardHtml.length) return;
+      var rotationMs = 3000;
+      var timers = [];
+      var slotState = slots.map(function (_, i) { return { idx: i % cardHtml.length, animating: false }; });
 
       function isMobile() { return window.matchMedia('(max-width: 768px)').matches; }
+      function visibleSlots() { return isMobile() ? 1 : slots.length; }
 
-      // Slides de 3 cards en desktop / 2 en mobile — se reagrupan al cruzar el breakpoint
-      function buildSlides() {
-        var perSlide = isMobile() ? 1 : 3;
-        var html = '';
-        for (var i = 0; i < cardsHtml.length; i += perSlide) {
-          html += '<div class="testimonials-slide">' + cardsHtml.slice(i, i + perSlide).join('') + '</div>';
-        }
-        track.innerHTML = html;
-        slides = Array.prototype.slice.call(track.querySelectorAll('.testimonials-slide'));
+      function makeCard(html, cls) {
+        var d = document.createElement('div');
+        d.innerHTML = html;
+        var c = d.firstElementChild;
+        if (cls) c.classList.add(cls);
+        return c;
       }
 
-      function goToSlide(index) {
-        currentIndex = index;
-        if (isMobile()) {
-          track.style.transform = 'translate3d(' + (-index * 100) + '%, 0, 0)';
-        } else {
-          track.style.transform = 'translate3d(0, ' + (-index * slideHeight) + 'px, 0)';
-        }
-      }
-
-      // Iguala el alto de todos los slides al más alto → sin recortes ni saltos
-      function layout() {
-        slides.forEach(function (s) { s.style.height = ''; });
-        viewport.style.height = '';
-        slideHeight = 0;
-        slides.forEach(function (s) { if (s.offsetHeight > slideHeight) slideHeight = s.offsetHeight; });
-        slides.forEach(function (s) { s.style.height = slideHeight + 'px'; });
-        viewport.style.height = slideHeight + 'px';
-        goToSlide(currentIndex);
-      }
-
-      function nextSlide() { goToSlide((currentIndex + 1) % slides.length); }
-      function start() { stop(); rotationTimer = setInterval(nextSlide, intervalMs); }
-      function stop() { if (rotationTimer) { clearInterval(rotationTimer); rotationTimer = null; } }
-
-      function setup() {
-        lastMobile = isMobile();
-        track.style.transition = 'none';
-        buildSlides();
-        currentIndex = 0;
-        requestAnimationFrame(function () {
-          layout();
-          requestAnimationFrame(function () { track.style.transition = ''; });
+      // Alto del slot = card más alta, medida a la anchura real del slot
+      function measure() {
+        var probe = document.createElement('div');
+        probe.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;';
+        var gap = parseFloat(getComputedStyle(container).columnGap) || 0;
+        probe.style.width = isMobile()
+          ? container.clientWidth + 'px'
+          : ((container.clientWidth - 2 * gap) / 3) + 'px';
+        document.body.appendChild(probe);
+        var maxH = 0;
+        cardHtml.forEach(function (html) {
+          probe.innerHTML = html;
+          var h = probe.firstElementChild.offsetHeight;
+          if (h > maxH) maxH = h;
         });
-        start();
+        document.body.removeChild(probe);
+        slots.forEach(function (s) { s.style.height = maxH + 'px'; });
       }
 
-      setup();
-      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(layout); }
+      function renderInitial() {
+        slots.forEach(function (slot, i) {
+          slot.innerHTML = '';
+          slot.appendChild(makeCard(cardHtml[slotState[i].idx], 'is-active'));
+        });
+      }
 
+      function rotateSlot(i) {
+        var slot = slots[i], st = slotState[i];
+        if (st.animating) return;
+        st.animating = true;
+        var current = slot.querySelector('.testimonial-card.is-active');
+        if (current) { current.classList.remove('is-active'); current.classList.add('is-leaving'); }
+        st.idx = (st.idx + visibleSlots()) % cardHtml.length;
+        var next = makeCard(cardHtml[st.idx], 'is-entering');
+        slot.appendChild(next);
+        void next.offsetWidth;
+        setTimeout(function () { next.classList.remove('is-entering'); next.classList.add('is-active'); }, 50);
+        setTimeout(function () {
+          if (current && current.parentNode === slot) slot.removeChild(current);
+          st.animating = false;
+        }, 700);
+      }
+
+      function stopRotations() {
+        timers.forEach(function (t) { clearTimeout(t); clearInterval(t); });
+        timers = [];
+      }
+      // Cada slot rota cada 3s con offset escalonado (1s, 2s, 3s) → nunca dos a la vez
+      function startRotations() {
+        stopRotations();
+        slots.forEach(function (_, i) {
+          timers.push(setTimeout(function () {
+            if (i < visibleSlots()) rotateSlot(i);
+            timers.push(setInterval(function () {
+              if (i < visibleSlots()) rotateSlot(i);
+            }, rotationMs));
+          }, (i + 1) * 1000));
+        });
+      }
+
+      measure();
+      renderInitial();
+      startRotations();
+      if (document.fonts && document.fonts.ready) { document.fonts.ready.then(measure); }
+
+      var lastMobile = isMobile();
+      var resizeTimer;
       window.addEventListener('resize', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-          if (isMobile() !== lastMobile) { setup(); } else { layout(); }
+          var m = isMobile();
+          measure();
+          if (m !== lastMobile) {
+            lastMobile = m;
+            slotState.forEach(function (st, i) { st.idx = i % cardHtml.length; st.animating = false; });
+            renderInitial();
+            startRotations();
+          }
         }, 150);
       });
 
-      viewport.addEventListener('mouseenter', function () { if (!isMobile()) stop(); });
-      viewport.addEventListener('mouseleave', function () { if (!isMobile()) start(); });
+      container.addEventListener('mouseenter', function () { if (!isMobile()) stopRotations(); });
+      container.addEventListener('mouseleave', function () { if (!isMobile()) startRotations(); });
     }
     fetch('/data/google-ratings.json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var viewport = document.getElementById('testimonialsViewport');
-        if (!viewport || !data || !Array.isArray(data.locals)) return;
-        var cardsHtml = data.locals
-          .filter(function(l) { return l.topReview && l.topReview.text; })
-          .map(function(l) {
-            var r = l.topReview;
-            var initial = (r.author || '?').charAt(0).toUpperCase();
-            var rating = Math.round(r.rating || 0);
-            var stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
-            return '<div class="testimonial-card">' +
-              '<div class="rv-header">' +
-                '<div class="rv-avatar">' + esc(initial) + '</div>' +
-                '<div class="rv-info">' +
-                  '<p class="rv-name">' + esc(r.author) + '</p>' +
-                  '<p class="rv-local">📍 ' + esc(l.name) + '</p>' +
-                '</div>' +
+        var container = document.getElementById('testimonialsSlots');
+        if (!container || !data || !Array.isArray(data.locals)) return;
+        // Reviews 5★ por local → elegir 9 round-robin (al menos 1 por local)
+        var byLocal = data.locals.map(function (l) {
+          return { name: l.name, revs: (l.topReviews || []).filter(function (rv) { return rv && rv.text; }) };
+        });
+        var picked = [];
+        for (var round = 0; round < 6 && picked.length < 9; round++) {
+          for (var li = 0; li < byLocal.length && picked.length < 9; li++) {
+            if (byLocal[li].revs[round]) picked.push({ local: byLocal[li].name, r: byLocal[li].revs[round] });
+          }
+        }
+        if (!picked.length) return;
+        var cardHtml = picked.map(function (p) {
+          var r = p.r;
+          var initial = (r.author || '?').charAt(0).toUpperCase();
+          var rating = Math.round(r.rating || 0);
+          var stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+          return '<div class="testimonial-card">' +
+            '<div class="rv-header">' +
+              '<div class="rv-avatar">' + esc(initial) + '</div>' +
+              '<div class="rv-info">' +
+                '<p class="rv-name">' + esc(r.author) + '</p>' +
+                '<p class="rv-local">📍 ' + esc(p.local) + '</p>' +
               '</div>' +
-              '<div class="rv-stars">' + stars + '</div>' +
-              '<p class="rv-text">"' + esc(trunc(r.text, 280)) + '"</p>' +
-            '</div>';
-          });
-        if (cardsHtml.length) { initTestimonialsCarousel(viewport, cardsHtml); }
+            '</div>' +
+            '<div class="rv-stars">' + stars + '</div>' +
+            '<p class="rv-text">"' + esc(trunc(r.text, 280)) + '"</p>' +
+          '</div>';
+        });
+        initSlotsCarousel(container, cardHtml);
       })
       .catch(function() {});
   })();

@@ -3237,36 +3237,41 @@ img, video, iframe { max-width: 100%; height: auto; }
   max-width: 1200px;
   margin: 0 auto;
   overflow: hidden;
-  position: relative;
 }
-.testimonials-track {
-  display: flex;
-  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-.testimonials-slide {
-  flex-shrink: 0;
-  align-content: start;
-}
-/* DESKTOP: slides apilados en columna → desplazamiento vertical (abajo → arriba) */
-@media (min-width: 769px) {
-  .testimonials-track { flex-direction: column; }
-  .testimonials-slide {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-}
-/* MOBILE: slides en fila → desplazamiento horizontal (derecha → izquierda) */
 @media (max-width: 768px) {
   .testimonials-viewport { padding: 0 1rem; }
-  .testimonials-track { flex-direction: row; }
-  .testimonials-slide {
-    flex-basis: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
+}
+/* 3 slots independientes (1 visible en mobile); cada uno rota su propia card */
+.testimonials-slots-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+@media (min-width: 769px) {
+  .testimonials-slots-container { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+  .testimonial-slot[data-slot="1"],
+  .testimonial-slot[data-slot="2"] { display: none; }
+}
+.testimonial-slot { position: relative; }
+.testimonial-slot .testimonial-card {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.testimonial-slot .testimonial-card.is-leaving {
+  opacity: 0;
+  transform: translateX(-30px) scale(0.95);
+}
+.testimonial-slot .testimonial-card.is-entering {
+  opacity: 0;
+  transform: translateX(30px) scale(0.95);
+}
+.testimonial-slot .testimonial-card.is-active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
 }
 .testimonial-card {
   padding: 1.5rem;
@@ -3298,14 +3303,17 @@ img, video, iframe { max-width: 100%; height: auto; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* ─── Home: menos aire arriba del eyebrow de Promociones / Franquicias ───
+/* ─── Home: menos aire arriba del eyebrow de Promociones / Franquicias / Contacto ───
    Reusan el componente .page-header (padding-top 120px de subpágina); acá se
-   reduce ~a la mitad. Scoped con marker class → /promos/ y /franquicias/ intactas. */
+   reduce ~a la mitad. Scoped → /promos/, /franquicias/, /contacto/ intactas. */
 section.promos-home,
-section.franquicias-home { padding-top: 1rem; }
+section.franquicias-home,
+section#contacto-home { padding-top: 1rem; }
 section.promos-home .page-header,
-section.franquicias-home .page-header { padding-top: 60px; }
+section.franquicias-home .page-header,
+section#contacto-home .page-header { padding-top: 60px; }
 @media (max-width: 768px) {
   section.promos-home .page-header,
-  section.franquicias-home .page-header { padding-top: 40px; }
+  section.franquicias-home .page-header,
+  section#contacto-home .page-header { padding-top: 40px; }
 }

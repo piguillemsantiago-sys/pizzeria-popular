@@ -57,12 +57,8 @@ async function fetchRating(placeId, apiKey) {
   return res.json();
 }
 
-// Pull the top 5★ review from a Places API response and normalize for our JSON shape.
-// Returns null if no 5★ review is found in the (up to 5) reviews returned by the API.
-function pickTopReview(data) {
-  if (!data || !Array.isArray(data.reviews) || data.reviews.length === 0) return null;
-  const r = data.reviews.find(rev => rev && rev.rating === 5);
-  if (!r) return null;
+// Normaliza una review de la Places API a la forma de nuestro JSON.
+function normalizeReview(r) {
   const author = r.authorAttribution || {};
   return {
     author: author.displayName || 'Anónimo',
@@ -72,6 +68,15 @@ function pickTopReview(data) {
     relativeTime: r.relativePublishTimeDescription || '',
     publishTime: r.publishTime || null,
   };
+}
+
+// Todas las reviews 5★ con texto que devuelve la API (hasta 5 por local).
+function pickTopReviews(data) {
+  if (!data || !Array.isArray(data.reviews)) return [];
+  return data.reviews
+    .filter(rev => rev && rev.rating === 5)
+    .map(normalizeReview)
+    .filter(rev => rev.text);
 }
 
 async function updateRatings() {
@@ -96,7 +101,7 @@ async function updateRatings() {
       const data = await fetchRating(local.placeId, apiKey);
       const rating = data.rating || 0;
       const reviews = data.userRatingCount || 0;
-      const topReview = pickTopReview(data);
+      const topReviews = pickTopReviews(data);
       totalReviews += reviews;
       totalRating += rating;
       results.push({
@@ -106,9 +111,10 @@ async function updateRatings() {
         placeId: local.placeId,
         rating,
         reviews,
-        topReview,
+        topReview: topReviews[0] || null,
+        topReviews,
       });
-      console.log(`  ${local.name}: ${rating} ★ (${reviews} reviews)${topReview ? ` + 1 review by ${topReview.author}` : ''}`);
+      console.log(`  ${local.name}: ${rating} ★ (${reviews} reviews) + ${topReviews.length} 5★ review(s)`);
     } catch (err) {
       console.error(`  ${local.name}: ERROR -`, err.message);
       // Keep old data for this local if available
@@ -122,6 +128,7 @@ async function updateRatings() {
         rating: oldLocal ? oldLocal.rating : 0,
         reviews: oldLocal ? oldLocal.reviews : 0,
         topReview: oldLocal ? oldLocal.topReview || null : null,
+        topReviews: oldLocal ? oldLocal.topReviews || [] : [],
       });
     }
   }
