@@ -2954,6 +2954,31 @@ img, video, iframe { max-width: 100%; height: auto; }
   border-radius: 50px;
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
+  position: relative;
+  overflow: hidden;
+}
+/* Destello dorado recorriendo el pill */
+.locales-heading-eyebrow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  animation: pillShine 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes pillShine {
+  0% { left: -75%; }
+  60% { left: 150%; }
+  100% { left: 150%; }
 }
 .locales-heading-title {
   font-family: 'Playfair Display', serif;
