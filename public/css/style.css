@@ -3239,10 +3239,13 @@ img, video, iframe { max-width: 100%; height: auto; }
 /* Heading + cards van DENTRO del sticky → el título queda fijo arriba
    mientras las cards se desplazan en horizontal (column flex).
    sticky con top en vh NO se rompe; transform sí lo rompería. */
+/* height:auto → el sticky toma el alto exacto del contenido (heading + cards),
+   sin aire muerto debajo del último comentario. max-height = tope de seguridad. */
 .testimonials-sticky {
   position: sticky;
   top: 8vh;
-  height: 60vh;
+  height: auto;
+  max-height: 90vh;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -3253,7 +3256,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   gap: 0.75rem;
 }
 @media (max-width: 768px) {
-  .testimonials-sticky { top: 10vh; height: 55vh; padding: 0.5rem 0; gap: 0.5rem; }
+  .testimonials-sticky { top: 10vh; max-height: 85vh; padding: 0.5rem 0; gap: 0.5rem; }
 }
 .testimonials-heading {
   text-align: center;
@@ -3265,7 +3268,6 @@ img, video, iframe { max-width: 100%; height: auto; }
 /* contenedor del carousel: ocupa el alto restante del sticky y recorta
    el desborde horizontal SIN ser ancestro scroll-container del sticky */
 .testimonials-track-wrapper {
-  flex: 1;
   width: 100%;
   overflow: hidden;
   display: flex;
@@ -3282,6 +3284,7 @@ img, video, iframe { max-width: 100%; height: auto; }
   flex-shrink: 0;
   width: 85vw;
   max-width: 360px;
+  max-height: 70vh;
   padding: 1.5rem;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(197, 165, 114, 0.3);
@@ -3304,6 +3307,7 @@ img, video, iframe { max-width: 100%; height: auto; }
 /* 3 cards en mobile / 6 en desktop */
 @media (max-width: 768px) {
   .testimonial-card:nth-child(n+4) { display: none; }
+  .testimonial-card { max-height: 65vh; }
 }
 /* Fallback sin scroll-jacking para prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
