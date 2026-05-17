@@ -54,14 +54,23 @@ document.querySelectorAll('.mobile-menu a').forEach((a) => {
   a.addEventListener('click', closeMobile);
 });
 
-// ─── TIMELINE: ocultar el indicador de swipe al desplazar el carrusel ───
-document.querySelectorAll('.tl-outer').forEach((outer) => {
-  outer.addEventListener('scroll', () => {
-    if (outer.scrollLeft > 24) {
-      document.querySelectorAll('.swipe-indicator').forEach((h) => h.classList.add('hidden'));
-    }
-  }, { passive: true });
-});
+// ─── TIMELINE: indicador de swipe bidireccional (siempre visible) ───
+(function () {
+  var timeline = document.querySelector('.tl-outer');
+  var indicator = document.getElementById('swipeIndicator');
+  if (!timeline || !indicator) return;
+  var leftArrow = indicator.querySelector('.swipe-arrow-left');
+  var rightArrow = indicator.querySelector('.swipe-arrow-right');
+  function updateIndicator() {
+    var scrollLeft = timeline.scrollLeft;
+    var maxScroll = timeline.scrollWidth - timeline.clientWidth;
+    leftArrow.style.display = scrollLeft < 20 ? 'none' : 'inline-block';
+    rightArrow.style.display = scrollLeft > maxScroll - 20 ? 'none' : 'inline-block';
+  }
+  timeline.addEventListener('scroll', updateIndicator, { passive: true });
+  window.addEventListener('resize', updateIndicator);
+  updateIndicator();
+})();
 
 // ─── SCROLL REVEAL ───
 const revealObserver = new IntersectionObserver((entries) => {

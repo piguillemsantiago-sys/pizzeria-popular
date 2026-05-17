@@ -55,7 +55,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,700;1,500&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
   <link rel="stylesheet" href="/css/style.css">
@@ -213,10 +213,12 @@
     </p>
   </div>
 
-  <div class="swipe-indicator">
-    <span class="swipe-icon">👉</span>
+  <div class="swipe-indicator" id="swipeIndicator">
+    <svg class="swipe-arrow swipe-arrow-left" width="22" height="22" viewBox="0 0 24 24" fill="none" style="display:none;">
+      <path d="M19 12H5M11 18l-6-6 6-6" stroke="#1a0f0d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
     <span class="swipe-text">SWIPE</span>
-    <svg class="swipe-arrow" width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <svg class="swipe-arrow swipe-arrow-right" width="22" height="22" viewBox="0 0 24 24" fill="none">
       <path d="M5 12h14M13 6l6 6-6 6" stroke="#1a0f0d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
@@ -340,10 +342,14 @@
 <section class="locales locales-home" id="locales" style="position:relative;background:url('/images/extracted/locales-bg.jpg') center/cover no-repeat;">
   <div style="position:absolute;inset:0;background:rgba(14,8,6,0.42);z-index:0;pointer-events:none;"></div>
   <div style="position:relative;z-index:1;max-width:1400px;margin:0 auto;">
-  <p class="section-label reveal" style="color:rgba(216,164,96,.7)">Find Us</p>
-  <h2 class="section-title light reveal reveal-d1">Our<br>Locations</h2>
+  <div class="locales-heading">
+    <span class="locales-heading-eyebrow">— Find Us —</span>
+    <h2 class="locales-heading-title">Our<br><span class="accent-italic">locations</span></h2>
+    <p class="locales-heading-subtitle">6 destinations to enjoy the best wood-fired pizza in Spain.</p>
+  </div>
   <div class="locales-grid locales-6">
-    <div class="local-card reveal">
+    <div class="local-card reveal" data-local="benidorm">
+      <span class="local-new-badge">⭐ NEW</span>
       <p class="local-city">Alicante</p>
       <h3 class="local-name">Benidorm</h3>
       <p class="local-address">C. del Condestable Zaragoza, 42<br>03501 Benidorm</p>
@@ -355,7 +361,7 @@
       </div>
       <button class="local-see-more" data-promo-modal="localModal-benidorm" type="button">See more</button>
     </div>
-    <div class="local-card reveal reveal-d1">
+    <div class="local-card reveal reveal-d1" data-local="santa-clara">
       <p class="local-city">Valencia</p>
       <h3 class="local-name">Santa Clara</h3>
       <p class="local-address">C/ del Convent de Santa Clara 11<br>46002 Valencia</p>
@@ -367,7 +373,7 @@
       </div>
       <button class="local-see-more" data-promo-modal="localModal-santa-clara" type="button">See more</button>
     </div>
-    <div class="local-card reveal reveal-d2">
+    <div class="local-card reveal reveal-d2" data-local="russafa">
       <p class="local-city">Valencia</p>
       <h3 class="local-name">Russafa</h3>
       <p class="local-address">C/ de Russafa, 34<br>46004 Valencia</p>
@@ -379,7 +385,7 @@
       </div>
       <button class="local-see-more" data-promo-modal="localModal-russafa" type="button">See more</button>
     </div>
-    <div class="local-card reveal reveal-d3">
+    <div class="local-card reveal reveal-d3" data-local="playa-san-juan">
       <p class="local-city">Alicante</p>
       <h3 class="local-name">Playa San Juan</h3>
       <p class="local-address">Av. de Niza, 9<br>03540 Alicante</p>
@@ -391,7 +397,7 @@
       </div>
       <button class="local-see-more" data-promo-modal="localModal-playa-san-juan" type="button">See more</button>
     </div>
-    <div class="local-card reveal reveal-d4">
+    <div class="local-card reveal reveal-d4" data-local="luceros">
       <p class="local-city">Alicante</p>
       <h3 class="local-name">Luceros</h3>
       <p class="local-address">Plaza de los Luceros, 16<br>03004 Alicante</p>
@@ -403,7 +409,7 @@
       </div>
       <button class="local-see-more" data-promo-modal="localModal-luceros" type="button">See more</button>
     </div>
-    <div class="local-card reveal reveal-d5">
+    <div class="local-card reveal reveal-d5" data-local="boadilla">
       <p class="local-city">Madrid</p>
       <h3 class="local-name">Boadilla del Monte</h3>
       <p class="local-address">Infante Don Luis, 3<br>28660 Boadilla del Monte</p>

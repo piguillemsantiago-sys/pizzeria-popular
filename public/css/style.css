@@ -865,11 +865,14 @@ a.tl-card { text-decoration: none; color: inherit; }
 .tl-item:hover .tl-text { -webkit-line-clamp: unset; display: block; }
 
 /* Indicador de swipe del carrusel (solo visible en mobile, ver media query) */
-.swipe-indicator { display: none; transition: opacity .4s ease; }
-.swipe-indicator.hidden { opacity: 0; pointer-events: none; }
+.swipe-indicator { display: none; }
 @keyframes swipeArrowMove {
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(8px); }
+}
+@keyframes swipeArrowMoveLeft {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-8px); }
 }
 @keyframes pulseSwipe {
   0%, 100% {
@@ -2078,11 +2081,11 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
     box-shadow: 0 6px 24px rgba(197,165,114,0.4), 0 0 0 1px rgba(197,165,114,0.3);
     animation: pulseSwipe 2.2s ease-in-out infinite;
   }
-  .swipe-icon { font-size: 1rem; }
   .swipe-arrow {
     flex-shrink: 0;
     animation: swipeArrowMove 1.2s ease-in-out infinite;
   }
+  .swipe-arrow-left { animation-name: swipeArrowMoveLeft; }
 
   /* Subpáginas: ocultar el page-header y mostrar la cabecera de historia */
   .page-header-historia { display: none; }
@@ -2779,24 +2782,7 @@ img, video, iframe { max-width: 100%; height: auto; }
     background-attachment: scroll;
   }
 
-  /* CAMBIO 2 — cabecera "Nuestros Locales" del home idéntica a /restaurantes/ */
-  .locales-home .section-label {
-    display: block; text-align: center;
-    font-size: .58rem; letter-spacing: .22em;
-    text-transform: uppercase; color: var(--gold);
-    font-weight: 700; text-indent: 0;
-    margin: 0 auto .5rem;
-  }
-  .locales-home .section-label::before,
-  .locales-home .section-label::after { display: none; }
-  .locales-home .section-title {
-    font-family: 'Abril Fatface', serif;
-    font-size: clamp(1.8rem, 8vw, 2.8rem);
-    color: var(--cream); line-height: 1.05;
-    text-align: center;
-  }
-
-  /* CAMBIO 3 — cards compactas del home (2 columnas) */
+  /* CAMBIO 3 — cards compactas del home (2 columnas) con imagen de fondo */
   .locales-home .locales-grid {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 12px;
@@ -2805,12 +2791,44 @@ img, video, iframe { max-width: 100%; height: auto; }
     aspect-ratio: 1 / 1.15;
     display: flex; flex-direction: column; justify-content: space-between;
     padding: 1rem 0.85rem;
-    background: rgba(0,0,0,0.6);
-    border: 1px solid rgba(197,165,114,0.3);
+    border: 1px solid rgba(197,165,114,0.4);
     border-radius: 14px;
     text-align: center;
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(0,0,0,0.6);
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: multiply;
+  }
+  .locales-home .local-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.75) 100%);
+    transform: none;
+    z-index: 1;
+  }
+  .locales-home .local-card > * { position: relative; z-index: 2; }
+  .locales-home .local-card[data-local="benidorm"]       { background-image: url('/images/extracted/tl-benidorm.jpg'); }
+  .locales-home .local-card[data-local="santa-clara"]    { background-image: url('/images/extracted/tl-santa-clara.jpg'); }
+  .locales-home .local-card[data-local="russafa"]        { background-image: url('/images/extracted/tl-russafa.jpg'); }
+  .locales-home .local-card[data-local="playa-san-juan"] { background-image: url('/images/extracted/tl-playa-san-juan.jpg'); }
+  .locales-home .local-card[data-local="luceros"]        { background-image: url('/images/extracted/tl-luceros.png'); }
+  .locales-home .local-card[data-local="boadilla"]       { background-image: url('/images/extracted/tl-boadilla.jpg'); }
+  .locales-home .local-new-badge {
+    display: inline-block;
+    position: absolute;
+    top: 0.5rem; right: 0.5rem;
+    background: linear-gradient(135deg, #E8C87A 0%, #C5A572 50%, #A88B5C 100%);
+    color: #1a0f0d;
+    font-size: 0.55rem; font-weight: 800;
+    letter-spacing: 0.08em;
+    padding: 0.3rem 0.55rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(197,165,114,0.5);
+    animation: badgePulse 2s ease-in-out infinite;
   }
   .locales-home .local-card .local-city {
     font-size: 0.6rem; letter-spacing: 0.15em;
@@ -2844,4 +2862,54 @@ img, video, iframe { max-width: 100%; height: auto; }
     margin-top: auto; font-family: inherit;
   }
   .locales-home .local-card .local-see-more:active { transform: scale(0.97); }
+
+  /* CAMBIO 2 — heading rediseñado, ajustes mobile */
+  .locales-heading { padding: 1.8rem 1rem 1.5rem; }
+  .locales-heading-eyebrow { font-size: 0.7rem; margin-bottom: 0.8rem; }
+  .locales-heading-title { font-size: clamp(2rem, 9vw, 2.8rem); }
+  .locales-heading-subtitle { font-size: 0.82rem; }
+}
+
+/* ═══ CAMBIO 2 — bloque heading "Nuestros Locales" (desktop + mobile) ═══ */
+.locales-heading {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.locales-heading-eyebrow {
+  display: inline-block;
+  font-size: 0.78rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #C5A572;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.locales-heading-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.2rem, 8vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0 0 1.2rem 0;
+  color: #EDE8D9;
+}
+.locales-heading-title .accent-italic {
+  font-style: italic;
+  color: #C5A572;
+  font-weight: 500;
+}
+.locales-heading-subtitle {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #EDE8D9;
+  opacity: 0.85;
+  margin: 0;
+  padding: 0 0.5rem;
+}
+/* Badge "NUEVO": oculto por defecto, sólo visible en la card compacta mobile */
+.local-new-badge { display: none; }
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
 }
