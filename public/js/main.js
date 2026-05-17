@@ -267,3 +267,19 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   }, { threshold: 0.6 });
   pills.forEach(function (p) { observer.observe(p); });
 })();
+
+// ─── ESTRELLAS GOOGLE — animación de entrada con stagger al entrar al viewport ───
+(function () {
+  var stars = document.querySelectorAll('.star-item');
+  if (!stars.length) return;
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var delay = Array.prototype.indexOf.call(stars, entry.target) * 150;
+        setTimeout(function () { entry.target.classList.add('animate-in'); }, delay);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.4 });
+  stars.forEach(function (s) { observer.observe(s); });
+})();
