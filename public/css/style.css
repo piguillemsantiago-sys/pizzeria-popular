@@ -2935,6 +2935,8 @@ img, video, iframe { max-width: 100%; height: auto; }
 
 /* ═══ Sección Carta del home ═══ */
 .carta-eyebrow { display: none; }
+/* Título de la sección Carta del home en una sola línea */
+.carta-home .carta-title { white-space: nowrap; }
 /* CAMBIO 1 — separación entre el heading y los íconos (solo home) */
 .carta-home .carta-header { margin-bottom: 2.5rem !important; }
 .carta-home .carta-cats { margin-top: 1rem; }
