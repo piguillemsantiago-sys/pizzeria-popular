@@ -538,10 +538,84 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
 .locales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; padding: 0 1rem; }
 .locales-5 { grid-template-columns: repeat(5, 1fr); }
 .locales-6 { grid-template-columns: repeat(6, 1fr); }
-/* Desktop real (≥1024px): 6 locales en 3×2 — sin esto caían a 6 columnas
-   ultra-angostas (los breakpoints ≤1023px ya bajan a 2-3 cols). */
+/* Desktop real (≥1024px): 6 locales en una fila (6×1). Alturas uniformes
+   (grid estira + flex column) y botones anclados al fondo (margin-top:auto). */
 @media (min-width: 1024px) {
-  .locales-6 { grid-template-columns: repeat(3, 1fr); }
+  .locales-6 {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .locales-6 .local-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 2rem 1rem 1.25rem;   /* top amplio: deja sitio al province-badge */
+  }
+  .locales-6 .local-card .local-address { flex-shrink: 0; }
+  /* Bloque de features con alto uniforme → los botones quedan alineados */
+  .locales-6 .local-card .local-features,
+  .locales-6 .local-card .local-tags {
+    min-height: 90px;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.35rem;
+    margin: 0.5rem 0;
+  }
+  /* Botones siempre al fondo */
+  .locales-6 .local-card .local-btns,
+  .locales-6 .local-card .restaurante-btns {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-top: 0.5rem;
+  }
+  /* Tipografía adaptada al ancho reducido de 6 columnas */
+  .locales-6 .local-card .local-name {
+    font-size: 1.25rem;
+    line-height: 1.1;
+    min-height: 2.5em;
+  }
+  .locales-6 .local-card .local-rating {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+    font-size: 1.1rem;
+  }
+  .locales-6 .local-card .local-rating .star-val,
+  .locales-6 .local-card .local-rating .rating-num {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .locales-6 .local-card .local-rating .reviews-count,
+  .locales-6 .local-card .local-rating .opiniones {
+    font-size: 0.75rem;
+    color: rgba(237, 232, 217, 0.85);
+  }
+  /* Píldoras de features compactas */
+  .locales-6 .local-card .local-features span,
+  .locales-6 .local-card .local-tags span {
+    font-size: 0.62rem;
+    padding: 0.2rem 0.55rem;
+    letter-spacing: 0.04em;
+  }
+  /* Botones compactos */
+  .locales-6 .local-card .local-btn,
+  .locales-6 .local-card .restaurante-btn {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+  }
+  /* Province badge ajustado al ancho reducido */
+  .locales-6 .local-card .province-badge {
+    font-size: 0.55rem;
+    padding: 0.25rem 0.5rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
 }
 .local-card {
   background: rgba(0,0,0,0.78); padding: 2.6rem 1.5rem 1.5rem;
