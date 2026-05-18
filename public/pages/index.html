@@ -913,13 +913,41 @@
   </div>
   <div class="franquicias-inner">
     <div class="franquicias-intro">
-      <p class="franquicias-text">Pizzería Popular es una marca en expansión con presencia en múltiples países. Nuestro modelo de franquicia está diseñado para emprendedores que quieren ser parte de una red gastronómica con identidad propia, recetas únicas y un sistema probado de operación.</p>
+      <p class="franquicias-subtitle">Una marca con alma argentina, validada por miles.</p>
+      <p class="franquicias-text">Llevamos años llenando mesas y creando momentos. Sumate a una marca probada, con clientes que ya te están esperando.</p>
     </div>
     <div class="franquicias-stats">
       <div class="franquicia-stat"><span class="stat-number">+110</span><span class="stat-label">Locales</span></div>
       <div class="franquicia-stat"><span class="stat-number">6</span><span class="stat-label">Países</span></div>
       <div class="franquicia-stat"><span class="stat-number">2014</span><span class="stat-label">Año de fundación</span></div>
       <div class="franquicia-stat"><span class="stat-number">3</span><span class="stat-label">Marcas</span></div>
+    </div>
+    <div class="franq-stats" id="franqStats">
+      <div class="franq-stat" data-target="7">
+        <div class="franq-stat-bar"><span class="franq-stat-fill" style="--target: 70%;"></span></div>
+        <div class="franq-stat-value"><span class="franq-stat-num" data-count="7">0</span><span class="franq-stat-suffix"> años</span></div>
+        <div class="franq-stat-label">De trayectoria</div>
+      </div>
+      <div class="franq-stat" data-target="4.7">
+        <div class="franq-stat-bar"><span class="franq-stat-fill" style="--target: 94%;"></span></div>
+        <div class="franq-stat-value"><span class="franq-stat-num" data-count="4.7" data-decimals="1">0</span><span class="franq-stat-suffix">★</span></div>
+        <div class="franq-stat-label">Promedio Google</div>
+      </div>
+      <div class="franq-stat" data-target="5300">
+        <div class="franq-stat-bar"><span class="franq-stat-fill" style="--target: 88%;"></span></div>
+        <div class="franq-stat-value"><span class="franq-stat-prefix">+</span><span class="franq-stat-num" data-count="5300">0</span></div>
+        <div class="franq-stat-label">Reseñas 5★</div>
+      </div>
+      <div class="franq-stat" data-target="100">
+        <div class="franq-stat-bar"><span class="franq-stat-fill" style="--target: 100%;"></span></div>
+        <div class="franq-stat-value franq-stat-text">100%</div>
+        <div class="franq-stat-label">Modelo replicable</div>
+      </div>
+      <div class="franq-stat" data-target="110">
+        <div class="franq-stat-bar"><span class="franq-stat-fill" style="--target: 78%;"></span></div>
+        <div class="franq-stat-value"><span class="franq-stat-prefix">+</span><span class="franq-stat-num" data-count="110">0</span></div>
+        <div class="franq-stat-label">Locales en el mundo</div>
+      </div>
     </div>
     <div class="franq-form-wrap">
       <h2 class="franq-form-title">¿Querés ser parte de Pizzería Popular?</h2>
@@ -1132,6 +1160,62 @@
     .catch(() => {
       document.getElementById('blogGrid').innerHTML = '<p style="text-align:center;color:#7A7266;">No se pudieron cargar los artículos.</p>';
     });
+})();
+</script>
+
+<script>
+(function() {
+  var stats = document.querySelectorAll('.franq-stat');
+  if (!stats.length) return;
+
+  function animateCounter(el) {
+    var target = parseFloat(el.dataset.count);
+    var decimals = parseInt(el.dataset.decimals || '0', 10);
+    var duration = 1600;
+    var startTime = null;
+
+    function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      var current = target * eased;
+
+      if (decimals > 0) {
+        el.textContent = current.toFixed(decimals);
+      } else {
+        el.textContent = Math.floor(current).toLocaleString('es-ES');
+      }
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      } else {
+        if (decimals > 0) {
+          el.textContent = target.toFixed(decimals);
+        } else {
+          el.textContent = target.toLocaleString('es-ES');
+        }
+      }
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        var counter = entry.target.querySelector('.franq-stat-num');
+        if (counter) animateCounter(counter);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.3 });
+
+  stats.forEach(function(stat, i) {
+    setTimeout(function() {
+      observer.observe(stat);
+    }, i * 100); // stagger leve al observar
+  });
 })();
 </script>
 

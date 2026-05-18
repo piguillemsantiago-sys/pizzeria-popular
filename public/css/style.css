@@ -3201,3 +3201,128 @@ section#contacto-home .page-header { padding-top: 60px; }
   section.franquicias-home .page-header,
   section#contacto-home .page-header { padding-top: 40px; }
 }
+
+/* ═══ FRANQUICIAS — subtítulo del speech ═══ */
+.franquicias-subtitle {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-style: italic;
+  color: #C5A572;
+  margin: 0 auto 0.9rem;
+  max-width: 700px;
+  line-height: 1.4;
+}
+@media (max-width: 768px) {
+  .franquicias-subtitle { font-size: 1.05rem; }
+}
+
+/* ═══ FRANQUICIAS — gráfico de 5 barras animadas ═══ */
+.franq-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+@media (max-width: 768px) {
+  .franq-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+    margin: 1.5rem auto;
+  }
+  /* Última card (Locales en el mundo) ocupa todo el ancho */
+  .franq-stat:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+.franq-stat {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(197, 165, 114, 0.3);
+  border-radius: 12px;
+  padding: 1.2rem 1rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+@media (max-width: 768px) {
+  .franq-stat {
+    padding: 0.9rem 0.7rem;
+  }
+}
+
+/* Barra de fondo */
+.franq-stat-bar {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50px;
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+
+.franq-stat-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #C5A572 0%, #F0C674 50%, #C5A572 100%);
+  border-radius: 50px;
+  box-shadow: 0 0 12px rgba(240, 198, 116, 0.6);
+  transition: width 1.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.franq-stat.is-visible .franq-stat-fill {
+  width: var(--target);
+}
+
+.franq-stat-value {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #F0C674;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 0 16px rgba(240, 198, 116, 0.3);
+}
+
+@media (max-width: 768px) {
+  .franq-stat-value {
+    font-size: 1.5rem;
+  }
+}
+
+.franq-stat-prefix,
+.franq-stat-suffix {
+  font-size: 0.9em;
+  color: #C5A572;
+}
+
+.franq-stat-text {
+  font-size: 1.6rem;
+}
+
+@media (max-width: 768px) {
+  .franq-stat-text {
+    font-size: 1.3rem;
+  }
+}
+
+.franq-stat-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #EDE8D9;
+  opacity: 0.85;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .franq-stat-label {
+    font-size: 0.65rem;
+  }
+}
