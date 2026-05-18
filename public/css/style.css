@@ -555,8 +555,7 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
     padding: 2.2rem 1rem 1.25rem;  /* top deja sitio al province-badge */
   }
   /* Nada estira los bloques intermedios */
-  .locales-6 .local-card > *,
-  .locales-6 .local-card .local-card-inner > * { flex: 0 0 auto; }
+  .locales-6 .local-card > * { flex: 0 0 auto; }
   /* Nombre: reserva 2 líneas para que el rating arranque parejo entre cards */
   .locales-6 .local-card .local-name {
     font-size: 1.25rem;
@@ -2822,66 +2821,6 @@ img, video, iframe { max-width: 100%; height: auto; }
 .local-btn-map { background: #4285F4; color: #fff; }
 .local-btn-map:hover { opacity: .85; }
 
-/* CAMBIO 3 — botón "Ver más" oculto por defecto (sólo aparece en mobile) */
-.local-see-more { display: none; }
-/* Provincia / tag "Nuevo": solo se ven en las cards compactas del home (mobile) */
-.local-province, .local-new-tag { display: none; }
-/* Wrapper de card: transparente en desktop, flex en mobile */
-.local-card-inner { display: contents; }
-
-/* CAMBIO 3 — modal de detalle de local */
-.local-detail-modal {
-  background-color: #1a0f0d;
-  background-image: url('/images/bg-menu-pattern.svg');
-  background-repeat: repeat;
-  background-attachment: scroll;
-}
-.local-modal-content {
-  display: flex; flex-direction: column;
-  align-items: center; text-align: center; gap: 0.6rem;
-}
-.local-modal-city {
-  font-size: 0.72rem; letter-spacing: 0.18em;
-  text-transform: uppercase; color: #C5A572; font-weight: 600;
-}
-.local-modal-name {
-  font-family: 'Abril Fatface', serif;
-  font-size: 1.9rem; color: #EDE8D9; margin: 0;
-}
-.local-modal-address {
-  font-size: 0.85rem; color: #EDE8D9; line-height: 1.5; margin: 0;
-}
-.local-modal-rating {
-  font-size: 0.88rem; color: #C5A572; font-weight: 600; margin: 0.3rem 0;
-}
-.local-modal-tag {
-  font-size: 0.78rem; color: #C5A572; font-style: italic; margin: 0;
-}
-.local-modal-features {
-  display: flex; flex-wrap: wrap; justify-content: center;
-  gap: 0.4rem; margin: 0.4rem 0;
-}
-.local-modal-features span {
-  background: rgba(197,165,114,0.15);
-  border: 1px solid rgba(197,165,114,0.4);
-  padding: 0.3rem 0.7rem; border-radius: 50px;
-  font-size: 0.7rem; color: #EDE8D9;
-}
-.local-modal-actions {
-  display: flex; flex-direction: column; gap: 0.5rem;
-  width: 100%; margin-top: 0.8rem;
-}
-.local-modal-btn {
-  padding: 0.8rem 1rem; border-radius: 10px;
-  font-size: 0.85rem; font-weight: 600;
-  text-decoration: none; text-align: center;
-  min-height: 44px;
-  display: flex; align-items: center; justify-content: center;
-}
-.local-modal-btn-primary { background: #C5A572; color: #1a0f0d; }
-.local-modal-btn-wa { background: #25D366; color: #fff; }
-.local-modal-btn-map { background: #4285F4; color: #fff; }
-
 @media (max-width: 768px) {
   /* CAMBIO 1 — fondo de marca del modal delivery */
   #deliveryModal .promo-modal {
@@ -2890,128 +2829,6 @@ img, video, iframe { max-width: 100%; height: auto; }
     background-repeat: repeat;
     background-attachment: scroll;
   }
-
-  /* CAMBIO 3 — cards compactas del home (2 columnas) con imagen de fondo */
-  .locales-home .locales-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px;
-  }
-  .locales-home .local-card {
-    aspect-ratio: auto;
-    min-height: 320px;
-    height: 100%;
-    display: flex; flex-direction: column;
-    padding: 1rem 0.9rem;
-    border: 1px solid rgba(197,165,114,0.35);
-    border-radius: 14px;
-    position: relative;
-    overflow: hidden;
-    background-color: rgba(0,0,0,0.55);
-    background-size: cover;
-    background-position: center;
-    background-blend-mode: multiply;
-  }
-  /* Wrapper interno: centra y distribuye el contenido (provincia arriba, botón abajo) */
-  .locales-home .local-card-inner {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-    gap: 0.4rem;
-  }
-  .locales-home .local-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.8) 100%);
-    transform: none;
-    z-index: 1;
-  }
-  .locales-home .local-card > * { position: relative; z-index: 2; }
-  .locales-home .local-card[data-local="benidorm"]       { background-image: url('/images/extracted/tl-benidorm.jpg'); }
-  .locales-home .local-card[data-local="santa-clara"]    { background-image: url('/images/extracted/tl-santa-clara.jpg'); }
-  .locales-home .local-card[data-local="russafa"]        { background-image: url('/images/extracted/tl-russafa.jpg'); }
-  .locales-home .local-card[data-local="playa-san-juan"] { background-image: url('/images/extracted/tl-playa-san-juan.jpg'); }
-  .locales-home .local-card[data-local="luceros"]        { background-image: url('/images/extracted/tl-luceros.png'); }
-  .locales-home .local-card[data-local="boadilla"]       { background-image: url('/images/extracted/tl-boadilla.jpg'); }
-  /* Sin badges flotantes — el layout limpio usa texto en flujo */
-  .locales-home .province-badge,
-  .locales-home .local-new-badge { display: none !important; }
-  /* Provincia: texto fino dorado uppercase, arriba del nombre */
-  .locales-home .local-card .local-province {
-    display: block;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #C5A572;
-    font-weight: 700;
-    margin: 0;
-    line-height: 1;
-  }
-  .locales-home .local-card .local-name {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem; font-weight: 700;
-    color: #EDE8D9; margin: 0; line-height: 1.15;
-  }
-  /* "— Nuevo" como accent italic al lado del nombre (solo Benidorm) */
-  .locales-home .local-card .local-new-tag {
-    display: inline-block;
-    font-size: 0.7rem; font-style: italic;
-    color: #C5A572; font-weight: 500;
-    letter-spacing: 0.02em;
-  }
-  /* Puntuación destacada: número + estrellas en dorado vibrante */
-  .locales-home .local-card .local-rating {
-    display: flex; flex-wrap: wrap;
-    justify-content: center; align-items: baseline;
-    gap: 0.3rem;
-    font-size: 1.1rem; font-weight: 800;
-    color: #F0C674;
-    text-shadow: 0 0 12px rgba(240,198,116,0.4);
-    margin: 0;
-    letter-spacing: 0.02em;
-  }
-  .locales-home .local-card .local-rating .rating-num,
-  .locales-home .local-card .local-rating .rating-stars {
-    color: #F0C674; font-size: 1.1rem; font-weight: 800;
-  }
-  /* Opiniones en su propia línea */
-  .locales-home .local-card .local-rating .rating-reviews {
-    flex-basis: 100%;
-    font-size: 0.78rem; font-weight: 500;
-    color: #EDE8D9; text-shadow: none;
-    margin-top: 0.15rem; letter-spacing: 0;
-  }
-  /* "EN GOOGLE" centrado, fino, debajo */
-  .locales-home .local-card .local-rating .rating-badge {
-    flex-basis: 100%;
-    font-size: 0.6rem; font-weight: 600;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(237,232,217,0.55); text-shadow: none;
-    text-align: center;
-    margin: 0.3rem 0 0;
-  }
-  .locales-home .local-card .local-address,
-  .locales-home .local-card .local-tags,
-  .locales-home .local-card .local-btns {
-    display: none !important;
-  }
-  .locales-home .local-card .local-see-more {
-    display: block; width: 100%;
-    margin-top: auto;
-    padding: 0.55rem 0.8rem;
-    background: rgba(197,165,114,0.9);
-    color: #1a0f0d; border: none; border-radius: 8px;
-    font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    cursor: pointer; min-height: 36px;
-    -webkit-tap-highlight-color: transparent;
-    font-family: inherit;
-  }
-  .locales-home .local-card .local-see-more:active { transform: scale(0.97); }
 
   /* CAMBIO 2 — heading rediseñado, ajustes mobile (home + /restaurantes/) */
   .locales-heading { padding: 0.9rem 1rem 0.75rem; }
@@ -3101,13 +2918,6 @@ img, video, iframe { max-width: 100%; height: auto; }
   margin: 0;
   padding: 0 0.5rem;
 }
-/* Badge "NUEVO": oculto por defecto, sólo visible en la card compacta mobile */
-.local-new-badge { display: none; }
-@keyframes badgePulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-}
-
 /* ═══ Sección Carta del home ═══ */
 .carta-eyebrow { display: none; }
 /* Título de la sección Carta del home en una sola línea */
@@ -3160,30 +2970,8 @@ img, video, iframe { max-width: 100%; height: auto; }
   .page-header .locales-heading-subtitle {
     margin-bottom: 0.4rem !important;
   }
-  .locales:not(.locales-home) .locales-grid {
+  .locales .locales-grid {
     margin-top: 0.7rem !important;
-  }
-}
-
-/* ═══ Cards compactas del home: layout más compacto, sin espacio muerto ═══ */
-@media (max-width: 768px) {
-  .locales-home .local-card {
-    min-height: auto !important;
-    height: auto !important;
-    aspect-ratio: auto !important;
-    padding: 0.9rem 0.85rem !important;
-  }
-  .locales-home .local-card-inner {
-    gap: 0.3rem !important;
-    justify-content: flex-start !important;
-    height: auto !important;
-  }
-  .locales-home .local-see-more {
-    margin-top: 0.6rem !important;
-  }
-  .locales-home .local-reviews,
-  .locales-home .en-google {
-    margin-bottom: 0 !important;
   }
 }
 

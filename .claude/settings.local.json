@@ -91,7 +91,8 @@
       "Bash(grep -n \"^html\\\\|^body\\\\|^html,\\\\|html, body\\\\|^\\\\* {\" public/css/style.css)",
       "Bash(grep -n \"^html\\\\|^body\\\\|html, body\\\\|html {\" public/css/style.css)",
       "Bash(magick -version)",
-      "Bash(ffmpeg -version)"
+      "Bash(ffmpeg -version)",
+      "Bash(Select-String -Pattern \"min-width: 1024px\" -Context 1,2)"
     ]
   }
 }
