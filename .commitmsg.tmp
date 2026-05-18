@@ -1,9 +1,0 @@
-Franquicias: new investor-focused speech + animated 5-metric stat bars
-
-- Nuevo subtitulo y cuerpo del speech (ES + EN) en la seccion franquicias del home
-- Grafico de 5 barras animadas (anos, rating Google, resenas, modelo replicable, locales)
-- Barras se rellenan desde 0 + counters animados al entrar al viewport (IntersectionObserver)
-- CSS .franq-stats / .franq-stat / .franquicias-subtitle anadido
-- Aplicado en index.html y en/home.html (counter locale en-US en la version EN)
-
-Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
