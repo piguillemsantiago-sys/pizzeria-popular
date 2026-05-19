@@ -10,6 +10,16 @@ Sitio web institucional de Pizzería Popular (cadena argentina de pizza al horno
 - Páginas HTML en `public/` (ES en `public/pages/` + `public/pages/blog/`, EN en `public/en/`, etc.). CSS único compartido `public/css/style.css`, JS único `public/js/main.js`.
 - Endpoints backend de contacto: `/api/contacto` y `/api/franquicia`.
 
+## URLS DEL PROYECTO
+**Importante: NO confundir estas URLs.**
+
+- **Producción Railway (ESTE proyecto)** → `https://pizzeria-popular-production.up.railway.app`
+  Es la URL para **testing, deploy y verificación de cambios**. Se actualiza automáticamente al pushear a `main`.
+- **Dominio público final** → `www.pizzeriapopular.es`
+  Todavía **NO apunta**: el CNAME en Namecheap está pendiente de la autorización del dueño (Argentina).
+- **Habit-tracker** → `https://habit-tracker-production-b9ab.up.railway.app`
+  Es **OTRO proyecto separado** (sistema interno de gestión AJAX donde están alojados los menús digitales de los locales). NO usar para verificar cambios de este sitio. Aparece en los HTML como destino de los links "Carta" por local.
+
 ## CAMBIOS RECIENTES (esta tanda de sesiones)
 
 ### Home — sección Locales
