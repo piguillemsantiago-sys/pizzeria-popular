@@ -3201,3 +3201,22 @@ section#contacto-home .page-header { padding-top: 60px; }
   section.franquicias-home .page-header,
   section#contacto-home .page-header { padding-top: 40px; }
 }
+
+/* ============================================================
+   Blog post como PÁGINA independiente (no modal)
+   Los estilos .bm-* fueron diseñados para el modal del blog.
+   Acá se reusan en /blog/<post>/ y /en/<post>/ aplicando la
+   clase .blog-modal al <main>. Solo hace falta ajustar la
+   separación respecto del nav fijo (position:fixed), que en
+   el modal no existía.
+   ============================================================ */
+main.blog-modal { background: var(--cream); display: block; }
+main.blog-modal .bm-hero { padding-top: clamp(96px, 13vw, 132px); }
+main.blog-modal .bm-content img {
+  width: 100%; height: auto; border-radius: 14px; display: block;
+}
+main.blog-modal .bm-content a {
+  color: #b9822f; font-weight: 600; text-decoration: underline;
+  text-underline-offset: 3px;
+}
+main.blog-modal .bm-content a:hover { color: var(--gold); }

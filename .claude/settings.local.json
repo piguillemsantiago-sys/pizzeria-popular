@@ -93,7 +93,10 @@
       "Bash(magick -version)",
       "Bash(ffmpeg -version)",
       "Bash(Select-String -Pattern \"min-width: 1024px\" -Context 1,2)",
-      "Bash(git revert *)"
+      "Bash(git revert *)",
+      "Bash(railway logs *)",
+      "Bash(railway whoami *)",
+      "Bash(railway status *)"
     ]
   }
 }
