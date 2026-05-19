@@ -82,7 +82,7 @@ app.post('/api/franquicia', async (req, res) => {
 
     await transporter.sendMail({
       from: `"Pizzería Popular Web" <${process.env.SMTP_USER}>`,
-      to: 'mkt@grupoajax.es',
+      to: 'pizzeriapopular@grupoajax.es',
       replyTo: email,
       subject: `Nueva solicitud de franquicia — ${nombre} (${ciudad})`,
       html: htmlBody,
@@ -129,6 +129,7 @@ app.get('/pizzerias-cerca-de-ti-descubre-pizzeria-popular/', sendPage('pages/blo
 app.get('/pizzeria-popular-llega-a-madrid/', sendPage('pages/blog/pizzeria-popular-madrid.html'));
 app.get('/como-abrir-una-franquicia-de-exito-con-pizzeria-popular/', sendPage('pages/blog/franquicia-exito.html'));
 app.get('/ingredientes-frescos-y-autenticos-el-alma-de-nuestras-pizzerias/', sendPage('pages/blog/ingredientes-frescos.html'));
+app.get('/llegamos-a-benidorm/', sendPage('pages/blog/llegamos-a-benidorm.html'));
 
 // ========== ENGLISH ROUTES ==========
 app.get('/en/home/', sendPage('en/home.html'));
@@ -139,6 +140,7 @@ app.get('/en/promos/', sendPage('en/promos.html'));
 app.get('/en/franchises/', sendPage('en/franchises.html'));
 app.get('/en/contact/', sendPage('en/contact.html'));
 app.get('/en/blog/', sendPage('en/blog.html'));
+app.get('/en/we-have-arrived-in-benidorm/', sendPage('en/blog/we-have-arrived-in-benidorm.html'));
 
 // ========== API: CONTACT FORM ==========
 app.post('/api/contacto', async (req, res) => {
@@ -174,7 +176,7 @@ app.post('/api/contacto', async (req, res) => {
 
     await transporter.sendMail({
       from: `"Pizzería Popular Web" <${process.env.SMTP_USER}>`,
-      to: 'mkt@grupoajax.es',
+      to: 'pizzeriapopular@grupoajax.es',
       replyTo: email,
       subject: `Nuevo mensaje desde la web — ${nombre}`,
       html: htmlBody,

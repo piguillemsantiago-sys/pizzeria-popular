@@ -104,7 +104,23 @@
 
   <script>
   (function() {
-    const API = 'https://pizzeriapopular.es/wp-json/wp/v2/posts?per_page=12&_embed&_fields=id,title,excerpt,date,link,_embedded,_links';
+    const API = 'https://pizzeriapopular.es/wp-json/wp/v2/posts?per_page=20&_embed&_fields=id,title,excerpt,date,link,categories,_embedded,_links';
+
+    // WordPress categories that identify English posts.
+    const EN_CATS = [54, 60, 37, 51, 14];
+    const isEnglish = post => (post.categories || []).some(c => EN_CATS.includes(c));
+
+    // New post published as a local page (does not live in WordPress).
+    const benidormCard = `
+      <article class="blog-card">
+        <a href="/en/we-have-arrived-in-benidorm/" class="blog-img-wrap"><img src="/images/extracted/tl-benidorm.jpg" alt="Pizzería Popular Benidorm" loading="lazy"></a>
+        <div class="blog-body">
+          <p class="blog-date">19 May 2026</p>
+          <h3 class="blog-title"><a href="/en/we-have-arrived-in-benidorm/">🎉 We've arrived in Benidorm! New location facing the Mediterranean</a></h3>
+          <p class="blog-excerpt">After 9 months of renovation, we're opening our sixth pizzeria in one of the most beautiful spots on the Costa Blanca, just 2 minutes from the Balcón del Mediterráneo.</p>
+          <a href="/en/we-have-arrived-in-benidorm/" class="blog-link">Read more →</a>
+        </div>
+      </article>`;
 
     function stripHtml(html) {
       const tmp = document.createElement('div');
@@ -124,13 +140,11 @@
 
     fetch(API)
       .then(r => r.json())
-      .then(posts => {
+      .then(allPosts => {
         const grid = document.getElementById('blogGrid');
-        if (!posts || !posts.length) {
-          grid.innerHTML = '<p style="text-align:center;color:#7A7266;grid-column:1/-1;padding:40px;">No articles available.</p>';
-          return;
-        }
-        grid.innerHTML = posts.map(post => {
+        // English posts only
+        const posts = (allPosts || []).filter(isEnglish);
+        grid.innerHTML = benidormCard + posts.map(post => {
           const img = getImg(post);
           const title = post.title.rendered;
           const excerpt = stripHtml(post.excerpt.rendered).replace(/\[…\]/, '').trim().slice(0, 140) + '…';
@@ -151,7 +165,7 @@
         }).join('');
       })
       .catch(() => {
-        document.getElementById('blogGrid').innerHTML = '<p style="text-align:center;color:#7A7266;grid-column:1/-1;padding:40px;">Could not load articles. <a href="https://pizzeriapopular.es/blog/" target="_blank" style="color:#D8A460;">View on website →</a></p>';
+        document.getElementById('blogGrid').innerHTML = benidormCard + '<p style="text-align:center;color:#7A7266;grid-column:1/-1;padding:40px;">Could not load the rest of the articles. <a href="https://pizzeriapopular.es/blog/" target="_blank" style="color:#D8A460;">View on website →</a></p>';
       });
   })();
   </script>
@@ -191,7 +205,7 @@
     <div class="footer-col">
       <h4>Contact</h4>
       <ul>
-        <li><a href="mailto:info@pizzeriapopular.es">info@pizzeriapopular.es</a></li>
+        <li><a href="mailto:pizzeriapopular@grupoajax.es">pizzeriapopular@grupoajax.es</a></li>
         <li><a href="https://www.instagram.com/pizzeriapopular.es/" target="_blank">@pizzeriapopular.es</a></li>
         <li><a href="/en/restaurants/">Book a table</a></li>
         <li><a href="/en/restaurants/">How to get there</a></li>

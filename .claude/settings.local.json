@@ -92,7 +92,8 @@
       "Bash(grep -n \"^html\\\\|^body\\\\|html, body\\\\|html {\" public/css/style.css)",
       "Bash(magick -version)",
       "Bash(ffmpeg -version)",
-      "Bash(Select-String -Pattern \"min-width: 1024px\" -Context 1,2)"
+      "Bash(Select-String -Pattern \"min-width: 1024px\" -Context 1,2)",
+      "Bash(git revert *)"
     ]
   }
 }
