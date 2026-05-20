@@ -2068,8 +2068,8 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
 }
 .footer-vocai-name {
   display: inline-block; margin-top: .45rem;
-  font-family: 'Montserrat', sans-serif; font-weight: 700;
-  font-size: clamp(2.2rem, 7.5vw, 4.6rem); letter-spacing: .01em;
+  font-family: 'Montserrat', sans-serif; font-weight: 800;
+  font-size: clamp(2.2rem, 7.5vw, 4.6rem); letter-spacing: 0;
   line-height: 1; text-decoration: none;
   background: linear-gradient(95deg, #5F70F0 0%, #F26E7E 100%);
   -webkit-background-clip: text; background-clip: text;

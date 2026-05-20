@@ -287,6 +287,11 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
 (function () {
   var footer = document.querySelector('footer');
   if (!footer || footer.querySelector('.footer-vocai')) return;
+  // Peso 800 de Montserrat para el logotipo VOCAI (el sitio solo carga hasta 700).
+  var fontLink = document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap';
+  document.head.appendChild(fontLink);
   var credit = document.createElement('div');
   credit.className = 'footer-vocai';
   credit.innerHTML =
