@@ -99,51 +99,8 @@
   <!-- Promos -->
   <section class="promos-section">
     <div class="promos-inner">
-      <div class="promos-grid">
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/promo-2x1-pizzas.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">2×1 on Pizzas</h3>
-            <p class="promo-subtitle">Every Monday</p>
-            <p class="promo-desc">Eat 2, pay for 1. Dine-in only.</p>
-            <p class="promo-conditions">Valid only at our Valencia locations (Santa Clara and Russafa). Not valid on public holidays.</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Book a table</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/promo-2x1-milanesas.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">2×1 on Milanesas</h3>
-            <p class="promo-subtitle">Every Wednesday</p>
-            <p class="promo-desc">Eat 2, pay for 1. Dine-in only.</p>
-            <p class="promo-conditions">Valid only at our Valencia locations (Santa Clara and Russafa). Not valid on public holidays.</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Book a table</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/producto-pizza-dolce.jpg') center/cover;">
-          <div class="promo-info">
-            <h3 class="promo-title">Daily Menu</h3>
-            <p class="promo-subtitle">Monday to Friday at lunchtime</p>
-            <p class="promo-desc">Starter + Main + Dessert + Drink. A complete experience at the best price.</p>
-            <p class="promo-conditions">Available at all our locations. Not valid on public holidays.</p>
-            <button type="button" class="promo-btn" data-promo-modal="menusModal">View menus</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/bg-promos.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">Happy Hour</h3>
-            <p class="promo-subtitle">Glass 2€ · Pint 3€</p>
-            <p class="promo-desc">Ice cold draft beer at a friendly price.</p>
-            <p class="promo-conditions">Valid only at our Valencia locations (Santa Clara and Russafa).</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Book a table</button>
-          </div>
-        </div>
-
+      <div class="promos-grid" id="promosGrid">
+        <p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">Loading promotions…</p>
       </div>
     </div>
   </section>
@@ -223,12 +180,50 @@
     menuImage.src = '/images/menus/menu-' + slug + '.png';
   }
 
-  document.querySelectorAll('[data-promo-modal]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      openModal(btn.getAttribute('data-promo-modal'));
-    });
+  // Delegated: works for promo buttons loaded dynamically too.
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest ? e.target.closest('[data-promo-modal]') : null;
+    if (btn) { e.preventDefault(); openModal(btn.getAttribute('data-promo-modal')); }
   });
+
+  // ---- Promotions loaded from the database ----
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c];
+    });
+  }
+  function promoCardHTML(p) {
+    var bg = p.imagen_url
+      ? ' style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url(\'' + escHtml(p.imagen_url) + '\') center/cover;"'
+      : '';
+    var badge = p.badge ? '<span class="promo-badge">' + escHtml(p.badge) + '</span>' : '';
+    var sub  = p.subtitulo   ? '<p class="promo-subtitle">'  + escHtml(p.subtitulo)   + '</p>' : '';
+    var desc = p.descripcion ? '<p class="promo-desc">'      + escHtml(p.descripcion) + '</p>' : '';
+    var cond = p.condiciones ? '<p class="promo-conditions">' + escHtml(p.condiciones) + '</p>' : '';
+    var btn = '';
+    if (p.boton_accion === 'reservar')
+      btn = '<button type="button" class="promo-btn" data-promo-modal="bookingModal">' + escHtml(p.boton_texto || 'Book a table') + '</button>';
+    else if (p.boton_accion === 'menus')
+      btn = '<button type="button" class="promo-btn" data-promo-modal="menusModal">' + escHtml(p.boton_texto || 'View menus') + '</button>';
+    return '<div class="promo-card"' + bg + '><div class="promo-info">' +
+           badge + '<h3 class="promo-title">' + escHtml(p.titulo) + '</h3>' +
+           sub + desc + cond + btn + '</div></div>';
+  }
+  var promosGrid = document.getElementById('promosGrid');
+  if (promosGrid) {
+    fetch('/api/promos?lang=en')
+      .then(function(r) { return r.json(); })
+      .then(function(promos) {
+        if (!Array.isArray(promos) || !promos.length) {
+          promosGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">No promotions available at the moment.</p>';
+          return;
+        }
+        promosGrid.innerHTML = promos.map(promoCardHTML).join('');
+      })
+      .catch(function() {
+        promosGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">Could not load the promotions.</p>';
+      });
+  }
 
   overlays.forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
