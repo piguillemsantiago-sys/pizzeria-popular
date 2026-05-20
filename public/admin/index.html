@@ -23,11 +23,28 @@
     <div class="admin-loading" id="loading">Cargando…</div>
 
     <section class="admin-panel" id="panel" hidden>
-      <div class="panel-head">
-        <h1>Promociones</h1>
-        <button class="btn-primary" id="newPromoBtn">+ Nueva promo</button>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="promos">Promociones</button>
+        <button class="admin-tab" data-tab="blog">Blog</button>
       </div>
-      <div class="promo-list" id="promoList"></div>
+
+      <!-- Vista Promociones -->
+      <div class="tab-view" id="view-promos">
+        <div class="panel-head">
+          <h1>Promociones</h1>
+          <button class="btn-primary" id="newPromoBtn">+ Nueva promo</button>
+        </div>
+        <div class="promo-list" id="promoList"></div>
+      </div>
+
+      <!-- Vista Blog -->
+      <div class="tab-view" id="view-blog" hidden>
+        <div class="panel-head">
+          <h1>Blog</h1>
+          <button class="btn-primary" id="newPostBtn">+ Nuevo post</button>
+        </div>
+        <div class="promo-list" id="postList"></div>
+      </div>
     </section>
   </main>
 
@@ -86,6 +103,63 @@
         <div class="modal-actions">
           <button type="button" id="cancelBtn">Cancelar</button>
           <button type="submit" class="save" id="saveBtn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal crear/editar post -->
+  <div class="modal-overlay" id="postModal" hidden>
+    <div class="modal">
+      <h2 id="postModalTitle">Nuevo post</h2>
+      <form id="postForm">
+        <label>Título *
+          <input type="text" name="titulo" required />
+        </label>
+        <div class="row2">
+          <label>Slug * (kebab-case, sin acentos)
+            <input type="text" name="slug" required placeholder="mi-post-nuevo" />
+          </label>
+          <label>Idioma
+            <select name="idioma">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+            </select>
+          </label>
+        </div>
+        <label>Eyebrow (etiqueta sobre el título)
+          <input type="text" name="eyebrow" placeholder="Novedades" />
+        </label>
+        <label>Subtítulo (bajada del hero)
+          <input type="text" name="subtitulo" />
+        </label>
+        <div class="row2">
+          <label>Fecha
+            <input type="date" name="fecha" />
+          </label>
+          <label>Estado
+            <select name="estado">
+              <option value="borrador">Borrador</option>
+              <option value="publicado">Publicado</option>
+            </select>
+          </label>
+        </div>
+        <label>Imagen del hero (ruta o URL)
+          <input type="text" name="hero_image" placeholder="/images/blog/..." />
+        </label>
+        <label>Meta description (SEO)
+          <textarea name="meta_desc"></textarea>
+        </label>
+        <label>Keyword objetivo
+          <input type="text" name="keyword" />
+        </label>
+        <label>Contenido — HTML del cuerpo (lo genera la IA; editable a mano)
+          <textarea name="contenido" class="code"></textarea>
+        </label>
+        <p class="modal-error" id="postModalError"></p>
+        <div class="modal-actions">
+          <button type="button" id="postCancelBtn">Cancelar</button>
+          <button type="submit" class="save" id="postSaveBtn">Guardar</button>
         </div>
       </form>
     </div>

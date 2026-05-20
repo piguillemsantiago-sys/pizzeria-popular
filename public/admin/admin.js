@@ -1,17 +1,19 @@
 /* ============================================================
    admin.js — Panel de administración Pizzería Popular
-   Sesión (Supabase Auth) + ABM de promociones contra /api/admin/*.
+   Pestañas: Promociones + Blog. CRUD contra /api/admin/*.
    ============================================================ */
 (function () {
   'use strict';
 
-  let sb = null;          // cliente Supabase (auth en el navegador)
-  let promos = [];        // cache del listado
-  let editingId = null;   // id de la promo en edición, o null si es nueva
+  let sb = null;
+  let promos = [];
+  let posts = [];
+  let editingPromoId = null;
+  let editingPostId = null;
 
   const $ = (id) => document.getElementById(id);
 
-  // ---- Llamada autenticada a la API del panel ----
+  // ---- Llamada autenticada a la API ----
   async function api(path, method, body) {
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { location.href = '/admin/login/'; throw new Error('sin sesión'); }
@@ -37,8 +39,8 @@
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   }
 
-  // ---- Render del listado ----
-  function render() {
+  /* ==================== PROMOCIONES ==================== */
+  function renderPromos() {
     const list = $('promoList');
     if (!promos.length) {
       list.innerHTML = '<p class="empty">No hay promociones todavía. Creá la primera.</p>';
@@ -67,12 +69,11 @@
 
   async function loadPromos() {
     promos = await api('/api/admin/promos');
-    render();
+    renderPromos();
   }
 
-  // ---- Modal ----
-  function openModal(promo) {
-    editingId = promo ? promo.id : null;
+  function openPromoModal(promo) {
+    editingPromoId = promo ? promo.id : null;
     $('modalTitle').textContent = promo ? 'Editar promo' : 'Nueva promo';
     $('modalError').textContent = '';
     const f = $('promoForm');
@@ -89,9 +90,9 @@
     f.activa.checked = promo ? !!promo.activa : true;
     $('modal').hidden = false;
   }
-  function closeModal() { $('modal').hidden = true; }
+  function closePromoModal() { $('modal').hidden = true; }
 
-  async function saveModal(e) {
+  async function savePromoModal(e) {
     e.preventDefault();
     const f = $('promoForm');
     const payload = {
@@ -110,9 +111,9 @@
     if (!payload.titulo) { $('modalError').textContent = 'El título es obligatorio.'; return; }
     $('saveBtn').disabled = true;
     try {
-      if (editingId) await api('/api/admin/promos/' + editingId, 'PATCH', payload);
+      if (editingPromoId) await api('/api/admin/promos/' + editingPromoId, 'PATCH', payload);
       else await api('/api/admin/promos', 'POST', payload);
-      closeModal();
+      closePromoModal();
       await loadPromos();
     } catch (err) {
       $('modalError').textContent = err.message;
@@ -121,21 +122,20 @@
     }
   }
 
-  // ---- Acciones del listado ----
-  async function onListClick(e) {
+  async function onPromoListClick(e) {
     const btn = e.target.closest('button[data-act]');
     if (!btn) return;
     const act = btn.dataset.act;
     try {
       if (act === 'edit') {
-        openModal(promos.find((p) => p.id === btn.dataset.id));
+        openPromoModal(promos.find((p) => p.id === btn.dataset.id));
       } else if (act === 'toggle') {
         const p = promos.find((x) => x.id === btn.dataset.id);
         await api('/api/admin/promos/' + p.id, 'PATCH', { activa: !p.activa });
         await loadPromos();
       } else if (act === 'del') {
         const p = promos.find((x) => x.id === btn.dataset.id);
-        if (!confirm('¿Borrar la promo "' + p.titulo + '"? No se puede deshacer.')) return;
+        if (!confirm('¿Borrar la promo "' + p.titulo + '"?')) return;
         await api('/api/admin/promos/' + p.id, 'DELETE');
         await loadPromos();
       } else if (act === 'up' || act === 'down') {
@@ -147,12 +147,131 @@
         await api('/api/admin/promos/' + b.id, 'PATCH', { orden: a.orden });
         await loadPromos();
       }
+    } catch (err) { alert(err.message); }
+  }
+
+  /* ==================== BLOG ==================== */
+  function postUrl(p) {
+    return (p.idioma === 'en' ? '/en/blog/' : '/blog/') + p.slug + '/';
+  }
+
+  function renderPosts() {
+    const list = $('postList');
+    if (!posts.length) {
+      list.innerHTML = '<p class="empty">No hay posts todavía.</p>';
+      return;
+    }
+    list.innerHTML = posts.map((p) => {
+      const pub = p.estado === 'publicado';
+      return `
+      <div class="promo-row ${pub ? '' : 'inactiva'}">
+        <img class="promo-thumb" src="${esc(p.hero_image || '/images/extracted/logo.png')}" alt="" />
+        <div class="promo-meta">
+          <h3>${esc(p.titulo)}</h3>
+          <p>/${esc(p.slug)}/</p>
+          <div class="promo-tags">
+            <span class="tag ${pub ? 'tag-on' : 'tag-borrador'}">${pub ? 'Publicado' : 'Borrador'}</span>
+            <span class="tag tag-lang">${esc((p.idioma || 'es').toUpperCase())}</span>
+          </div>
+        </div>
+        <div class="promo-actions">
+          ${pub ? `<a href="${esc(postUrl(p))}" target="_blank" rel="noopener">Ver</a>` : ''}
+          <button data-act="pub" data-id="${p.id}">${pub ? 'Despublicar' : 'Publicar'}</button>
+          <button data-act="edit" data-id="${p.id}">Editar</button>
+          <button data-act="del" data-id="${p.id}" class="danger">Borrar</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  async function loadPosts() {
+    posts = await api('/api/admin/posts');
+    renderPosts();
+  }
+
+  function openPostModal(post) {
+    editingPostId = post ? post.id : null;
+    $('postModalTitle').textContent = post ? 'Editar post' : 'Nuevo post';
+    $('postModalError').textContent = '';
+    const f = $('postForm');
+    f.titulo.value = post ? (post.titulo || '') : '';
+    f.slug.value = post ? (post.slug || '') : '';
+    f.idioma.value = post ? (post.idioma || 'es') : 'es';
+    f.eyebrow.value = post ? (post.eyebrow || '') : 'Novedades';
+    f.subtitulo.value = post ? (post.subtitulo || '') : '';
+    f.fecha.value = post ? (post.fecha || '') : new Date().toISOString().slice(0, 10);
+    f.estado.value = post ? (post.estado || 'borrador') : 'borrador';
+    f.hero_image.value = post ? (post.hero_image || '') : '';
+    f.meta_desc.value = post ? (post.meta_desc || '') : '';
+    f.keyword.value = post ? (post.keyword || '') : '';
+    f.contenido.value = post ? (post.contenido || '') : '';
+    $('postModal').hidden = false;
+  }
+  function closePostModal() { $('postModal').hidden = true; }
+
+  async function savePostModal(e) {
+    e.preventDefault();
+    const f = $('postForm');
+    const payload = {
+      titulo: f.titulo.value.trim(),
+      slug: f.slug.value.trim().toLowerCase(),
+      idioma: f.idioma.value,
+      eyebrow: f.eyebrow.value.trim() || null,
+      subtitulo: f.subtitulo.value.trim() || null,
+      fecha: f.fecha.value || null,
+      estado: f.estado.value,
+      hero_image: f.hero_image.value.trim() || null,
+      meta_desc: f.meta_desc.value.trim() || null,
+      keyword: f.keyword.value.trim() || null,
+      contenido: f.contenido.value || null,
+    };
+    if (!payload.titulo || !payload.slug) {
+      $('postModalError').textContent = 'Título y slug son obligatorios.';
+      return;
+    }
+    $('postSaveBtn').disabled = true;
+    try {
+      if (editingPostId) await api('/api/admin/posts/' + editingPostId, 'PATCH', payload);
+      else await api('/api/admin/posts', 'POST', payload);
+      closePostModal();
+      await loadPosts();
     } catch (err) {
-      alert(err.message);
+      $('postModalError').textContent = err.message;
+    } finally {
+      $('postSaveBtn').disabled = false;
     }
   }
 
-  // ---- Arranque ----
+  async function onPostListClick(e) {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const act = btn.dataset.act;
+    const p = posts.find((x) => x.id === btn.dataset.id);
+    if (!p) return;
+    try {
+      if (act === 'edit') {
+        openPostModal(p);
+      } else if (act === 'pub') {
+        const nuevo = p.estado === 'publicado' ? 'borrador' : 'publicado';
+        await api('/api/admin/posts/' + p.id, 'PATCH', { estado: nuevo });
+        await loadPosts();
+      } else if (act === 'del') {
+        if (!confirm('¿Borrar el post "' + p.titulo + '"?')) return;
+        await api('/api/admin/posts/' + p.id, 'DELETE');
+        await loadPosts();
+      }
+    } catch (err) { alert(err.message); }
+  }
+
+  /* ==================== PESTAÑAS ==================== */
+  function switchTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach((t) =>
+      t.classList.toggle('active', t.dataset.tab === tab));
+    $('view-promos').hidden = tab !== 'promos';
+    $('view-blog').hidden = tab !== 'blog';
+  }
+
+  /* ==================== ARRANQUE ==================== */
   (async function init() {
     let cfg;
     try {
@@ -166,21 +285,31 @@
     if (!session) { location.href = '/admin/login/'; return; }
 
     let me;
-    try {
-      me = await api('/api/admin/me');
-    } catch (e) {
-      location.href = '/admin/login/';
-      return;
-    }
+    try { me = await api('/api/admin/me'); }
+    catch (e) { location.href = '/admin/login/'; return; }
     $('adminEmail').textContent = me.email || '';
     $('loading').hidden = true;
     $('panel').hidden = false;
 
-    $('newPromoBtn').addEventListener('click', () => openModal(null));
-    $('cancelBtn').addEventListener('click', closeModal);
-    $('promoForm').addEventListener('submit', saveModal);
-    $('promoList').addEventListener('click', onListClick);
-    $('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closeModal(); });
+    // Pestañas
+    document.querySelectorAll('.admin-tab').forEach((t) =>
+      t.addEventListener('click', () => switchTab(t.dataset.tab)));
+
+    // Promos
+    $('newPromoBtn').addEventListener('click', () => openPromoModal(null));
+    $('cancelBtn').addEventListener('click', closePromoModal);
+    $('promoForm').addEventListener('submit', savePromoModal);
+    $('promoList').addEventListener('click', onPromoListClick);
+    $('modal').addEventListener('click', (e) => { if (e.target.id === 'modal') closePromoModal(); });
+
+    // Blog
+    $('newPostBtn').addEventListener('click', () => openPostModal(null));
+    $('postCancelBtn').addEventListener('click', closePostModal);
+    $('postForm').addEventListener('submit', savePostModal);
+    $('postList').addEventListener('click', onPostListClick);
+    $('postModal').addEventListener('click', (e) => { if (e.target.id === 'postModal') closePostModal(); });
+
+    // Salir
     $('logoutBtn').addEventListener('click', async () => {
       await sb.auth.signOut();
       location.href = '/admin/login/';
@@ -188,8 +317,9 @@
 
     try {
       await loadPromos();
+      await loadPosts();
     } catch (e) {
-      $('promoList').innerHTML = '<p class="empty">No se pudieron cargar las promos: ' + esc(e.message) + '</p>';
+      $('promoList').innerHTML = '<p class="empty">Error al cargar: ' + esc(e.message) + '</p>';
     }
   })();
 })();
