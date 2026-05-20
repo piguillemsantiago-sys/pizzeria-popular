@@ -155,6 +155,12 @@
     return (p.idioma === 'en' ? '/en/blog/' : '/blog/') + p.slug + '/';
   }
 
+  function estadoInfo(e) {
+    if (e === 'publicado') return { label: 'Publicado', cls: 'tag-on' };
+    if (e === 'pendiente') return { label: 'Pendiente', cls: 'tag-pend' };
+    return { label: 'En preparación', cls: 'tag-borrador' };
+  }
+
   function renderPosts() {
     const list = $('postList');
     if (!posts.length) {
@@ -163,20 +169,25 @@
     }
     list.innerHTML = posts.map((p) => {
       const pub = p.estado === 'publicado';
+      const est = estadoInfo(p.estado);
       return `
       <div class="promo-row ${pub ? '' : 'inactiva'}">
         <img class="promo-thumb" src="${esc(p.hero_image || '/images/extracted/logo.png')}" alt="" />
         <div class="promo-meta">
           <h3>${esc(p.titulo)}</h3>
-          <p>/${esc(p.slug)}/</p>
+          <p>/${esc(p.slug)}/ · ${esc(p.fecha || '')}</p>
           <div class="promo-tags">
-            <span class="tag ${pub ? 'tag-on' : 'tag-borrador'}">${pub ? 'Publicado' : 'Borrador'}</span>
+            <span class="tag ${est.cls}">${est.label}</span>
             <span class="tag tag-lang">${esc((p.idioma || 'es').toUpperCase())}</span>
           </div>
         </div>
         <div class="promo-actions">
+          <select class="estado-select" data-id="${p.id}">
+            <option value="preparacion"${p.estado === 'preparacion' ? ' selected' : ''}>En preparación</option>
+            <option value="pendiente"${p.estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
+            <option value="publicado"${p.estado === 'publicado' ? ' selected' : ''}>Publicado</option>
+          </select>
           ${pub ? `<a href="${esc(postUrl(p))}" target="_blank" rel="noopener">Ver</a>` : ''}
-          <button data-act="pub" data-id="${p.id}">${pub ? 'Despublicar' : 'Publicar'}</button>
           <button data-act="edit" data-id="${p.id}">Editar</button>
           <button data-act="del" data-id="${p.id}" class="danger">Borrar</button>
         </div>
@@ -200,7 +211,7 @@
     f.eyebrow.value = post ? (post.eyebrow || '') : 'Novedades';
     f.subtitulo.value = post ? (post.subtitulo || '') : '';
     f.fecha.value = post ? (post.fecha || '') : new Date().toISOString().slice(0, 10);
-    f.estado.value = post ? (post.estado || 'borrador') : 'borrador';
+    f.estado.value = post ? (post.estado || 'preparacion') : 'preparacion';
     f.hero_image.value = post ? (post.hero_image || '') : '';
     f.meta_desc.value = post ? (post.meta_desc || '') : '';
     f.keyword.value = post ? (post.keyword || '') : '';
@@ -251,15 +262,20 @@
     try {
       if (act === 'edit') {
         openPostModal(p);
-      } else if (act === 'pub') {
-        const nuevo = p.estado === 'publicado' ? 'borrador' : 'publicado';
-        await api('/api/admin/posts/' + p.id, 'PATCH', { estado: nuevo });
-        await loadPosts();
       } else if (act === 'del') {
         if (!confirm('¿Borrar el post "' + p.titulo + '"?')) return;
         await api('/api/admin/posts/' + p.id, 'DELETE');
         await loadPosts();
       }
+    } catch (err) { alert(err.message); }
+  }
+
+  async function onPostEstadoChange(e) {
+    const sel = e.target.closest('.estado-select');
+    if (!sel) return;
+    try {
+      await api('/api/admin/posts/' + sel.dataset.id, 'PATCH', { estado: sel.value });
+      await loadPosts();
     } catch (err) { alert(err.message); }
   }
 
@@ -404,6 +420,7 @@
     $('postCancelBtn').addEventListener('click', closePostModal);
     $('postForm').addEventListener('submit', savePostModal);
     $('postList').addEventListener('click', onPostListClick);
+    $('postList').addEventListener('change', onPostEstadoChange);
     $('postModal').addEventListener('click', (e) => { if (e.target.id === 'postModal') closePostModal(); });
 
     // Asistente IA

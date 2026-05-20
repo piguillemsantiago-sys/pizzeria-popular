@@ -90,6 +90,11 @@ button { font-family: inherit; cursor: pointer; }
 .admin-tab:hover { color: var(--pp-cream); }
 .admin-tab.active { color: var(--pp-gold); border-bottom-color: var(--pp-gold); }
 .tag-borrador { background: rgba(237,232,217,.12); color: rgba(237,232,217,.6); }
+.tag-pend { background: rgba(216,164,96,.2); color: var(--pp-gold-bright); }
+.estado-select {
+  background: var(--pp-bg); border: 1px solid var(--pp-line); color: var(--pp-cream);
+  border-radius: 7px; padding: 6px 8px; font-size: .74rem; font-family: inherit;
+}
 .modal textarea.code {
   min-height: 150px; font-family: ui-monospace, Consolas, monospace; font-size: .78rem;
 }

@@ -396,6 +396,25 @@ cron.schedule('0 3 * * 0', () => {
   updateRatings().catch(err => console.error('[Cron] Error:', err.message));
 });
 
+// ========== CRON: Autopublicar posts pendientes (todos los días, 6am) ==========
+cron.schedule('0 6 * * *', async () => {
+  const hoy = new Date().toISOString().slice(0, 10);
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('ppweb_posts')
+      .update({ estado: 'publicado' })
+      .eq('estado', 'pendiente')
+      .lte('fecha', hoy)
+      .select('slug');
+    if (error) console.error('[Autopublish] Error:', error.message);
+    else if (data && data.length) {
+      console.log('[Autopublish] Posts publicados:', data.map(p => p.slug).join(', '));
+    }
+  } catch (e) {
+    console.error('[Autopublish] Error:', e.message);
+  }
+});
+
 app.listen(PORT, async () => {
   console.log(`Pizzería Popular running on http://localhost:${PORT}`);
 
