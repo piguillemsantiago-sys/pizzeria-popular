@@ -2059,17 +2059,27 @@ footer { background-color: #0d0d0d; background-image: url('/images/bg-footer-pat
 .footer-copy { font-size: .73rem; color: rgba(237,232,217,.2); }
 .hola-footer { font-family: 'Abril Fatface', serif; font-size: 1.1rem; color: rgba(237,232,217,.15); }
 .footer-vocai {
-  text-align: center; padding: 2rem 1rem .5rem; margin-top: 1.4rem;
+  text-align: center; padding: 2rem 1rem 1.1rem; margin-top: 1.4rem;
   border-top: 1px solid rgba(237,232,217,.07);
   font-size: .72rem; letter-spacing: .26em; text-transform: uppercase;
   color: rgba(237,232,217,.4);
 }
-.footer-vocai span {
+.footer-vocai-name {
   display: block; margin-top: .35rem;
   font-family: 'Abril Fatface', serif; text-transform: none;
   font-size: clamp(2.4rem, 8vw, 5rem); letter-spacing: .03em;
-  line-height: 1; color: var(--gold);
+  line-height: 1; color: var(--gold); text-decoration: none;
+  transition: color .2s;
 }
+.footer-vocai-name:hover { color: var(--cream); }
+.footer-vocai-ig {
+  display: flex; justify-content: center; align-items: center; gap: .42rem;
+  margin-top: .9rem; text-transform: none; letter-spacing: .02em;
+  font-size: .84rem; color: rgba(237,232,217,.55);
+  text-decoration: none; transition: color .2s;
+}
+.footer-vocai-ig:hover { color: var(--gold); }
+.footer-vocai-ig svg { width: 18px; height: 18px; }
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 1100px) {

@@ -289,6 +289,16 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   if (!footer || footer.querySelector('.footer-vocai')) return;
   var credit = document.createElement('div');
   credit.className = 'footer-vocai';
-  credit.innerHTML = 'Desarrollado por <span>VOCAI</span>';
+  credit.innerHTML =
+    'Desarrollado por' +
+    '<a class="footer-vocai-name" href="https://www.vocai.es" target="_blank" rel="noopener">VOCAI</a>' +
+    '<a class="footer-vocai-ig" href="https://www.instagram.com/vocai.st/" target="_blank" rel="noopener" aria-label="Instagram de VOCAI">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+        '<rect x="2" y="2" width="20" height="20" rx="5.5"></rect>' +
+        '<circle cx="12" cy="12" r="4.4"></circle>' +
+        '<circle cx="17.6" cy="6.4" r="1.3" fill="currentColor" stroke="none"></circle>' +
+      '</svg>' +
+      '<span>@vocai.st</span>' +
+    '</a>';
   footer.appendChild(credit);
 })();
