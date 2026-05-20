@@ -167,6 +167,17 @@ async function serveDbPost(req, res, next, idioma) {
 app.get('/blog/:slug/', (req, res, next) => serveDbPost(req, res, next, 'es'));
 app.get('/en/blog/:slug/', (req, res, next) => serveDbPost(req, res, next, 'en'));
 
+// Previsualización de un post en cualquier estado (borradores incluidos).
+// El id (uuid) hace de token: no es enumerable. Ruta bajo /admin/ (noindex).
+app.get('/admin/preview/:id/', async (req, res, next) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('ppweb_posts').select('*').eq('id', req.params.id).maybeSingle();
+    if (error || !data) return next();
+    res.send(renderPost(data, { hasTranslation: false }));
+  } catch (e) { next(); }
+});
+
 // ========== PANEL ADMIN (páginas) ==========
 app.get('/admin/', sendPage('admin/index.html'));
 app.get('/admin/login/', sendPage('admin/login.html'));

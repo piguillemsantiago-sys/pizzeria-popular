@@ -187,7 +187,7 @@
             <option value="pendiente"${p.estado === 'pendiente' ? ' selected' : ''}>Pendiente</option>
             <option value="publicado"${p.estado === 'publicado' ? ' selected' : ''}>Publicado</option>
           </select>
-          ${pub ? `<a href="${esc(postUrl(p))}" target="_blank" rel="noopener">Ver</a>` : ''}
+          <a href="${pub ? esc(postUrl(p)) : '/admin/preview/' + p.id + '/'}" target="_blank" rel="noopener">${pub ? 'Ver' : 'Previsualizar'}</a>
           <button data-act="edit" data-id="${p.id}">Editar</button>
           <button data-act="del" data-id="${p.id}" class="danger">Borrar</button>
         </div>
