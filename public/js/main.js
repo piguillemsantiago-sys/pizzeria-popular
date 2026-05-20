@@ -208,13 +208,15 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// ─── PIZZA FLOTANTE — emoji girando con glow pulsante (todas las páginas) ───
+// ─── PIZZA FLOTANTE — emoji girando + lanzador del chat de Pepe ───
 (function () {
   var wrap = document.createElement('div');
   wrap.className = 'spinning-pizza';
   wrap.id = 'spinningPizza';
-  wrap.setAttribute('aria-hidden', 'true');
-  wrap.innerHTML = '<span class="pizza-emoji">🍕</span>';
+  wrap.setAttribute('role', 'button');
+  wrap.setAttribute('tabindex', '0');
+  wrap.setAttribute('aria-label', 'Abrir chat con Pepe');
+  wrap.innerHTML = '<span class="pizza-emoji">🍕</span><span class="pizza-dot"></span>';
   document.body.appendChild(wrap);
   var pizza = wrap.querySelector('.pizza-emoji');
   var rotation = 0;
@@ -308,16 +310,10 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   footer.appendChild(credit);
 })();
 
-// ─── ASISTENTE DE CHAT · PEPE (visitantes) ───
+// ─── ASISTENTE DE CHAT · PEPE — se lanza desde la pizza flotante ───
 (function () {
-  if (document.querySelector('.ppchat-btn')) return;
-
-  var btn = document.createElement('button');
-  btn.className = 'ppchat-btn';
-  btn.setAttribute('aria-label', 'Abrir chat con Pepe');
-  btn.innerHTML =
-    '<img src="/images/pepe-robot.svg" alt="" />' +
-    '<span class="ppchat-ping"></span>';
+  var btn = document.getElementById('spinningPizza');
+  if (!btn || document.querySelector('.ppchat-panel')) return;
 
   var panel = document.createElement('div');
   panel.className = 'ppchat-panel';
@@ -335,7 +331,6 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     '<form class="ppchat-form"><input type="text" placeholder="Escribile a Pepe…" autocomplete="off" />' +
     '<button type="submit" aria-label="Enviar">➤</button></form>';
 
-  document.body.appendChild(btn);
   document.body.appendChild(panel);
 
   var log = panel.querySelector('.ppchat-log');
@@ -365,18 +360,21 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   function toggle(open) {
     if (open) {
       panel.hidden = false;
-      btn.classList.add('open');
+      btn.classList.add('chat-open');
       requestAnimationFrame(function () { panel.classList.add('show'); });
-      setTimeout(function () { input.focus(); }, 60);
+      setTimeout(function () { input.focus(); }, 80);
     } else {
       panel.classList.remove('show');
-      btn.classList.remove('open');
-      setTimeout(function () { panel.hidden = true; }, 220);
+      btn.classList.remove('chat-open');
+      setTimeout(function () { panel.hidden = true; }, 260);
     }
   }
 
   btn.addEventListener('click', function () {
     toggle(panel.hidden);
+  });
+  btn.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(panel.hidden); }
   });
   panel.querySelector('.ppchat-close').addEventListener('click', function () {
     toggle(false);
