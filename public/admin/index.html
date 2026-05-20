@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Panel · Pizzería Popular</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin-app">
+
+  <header class="admin-header">
+    <div class="admin-brand">Pizzería <span>Popular</span> · Panel</div>
+    <div class="admin-user">
+      <span id="adminEmail"></span>
+      <button id="logoutBtn">Salir</button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-loading" id="loading">Cargando…</div>
+
+    <section class="admin-panel" id="panel" hidden>
+      <div class="panel-head">
+        <h1>Promociones</h1>
+        <button class="btn-primary" id="newPromoBtn">+ Nueva promo</button>
+      </div>
+      <div class="promo-list" id="promoList"></div>
+    </section>
+  </main>
+
+  <!-- Modal crear/editar promo -->
+  <div class="modal-overlay" id="modal" hidden>
+    <div class="modal">
+      <h2 id="modalTitle">Nueva promo</h2>
+      <form id="promoForm">
+        <label>Título *
+          <input type="text" name="titulo" required />
+        </label>
+        <label>Subtítulo
+          <input type="text" name="subtitulo" placeholder="Ej. Todos los lunes" />
+        </label>
+        <label>Descripción
+          <textarea name="descripcion"></textarea>
+        </label>
+        <label>Condiciones / letra chica
+          <textarea name="condiciones"></textarea>
+        </label>
+        <div class="row2">
+          <label>Badge
+            <input type="text" name="badge" placeholder="Ej. Promo (vacío = sin badge)" />
+          </label>
+          <label>Imagen (ruta o URL)
+            <input type="text" name="imagen_url" placeholder="/images/..." />
+          </label>
+        </div>
+        <div class="row2">
+          <label>Texto del botón
+            <input type="text" name="boton_texto" placeholder="Reservar mesa" />
+          </label>
+          <label>Acción del botón
+            <select name="boton_accion">
+              <option value="reservar">Reservar mesa</option>
+              <option value="menus">Ver menús</option>
+              <option value="ninguno">Sin botón</option>
+            </select>
+          </label>
+        </div>
+        <div class="row2">
+          <label>Idioma
+            <select name="idioma">
+              <option value="es">Español</option>
+              <option value="en">Inglés</option>
+            </select>
+          </label>
+          <label>Orden
+            <input type="number" name="orden" value="0" />
+          </label>
+        </div>
+        <label class="check">
+          <input type="checkbox" name="activa" checked /> Promo activa (visible en la web)
+        </label>
+        <p class="modal-error" id="modalError"></p>
+        <div class="modal-actions">
+          <button type="button" id="cancelBtn">Cancelar</button>
+          <button type="submit" class="save" id="saveBtn">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

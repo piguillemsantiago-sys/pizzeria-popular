@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Acceso · Panel Pizzería Popular</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/admin/admin.css" />
+</head>
+<body class="admin-login">
+
+  <form class="login-card" id="loginForm">
+    <div class="login-logo">Pizzería <span>Popular</span></div>
+    <p class="login-sub">Panel de administración</p>
+    <label>Email
+      <input type="email" id="email" required autocomplete="username" />
+    </label>
+    <label>Contraseña
+      <input type="password" id="password" required autocomplete="current-password" />
+    </label>
+    <button type="submit" id="loginBtn">Entrar</button>
+    <p class="login-error" id="loginError"></p>
+  </form>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script>
+  (async function () {
+    const errEl = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+    let sb;
+    try {
+      const cfg = await fetch('/api/admin/config').then(r => r.json());
+      sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+    } catch (e) {
+      errEl.textContent = 'No se pudo iniciar el panel. Reintentá.';
+      return;
+    }
+    // Si ya hay sesión, al panel directo.
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) { location.href = '/admin/'; return; }
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errEl.textContent = '';
+      btn.disabled = true; btn.textContent = 'Entrando...';
+      const { error } = await sb.auth.signInWithPassword({
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value,
+      });
+      if (error) {
+        errEl.textContent = 'Email o contraseña incorrectos.';
+        btn.disabled = false; btn.textContent = 'Entrar';
+        return;
+      }
+      location.href = '/admin/';
+    });
+  })();
+  </script>
+</body>
+</html>

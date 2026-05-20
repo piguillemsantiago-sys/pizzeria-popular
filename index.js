@@ -6,6 +6,8 @@ const { updateRatings, loadRatings, ratingsExist } = require('./google-places');
 
 require('dotenv').config();
 
+const { requireAdmin, supabaseAdmin, SUPABASE_URL, ANON_KEY } = require('./lib/supabase');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
@@ -142,6 +144,10 @@ app.get('/en/contact/', sendPage('en/contact.html'));
 app.get('/en/blog/', sendPage('en/blog.html'));
 app.get('/en/we-have-arrived-in-benidorm/', sendPage('en/blog/we-have-arrived-in-benidorm.html'));
 
+// ========== PANEL ADMIN (páginas) ==========
+app.get('/admin/', sendPage('admin/index.html'));
+app.get('/admin/login/', sendPage('admin/login.html'));
+
 // ========== API: CONTACT FORM ==========
 app.post('/api/contacto', async (req, res) => {
   const { nombre, email, telefono, local, mensaje } = req.body;
@@ -207,6 +213,77 @@ app.get('/api/update-ratings', async (req, res) => {
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
   }
+});
+
+// ========== PANEL ADMIN — API ==========
+
+// Config pública para el navegador (la anon key es pública por diseño).
+app.get('/api/admin/config', (req, res) => {
+  res.json({ supabaseUrl: SUPABASE_URL, supabaseAnonKey: ANON_KEY });
+});
+
+// Verifica que el usuario logueado es admin autorizado.
+app.get('/api/admin/me', requireAdmin, (req, res) => {
+  res.json({ ok: true, email: req.adminUser.email, id: req.adminUser.id });
+});
+
+// Promos públicas (solo activas) — usado por la página /promos/.
+app.get('/api/promos', async (req, res) => {
+  const lang = req.query.lang === 'en' ? 'en' : 'es';
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_promos')
+    .select('*')
+    .eq('idioma', lang)
+    .eq('activa', true)
+    .order('orden', { ascending: true });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+// Listado completo para el panel (incluye inactivas).
+app.get('/api/admin/promos', requireAdmin, async (req, res) => {
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_promos')
+    .select('*')
+    .order('orden', { ascending: true });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+// Whitelist de campos editables — nada fuera de esto llega a la base.
+const PROMO_FIELDS = ['titulo', 'subtitulo', 'descripcion', 'condiciones', 'badge',
+  'imagen_url', 'boton_texto', 'boton_accion', 'activa', 'orden', 'idioma'];
+function cleanPromo(body) {
+  const out = {};
+  for (const f of PROMO_FIELDS) if (body[f] !== undefined) out[f] = body[f];
+  return out;
+}
+
+// Crear promo.
+app.post('/api/admin/promos', requireAdmin, async (req, res) => {
+  const promo = cleanPromo(req.body);
+  if (!promo.titulo) return res.status(400).json({ error: 'El título es obligatorio.' });
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_promos').insert(promo).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// Editar promo.
+app.patch('/api/admin/promos/:id', requireAdmin, async (req, res) => {
+  const promo = cleanPromo(req.body);
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_promos').update(promo).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// Borrar promo.
+app.delete('/api/admin/promos/:id', requireAdmin, async (req, res) => {
+  const { error } = await supabaseAdmin
+    .from('ppweb_promos').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ ok: true });
 });
 
 // ========== 404 ==========
