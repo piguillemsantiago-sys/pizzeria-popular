@@ -36,7 +36,9 @@ Cálido, familiar, argentino. Cercano, no corporativo. Usa el "vos". Guiños com
 ## Pasos
 
 ### 1. Definir el tema y el SEO
-- Si el usuario no dio tema claro, proponer 2-3 opciones desde los pilares.
+- Si el usuario no dio tema claro, tomar el próximo post pendiente de
+  `blog-backlog.md` (raíz del repo), o proponer 2-3 opciones desde los pilares.
+- Al publicar, marcar ese post como "publicado" en `blog-backlog.md`.
 - Definir: **keyword objetivo**, **título** (incluye la keyword, atractivo),
   **slug** (kebab-case, corto, con la keyword), **meta description** (≤ 155
   caracteres, con la keyword).
