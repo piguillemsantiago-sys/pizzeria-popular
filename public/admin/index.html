@@ -34,6 +34,18 @@
           <h1>Promociones</h1>
           <button class="btn-primary" id="newPromoBtn">+ Nueva promo</button>
         </div>
+
+        <div class="assistant">
+          <div class="assistant-head">🤖 Asistente IA <span>pedí cambios en lenguaje natural</span></div>
+          <div class="assistant-log" id="assistantLog">
+            <div class="as-msg as-bot">Hola 👋 Decime qué querés cambiar en las promociones. Por ejemplo: "ocultá el Happy Hour y creá un 2×1 en pizzas los jueves".</div>
+          </div>
+          <form class="assistant-form" id="assistantForm">
+            <input type="text" id="assistantInput" placeholder="Escribí una instrucción…" autocomplete="off" />
+            <button type="submit" class="btn-primary" id="assistantSend">Enviar</button>
+          </form>
+        </div>
+
         <div class="promo-list" id="promoList"></div>
       </div>
 

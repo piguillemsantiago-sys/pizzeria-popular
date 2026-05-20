@@ -263,6 +263,103 @@
     } catch (err) { alert(err.message); }
   }
 
+  /* ==================== ASISTENTE IA ==================== */
+  let assistantHistory = [];
+
+  function asAddMsg(text, cls) {
+    const log = $('assistantLog');
+    const div = document.createElement('div');
+    div.className = 'as-msg ' + cls;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  function describeAction(item) {
+    const d = item.datos || {};
+    const titById = (id) => {
+      const p = promos.find((x) => x.id === id);
+      return p ? '«' + p.titulo + '»' : 'id ' + id;
+    };
+    if (item.accion === 'crear_promo') return 'Crear promo «' + (d.titulo || '?') + '»';
+    if (item.accion === 'editar_promo') {
+      const campos = Object.keys(d).filter((k) => k !== 'id').join(', ') || 'sin cambios';
+      return 'Editar ' + titById(d.id) + ' — ' + campos;
+    }
+    if (item.accion === 'borrar_promo') return 'Borrar ' + titById(d.id);
+    if (item.accion === 'reordenar_promos') return 'Reordenar las promociones';
+    return item.accion;
+  }
+
+  async function asApply(plan) {
+    try {
+      const res = await api('/api/admin/assistant/apply', 'POST', { plan });
+      asAddMsg('✓ ' + (res.results || []).join('  ·  '), 'as-bot');
+      assistantHistory.push({ role: 'assistant', content: '(cambios aplicados)' });
+      await loadPromos();
+    } catch (err) {
+      asAddMsg('Error al aplicar: ' + err.message, 'as-bot');
+    }
+  }
+
+  function renderPlan(plan) {
+    const log = $('assistantLog');
+    const box = document.createElement('div');
+    box.className = 'as-plan';
+    box.innerHTML = '<p class="as-plan-title">Voy a hacer esto:</p><ul>' +
+      plan.map((it) => '<li>' + esc(describeAction(it)) + '</li>').join('') + '</ul>';
+    const actions = document.createElement('div');
+    actions.className = 'as-plan-actions';
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = 'Confirmar';
+    confirmBtn.className = 'as-confirm';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancelar';
+    confirmBtn.addEventListener('click', () => { actions.remove(); asApply(plan); });
+    cancelBtn.addEventListener('click', () => {
+      actions.remove();
+      asAddMsg('Cambios cancelados.', 'as-bot');
+    });
+    actions.appendChild(confirmBtn);
+    actions.appendChild(cancelBtn);
+    box.appendChild(actions);
+    log.appendChild(box);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function onAssistantSubmit(e) {
+    e.preventDefault();
+    const input = $('assistantInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    asAddMsg(text, 'as-user');
+    $('assistantSend').disabled = true;
+    const thinking = asAddMsg('Pensando…', 'as-bot as-thinking');
+    try {
+      const res = await api('/api/admin/assistant', 'POST', {
+        message: text, history: assistantHistory,
+      });
+      thinking.remove();
+      assistantHistory.push({ role: 'user', content: text });
+      if (res.reply) {
+        asAddMsg(res.reply, 'as-bot');
+        assistantHistory.push({ role: 'assistant', content: res.reply });
+      }
+      if (res.plan && res.plan.length) {
+        renderPlan(res.plan);
+      } else if (!res.reply) {
+        asAddMsg('No entendí qué cambio hacer. Probá reformularlo.', 'as-bot');
+      }
+    } catch (err) {
+      thinking.remove();
+      asAddMsg('Error: ' + err.message, 'as-bot');
+    } finally {
+      $('assistantSend').disabled = false;
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -308,6 +405,9 @@
     $('postForm').addEventListener('submit', savePostModal);
     $('postList').addEventListener('click', onPostListClick);
     $('postModal').addEventListener('click', (e) => { if (e.target.id === 'postModal') closePostModal(); });
+
+    // Asistente IA
+    $('assistantForm').addEventListener('submit', onAssistantSubmit);
 
     // Salir
     $('logoutBtn').addEventListener('click', async () => {

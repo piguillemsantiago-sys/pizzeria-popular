@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const { requireAdmin, supabaseAdmin, SUPABASE_URL, ANON_KEY } = require('./lib/supabase');
 const { renderPost } = require('./lib/render-post');
+const { interpret, applyPlan } = require('./lib/assistant');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -349,6 +350,39 @@ app.delete('/api/admin/posts/:id', requireAdmin, async (req, res) => {
     .from('ppweb_posts').delete().eq('id', req.params.id);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ ok: true });
+});
+
+// ---- Asistente de IA (promociones) ----
+// Interpreta una instrucción y devuelve { reply, plan }. NO ejecuta nada.
+app.post('/api/admin/assistant', requireAdmin, async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message || !String(message).trim()) {
+      return res.status(400).json({ error: 'Escribí una instrucción.' });
+    }
+    const { data: promos } = await supabaseAdmin
+      .from('ppweb_promos').select('*').order('orden', { ascending: true });
+    const result = await interpret(history || [], String(message), promos || []);
+    res.json(result);
+  } catch (e) {
+    console.error('[Asistente] Error:', e.message);
+    res.status(500).json({ error: 'El asistente falló: ' + e.message });
+  }
+});
+
+// Ejecuta un plan ya confirmado por el usuario.
+app.post('/api/admin/assistant/apply', requireAdmin, async (req, res) => {
+  try {
+    const { plan } = req.body;
+    if (!Array.isArray(plan) || !plan.length) {
+      return res.status(400).json({ error: 'No hay cambios para aplicar.' });
+    }
+    const results = await applyPlan(plan);
+    res.json({ ok: true, results });
+  } catch (e) {
+    console.error('[Asistente] Error al aplicar:', e.message);
+    res.status(500).json({ error: 'Error al aplicar: ' + e.message });
+  }
 });
 
 // ========== 404 ==========
