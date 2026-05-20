@@ -71,13 +71,15 @@ app.get('/<slug>/', sendPage('pages/blog/<slug>.html'));
 app.get('/en/<slug-en>/', sendPage('en/blog/<slug-en>.html'));
 ```
 
-### 6. Listados y teasers
+### 6. Listados, teasers y sitemap
 Agregar la card local del post nuevo en los 4 lugares:
 - `public/pages/blog.html` y `public/en/blog.html` (listado de blog).
 - `public/pages/index.html` y `public/en/home.html` (teaser de blog del home).
 Seguir el patrón de la card local existente (la de Benidorm). Si ya hay 3+
 posts locales hardcodeados, refactorizar a un arreglo `localPosts` para no
 duplicar.
+Agregar también las URLs del post (ES y EN) a `public/sitemap.xml` con
+`lastmod` de hoy, `changefreq` monthly y `priority` 0.6-0.7.
 
 ### 7. Verificar
 - `node -c` sobre los archivos JS si se tocaron.

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ===== Español ===== -->
+  <url><loc>https://www.pizzeriapopular.es/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/restaurantes/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/carta/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/promos/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/nosotros/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/blog/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/franquicias/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/contacto/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Blog posts ES -->
+  <url><loc>https://www.pizzeriapopular.es/llegamos-a-benidorm/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/pizzeria-popular-llega-a-madrid/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/pizzerias-cerca-de-ti-descubre-pizzeria-popular/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/como-abrir-una-franquicia-de-exito-con-pizzeria-popular/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/ingredientes-frescos-y-autenticos-el-alma-de-nuestras-pizzerias/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+  <!-- Legales ES -->
+  <url><loc>https://www.pizzeriapopular.es/aviso-legal/</loc><lastmod>2026-05-20</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/politica-de-cookies/</loc><lastmod>2026-05-20</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/politica-de-privacidad/</loc><lastmod>2026-05-20</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+
+  <!-- ===== English ===== -->
+  <url><loc>https://www.pizzeriapopular.es/en/home/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/restaurants/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/menu/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/promos/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/about-us/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/blog/</loc><lastmod>2026-05-20</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/franchises/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/contact/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://www.pizzeriapopular.es/en/we-have-arrived-in-benidorm/</loc><lastmod>2026-05-20</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+
+</urlset>
