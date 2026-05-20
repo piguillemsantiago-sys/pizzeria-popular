@@ -327,7 +327,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       '</div>' +
       '<button class="ppchat-close" aria-label="Cerrar">✕</button>' +
     '</div>' +
-    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola! 🔥 Soy Pepe. ¿En qué te ayudo? Preguntame por locales, carta, promos o delivery.</div></div>' +
+    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola! 🔥 Soy Pepe, el asistente virtual de Pizzería Popular. ¿En qué te puedo ayudar?</div></div>' +
     '<form class="ppchat-form"><input type="text" placeholder="Escribile a Pepe…" autocomplete="off" />' +
     '<button type="submit" aria-label="Enviar">➤</button></form>';
 
