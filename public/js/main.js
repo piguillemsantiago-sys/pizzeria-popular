@@ -282,3 +282,13 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   }, { threshold: 0.25 });
   stars.forEach(function (s) { observer.observe(s); });
 })();
+
+// ─── CRÉDITO DESARROLLADOR (footer) ───
+(function () {
+  var footer = document.querySelector('footer');
+  if (!footer || footer.querySelector('.footer-vocai')) return;
+  var credit = document.createElement('div');
+  credit.className = 'footer-vocai';
+  credit.innerHTML = 'Desarrollado por <span>VOCAI</span>';
+  footer.appendChild(credit);
+})();
