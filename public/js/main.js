@@ -307,3 +307,83 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     '</a>';
   footer.appendChild(credit);
 })();
+
+// ─── ASISTENTE DE CHAT (visitantes) ───
+(function () {
+  if (document.querySelector('.ppchat-btn')) return;
+
+  var btn = document.createElement('button');
+  btn.className = 'ppchat-btn';
+  btn.setAttribute('aria-label', 'Abrir chat de ayuda');
+  btn.textContent = '💬';
+
+  var panel = document.createElement('div');
+  panel.className = 'ppchat-panel';
+  panel.hidden = true;
+  panel.innerHTML =
+    '<div class="ppchat-head"><span>Asistente · Pizzería Popular</span>' +
+    '<button class="ppchat-close" aria-label="Cerrar">✕</button></div>' +
+    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola mi vida! 🔥 Soy el asistente de Pizzería Popular. ¿Te ayudo? Preguntame por horarios, locales, la carta o el delivery.</div></div>' +
+    '<form class="ppchat-form"><input type="text" placeholder="Escribí tu consulta…" autocomplete="off" />' +
+    '<button type="submit" aria-label="Enviar">➤</button></form>';
+
+  document.body.appendChild(btn);
+  document.body.appendChild(panel);
+
+  var log = panel.querySelector('.ppchat-log');
+  var form = panel.querySelector('.ppchat-form');
+  var input = form.querySelector('input');
+  var sendBtn = form.querySelector('button');
+  var history = [];
+
+  function add(text, cls) {
+    var d = document.createElement('div');
+    d.className = 'ppchat-msg ' + cls;
+    d.textContent = text;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+
+  btn.addEventListener('click', function () {
+    panel.hidden = !panel.hidden;
+    if (!panel.hidden) input.focus();
+  });
+  panel.querySelector('.ppchat-close').addEventListener('click', function () {
+    panel.hidden = true;
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    add(text, 'user');
+    sendBtn.disabled = true;
+    var thinking = add('…', 'bot thinking');
+    fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: history }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        thinking.remove();
+        if (data.reply) {
+          add(data.reply, 'bot');
+          history.push({ role: 'user', content: text });
+          history.push({ role: 'assistant', content: data.reply });
+        } else {
+          add(data.error || 'No pude responder. Probá de nuevo.', 'bot');
+        }
+      })
+      .catch(function () {
+        thinking.remove();
+        add('Hubo un error de conexión. Probá de nuevo.', 'bot');
+      })
+      .finally(function () {
+        sendBtn.disabled = false;
+        input.focus();
+      });
+  });
+})();

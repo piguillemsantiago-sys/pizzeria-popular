@@ -11,8 +11,10 @@ const { renderPost } = require('./lib/render-post');
 const { interpret, applyPlan } = require('./lib/assistant');
 const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
 const { listFolder, downloadFile } = require('./lib/drive');
+const { chat, rateOk } = require('./lib/chatbot');
 
 const app = express();
+app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
 
@@ -487,6 +489,24 @@ app.post('/api/admin/blog-assistant/apply', requireAdmin, async (req, res) => {
   } catch (e) {
     console.error('[Blog assistant apply] Error:', e.message);
     res.status(500).json({ error: 'Error al aplicar: ' + e.message });
+  }
+});
+
+// ========== CHAT PÚBLICO (asistente de visitantes) ==========
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, history } = req.body;
+    if (!message || !String(message).trim()) {
+      return res.status(400).json({ error: 'Escribí una consulta.' });
+    }
+    if (!rateOk(req.ip)) {
+      return res.status(429).json({ error: 'Demasiadas consultas seguidas. Probá de nuevo en un rato.' });
+    }
+    const reply = await chat(String(message), history || []);
+    res.json({ reply });
+  } catch (e) {
+    console.error('[Chat] Error:', e.message);
+    res.status(500).json({ error: 'No pude responder ahora. Probá de nuevo en un momento.' });
   }
 });
 
