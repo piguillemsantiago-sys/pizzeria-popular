@@ -47,7 +47,7 @@ async function fetchRating(placeId, apiKey) {
   const res = await fetch(url, {
     headers: {
       'X-Goog-Api-Key': apiKey,
-      'X-Goog-FieldMask': 'rating,userRatingCount,reviews',
+      'X-Goog-FieldMask': 'rating,userRatingCount,reviews,regularOpeningHours',
     },
   });
   if (!res.ok) {
@@ -111,6 +111,7 @@ async function updateRatings() {
         placeId: local.placeId,
         rating,
         reviews,
+        hours: (data.regularOpeningHours && data.regularOpeningHours.weekdayDescriptions) || null,
         topReview: topReviews[0] || null,
         topReviews,
       });
@@ -127,6 +128,7 @@ async function updateRatings() {
         placeId: local.placeId,
         rating: oldLocal ? oldLocal.rating : 0,
         reviews: oldLocal ? oldLocal.reviews : 0,
+        hours: oldLocal ? oldLocal.hours || null : null,
         topReview: oldLocal ? oldLocal.topReview || null : null,
         topReviews: oldLocal ? oldLocal.topReviews || [] : [],
       });
