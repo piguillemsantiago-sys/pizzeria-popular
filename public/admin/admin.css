@@ -155,6 +155,68 @@ button { font-family: inherit; cursor: pointer; }
 .assistant-form button { white-space: nowrap; }
 .assistant-form button[disabled] { opacity: .5; cursor: default; }
 
+/* Asistente de Blog — subida de fotos */
+.as-upload {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; min-width: 40px; height: 40px; border-radius: 9px;
+  border: 1px solid var(--pp-line); cursor: pointer; font-size: 1.05rem;
+}
+.as-upload:hover { border-color: var(--pp-gold); }
+.as-upload input { display: none; }
+.as-photos { display: flex; flex-wrap: wrap; gap: 8px; }
+.as-photos:not(:empty) { padding: 10px 16px 0; }
+.as-photo { position: relative; width: 56px; height: 56px; }
+.as-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+.as-photo-state {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; height: 100%; border-radius: 8px;
+  background: var(--pp-bg); border: 1px solid var(--pp-line); color: rgba(237,232,217,.5);
+}
+.as-photo button {
+  position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
+  border-radius: 50%; border: none; background: var(--pp-dark); color: var(--pp-cream);
+  font-size: .62rem; cursor: pointer; line-height: 1;
+}
+
+/* Calendario */
+.cal-nav { display: flex; align-items: center; gap: 10px; }
+.cal-nav button {
+  width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--pp-line);
+  background: transparent; color: var(--pp-cream); cursor: pointer; font-size: 1rem;
+}
+.cal-nav button:hover { border-color: var(--pp-gold); color: var(--pp-gold); }
+.cal-nav span { font-weight: 700; font-size: .95rem; min-width: 150px; text-align: center; }
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-dow {
+  text-align: center; font-size: .66rem; font-weight: 700; letter-spacing: .07em;
+  text-transform: uppercase; color: rgba(237,232,217,.45); padding: 6px 0;
+}
+.cal-cell {
+  min-height: 90px; background: var(--pp-card); border: 1px solid var(--pp-line);
+  border-radius: 8px; padding: 5px; display: flex; flex-direction: column; gap: 3px;
+}
+.cal-empty { background: transparent; border: none; }
+.cal-day { font-size: .72rem; color: rgba(237,232,217,.5); font-weight: 600; }
+.cal-post {
+  font-size: .67rem; line-height: 1.3; padding: 3px 5px; border-radius: 5px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; border-left: 3px solid;
+}
+.cal-post.dot-prep { background: rgba(237,232,217,.08); border-color: rgba(237,232,217,.4); }
+.cal-post.dot-pend { background: rgba(216,164,96,.14); border-color: var(--pp-gold); }
+.cal-post.dot-pub  { background: rgba(120,200,120,.13); border-color: #8fce8f; }
+.cal-lang { opacity: .5; font-weight: 700; }
+.cal-legend { display: flex; gap: 18px; margin-top: 14px; font-size: .76rem; color: rgba(237,232,217,.6); flex-wrap: wrap; }
+.cal-legend span { display: flex; align-items: center; gap: 6px; }
+.cal-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.cal-dot.dot-prep { background: rgba(237,232,217,.4); }
+.cal-dot.dot-pend { background: var(--pp-gold); }
+.cal-dot.dot-pub  { background: #8fce8f; }
+@media (max-width: 560px) {
+  .cal-cell { min-height: 62px; }
+  .cal-post { font-size: .58rem; }
+  .cal-nav span { min-width: 110px; font-size: .85rem; }
+}
+
 /* ---------- LISTA DE PROMOS ---------- */
 .promo-list { display: flex; flex-direction: column; gap: 12px; }
 .promo-row {

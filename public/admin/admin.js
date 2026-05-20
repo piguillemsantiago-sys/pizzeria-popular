@@ -376,12 +376,204 @@
     }
   }
 
+  /* ==================== ASISTENTE DE BLOG ==================== */
+  let blogAsHistory = [];
+  let blogPhotos = []; // { url, loading, error, name }
+
+  function blogAsAddMsg(text, cls) {
+    const log = $('blogAsLog');
+    const div = document.createElement('div');
+    div.className = 'as-msg ' + cls;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  // Redimensiona una imagen en el navegador antes de subirla.
+  function resizeImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          const max = 2000;
+          let w = img.width, h = img.height;
+          if (w > max || h > max) {
+            const r = Math.min(max / w, max / h);
+            w = Math.round(w * r); h = Math.round(h * r);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.82));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function renderBlogPhotos() {
+    $('blogAsPhotos').innerHTML = blogPhotos.map((p, i) =>
+      '<div class="as-photo">' +
+      (p.loading ? '<span class="as-photo-state">…</span>'
+        : p.error ? '<span class="as-photo-state">✗</span>'
+          : '<img src="' + esc(p.url) + '" alt="" />') +
+      '<button type="button" data-i="' + i + '" aria-label="Quitar">✕</button></div>'
+    ).join('');
+  }
+
+  async function onBlogFiles(e) {
+    const files = Array.prototype.slice.call(e.target.files || []);
+    e.target.value = '';
+    for (const file of files) {
+      const ph = { url: null, loading: true, error: false, name: file.name };
+      blogPhotos.push(ph);
+      renderBlogPhotos();
+      try {
+        const dataUrl = await resizeImage(file);
+        const res = await api('/api/admin/upload', 'POST', { filename: file.name, dataUrl });
+        ph.url = res.url; ph.loading = false;
+      } catch (err) {
+        ph.error = true; ph.loading = false;
+      }
+      renderBlogPhotos();
+    }
+  }
+
+  function onBlogPhotoRemove(e) {
+    const btn = e.target.closest('button[data-i]');
+    if (!btn) return;
+    blogPhotos.splice(parseInt(btn.dataset.i, 10), 1);
+    renderBlogPhotos();
+  }
+
+  function describeBlogAction(item) {
+    const d = item.datos || {};
+    if (item.accion === 'redactar_post') {
+      return 'Crear post «' + (d.titulo || '?') + '» (' + (d.idioma || '?') + ')';
+    }
+    if (item.accion === 'editar_post') {
+      const p = posts.find((x) => x.id === d.id);
+      return 'Editar post ' + (p ? '«' + p.titulo + '»' : 'id ' + d.id);
+    }
+    if (item.accion === 'borrar_post') {
+      const p = posts.find((x) => x.id === d.id);
+      return 'Borrar post ' + (p ? '«' + p.titulo + '»' : 'id ' + d.id);
+    }
+    return item.accion;
+  }
+
+  async function blogAsApply(plan) {
+    try {
+      const res = await api('/api/admin/blog-assistant/apply', 'POST', { plan });
+      blogAsAddMsg('✓ ' + (res.results || []).join('  ·  '), 'as-bot');
+      blogAsAddMsg('Listo. Los posts quedaron "en preparación" — revisalos en la lista de abajo y cuando estén OK pasalos a "Pendiente".', 'as-bot');
+      blogAsHistory.push({ role: 'assistant', content: '(posts creados)' });
+      blogPhotos = [];
+      renderBlogPhotos();
+      await loadPosts();
+    } catch (err) {
+      blogAsAddMsg('Error al aplicar: ' + err.message, 'as-bot');
+    }
+  }
+
+  function renderBlogPlan(plan) {
+    const log = $('blogAsLog');
+    const box = document.createElement('div');
+    box.className = 'as-plan';
+    box.innerHTML = '<p class="as-plan-title">Voy a crear esto:</p><ul>' +
+      plan.map((it) => '<li>' + esc(describeBlogAction(it)) + '</li>').join('') + '</ul>';
+    const actions = document.createElement('div');
+    actions.className = 'as-plan-actions';
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = 'Confirmar';
+    confirmBtn.className = 'as-confirm';
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancelar';
+    confirmBtn.addEventListener('click', () => { actions.remove(); blogAsApply(plan); });
+    cancelBtn.addEventListener('click', () => {
+      actions.remove();
+      blogAsAddMsg('Cancelado.', 'as-bot');
+    });
+    actions.appendChild(confirmBtn);
+    actions.appendChild(cancelBtn);
+    box.appendChild(actions);
+    log.appendChild(box);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  async function onBlogAsSubmit(e) {
+    e.preventDefault();
+    const input = $('blogAsInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    blogAsAddMsg(text, 'as-user');
+    $('blogAsSend').disabled = true;
+    const thinking = blogAsAddMsg('Generando el post… (puede tardar ~30 s)', 'as-bot as-thinking');
+    const photos = blogPhotos.filter((p) => p.url).map((p) => ({ url: p.url }));
+    try {
+      const res = await api('/api/admin/blog-assistant', 'POST', {
+        message: text, history: blogAsHistory, photos,
+      });
+      thinking.remove();
+      blogAsHistory.push({ role: 'user', content: text });
+      if (res.reply) {
+        blogAsAddMsg(res.reply, 'as-bot');
+        blogAsHistory.push({ role: 'assistant', content: res.reply });
+      }
+      if (res.plan && res.plan.length) renderBlogPlan(res.plan);
+      else if (!res.reply) blogAsAddMsg('No pude generar el post. Probá reformular el pedido.', 'as-bot');
+    } catch (err) {
+      thinking.remove();
+      blogAsAddMsg('Error: ' + err.message, 'as-bot');
+    } finally {
+      $('blogAsSend').disabled = false;
+    }
+  }
+
+  /* ==================== CALENDARIO ==================== */
+  let calRef = new Date();
+  calRef.setDate(1);
+
+  function renderCalendar() {
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const year = calRef.getFullYear();
+    const month = calRef.getMonth();
+    $('calMonth').textContent = meses[month] + ' ' + year;
+    const startDow = (new Date(year, month, 1).getDay() + 6) % 7; // lunes = 0
+    const days = new Date(year, month + 1, 0).getDate();
+    const dows = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+    let html = dows.map((d) => '<div class="cal-dow">' + d + '</div>').join('');
+    for (let i = 0; i < startDow; i++) html += '<div class="cal-cell cal-empty"></div>';
+    for (let day = 1; day <= days; day++) {
+      const ds = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+      const dayPosts = posts.filter((p) => (p.fecha || '').slice(0, 10) === ds);
+      html += '<div class="cal-cell"><span class="cal-day">' + day + '</span>' +
+        dayPosts.map((p) => {
+          const cls = p.estado === 'publicado' ? 'dot-pub'
+            : p.estado === 'pendiente' ? 'dot-pend' : 'dot-prep';
+          return '<div class="cal-post ' + cls + '" title="' + esc(p.titulo) + '">' +
+            esc(p.titulo) + (p.local ? ' · ' + esc(p.local) : '') +
+            ' <span class="cal-lang">' + esc((p.idioma || '').toUpperCase()) + '</span></div>';
+        }).join('') + '</div>';
+    }
+    $('calendar').innerHTML = html;
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
       t.classList.toggle('active', t.dataset.tab === tab));
     $('view-promos').hidden = tab !== 'promos';
     $('view-blog').hidden = tab !== 'blog';
+    $('view-calendario').hidden = tab !== 'calendario';
+    if (tab === 'calendario') renderCalendar();
   }
 
   /* ==================== ARRANQUE ==================== */
@@ -423,8 +615,21 @@
     $('postList').addEventListener('change', onPostEstadoChange);
     $('postModal').addEventListener('click', (e) => { if (e.target.id === 'postModal') closePostModal(); });
 
-    // Asistente IA
+    // Asistente IA (promos)
     $('assistantForm').addEventListener('submit', onAssistantSubmit);
+
+    // Asistente de Blog
+    $('blogAsForm').addEventListener('submit', onBlogAsSubmit);
+    $('blogAsFiles').addEventListener('change', onBlogFiles);
+    $('blogAsPhotos').addEventListener('click', onBlogPhotoRemove);
+
+    // Calendario
+    $('calPrev').addEventListener('click', () => {
+      calRef.setMonth(calRef.getMonth() - 1); renderCalendar();
+    });
+    $('calNext').addEventListener('click', () => {
+      calRef.setMonth(calRef.getMonth() + 1); renderCalendar();
+    });
 
     // Salir
     $('logoutBtn').addEventListener('click', async () => {

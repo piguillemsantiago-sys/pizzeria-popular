@@ -9,13 +9,14 @@ require('dotenv').config();
 const { requireAdmin, supabaseAdmin, SUPABASE_URL, ANON_KEY } = require('./lib/supabase');
 const { renderPost } = require('./lib/render-post');
 const { interpret, applyPlan } = require('./lib/assistant');
+const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const PUBLIC = path.join(__dirname, 'public');
 
 // Parse JSON & form data
-app.use(express.json());
+app.use(express.json({ limit: '15mb' })); // 15mb: subida de imágenes del panel
 app.use(express.urlencoded({ extended: true }));
 
 // Force no-cache for HTML pages so edits are picked up immediately
@@ -381,6 +382,62 @@ app.post('/api/admin/assistant/apply', requireAdmin, async (req, res) => {
     res.json({ ok: true, results });
   } catch (e) {
     console.error('[Asistente] Error al aplicar:', e.message);
+    res.status(500).json({ error: 'Error al aplicar: ' + e.message });
+  }
+});
+
+// ---- Subida de imágenes (Supabase Storage, bucket ppweb-blog) ----
+app.post('/api/admin/upload', requireAdmin, async (req, res) => {
+  try {
+    const { filename, dataUrl } = req.body;
+    const m = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(dataUrl || '');
+    if (!m) return res.status(400).json({ error: 'Imagen no válida (jpg, png o webp).' });
+    const contentType = m[1];
+    const buffer = Buffer.from(m[2], 'base64');
+    const ext = contentType === 'image/png' ? 'png' : (contentType === 'image/webp' ? 'webp' : 'jpg');
+    const safe = String(filename || 'foto').toLowerCase()
+      .replace(/\.[a-z0-9]+$/, '').replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '').slice(0, 40) || 'foto';
+    const objectPath = 'blog/' + Date.now() + '-' + safe + '.' + ext;
+    const { error } = await supabaseAdmin.storage.from('ppweb-blog')
+      .upload(objectPath, buffer, { contentType, upsert: false });
+    if (error) return res.status(500).json({ error: error.message });
+    const { data } = supabaseAdmin.storage.from('ppweb-blog').getPublicUrl(objectPath);
+    res.json({ url: data.publicUrl });
+  } catch (e) {
+    console.error('[Upload] Error:', e.message);
+    res.status(500).json({ error: 'Error al subir: ' + e.message });
+  }
+});
+
+// ---- Asistente de IA para el blog ----
+app.post('/api/admin/blog-assistant', requireAdmin, async (req, res) => {
+  try {
+    const { message, history, photos } = req.body;
+    if (!message || !String(message).trim()) {
+      return res.status(400).json({ error: 'Escribí una instrucción.' });
+    }
+    const { data: posts } = await supabaseAdmin
+      .from('ppweb_posts').select('id,titulo,idioma,estado,slug')
+      .order('created_at', { ascending: false });
+    const result = await interpretBlog(history || [], String(message), photos || [], posts || []);
+    res.json(result);
+  } catch (e) {
+    console.error('[Blog assistant] Error:', e.message);
+    res.status(500).json({ error: 'El asistente falló: ' + e.message });
+  }
+});
+
+app.post('/api/admin/blog-assistant/apply', requireAdmin, async (req, res) => {
+  try {
+    const { plan } = req.body;
+    if (!Array.isArray(plan) || !plan.length) {
+      return res.status(400).json({ error: 'No hay nada para aplicar.' });
+    }
+    const results = await applyBlogPlan(plan);
+    res.json({ ok: true, results });
+  } catch (e) {
+    console.error('[Blog assistant apply] Error:', e.message);
     res.status(500).json({ error: 'Error al aplicar: ' + e.message });
   }
 });
