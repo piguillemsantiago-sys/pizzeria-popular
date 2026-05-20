@@ -315,7 +315,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   var btn = document.createElement('button');
   btn.className = 'ppchat-btn';
   btn.setAttribute('aria-label', 'Abrir chat de ayuda');
-  btn.textContent = '💬';
+  btn.innerHTML = '<img src="/images/favicon-dark.png" alt="" />';
 
   var panel = document.createElement('div');
   panel.className = 'ppchat-panel';

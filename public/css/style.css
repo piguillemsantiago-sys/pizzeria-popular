@@ -3517,11 +3517,13 @@ main.article { background: var(--cream); display: block; }
 .ppchat-btn {
   position: fixed; left: 20px; bottom: 20px; z-index: 9998;
   width: 56px; height: 56px; border-radius: 50%; border: none;
-  background: var(--gold); color: var(--dark); font-size: 1.5rem;
+  background: var(--gold); color: var(--dark); padding: 0;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,.35);
   transition: transform .2s;
 }
 .ppchat-btn:hover { transform: scale(1.08); }
+.ppchat-btn img { width: 34px; height: 34px; object-fit: contain; display: block; }
 .ppchat-panel {
   position: fixed; left: 20px; bottom: 88px; z-index: 9998;
   width: 340px; max-width: calc(100vw - 40px);
@@ -3530,6 +3532,7 @@ main.article { background: var(--cream); display: block; }
   border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;
   box-shadow: 0 16px 48px rgba(0,0,0,.5);
 }
+.ppchat-panel[hidden] { display: none; }
 .ppchat-head {
   display: flex; justify-content: space-between; align-items: center;
   padding: 13px 16px; background: var(--dark); color: var(--cream);
