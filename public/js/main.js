@@ -290,7 +290,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   var credit = document.createElement('div');
   credit.className = 'footer-vocai';
   credit.innerHTML =
-    'Desarrollado por' +
+    '<span class="footer-vocai-label">Desarrollado por</span>' +
     '<a class="footer-vocai-name" href="https://www.vocai.es" target="_blank" rel="noopener">VOCAI</a>' +
     '<a class="footer-vocai-ig" href="https://www.instagram.com/vocai.st/" target="_blank" rel="noopener" aria-label="Instagram de VOCAI">' +
       '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
