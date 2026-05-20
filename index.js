@@ -146,26 +146,24 @@ app.get('/en/blog/', sendPage('en/blog.html'));
 app.get('/en/we-have-arrived-in-benidorm/', sendPage('en/blog/we-have-arrived-in-benidorm.html'));
 
 // ========== BLOG POSTS DESDE LA BASE DE DATOS ==========
-app.get('/blog/:slug/', async (req, res, next) => {
+async function serveDbPost(req, res, next, idioma) {
   try {
+    const otro = idioma === 'es' ? 'en' : 'es';
     const { data, error } = await supabaseAdmin
       .from('ppweb_posts').select('*')
-      .eq('slug', req.params.slug).eq('idioma', 'es').eq('estado', 'publicado')
+      .eq('slug', req.params.slug).eq('idioma', idioma).eq('estado', 'publicado')
       .maybeSingle();
     if (error || !data) return next();
-    res.send(renderPost(data));
-  } catch (e) { next(); }
-});
-app.get('/en/blog/:slug/', async (req, res, next) => {
-  try {
-    const { data, error } = await supabaseAdmin
-      .from('ppweb_posts').select('*')
-      .eq('slug', req.params.slug).eq('idioma', 'en').eq('estado', 'publicado')
+    // ¿Existe la versión publicada en el otro idioma (mismo slug)?
+    const { data: alt } = await supabaseAdmin
+      .from('ppweb_posts').select('id')
+      .eq('slug', req.params.slug).eq('idioma', otro).eq('estado', 'publicado')
       .maybeSingle();
-    if (error || !data) return next();
-    res.send(renderPost(data));
+    res.send(renderPost(data, { hasTranslation: !!alt }));
   } catch (e) { next(); }
-});
+}
+app.get('/blog/:slug/', (req, res, next) => serveDbPost(req, res, next, 'es'));
+app.get('/en/blog/:slug/', (req, res, next) => serveDbPost(req, res, next, 'en'));
 
 // ========== PANEL ADMIN (páginas) ==========
 app.get('/admin/', sendPage('admin/index.html'));

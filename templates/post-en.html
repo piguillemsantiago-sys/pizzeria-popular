@@ -11,6 +11,7 @@
   <meta name="author" content="Pizzería Popular" />
   <meta name="theme-color" content="#392E2C" />
   <link rel="canonical" href="https://www.pizzeriapopular.es/en/blog/{{SLUG}}/" />
+  {{HREFLANG}}
   <meta property="og:type" content="article" />
   <meta property="og:title" content="{{TITULO}}" />
   <meta property="og:description" content="{{META_DESC}}" />
@@ -69,7 +70,7 @@
     <li><a href="/en/about-us/">About Us</a></li><li><a href="/en/restaurants/">Restaurants</a></li><li><a href="/en/menu/">Menu</a></li><li><a href="/en/promos/">Promos</a></li><li><a href="/en/franchises/">Franchises</a></li><li><a href="/en/contact/">Contact</a></li><li><a href="/en/blog/">Blog</a></li>
   </ul>
   <div class="nav-right">
-    <div class="lang-switch"><a class="lang-btn" href="/blog/">ES</a><a class="lang-btn active" href="/en/blog/">EN</a></div>
+    <div class="lang-switch"><a class="lang-btn" href="{{ALT_LANG_URL}}">ES</a><a class="lang-btn active" href="/en/blog/">EN</a></div>
     <div class="delivery-wrap">
       <a class="nav-cta" href="javascript:void(0)" onclick="toggleDelivery()">Delivery ▾</a>
       <div class="delivery-dropdown" id="deliveryDropdown">
