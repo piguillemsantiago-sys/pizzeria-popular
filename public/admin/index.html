@@ -27,6 +27,7 @@
         <button class="admin-tab active" data-tab="promos">Promociones</button>
         <button class="admin-tab" data-tab="blog">Blog</button>
         <button class="admin-tab" data-tab="calendario">Calendario</button>
+        <button class="admin-tab" data-tab="pepe">Pepe</button>
       </div>
 
       <!-- Vista Promociones -->
@@ -91,6 +92,46 @@
           <span><i class="cal-dot dot-prep"></i> En preparación</span>
           <span><i class="cal-dot dot-pend"></i> Pendiente de publicar</span>
           <span><i class="cal-dot dot-pub"></i> Publicado</span>
+        </div>
+      </div>
+
+      <!-- Vista Pepe — estadísticas del chat -->
+      <div class="tab-view" id="view-pepe" hidden>
+        <div class="panel-head">
+          <h1>Pepe · Chat</h1>
+          <button class="btn-primary" id="pepeAnalyzeBtn">✨ Analizar con IA</button>
+        </div>
+
+        <div class="pepe-loading" id="pepeLoading">Cargando estadísticas…</div>
+
+        <div id="pepeContent" hidden>
+          <div class="stat-cards">
+            <div class="stat-card"><span class="stat-num" id="stTotal">0</span><span class="stat-lbl">Consultas totales</span></div>
+            <div class="stat-card"><span class="stat-num" id="stConv">0</span><span class="stat-lbl">Conversaciones</span></div>
+            <div class="stat-card"><span class="stat-num" id="st7">0</span><span class="stat-lbl">Últimos 7 días</span></div>
+            <div class="stat-card"><span class="stat-num" id="stHoy">0</span><span class="stat-lbl">Hoy</span></div>
+          </div>
+
+          <div class="pepe-block">
+            <h2>Consultas por día <small>(últimos 14 días)</small></h2>
+            <div class="pepe-chart" id="pepeChart"></div>
+          </div>
+
+          <div class="pepe-insight pepe-block">
+            <h2>🧠 Análisis y recomendaciones IA</h2>
+            <div id="pepeInsight"></div>
+          </div>
+
+          <div class="pepe-cols">
+            <div class="pepe-block">
+              <h2>Lo que más preguntan</h2>
+              <div id="pepeRepeated"></div>
+            </div>
+            <div class="pepe-block">
+              <h2>Últimas consultas</h2>
+              <div id="pepeRecent"></div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -339,6 +339,16 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   var sendBtn = form.querySelector('button');
   var history = [];
 
+  // Id de sesión para agrupar la conversación en las estadísticas.
+  var sessionId;
+  try {
+    sessionId = sessionStorage.getItem('pepeSession');
+    if (!sessionId) {
+      sessionId = 's-' + Date.now() + '-' + Math.random().toString(36).slice(2, 9);
+      sessionStorage.setItem('pepeSession', sessionId);
+    }
+  } catch (e) { sessionId = 's-' + Date.now(); }
+
   function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
@@ -410,7 +420,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: history }),
+      body: JSON.stringify({ message: text, history: history, sessionId: sessionId }),
     })
       .then(function (r) { return r.json(); })
       .then(function (data) {

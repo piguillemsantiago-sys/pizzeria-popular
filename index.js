@@ -12,6 +12,7 @@ const { interpret, applyPlan } = require('./lib/assistant');
 const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
 const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk } = require('./lib/chatbot');
+const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -495,7 +496,7 @@ app.post('/api/admin/blog-assistant/apply', requireAdmin, async (req, res) => {
 // ========== CHAT PÚBLICO (asistente de visitantes) ==========
 app.post('/api/chat', async (req, res) => {
   try {
-    const { message, history } = req.body;
+    const { message, history, sessionId } = req.body;
     if (!message || !String(message).trim()) {
       return res.status(400).json({ error: 'Escribí una consulta.' });
     }
@@ -503,10 +504,34 @@ app.post('/api/chat', async (req, res) => {
       return res.status(429).json({ error: 'Demasiadas consultas seguidas. Probá de nuevo en un rato.' });
     }
     const reply = await chat(String(message), history || []);
+    logTurn(sessionId, String(message), reply); // registro para estadísticas
     res.json({ reply });
   } catch (e) {
     console.error('[Chat] Error:', e.message);
     res.status(500).json({ error: 'No pude responder ahora. Probá de nuevo en un momento.' });
+  }
+});
+
+// ---- Estadísticas del chat de Pepe (panel) ----
+app.get('/api/admin/chat/stats', requireAdmin, async (req, res) => {
+  try {
+    const stats = await getStats();
+    const insight = await getLatestInsight();
+    res.json(Object.assign({}, stats, { insight }));
+  } catch (e) {
+    console.error('[ChatStats] Error:', e.message);
+    res.status(500).json({ error: 'No se pudieron cargar las estadísticas: ' + e.message });
+  }
+});
+
+// ---- Análisis IA del chat, a pedido ----
+app.post('/api/admin/chat/analyze', requireAdmin, async (req, res) => {
+  try {
+    const insight = await analyze();
+    res.json(insight);
+  } catch (e) {
+    console.error('[ChatStats] Error al analizar:', e.message);
+    res.status(500).json({ error: 'No se pudo analizar: ' + e.message });
   }
 });
 
@@ -537,6 +562,17 @@ cron.schedule('0 6 * * *', async () => {
     }
   } catch (e) {
     console.error('[Autopublish] Error:', e.message);
+  }
+});
+
+// ========== CRON: Análisis diario del chat de Pepe (todos los días, 7am) ==========
+cron.schedule('0 7 * * *', async () => {
+  console.log('[Cron] Análisis diario del chat de Pepe...');
+  try {
+    await analyze();
+    console.log('[Cron] Análisis del chat generado.');
+  } catch (e) {
+    console.error('[Cron chat] Error:', e.message);
   }
 });
 

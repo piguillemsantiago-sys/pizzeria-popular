@@ -3688,7 +3688,7 @@ main.article { background: var(--cream); display: block; }
 .ppchat-form input {
   flex: 1; background: #FFFFFF; border: 1px solid rgba(57,46,44,.16);
   border-radius: 22px; padding: 11px 16px; color: var(--dark);
-  font-family: 'Montserrat', sans-serif; font-size: .86rem;
+  font-family: 'Montserrat', sans-serif; font-size: 16px;
   transition: border-color .2s;
 }
 .ppchat-form input::placeholder { color: rgba(57,46,44,.42); }

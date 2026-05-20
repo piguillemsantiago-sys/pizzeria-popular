@@ -642,6 +642,113 @@
     $('calendar').innerHTML = html;
   }
 
+  /* ==================== PEPE — ESTADÍSTICAS DEL CHAT ==================== */
+  let pepeLoaded = false;
+
+  function renderPepeChart(porDia) {
+    const max = Math.max(1, ...porDia.map((d) => d.count));
+    $('pepeChart').innerHTML = porDia.map((d) =>
+      '<div class="chart-col" title="' + esc(d.fecha) + ': ' + d.count + ' consultas">' +
+        '<span class="chart-num">' + d.count + '</span>' +
+        '<div class="chart-track"><div class="chart-bar" style="height:' +
+          Math.round((d.count / max) * 100) + '%"></div></div>' +
+        '<span class="chart-lbl">' + esc(d.label) + '</span>' +
+      '</div>').join('');
+  }
+
+  function renderPepeRepeated(list) {
+    if (!list || !list.length) {
+      $('pepeRepeated').innerHTML = '<p class="empty">Todavía no hay consultas repetidas.</p>';
+      return;
+    }
+    $('pepeRepeated').innerHTML = list.map((r) =>
+      '<div class="pepe-q"><span class="pepe-q-count">' + r.count + '×</span>' +
+      '<span class="pepe-q-text">' + esc(r.texto) + '</span></div>').join('');
+  }
+
+  function renderPepeRecent(list) {
+    if (!list || !list.length) {
+      $('pepeRecent').innerHTML = '<p class="empty">Todavía no hay consultas.</p>';
+      return;
+    }
+    $('pepeRecent').innerHTML = list.map((r) =>
+      '<div class="pepe-msg">' +
+        '<p class="pepe-msg-u">' + esc(r.user_msg) + '</p>' +
+        (r.bot_reply ? '<p class="pepe-msg-b">' + esc(r.bot_reply) + '</p>' : '') +
+      '</div>').join('');
+  }
+
+  function renderPepeInsight(ins) {
+    const box = $('pepeInsight');
+    if (!ins) {
+      box.innerHTML = '<p class="empty">Todavía no hay análisis. Tocá «Analizar con IA» para generar recomendaciones.</p>';
+      return;
+    }
+    if (ins.vacio) {
+      box.innerHTML = '<p class="empty">Cuando la gente empiece a usar el chat, acá vas a ver el análisis y las recomendaciones.</p>';
+      return;
+    }
+    let html = '';
+    if (ins.generatedAt) {
+      html += '<p class="pepe-when">Generado el ' +
+        new Date(ins.generatedAt).toLocaleString('es-ES') + '</p>';
+    }
+    if (ins.resumen) html += '<p class="pepe-resumen">' + esc(ins.resumen) + '</p>';
+    if (ins.temas && ins.temas.length) {
+      const max = Math.max(1, ...ins.temas.map((t) => t.cantidad || 0));
+      html += '<h3>Temas más consultados</h3><div class="pepe-temas">' +
+        ins.temas.map((t) =>
+          '<div class="pepe-tema">' +
+            '<div class="pepe-tema-top"><span>' + esc(t.tema) + '</span>' +
+            '<span class="pepe-tema-n">' + (t.cantidad || 0) + '</span></div>' +
+            '<div class="pepe-tema-track"><div class="pepe-tema-bar" style="width:' +
+              Math.round(((t.cantidad || 0) / max) * 100) + '%"></div></div>' +
+            (t.ejemplo ? '<p class="pepe-tema-ej">Ej: ' + esc(t.ejemplo) + '</p>' : '') +
+          '</div>').join('') +
+        '</div>';
+    }
+    if (ins.recomendaciones && ins.recomendaciones.length) {
+      html += '<h3>Recomendaciones</h3><ul class="pepe-recos">' +
+        ins.recomendaciones.map((r) => '<li>' + esc(r) + '</li>').join('') + '</ul>';
+    }
+    box.innerHTML = html || '<p class="empty">El análisis no devolvió datos.</p>';
+  }
+
+  async function loadPepeStats() {
+    try {
+      const d = await api('/api/admin/chat/stats');
+      $('stTotal').textContent = d.total || 0;
+      $('stConv').textContent = d.conversaciones || 0;
+      $('st7').textContent = d.ultimos7 || 0;
+      $('stHoy').textContent = d.hoy || 0;
+      renderPepeChart(d.porDia || []);
+      renderPepeRepeated(d.recurrentes);
+      renderPepeRecent(d.recientes);
+      renderPepeInsight(d.insight);
+      $('pepeLoading').hidden = true;
+      $('pepeContent').hidden = false;
+      pepeLoaded = true;
+    } catch (err) {
+      $('pepeLoading').textContent = 'Error al cargar: ' + err.message;
+    }
+  }
+
+  async function onPepeAnalyze() {
+    const btn = $('pepeAnalyzeBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Analizando… (~20 s)';
+    try {
+      const ins = await api('/api/admin/chat/analyze', 'POST', {});
+      renderPepeInsight(ins);
+    } catch (err) {
+      alert('Error al analizar: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = original;
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -649,7 +756,9 @@
     $('view-promos').hidden = tab !== 'promos';
     $('view-blog').hidden = tab !== 'blog';
     $('view-calendario').hidden = tab !== 'calendario';
+    $('view-pepe').hidden = tab !== 'pepe';
     if (tab === 'calendario') renderCalendar();
+    if (tab === 'pepe' && !pepeLoaded) loadPepeStats();
   }
 
   /* ==================== ARRANQUE ==================== */
@@ -715,6 +824,9 @@
     $('calNext').addEventListener('click', () => {
       calRef.setMonth(calRef.getMonth() + 1); renderCalendar();
     });
+
+    // Pepe — estadísticas del chat
+    $('pepeAnalyzeBtn').addEventListener('click', onPepeAnalyze);
 
     // Salir
     $('logoutBtn').addEventListener('click', async () => {

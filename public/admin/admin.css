@@ -300,3 +300,90 @@ button { font-family: inherit; cursor: pointer; }
   .promo-row { flex-wrap: wrap; }
   .modal .row2 { grid-template-columns: 1fr; }
 }
+
+/* ---------- PEPE — ESTADÍSTICAS DEL CHAT ---------- */
+.pepe-loading { color: rgba(237,232,217,.55); font-size: .85rem; padding: 20px 0; }
+
+.stat-cards {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;
+}
+.stat-card {
+  background: var(--pp-card); border: 1px solid var(--pp-line); border-radius: 12px;
+  padding: 16px; display: flex; flex-direction: column; gap: 4px;
+}
+.stat-num { font-size: 1.9rem; font-weight: 700; color: var(--pp-gold); line-height: 1; }
+.stat-lbl { font-size: .72rem; color: rgba(237,232,217,.6); }
+
+.pepe-block {
+  background: var(--pp-card); border: 1px solid var(--pp-line); border-radius: 12px;
+  padding: 16px 18px; margin-bottom: 16px;
+}
+.pepe-block h2 { font-size: .95rem; margin-bottom: 14px; }
+.pepe-block h2 small { font-weight: 400; color: rgba(237,232,217,.45); font-size: .75rem; }
+.pepe-block h3 {
+  font-size: .8rem; text-transform: uppercase; letter-spacing: .06em;
+  color: var(--pp-gold); margin: 18px 0 10px;
+}
+
+.pepe-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.pepe-cols .pepe-block { margin-bottom: 0; }
+
+/* Gráfico de barras por día */
+.pepe-chart {
+  display: flex; align-items: flex-end; gap: 6px; height: 150px;
+}
+.chart-col {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%;
+}
+.chart-num { font-size: .68rem; color: rgba(237,232,217,.55); }
+.chart-track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.chart-bar {
+  width: 100%; min-height: 3px; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--pp-gold-bright), var(--pp-gold));
+}
+.chart-lbl { font-size: .62rem; color: rgba(237,232,217,.45); }
+
+/* Lo que más preguntan */
+.pepe-q {
+  display: flex; gap: 10px; align-items: baseline;
+  padding: 8px 0; border-bottom: 1px solid var(--pp-line); font-size: .82rem;
+}
+.pepe-q:last-child { border-bottom: none; }
+.pepe-q-count {
+  flex-shrink: 0; font-weight: 700; color: var(--pp-gold);
+  background: rgba(216,164,96,.12); border-radius: 6px; padding: 2px 7px; font-size: .75rem;
+}
+.pepe-q-text { color: rgba(237,232,217,.85); }
+
+/* Últimas consultas */
+.pepe-msg { padding: 8px 0; border-bottom: 1px solid var(--pp-line); }
+.pepe-msg:last-child { border-bottom: none; }
+.pepe-msg-u { font-size: .82rem; color: var(--pp-cream); font-weight: 600; }
+.pepe-msg-b { font-size: .78rem; color: rgba(237,232,217,.55); margin-top: 3px; }
+
+/* Análisis IA */
+.pepe-insight { border-color: rgba(216,164,96,.3); }
+.pepe-when { font-size: .72rem; color: rgba(237,232,217,.45); margin-bottom: 8px; }
+.pepe-resumen {
+  font-size: .9rem; color: var(--pp-cream); line-height: 1.5;
+  padding: 10px 12px; background: rgba(216,164,96,.08);
+  border-left: 3px solid var(--pp-gold); border-radius: 6px;
+}
+.pepe-temas { display: flex; flex-direction: column; gap: 10px; }
+.pepe-tema-top {
+  display: flex; justify-content: space-between; font-size: .82rem; margin-bottom: 4px;
+}
+.pepe-tema-n { color: var(--pp-gold); font-weight: 700; }
+.pepe-tema-track { background: var(--pp-bg); border-radius: 5px; height: 8px; overflow: hidden; }
+.pepe-tema-bar {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, var(--pp-gold), var(--pp-gold-bright));
+}
+.pepe-tema-ej { font-size: .72rem; color: rgba(237,232,217,.45); margin-top: 3px; }
+.pepe-recos { margin: 0; padding-left: 18px; }
+.pepe-recos li { font-size: .85rem; color: rgba(237,232,217,.85); margin-bottom: 8px; line-height: 1.5; }
+
+@media (max-width: 700px) {
+  .stat-cards { grid-template-columns: 1fr 1fr; }
+  .pepe-cols { grid-template-columns: 1fr; }
+}
