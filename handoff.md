@@ -1,102 +1,94 @@
 # HANDOFF — Pizzería Popular
 
 ## OBJETIVO PRINCIPAL
-Sitio web institucional de Pizzería Popular (cadena argentina de pizza al horno de leña en España, 6 locales). HTML/CSS/JS vanilla, deploy en Railway vía `git push`. La sesión actual hizo el rediseño editorial completo del blog post de Benidorm y dejó **planeado** (sin código aún) un panel de administración con IA para gestionar contenido.
+Sitio web institucional de Pizzería Popular (cadena argentina de pizza al horno de leña en España, 6 locales). HTML/CSS/JS vanilla + Node/Express. En esta sesión el proyecto se **migró de Railway a un VPS propio (DigitalOcean)** y se construyó un **panel de administración** (`/admin`) para gestionar promociones desde una base Supabase.
 
 ## ESTADO ACTUAL
-- Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`.
-- Working tree limpio, todo pusheado. Último commit: `93a13ce`.
-- Deploy: Railway, automático al pushear a `main`.
-- Páginas HTML en `public/` (ES en `public/pages/` + `public/pages/blog/`, EN en `public/en/`, etc.). CSS único compartido `public/css/style.css`, JS único `public/js/main.js` + nuevo `public/js/blog-post.js`.
-- Endpoints backend de contacto: `/api/contacto` y `/api/franquicia`.
-- `.env` local: ya tiene cargadas las 4 claves del futuro panel (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`). `.env` está en `.gitignore` y NO trackeado. Las 4 claves fueron verificadas: Supabase conecta OK, Anthropic key válida.
+- Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`. Working tree limpio.
+- **Producción: VPS DigitalOcean.** Railway quedó OBSOLETO (se puede apagar).
+- El sitio en vivo: `http://167.99.240.64` (sin dominio/HTTPS todavía).
+- Páginas HTML en `public/`. CSS único `public/css/style.css`, JS `public/js/main.js` + `public/js/blog-post.js`.
+- Panel admin operativo en `/admin/` (login Supabase Auth).
+- `.env` (local y en el VPS) tiene: `PORT, NODE_ENV, GOOGLE_PLACES_API_KEY, SMTP_*, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY`. `.env` está gitignored.
+
+## INFRAESTRUCTURA — VPS
+- **Proveedor:** DigitalOcean. Droplet Basic $6/mes, Ubuntu 24.04 LTS.
+- **IP pública:** `167.99.240.64`
+- **Stack:** Node 22 + pm2 (app `pizzeria-popular`) + Nginx (reverse proxy :80→:3000) + certbot (instalado, HTTPS sin activar aún) + ufw + swap 1 GB.
+- **Acceso SSH:** alias `pizzeria-vps` en `~/.ssh/config` (usuario `deploy`, clave `~/.ssh/pizzeria_vps`). Root SSH y password login DESHABILITADOS.
+- **Proyecto en el VPS:** `/var/www/pizzeria-popular`.
+- **Deploy:** `bash deploy.sh` desde la raíz del repo → sincroniza por SSH (tar) + `pm2 restart`. En vivo en ~2 s, sin build. `deploy.sh` excluye `node_modules`, `.git`, `.env`, `google-ratings.json`.
+- **Flujo de trabajo:** editar local → `bash deploy.sh` (deja en vivo) → `git push` (respaldo/historial en GitHub; GitHub YA NO deploya nada).
 
 ## URLS DEL PROYECTO
-**Importante: NO confundir estas URLs.**
+- **Producción (VPS)** → `http://167.99.240.64` — para testing y verificación.
+- **Dominio final** → `www.pizzeriapopular.es` — todavía NO apunta. Falta que el usuario cree los registros DNS tipo A (`@` y `www`) → `167.99.240.64`. Después se corre certbot para HTTPS.
+- **Habit-tracker** → `https://habit-tracker-production-b9ab.up.railway.app` — OTRO proyecto (menús digitales). Aparece como destino de los links "Carta".
 
-- **Producción Railway (ESTE proyecto)** → `https://pizzeria-popular-production.up.railway.app`
-  Es la URL para **testing, deploy y verificación de cambios**. Se actualiza automáticamente al pushear a `main`.
-- **Dominio público final** → `www.pizzeriapopular.es`
-  Todavía **NO apunta**: el CNAME en Namecheap está pendiente de la autorización del dueño (Argentina).
-- **Habit-tracker** → `https://habit-tracker-production-b9ab.up.railway.app`
-  Es **OTRO proyecto separado** (sistema interno de gestión AJAX donde están alojados los menús digitales de los locales). NO usar para verificar cambios de este sitio. Aparece en los HTML como destino de los links "Carta" por local.
-
-## CAMBIOS RECIENTES (sesión 2026-05-19)
-
-### Blog — teaser del home arreglado (commit `247bde5`)
-- La sección "Blog & Novedades" del home (`index.html` y `en/home.html`) tenía su propio script que solo traía posts de WordPress y NUNCA mostraba el post local de Benidorm. Ahora antepone el post local de Benidorm y filtra por idioma (espeja la lógica de `/blog/`).
-
-### Blog post Benidorm — rediseño editorial completo (commit `078984d`)
-- Nuevo sistema de plantilla **`.article-*`** en `style.css` (independiente del viejo `.bm-*`). Reutilizable para todos los posts nuevos.
-- Hero full-bleed con parallax, barra de progreso de lectura, índice flotante con scrollspy, drop cap, pull quotes, bloques photo-essay full-bleed, galería masonry con lightbox, tiempo de lectura calculado, botones de compartir.
-- Lógica en **`public/js/blog-post.js`** (vanilla, sin dependencias).
-- 7 fotos reales del local en `public/images/blog/benidorm/`, optimizadas con `sharp` (~25 MB → ~1,9 MB).
-- Posts ES y EN reescritos. Las cards del blog (home + `/blog/`) usan la foto nueva.
-
-### Blog post Benidorm — ajustes posteriores
-- `c45791f`: arreglado el link de Google Maps (apuntaba a `maps.app.goo.gl/` vacío → ahora `google.com/maps/search/?api=1&query=...`).
-- `5ee8cdd`: agregada imagen del Balcón del Mediterráneo (generada con IA con Grok) en la sección de ubicación.
-- `1fb64f0` + `93a13ce`: iteración del hero. Estado final: **hero = imagen IA del Balcón** (`benidorm-balcon.jpg`); la foto de la pareja al atardecer quedó en la sección de ubicación; la de las señoras quedó en la galería.
+## PANEL DE ADMINISTRACIÓN — ESTADO
+Panel privado en `/admin/` para gestionar contenido sin tocar código.
+- **Operativo:** login (Supabase Auth, email+password) + ABM completo de promociones (crear/editar/borrar/mostrar-ocultar/reordenar).
+- **Seguridad en capas:** login Supabase Auth + verificación del token server-side en cada `/api/admin/*` (middleware `requireAdmin`) + RLS en las tablas + lista blanca `ppweb_admins`.
+- **Admin dado de alta:** `piguillemsantiago@gmail.com` (user_id `34323240-a10f-4ac9-8ceb-b7a40cf611ce`).
+- **Supabase:** proyecto compartido "AJAX Sistema de Gestión" (ref `zaoaxkewnratzenklyth`). Tablas creadas: `ppweb_promos`, `ppweb_admins` (prefijo `ppweb_` = grupo "página web"). El SQL está en `supabase-schema.sql` (ya ejecutado).
+- **`/promos/` (ES)** ya renderiza dinámicamente desde la base (`/api/promos`). **`/en/promos/` sigue estática** (no hay promos en inglés cargadas).
+- **PENDIENTE:** el asistente de IA del panel (escribir en lenguaje natural → Claude API con tool use acotado). Todavía NO está. La `ANTHROPIC_API_KEY` ya está en el `.env`.
 
 ## DECISIONES TÉCNICAS BLOQUEADAS
-- CSS y JS son **archivos compartidos** por todas las páginas → un cambio ahí aplica a todo el sitio. Se prefiere editar `style.css`/`main.js` antes que tocar los HTML uno por uno.
-- La **pizza flotante** y el **menú hamburguesa**: HTML inyectado / lógica centralizada en `main.js` (no se duplica markup).
-- Subpáginas (`nosotros`, `carta`, etc.) usan `.page-header`; sólo `index.html` y `en/home.html` usan `.hero`.
-- Mail de contacto oficial único: `pizzeriapopular@grupoajax.es`.
-- Color de marca para destacados/dorado: `#F5C66B`.
-- **Posts de blog nuevos** usan la plantilla `.article-*` (CSS) + `blog-post.js`. Copiar la estructura de `public/pages/blog/llegamos-a-benidorm.html` (ES) y `public/en/blog/we-have-arrived-in-benidorm.html` (EN), y agregar la card local en blog.html / en/blog.html / index.html / en/home.html.
+- CSS y JS son archivos compartidos: editar `style.css`/`main.js` antes que tocar los HTML uno por uno.
+- Posts de blog nuevos usan la plantilla `.article-*` (`style.css`) + `blog-post.js`. Copiar de `public/pages/blog/llegamos-a-benidorm.html`.
+- **Existe la skill `/blog`** (`.claude/skills/blog/SKILL.md`) — procedimiento fijo para publicar un post (template, SEO, rutas, listados, deploy).
 - `sharp` se usa para optimizar imágenes; instalado con `npm install sharp --no-save` (NO está en package.json a propósito).
-- Fotos de cada post en `public/images/blog/<post>/`.
-
-## PANEL DE ADMINISTRACIÓN — PLANEADO, SIN CÓDIGO AÚN
-Objetivo: panel privado `/admin` donde el dueño escribe en lenguaje natural lo que quiere cambiar y una IA (Claude API) lo aplica. Piloto: **Promociones**. Después: Blog y Home.
-
-Decisiones tomadas:
-- **Arquitectura segura**: la IA NO edita código. Las promos viven como datos en Supabase; la IA solo ejecuta acciones acotadas (crear/editar/borrar/ordenar promo) con paso de confirmación previa. La página `/promos/` se renderiza desde la base.
-- **Seguridad en capas**: login con Supabase Auth (email+password) + verificación del token en el servidor en cada `/api/admin/*` + RLS en las tablas nuevas + lista blanca de admins (porque el Auth de Supabase es compartido).
-- **Supabase**: se reutiliza el proyecto existente **"AJAX Sistema de Gestión"** (ref `zaoaxkewnratzenklyth`). NO se crea proyecto nuevo.
-- **Anthropic**: se reutiliza la API key de la agencia (ya en uso en el proyecto AJAX).
-- **Tablas nuevas**: prefijo **`ppweb_`** (grupo "página web", separado de `pp_resenas_google` y del sistema AJAX). Planeadas: `ppweb_promos`, `ppweb_admins` (y a futuro `ppweb_posts`, `ppweb_home`). Verificado que no chocan con las 36 tablas existentes en `public`.
-- **NO tocar `pp_resenas_google`** ni ninguna tabla del sistema AJAX.
-- La introspección de la base mostró 36 tablas en `public` (sistema AJAX: audits, clients, menu_*, suppliers, stock, marketing, habits, etc. + `pp_resenas_google`).
+- Supabase: reutilizar el proyecto "AJAX Sistema de Gestión". NO crear proyecto nuevo. Tablas del panel siempre con prefijo `ppweb_`.
+- La IA del panel NO edita código: solo acciones acotadas sobre datos (tablas `ppweb_*`).
+- Mail de contacto oficial: `pizzeriapopular@grupoajax.es`. Dorado de marca: `#F5C66B`.
 
 ## ARCHIVOS CLAVE
-- `public/css/style.css` — incluye el bloque nuevo "ARTÍCULO DE BLOG — rediseño editorial 2026" (sistema `.article-*`).
-- `public/js/main.js` — menú hamburguesa, pizza flotante, carousel testimonios, observer de `.reveal`.
-- `public/js/blog-post.js` — NUEVO: progreso de lectura, parallax, scrollspy, lightbox, tiempo de lectura, compartir.
-- `public/pages/blog/llegamos-a-benidorm.html` + `public/en/blog/we-have-arrived-in-benidorm.html` — post de Benidorm con la plantilla nueva.
-- `public/images/blog/benidorm/` — 8 imágenes (7 fotos reales + `benidorm-balcon.jpg` IA).
-- `public/pages/index.html` + `public/en/home.html` — teaser de blog arreglado.
-- `index.js` — backend Express (rutas + `/api/contacto` + `/api/franquicia`). Acá irán las rutas `/admin` y `/api/admin/*` del panel.
+- `index.js` — backend Express: rutas del sitio + `/api/contacto` + `/api/franquicia` + rutas del panel `/admin` + API `/api/admin/*` + `/api/promos`.
+- `lib/supabase.js` — clientes Supabase + `requireAdmin`.
+- `public/admin/` — panel: `login.html`, `index.html`, `admin.css`, `admin.js`.
+- `supabase-schema.sql` — schema de las tablas del panel (ya ejecutado en Supabase).
+- `deploy.sh` — despliegue al VPS.
+- `public/css/style.css` — incluye `.article-*` (blog) y `.footer-vocai` (crédito).
+- `public/js/main.js` — incluye la inyección del crédito "Desarrollado por VOCAI" en el footer.
+- `public/js/blog-post.js` — interacciones del blog post.
+- `.claude/skills/blog/SKILL.md` — skill `/blog`.
+
+## CAMBIOS DE ESTA SESIÓN (2026-05-20)
+- Migración completa a VPS DigitalOcean (infra, seguridad, deploy.sh).
+- Panel admin construido: `lib/supabase.js`, rutas en `index.js`, `public/admin/*`, `supabase-schema.sql`.
+- Tablas Supabase creadas y verificadas (4 promos de carga inicial).
+- `/promos/` conectada a la base de datos (render dinámico, modal por delegación de eventos).
+- Footer "Desarrollado por VOCAI" en las 26 páginas: link a `vocai.es`, icono Instagram `@vocai.st`, gradiente azul→rosa de marca, peso 800.
+- Skill `/blog` creada.
+- Bugs resueltos: modal del panel no se cerraba (`display:flex` pisaba `[hidden]`); `deploy.sh` pisaba `google-ratings.json`.
 
 ## BUGS PENDIENTES
-- Ninguno conocido / abierto al cierre de esta sesión.
+- Ninguno conocido al cierre.
 
 ## PRÓXIMO PASO CONCRETO
-Arrancar a construir el **panel de administración (piloto: Promociones)**. Antes de escribir código falta UN dato del usuario: **el email del administrador** que entrará a `/admin`, y si ese usuario ya existe en el Auth de Supabase del proyecto AJAX o hay que crearlo. Con eso definido:
-1. Instalar `@supabase/supabase-js` y el SDK de Anthropic (`@anthropic-ai/sdk`) — estos SÍ van a package.json (a diferencia de sharp).
-2. Crear tablas `ppweb_promos` y `ppweb_admins` en Supabase con RLS.
-3. Construir `/admin` (login Supabase Auth) + endpoints `/api/admin/*` con verificación de token server-side.
-4. Integrar Claude API con tool use acotado (crear/editar/borrar/ordenar promo) + paso de confirmación.
-5. Hacer que `/promos/` se renderice desde Supabase.
-Nota: cuando se empiece a tocar la integración con Claude API, invocar el skill `claude-api`.
+El usuario va a pasar "algo interesante" (tema nuevo, fuera de la web). Para el sitio, las tareas abiertas en orden sugerido:
+1. **Asistente de IA del panel** — Claude API con tool use acotado (crear/editar/borrar/ordenar promo) + paso de confirmación. Al tocar Claude API, invocar el skill `claude-api`.
+2. **Backlog de blog** — definir ~10-12 títulos concretos sobre los 5 pilares (ver SKILL.md de `/blog`).
+3. **`sitemap.xml`** — el sitio no tiene; conviene para SEO.
+4. **Conectar `/en/promos/`** a la base + cargar promos en inglés.
+5. **Editor de blogs en el panel** (Fase 3).
 
 ## COSAS ABIERTAS / RIESGOS
-- **Proyecto Supabase compartido**: el `service_role` key le da al backend de pizzeria-popular acceso TOTAL a la base del sistema AJAX (CRM, OCR, etc.). El código debe tocar SOLO tablas `ppweb_*`. Riesgo a tener presente.
-- **Auth de Supabase compartido**: cualquier usuario del sistema AJAX existe en el mismo Auth. El panel debe validar contra `ppweb_admins`, no solo "estar logueado".
-- Faltan agregar las 4 variables (`SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`) en el Railway de **pizzeria-popular** (hoy solo están en el `.env` local). Hace falta antes del deploy del panel a producción.
-- El hero del post de Benidorm es una **imagen generada con IA**. Si se consigue una foto real apaisada del Balcón/costa de Benidorm, reemplazarla.
-- La foto `benidorm-pareja-atardecer.jpg` vino comprimida de WhatsApp (1200x1600); si aparece el original sin comprimir, reemplazar.
-- Filtro de idioma del blog depende de los IDs de categoría de WordPress (EN = `54, 60, 37, 51, 14`).
+- **Dominio sin apuntar:** falta que el usuario cree los registros DNS A (`@` y `www` → `167.99.240.64`) en Namecheap. Después correr `sudo certbot --nginx -d pizzeriapopular.es -d www.pizzeriapopular.es` en el VPS y actualizar `server_name` en `/etc/nginx/sites-available/pizzeria-popular`.
+- **Supabase compartido:** el `service_role` da acceso TOTAL a la base del sistema AJAX. El código solo debe tocar tablas `ppweb_*`.
+- **Auth compartido:** el panel valida contra `ppweb_admins`, no solo "logueado".
+- Mantenimiento del VPS: certbot y parches de seguridad son automáticos; pm2 sobrevive reinicios.
+- El hero del post de Benidorm es imagen IA (`benidorm-balcon.jpg`); si hay foto real apaisada del Balcón, reemplazar.
+- `benidorm-pareja-atardecer.jpg` vino comprimida de WhatsApp (1200x1600).
 
 ## NO HACER
-- NO preguntar sobre dark mode, tests, logging, rate limiting, CI/CD, Docker, TypeScript.
-- NO usar `railway up` — deploy es sólo `git push`.
-- NO crear un proyecto Supabase nuevo — se reutiliza "AJAX Sistema de Gestión".
-- NO tocar `pp_resenas_google` ni tablas del sistema AJAX. Las tablas del panel van con prefijo `ppweb_`.
-- NO hacer que la IA del panel edite código directamente — solo acciones acotadas sobre datos.
-- NO duplicar markup en las páginas si se puede resolver en `style.css`/`main.js`.
+- NO usar Railway — la producción es el VPS. Deploy = `bash deploy.sh`.
+- NO crear proyecto Supabase nuevo. NO tocar `pp_resenas_google` ni tablas del sistema AJAX.
+- NO hacer que la IA del panel edite código — solo datos `ppweb_*`.
+- NO duplicar markup; resolver en `style.css`/`main.js`.
+- NO commitear `.env`. NO subir `node_modules`.
 - NO editar otros archivos al cerrar sesión salvo `handoff.md`.
 
 ## INSTRUCCIONES PARA EL PRÓXIMO CHAT
-Leé este handoff + CLAUDE.md (global `~/.claude/CLAUDE.md` + el del proyecto si existe) + los archivos clave listados arriba. Continuá desde "Próximo paso concreto": pedile al usuario el email del administrador y arrancá a construir el panel. Commit claro y `git push origin main` para deployar.
+Leé este handoff + CLAUDE.md (global `~/.claude/CLAUDE.md`) + los archivos clave. La producción es el VPS: cambios en vivo con `bash deploy.sh`, y `git push` para respaldo. Continuá desde "Próximo paso concreto" sin preguntas innecesarias.
