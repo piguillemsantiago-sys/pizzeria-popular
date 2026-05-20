@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="/images/favicon-light.png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/images/favicon-dark.png" media="(prefers-color-scheme: light)">
+  <title>{{TITULO}} · Pizzería Popular</title>
+  <meta name="description" content="{{META_DESC}}" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="Pizzería Popular" />
+  <meta name="theme-color" content="#392E2C" />
+  <link rel="canonical" href="https://www.pizzeriapopular.es/blog/{{SLUG}}/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="{{TITULO}}" />
+  <meta property="og:description" content="{{META_DESC}}" />
+  <meta property="og:url" content="https://www.pizzeriapopular.es/blog/{{SLUG}}/" />
+  <meta property="og:image" content="{{HERO_ABS}}" />
+  <meta property="og:locale" content="es_ES" />
+  <meta property="og:site_name" content="Pizzería Popular" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{TITULO}}" />
+  <meta name="twitter:description" content="{{META_DESC}}" />
+  <meta name="twitter:image" content="{{HERO_ABS}}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap" rel="stylesheet" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{TITULO}}",
+    "description": "{{META_DESC}}",
+    "image": "{{HERO_ABS}}",
+    "datePublished": "{{ISO_DATE}}",
+    "dateModified": "{{ISO_DATE}}",
+    "author": { "@type": "Organization", "name": "Pizzería Popular" },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Pizzería Popular",
+      "logo": { "@type": "ImageObject", "url": "https://www.pizzeriapopular.es/images/general/logo.png" }
+    },
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.pizzeriapopular.es/blog/{{SLUG}}/" }
+  }
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="reading-progress"><span></span></div>
+
+<a href="/restaurantes/" class="float-cta" id="floatCta"><span class="float-cta-icon">🍕</span><span class="float-text">Reservar</span></a>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="Cerrar menú">✕</button>
+  <a href="/">Inicio</a>
+  <a href="/nosotros/">Nosotros</a>
+  <a href="/restaurantes/">Restaurantes</a>
+  <a href="/carta/">Carta</a>
+  <a href="/promos/">Promociones</a>
+  <a href="/franquicias/">Franquicias</a>
+  <a href="/blog/">Blog</a>
+  <a href="/contacto/">Contacto</a>
+  <a href="/restaurantes/" class="mobile-cta">Reservar mesa</a>
+</div>
+<header>
+<nav id="mainNav">
+  <a href="/" class="nav-logo"><img src="/images/extracted/logo.png" alt="Pizzería Popular" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-family:Abril+Fatface,serif;font-size:1.3rem;color:var(--cream)>Pizzería <span style=color:var(--gold)>Popular</span></span>'"></a>
+  <ul class="nav-links">
+    <li><a href="/nosotros/">Nosotros</a></li><li><a href="/restaurantes/">Restaurantes</a></li><li><a href="/carta/">Carta</a></li><li><a href="/promos/">Promociones</a></li><li><a href="/franquicias/">Franquicias</a></li><li><a href="/contacto/">Contacto</a></li><li><a href="/blog/">Blog</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switch"><a class="lang-btn active" href="/blog/">ES</a><a class="lang-btn" href="/en/blog/">EN</a></div>
+    <div class="delivery-wrap">
+      <a class="nav-cta" href="javascript:void(0)" onclick="toggleDelivery()">Delivery ▾</a>
+      <div class="delivery-dropdown" id="deliveryDropdown">
+        <div class="dd-header"><span>🛵</span><h4>Pedí delivery</h4></div>
+        <div class="dd-local"><div class="dd-local-name">Santa Clara <span class="dd-local-city">Valencia</span></div><div class="dd-links"><a class="dd-link dd-link-glovo" href="https://glovoapp.com/es/es/valencia/pizzeria-popular-santa-clara/" target="_blank">Glovo</a><a class="dd-link dd-link-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-santa-clara/" target="_blank">Uber Eats</a></div></div>
+        <div class="dd-local"><div class="dd-local-name">Russafa <span class="dd-local-city">Valencia</span></div><div class="dd-links"><a class="dd-link dd-link-glovo" href="https://glovoapp.com/es/es/valencia/pizzeria-popular-russafa/" target="_blank">Glovo</a><a class="dd-link dd-link-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-russafa/" target="_blank">Uber Eats</a></div></div>
+        <div class="dd-local"><div class="dd-local-name">Playa San Juan <span class="dd-local-city">Alicante</span></div><div class="dd-links"><a class="dd-link dd-link-glovo" href="https://glovoapp.com/es/es/alicante/pizzeria-popular-playa-san-juan/" target="_blank">Glovo</a><a class="dd-link dd-link-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-playa-san-juan/" target="_blank">Uber Eats</a></div></div>
+        <div class="dd-local"><div class="dd-local-name">Luceros <span class="dd-local-city">Alicante</span></div><div class="dd-links"><a class="dd-link dd-link-glovo" href="https://glovoapp.com/es/es/alicante/pizzeria-popular-luceros/" target="_blank">Glovo</a><a class="dd-link dd-link-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-luceros/" target="_blank">Uber Eats</a></div></div>
+        <div class="dd-local"><div class="dd-local-name">Boadilla <span class="dd-local-city">Madrid</span></div><div class="dd-links"><a class="dd-link dd-link-glovo" href="https://glovoapp.com/es/es/madrid/pizzeria-popular-boadilla/" target="_blank">Glovo</a><a class="dd-link dd-link-uber" href="https://www.ubereats.com/es/store/pizzeria-popular-boadilla/" target="_blank">Uber Eats</a></div></div>
+      </div>
+    </div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+</header>
+
+<main class="article">
+  <header class="article-hero">
+    <div class="article-hero-bg" style="background-image:url('{{HERO_IMAGE}}')"></div>
+    <div class="article-hero-inner">
+      <span class="article-eyebrow">{{EYEBROW}}</span>
+      <h1>{{TITULO}}</h1>
+      <p class="article-hero-sub">{{SUBTITULO}}</p>
+      <div class="article-meta">
+        <span>{{FECHA}}</span><span class="dot"></span>
+        <span>Pizzería Popular</span><span class="dot"></span>
+        <span class="read-time">5 min de lectura</span>
+      </div>
+    </div>
+    <div class="article-scroll-cue" aria-hidden="true"></div>
+  </header>
+
+  <div class="article-shell">
+    <aside class="article-toc">
+      <div class="article-toc-inner">
+        <p class="article-toc-label">En este artículo</p>
+        <nav>{{TOC}}</nav>
+      </div>
+    </aside>
+    <article class="article-body">
+      <div class="article-share">
+        <span>Compartir</span>
+        <a href="https://wa.me/?text=https%3A%2F%2Fwww.pizzeriapopular.es%2Fblog%2F{{SLUG}}%2F" target="_blank" rel="noopener" aria-label="Compartir en WhatsApp">WA</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.pizzeriapopular.es%2Fblog%2F{{SLUG}}%2F" target="_blank" rel="noopener" aria-label="Compartir en Facebook">f</a>
+        <a href="https://twitter.com/intent/tweet?url=https%3A%2F%2Fwww.pizzeriapopular.es%2Fblog%2F{{SLUG}}%2F" target="_blank" rel="noopener" aria-label="Compartir en X">X</a>
+        <button type="button" class="js-copy" aria-label="Copiar enlace">⧉</button>
+      </div>
+      {{BODY}}
+    </article>
+  </div>
+
+  <section class="article-cta">
+    <p class="article-cta-eyebrow">Te esperamos</p>
+    <h2>Vení a Pizzería Popular</h2>
+    <p>Reservá tu mesa o hacé tu pedido de delivery. Abrimos los 7 días de la semana.</p>
+    <a href="/restaurantes/">Ver restaurantes</a>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lightbox-btn lb-close" aria-label="Cerrar">✕</button>
+  <button type="button" class="lightbox-btn lb-prev" aria-label="Anterior">‹</button>
+  <img src="" alt="Foto ampliada" />
+  <button type="button" class="lightbox-btn lb-next" aria-label="Siguiente">›</button>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-logo">Pizzería <span>Popular</span></div><p class="footer-desc">Cocina argentina en España. Pizza al horno de leña, pasta artesanal y milanesas. Abierto los 7 días.</p><div class="footer-social"><a href="https://www.instagram.com/pizzeriapopular.es/" target="_blank" class="social-link">IG</a><a href="https://maps.app.goo.gl/vsXudEM9PVtnNd5v7" target="_blank" class="social-link">G</a></div></div>
+    <div class="footer-col"><h4>Locales</h4><ul><li><a href="/restaurantes/">Santa Clara · Valencia</a></li><li><a href="/restaurantes/">Ruzafa · Valencia</a></li><li><a href="/restaurantes/">Playa San Juan · Alicante</a></li><li><a href="/restaurantes/">Luceros · Alicante</a></li><li><a href="/restaurantes/">Boadilla · Madrid</a></li></ul></div>
+    <div class="footer-col"><h4>Carta</h4><ul><li><a href="https://habit-tracker-production-b9ab.up.railway.app/" target="_blank">Pizzas</a></li><li><a href="https://habit-tracker-production-b9ab.up.railway.app/" target="_blank">Pastas</a></li><li><a href="https://habit-tracker-production-b9ab.up.railway.app/" target="_blank">Milanesas</a></li><li><a href="https://habit-tracker-production-b9ab.up.railway.app/" target="_blank">Postres</a></li><li><a href="https://habit-tracker-production-b9ab.up.railway.app/" target="_blank">Bebidas</a></li></ul></div>
+    <div class="footer-col"><h4>Contacto</h4><ul><li><a href="mailto:pizzeriapopular@grupoajax.es">pizzeriapopular@grupoajax.es</a></li><li><a href="https://www.instagram.com/pizzeriapopular.es/" target="_blank">@pizzeriapopular.es</a></li><li><a href="/restaurantes/">Reservar mesa</a></li><li><a href="/restaurantes/">Cómo llegar</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Pizzería Popular España · Todos los derechos reservados</span>
+    <div style="display:flex;gap:1.5rem"><a href="/aviso-legal/" style="font-size:.7rem;color:rgba(237,232,217,.2);text-decoration:none">Aviso Legal</a><a href="/politica-de-cookies/" style="font-size:.7rem;color:rgba(237,232,217,.2);text-decoration:none">Política de Cookies</a><a href="/politica-de-privacidad/" style="font-size:.7rem;color:rgba(237,232,217,.2);text-decoration:none">Política de Privacidad</a></div>
+    <span class="hola-footer">¡Hola mi vida! 🔥</span>
+  </div>
+</footer>
+
+<script>
+function toggleDelivery(){var d=document.getElementById('deliveryDropdown');d.classList.toggle('open');}
+document.addEventListener('click',function(e){var d=document.getElementById('deliveryDropdown');if(d&&!e.target.closest('.delivery-wrap'))d.classList.remove('open');});
+document.getElementById('hamburger').addEventListener('click',function(){document.getElementById('mobileMenu').classList.add('open');});
+document.getElementById('mobileClose').addEventListener('click',function(){document.getElementById('mobileMenu').classList.remove('open');});
+window.addEventListener('scroll',function(){document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);});
+</script>
+<script src="/js/main.js" defer></script>
+<script src="/js/blog-post.js" defer></script>
+</body>
+</html>

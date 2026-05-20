@@ -7,6 +7,7 @@ const { updateRatings, loadRatings, ratingsExist } = require('./google-places');
 require('dotenv').config();
 
 const { requireAdmin, supabaseAdmin, SUPABASE_URL, ANON_KEY } = require('./lib/supabase');
+const { renderPost } = require('./lib/render-post');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -143,6 +144,28 @@ app.get('/en/franchises/', sendPage('en/franchises.html'));
 app.get('/en/contact/', sendPage('en/contact.html'));
 app.get('/en/blog/', sendPage('en/blog.html'));
 app.get('/en/we-have-arrived-in-benidorm/', sendPage('en/blog/we-have-arrived-in-benidorm.html'));
+
+// ========== BLOG POSTS DESDE LA BASE DE DATOS ==========
+app.get('/blog/:slug/', async (req, res, next) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('ppweb_posts').select('*')
+      .eq('slug', req.params.slug).eq('idioma', 'es').eq('estado', 'publicado')
+      .maybeSingle();
+    if (error || !data) return next();
+    res.send(renderPost(data));
+  } catch (e) { next(); }
+});
+app.get('/en/blog/:slug/', async (req, res, next) => {
+  try {
+    const { data, error } = await supabaseAdmin
+      .from('ppweb_posts').select('*')
+      .eq('slug', req.params.slug).eq('idioma', 'en').eq('estado', 'publicado')
+      .maybeSingle();
+    if (error || !data) return next();
+    res.send(renderPost(data));
+  } catch (e) { next(); }
+});
 
 // ========== PANEL ADMIN (páginas) ==========
 app.get('/admin/', sendPage('admin/index.html'));
@@ -282,6 +305,50 @@ app.patch('/api/admin/promos/:id', requireAdmin, async (req, res) => {
 app.delete('/api/admin/promos/:id', requireAdmin, async (req, res) => {
   const { error } = await supabaseAdmin
     .from('ppweb_promos').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ ok: true });
+});
+
+// ---- Blog posts ----
+const POST_FIELDS = ['slug', 'idioma', 'titulo', 'subtitulo', 'eyebrow', 'fecha',
+  'hero_image', 'meta_desc', 'keyword', 'contenido', 'estado'];
+function cleanPost(body) {
+  const out = {};
+  for (const f of POST_FIELDS) if (body[f] !== undefined) out[f] = body[f];
+  return out;
+}
+
+// Listado de posts para el panel (incluye borradores).
+app.get('/api/admin/posts', requireAdmin, async (req, res) => {
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_posts').select('*').order('fecha', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+// Crear post.
+app.post('/api/admin/posts', requireAdmin, async (req, res) => {
+  const post = cleanPost(req.body);
+  if (!post.titulo || !post.slug) return res.status(400).json({ error: 'Faltan título o slug.' });
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_posts').insert(post).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// Editar post.
+app.patch('/api/admin/posts/:id', requireAdmin, async (req, res) => {
+  const post = cleanPost(req.body);
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_posts').update(post).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// Borrar post.
+app.delete('/api/admin/posts/:id', requireAdmin, async (req, res) => {
+  const { error } = await supabaseAdmin
+    .from('ppweb_posts').delete().eq('id', req.params.id);
   if (error) return res.status(500).json({ error: error.message });
   res.json({ ok: true });
 });
