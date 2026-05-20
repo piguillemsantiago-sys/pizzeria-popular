@@ -99,51 +99,8 @@
   <!-- Promos -->
   <section class="promos-section">
     <div class="promos-inner">
-      <div class="promos-grid">
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/promo-2x1-pizzas.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">2×1 en Pizzas</h3>
-            <p class="promo-subtitle">Todos los lunes</p>
-            <p class="promo-desc">Comés 2, pagás 1. Solo para consumir en el local.</p>
-            <p class="promo-conditions">Válido solo en los locales de Valencia (Santa Clara y Russafa). No incluye días festivos.</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Reservar mesa</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/promo-2x1-milanesas.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">2×1 en Milanesas</h3>
-            <p class="promo-subtitle">Todos los miércoles</p>
-            <p class="promo-desc">Comés 2, pagás 1. Solo para consumir en el local.</p>
-            <p class="promo-conditions">Válido solo en los locales de Valencia (Santa Clara y Russafa). No incluye días festivos.</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Reservar mesa</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/extracted/producto-pizza-dolce.jpg') center/cover;">
-          <div class="promo-info">
-            <h3 class="promo-title">Menú del día</h3>
-            <p class="promo-subtitle">De lunes a viernes al mediodía</p>
-            <p class="promo-desc">Entrada + Principal + Postre + Bebida. Una experiencia completa al mejor precio.</p>
-            <p class="promo-conditions">Disponible en todos nuestros locales. No incluye días festivos.</p>
-            <button type="button" class="promo-btn" data-promo-modal="menusModal">Ver menús</button>
-          </div>
-        </div>
-
-        <div class="promo-card" style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url('/images/bg-promos.jpg') center/cover;">
-          <div class="promo-info">
-            <span class="promo-badge">Promo</span>
-            <h3 class="promo-title">Happy Hour</h3>
-            <p class="promo-subtitle">Caña 2€ · Pinta 3€</p>
-            <p class="promo-desc">Cerveza tirada bien fría a precio amigo.</p>
-            <p class="promo-conditions">Válido solo en los locales de Valencia (Santa Clara y Russafa).</p>
-            <button type="button" class="promo-btn" data-promo-modal="bookingModal">Reservar mesa</button>
-          </div>
-        </div>
-
+      <div class="promos-grid" id="promosGrid">
+        <p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">Cargando promociones…</p>
       </div>
     </div>
   </section>
@@ -223,12 +180,50 @@
     menuImage.src = '/images/menus/menu-' + slug + '.png';
   }
 
-  document.querySelectorAll('[data-promo-modal]').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      openModal(btn.getAttribute('data-promo-modal'));
-    });
+  // Delegado: sirve también para los botones de promos cargadas dinámicamente.
+  document.addEventListener('click', function(e) {
+    var btn = e.target.closest ? e.target.closest('[data-promo-modal]') : null;
+    if (btn) { e.preventDefault(); openModal(btn.getAttribute('data-promo-modal')); }
   });
+
+  // ---- Promociones cargadas desde la base de datos ----
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"]/g, function(c) {
+      return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c];
+    });
+  }
+  function promoCardHTML(p) {
+    var bg = p.imagen_url
+      ? ' style="background: linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.85)),url(\'' + escHtml(p.imagen_url) + '\') center/cover;"'
+      : '';
+    var badge = p.badge ? '<span class="promo-badge">' + escHtml(p.badge) + '</span>' : '';
+    var sub  = p.subtitulo   ? '<p class="promo-subtitle">'  + escHtml(p.subtitulo)   + '</p>' : '';
+    var desc = p.descripcion ? '<p class="promo-desc">'      + escHtml(p.descripcion) + '</p>' : '';
+    var cond = p.condiciones ? '<p class="promo-conditions">' + escHtml(p.condiciones) + '</p>' : '';
+    var btn = '';
+    if (p.boton_accion === 'reservar')
+      btn = '<button type="button" class="promo-btn" data-promo-modal="bookingModal">' + escHtml(p.boton_texto || 'Reservar mesa') + '</button>';
+    else if (p.boton_accion === 'menus')
+      btn = '<button type="button" class="promo-btn" data-promo-modal="menusModal">' + escHtml(p.boton_texto || 'Ver menús') + '</button>';
+    return '<div class="promo-card"' + bg + '><div class="promo-info">' +
+           badge + '<h3 class="promo-title">' + escHtml(p.titulo) + '</h3>' +
+           sub + desc + cond + btn + '</div></div>';
+  }
+  var promosGrid = document.getElementById('promosGrid');
+  if (promosGrid) {
+    fetch('/api/promos?lang=es')
+      .then(function(r) { return r.json(); })
+      .then(function(promos) {
+        if (!Array.isArray(promos) || !promos.length) {
+          promosGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">No hay promociones disponibles en este momento.</p>';
+          return;
+        }
+        promosGrid.innerHTML = promos.map(promoCardHTML).join('');
+      })
+      .catch(function() {
+        promosGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:rgba(237,232,217,.6);padding:50px;">No se pudieron cargar las promociones.</p>';
+      });
+  }
 
   overlays.forEach(function(overlay) {
     overlay.addEventListener('click', function(e) {
