@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <!-- ===== Pepe · robot cocinero de Pizzería Popular ===== -->
+
+  <!-- Gorro de cocinero -->
+  <circle cx="48" cy="21" r="16" fill="#FBF8F0"/>
+  <circle cx="32" cy="27" r="12" fill="#FBF8F0"/>
+  <circle cx="64" cy="27" r="12" fill="#FBF8F0"/>
+  <rect x="30" y="31" width="36" height="15" rx="5" fill="#FBF8F0"/>
+  <!-- pliegues del gorro -->
+  <path d="M39 18 Q43 12 48 16" stroke="#E7E0CF" stroke-width="2" stroke-linecap="round"/>
+  <path d="M54 19 Q59 13 64 19" stroke="#E7E0CF" stroke-width="2" stroke-linecap="round"/>
+  <line x1="34" y1="39" x2="62" y2="39" stroke="#E7E0CF" stroke-width="1.6" stroke-linecap="round"/>
+
+  <!-- Orejas / tornillos laterales -->
+  <circle cx="22" cy="62" r="5.5" fill="#D8A460"/>
+  <circle cx="74" cy="62" r="5.5" fill="#D8A460"/>
+  <circle cx="22" cy="62" r="2" fill="#241C1A"/>
+  <circle cx="74" cy="62" r="2" fill="#241C1A"/>
+
+  <!-- Cabeza del robot -->
+  <rect x="24" y="42" width="48" height="42" rx="14" fill="#332925"/>
+  <!-- Visor / cara -->
+  <rect x="30" y="49" width="36" height="29" rx="11" fill="#241C1A"/>
+
+  <!-- Cachetes -->
+  <circle cx="35" cy="70" r="3.2" fill="#D8A460" opacity="0.4"/>
+  <circle cx="61" cy="70" r="3.2" fill="#D8A460" opacity="0.4"/>
+
+  <!-- Ojos -->
+  <circle cx="40" cy="60" r="6.2" fill="#EDE8D9"/>
+  <circle cx="56" cy="60" r="6.2" fill="#EDE8D9"/>
+  <circle cx="41" cy="61" r="3" fill="#332925"/>
+  <circle cx="57" cy="61" r="3" fill="#332925"/>
+  <circle cx="42.4" cy="59.4" r="1.2" fill="#FBF8F0"/>
+  <circle cx="58.4" cy="59.4" r="1.2" fill="#FBF8F0"/>
+
+  <!-- Sonrisa -->
+  <path d="M40 71 Q48 77 56 71" stroke="#D8A460" stroke-width="3" stroke-linecap="round" fill="none"/>
+</svg>

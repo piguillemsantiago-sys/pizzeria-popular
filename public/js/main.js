@@ -316,7 +316,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   btn.className = 'ppchat-btn';
   btn.setAttribute('aria-label', 'Abrir chat con Pepe');
   btn.innerHTML =
-    '<img src="/images/favicon-dark.png" alt="" />' +
+    '<img src="/images/pepe-robot.svg" alt="" />' +
     '<span class="ppchat-ping"></span>';
 
   var panel = document.createElement('div');
@@ -324,7 +324,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   panel.hidden = true;
   panel.innerHTML =
     '<div class="ppchat-head">' +
-      '<div class="ppchat-avatar"><img src="/images/favicon-dark.png" alt="" /></div>' +
+      '<div class="ppchat-avatar"><img src="/images/pepe-robot.svg" alt="" /></div>' +
       '<div class="ppchat-id">' +
         '<span class="ppchat-name">Pepe</span>' +
         '<span class="ppchat-role"><span class="ppchat-online"></span>En línea · Pizzería Popular</span>' +

@@ -3524,7 +3524,7 @@ main.article { background: var(--cream); display: block; }
 }
 .ppchat-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 14px 34px rgba(0,0,0,.45); }
 .ppchat-btn.open { transform: scale(.92); }
-.ppchat-btn img { width: 34px; height: 34px; object-fit: contain; display: block; }
+.ppchat-btn img { width: 42px; height: 42px; object-fit: contain; display: block; }
 .ppchat-ping {
   position: absolute; top: 3px; right: 3px;
   width: 13px; height: 13px; border-radius: 50%;
@@ -3564,7 +3564,7 @@ main.article { background: var(--cream); display: block; }
   background: var(--gold); display: flex; align-items: center; justify-content: center;
   box-shadow: 0 3px 10px rgba(0,0,0,.35);
 }
-.ppchat-avatar img { width: 25px; height: 25px; object-fit: contain; }
+.ppchat-avatar img { width: 34px; height: 34px; object-fit: contain; }
 .ppchat-id { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .ppchat-name {
   font-family: 'Abril Fatface', serif; font-size: 1.18rem; line-height: 1.05;
