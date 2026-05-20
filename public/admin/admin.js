@@ -536,6 +536,82 @@
     }
   }
 
+  /* ==================== SELECTOR DE GOOGLE DRIVE ==================== */
+  let driveStack = [];   // [{id, name}] — navegación de carpetas
+  let driveSel = {};     // { fileId: nombre } imágenes marcadas
+
+  function openDriveModal() {
+    driveStack = [{ id: '', name: 'Inicio' }];
+    driveSel = {};
+    $('driveError').textContent = '';
+    $('driveModal').hidden = false;
+    loadDriveFolder();
+  }
+  function closeDriveModal() { $('driveModal').hidden = true; }
+
+  async function loadDriveFolder() {
+    const cur = driveStack[driveStack.length - 1];
+    $('drivePath').textContent = driveStack.map((f) => f.name).join('  /  ');
+    $('driveBack').disabled = driveStack.length <= 1;
+    $('driveBrowser').innerHTML = '<p class="drive-loading">Cargando…</p>';
+    try {
+      const q = cur.id ? '?folder=' + encodeURIComponent(cur.id) : '';
+      const data = await api('/api/admin/drive/list' + q);
+      let html = '';
+      for (const f of data.folders) {
+        html += '<div class="drive-item drive-folder" data-folder="' + esc(f.id) +
+          '" data-name="' + esc(f.name) + '">📁 ' + esc(f.name) + '</div>';
+      }
+      for (const img of data.images) {
+        html += '<label class="drive-item drive-img"><input type="checkbox" data-id="' +
+          esc(img.id) + '"' + (driveSel[img.id] ? ' checked' : '') + ' /> 🖼️ ' +
+          esc(img.name) + '</label>';
+      }
+      $('driveBrowser').innerHTML = html ||
+        '<p class="drive-loading">Esta carpeta está vacía.</p>';
+    } catch (err) {
+      $('driveBrowser').innerHTML = '<p class="drive-loading">' + esc(err.message) + '</p>';
+    }
+  }
+
+  function onDriveClick(e) {
+    const folder = e.target.closest('.drive-folder');
+    if (folder) {
+      driveStack.push({ id: folder.dataset.folder, name: folder.dataset.name });
+      loadDriveFolder();
+    }
+  }
+  function onDriveChange(e) {
+    const cb = e.target.closest('input[type=checkbox]');
+    if (!cb) return;
+    if (cb.checked) driveSel[cb.dataset.id] = true;
+    else delete driveSel[cb.dataset.id];
+  }
+  function driveBack() {
+    if (driveStack.length > 1) { driveStack.pop(); loadDriveFolder(); }
+  }
+
+  async function driveImport() {
+    const ids = Object.keys(driveSel);
+    if (!ids.length) { $('driveError').textContent = 'Marcá al menos una imagen.'; return; }
+    $('driveImportBtn').disabled = true;
+    $('driveError').textContent = 'Importando ' + ids.length + ' imagen(es)…';
+    try {
+      const res = await api('/api/admin/drive/import', 'POST', { ids });
+      for (const url of res.urls || []) {
+        blogPhotos.push({ url: url, loading: false, error: false });
+      }
+      renderBlogPhotos();
+      closeDriveModal();
+      blogAsAddMsg('Importé ' + (res.urls || []).length +
+        ' foto(s) de Google Drive. Ya las puedo usar en el post.', 'as-bot');
+    } catch (err) {
+      $('driveError').textContent = err.message;
+    } finally {
+      $('driveImportBtn').disabled = false;
+    }
+  }
+
   /* ==================== CALENDARIO ==================== */
   let calRef = new Date();
   calRef.setDate(1);
@@ -622,6 +698,15 @@
     $('blogAsForm').addEventListener('submit', onBlogAsSubmit);
     $('blogAsFiles').addEventListener('change', onBlogFiles);
     $('blogAsPhotos').addEventListener('click', onBlogPhotoRemove);
+
+    // Selector de Google Drive
+    $('driveBtn').addEventListener('click', openDriveModal);
+    $('driveCancel').addEventListener('click', closeDriveModal);
+    $('driveBack').addEventListener('click', driveBack);
+    $('driveImportBtn').addEventListener('click', driveImport);
+    $('driveBrowser').addEventListener('click', onDriveClick);
+    $('driveBrowser').addEventListener('change', onDriveChange);
+    $('driveModal').addEventListener('click', (e) => { if (e.target.id === 'driveModal') closeDriveModal(); });
 
     // Calendario
     $('calPrev').addEventListener('click', () => {

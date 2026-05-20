@@ -160,9 +160,32 @@ button { font-family: inherit; cursor: pointer; }
   display: flex; align-items: center; justify-content: center;
   width: 40px; min-width: 40px; height: 40px; border-radius: 9px;
   border: 1px solid var(--pp-line); cursor: pointer; font-size: 1.05rem;
+  background: transparent; color: var(--pp-cream); font-family: inherit;
 }
 .as-upload:hover { border-color: var(--pp-gold); }
 .as-upload input { display: none; }
+
+/* Selector de Google Drive */
+.drive-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  font-size: .8rem; color: rgba(237,232,217,.6);
+}
+.drive-bar button {
+  background: transparent; border: 1px solid var(--pp-line); color: var(--pp-cream);
+  border-radius: 7px; padding: 5px 10px; font-size: .76rem; cursor: pointer;
+  font-family: inherit; white-space: nowrap;
+}
+.drive-bar button:disabled { opacity: .4; cursor: default; }
+.drive-browser {
+  max-height: 320px; overflow-y: auto; border: 1px solid var(--pp-line);
+  border-radius: 9px; padding: 6px;
+}
+.drive-item { display: block; padding: 8px 10px; border-radius: 7px; font-size: .84rem; cursor: pointer; }
+.drive-item:hover { background: var(--pp-bg); }
+.drive-folder { font-weight: 600; }
+.drive-img { cursor: default; }
+.drive-img input { margin-right: 6px; }
+.drive-loading { padding: 24px; text-align: center; color: rgba(237,232,217,.5); font-size: .84rem; }
 .as-photos { display: flex; flex-wrap: wrap; gap: 8px; }
 .as-photos:not(:empty) { padding: 10px 16px 0; }
 .as-photo { position: relative; width: 56px; height: 56px; }

@@ -64,9 +64,10 @@
           </div>
           <div class="as-photos" id="blogAsPhotos"></div>
           <form class="assistant-form" id="blogAsForm">
-            <label class="as-upload" title="Subir fotos">📷
+            <label class="as-upload" title="Subir fotos de tu compu">📷
               <input type="file" id="blogAsFiles" accept="image/jpeg,image/png,image/webp" multiple />
             </label>
+            <button type="button" class="as-upload" id="driveBtn" title="Elegir de Google Drive">📁</button>
             <input type="text" id="blogAsInput" placeholder="Ej: escribí el post del Mundial 2026…" autocomplete="off" />
             <button type="submit" class="btn-primary" id="blogAsSend">Generar</button>
           </form>
@@ -210,6 +211,23 @@
           <button type="submit" class="save" id="postSaveBtn">Guardar</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal: selector de Google Drive -->
+  <div class="modal-overlay" id="driveModal" hidden>
+    <div class="modal">
+      <h2>Elegir fotos de Google Drive</h2>
+      <div class="drive-bar">
+        <button type="button" id="driveBack">← Atrás</button>
+        <span id="drivePath"></span>
+      </div>
+      <div class="drive-browser" id="driveBrowser"></div>
+      <p class="modal-error" id="driveError"></p>
+      <div class="modal-actions">
+        <button type="button" id="driveCancel">Cerrar</button>
+        <button type="button" class="save" id="driveImportBtn">Importar seleccionadas</button>
+      </div>
     </div>
   </div>
 

@@ -10,6 +10,7 @@ const { requireAdmin, supabaseAdmin, SUPABASE_URL, ANON_KEY } = require('./lib/s
 const { renderPost } = require('./lib/render-post');
 const { interpret, applyPlan } = require('./lib/assistant');
 const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
+const { listFolder, downloadFile } = require('./lib/drive');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -418,6 +419,42 @@ app.post('/api/admin/upload', requireAdmin, async (req, res) => {
   } catch (e) {
     console.error('[Upload] Error:', e.message);
     res.status(500).json({ error: 'Error al subir: ' + e.message });
+  }
+});
+
+// ---- Google Drive: listar una carpeta ----
+app.get('/api/admin/drive/list', requireAdmin, async (req, res) => {
+  try {
+    res.json(await listFolder(req.query.folder));
+  } catch (e) {
+    console.error('[Drive list] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo leer Google Drive: ' + e.message });
+  }
+});
+
+// ---- Google Drive: importar imágenes (descarga + optimiza + sube al Storage) ----
+app.post('/api/admin/drive/import', requireAdmin, async (req, res) => {
+  try {
+    const sharp = require('sharp');
+    const ids = Array.isArray(req.body.ids) ? req.body.ids : [];
+    if (!ids.length) return res.status(400).json({ error: 'No elegiste imágenes.' });
+    const urls = [];
+    for (const id of ids) {
+      const original = await downloadFile(id);
+      const optimized = await sharp(original).rotate()
+        .resize({ width: 2000, withoutEnlargement: true })
+        .jpeg({ quality: 82, mozjpeg: true }).toBuffer();
+      const objectPath = 'blog/drive-' + Date.now() + '-' +
+        Math.random().toString(36).slice(2, 8) + '.jpg';
+      const { error } = await supabaseAdmin.storage.from('ppweb-blog')
+        .upload(objectPath, optimized, { contentType: 'image/jpeg' });
+      if (error) throw new Error(error.message);
+      urls.push(supabaseAdmin.storage.from('ppweb-blog').getPublicUrl(objectPath).data.publicUrl);
+    }
+    res.json({ urls });
+  } catch (e) {
+    console.error('[Drive import] Error:', e.message);
+    res.status(500).json({ error: 'Error al importar: ' + e.message });
   }
 });
 
