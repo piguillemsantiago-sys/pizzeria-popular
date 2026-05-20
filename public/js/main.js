@@ -432,4 +432,43 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
         input.focus();
       });
   });
+
+  // ─── Nubecita de invitación — discreta, descartable, 1 vez por sesión ───
+  (function () {
+    try { if (sessionStorage.getItem('pepeHint')) return; } catch (e) {}
+
+    var hint = document.createElement('div');
+    hint.className = 'pepe-hint';
+    hint.innerHTML =
+      '<span class="pepe-hint-text">¡Hola! 👋 ¿En qué te ayudo?</span>' +
+      '<button class="pepe-hint-x" aria-label="Cerrar aviso">✕</button>';
+
+    var hideTimer;
+    function killHint() {
+      if (!hint.parentNode) return;
+      hint.classList.remove('show');
+      clearTimeout(hideTimer);
+      try { sessionStorage.setItem('pepeHint', '1'); } catch (e) {}
+      setTimeout(function () { if (hint.parentNode) hint.remove(); }, 420);
+    }
+
+    hint.querySelector('.pepe-hint-x').addEventListener('click', function (e) {
+      e.stopPropagation();
+      killHint();
+    });
+    hint.querySelector('.pepe-hint-text').addEventListener('click', function () {
+      killHint();
+      toggle(true);
+    });
+    btn.addEventListener('click', killHint);
+    btn.addEventListener('keydown', killHint);
+
+    // Aparece tras una pausa, solo si el chat sigue cerrado.
+    setTimeout(function () {
+      if (!panel.hidden) return;
+      document.body.appendChild(hint);
+      requestAnimationFrame(function () { hint.classList.add('show'); });
+      hideTimer = setTimeout(killHint, 8000);
+    }, 4500);
+  })();
 })();

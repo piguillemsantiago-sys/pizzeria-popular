@@ -1846,6 +1846,43 @@ button.promo-btn { border: none; cursor: pointer; font-family: inherit; }
   content: ''; position: absolute; inset: -2px; border-radius: 50%;
   border: 2px solid #46c46a; animation: ppchat-ping 1.9s ease-out infinite;
 }
+/* Nubecita de invitación de Pepe — discreta */
+.pepe-hint {
+  position: fixed;
+  right: 96px; top: 50%;
+  z-index: 9989;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--cream); color: var(--dark);
+  font-family: 'Montserrat', sans-serif; font-size: .82rem; font-weight: 600;
+  padding: 10px 13px; border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28);
+  max-width: 210px;
+  opacity: 0;
+  transform: translateY(-50%) translateX(12px);
+  pointer-events: none;
+  transition: opacity .4s ease, transform .4s ease;
+}
+.pepe-hint.show {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+  pointer-events: auto;
+}
+.pepe-hint::after {
+  content: ''; position: absolute;
+  right: -6px; top: 50%; transform: translateY(-50%);
+  border: 7px solid transparent; border-right: 0;
+  border-left-color: var(--cream);
+}
+.pepe-hint-text { cursor: pointer; line-height: 1.3; }
+.pepe-hint-x {
+  background: none; border: none; cursor: pointer;
+  color: var(--dark); opacity: .4; font-size: .68rem;
+  padding: 2px; flex-shrink: 0; line-height: 1;
+}
+.pepe-hint-x:hover { opacity: .85; }
+@media (max-width: 480px) {
+  .pepe-hint { right: 76px; max-width: 158px; font-size: .78rem; padding: 9px 11px; }
+}
 @media (min-width: 769px) {
   .spinning-pizza { right: 1.5rem; width: 60px; height: 60px; }
   .pizza-emoji { font-size: 1.8rem; }
