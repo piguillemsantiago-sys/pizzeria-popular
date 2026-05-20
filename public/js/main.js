@@ -308,23 +308,31 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   footer.appendChild(credit);
 })();
 
-// ─── ASISTENTE DE CHAT (visitantes) ───
+// ─── ASISTENTE DE CHAT · PEPE (visitantes) ───
 (function () {
   if (document.querySelector('.ppchat-btn')) return;
 
   var btn = document.createElement('button');
   btn.className = 'ppchat-btn';
-  btn.setAttribute('aria-label', 'Abrir chat de ayuda');
-  btn.innerHTML = '<img src="/images/favicon-dark.png" alt="" />';
+  btn.setAttribute('aria-label', 'Abrir chat con Pepe');
+  btn.innerHTML =
+    '<img src="/images/favicon-dark.png" alt="" />' +
+    '<span class="ppchat-ping"></span>';
 
   var panel = document.createElement('div');
   panel.className = 'ppchat-panel';
   panel.hidden = true;
   panel.innerHTML =
-    '<div class="ppchat-head"><span>Asistente · Pizzería Popular</span>' +
-    '<button class="ppchat-close" aria-label="Cerrar">✕</button></div>' +
-    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola mi vida! 🔥 Soy el asistente de Pizzería Popular. ¿Te ayudo? Preguntame por horarios, locales, la carta o el delivery.</div></div>' +
-    '<form class="ppchat-form"><input type="text" placeholder="Escribí tu consulta…" autocomplete="off" />' +
+    '<div class="ppchat-head">' +
+      '<div class="ppchat-avatar"><img src="/images/favicon-dark.png" alt="" /></div>' +
+      '<div class="ppchat-id">' +
+        '<span class="ppchat-name">Pepe</span>' +
+        '<span class="ppchat-role"><span class="ppchat-online"></span>En línea · Pizzería Popular</span>' +
+      '</div>' +
+      '<button class="ppchat-close" aria-label="Cerrar">✕</button>' +
+    '</div>' +
+    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola mi vida! 🔥 Soy Pepe, el asistente de Pizzería Popular. ¿Te doy una mano? Preguntame por horarios, locales, la carta o el delivery.</div></div>' +
+    '<form class="ppchat-form"><input type="text" placeholder="Escribile a Pepe…" autocomplete="off" />' +
     '<button type="submit" aria-label="Enviar">➤</button></form>';
 
   document.body.appendChild(btn);
@@ -345,12 +353,33 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     return d;
   }
 
+  function addTyping() {
+    var d = document.createElement('div');
+    d.className = 'ppchat-msg bot ppchat-typing';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    return d;
+  }
+
+  function toggle(open) {
+    if (open) {
+      panel.hidden = false;
+      btn.classList.add('open');
+      requestAnimationFrame(function () { panel.classList.add('show'); });
+      setTimeout(function () { input.focus(); }, 60);
+    } else {
+      panel.classList.remove('show');
+      btn.classList.remove('open');
+      setTimeout(function () { panel.hidden = true; }, 220);
+    }
+  }
+
   btn.addEventListener('click', function () {
-    panel.hidden = !panel.hidden;
-    if (!panel.hidden) input.focus();
+    toggle(panel.hidden);
   });
   panel.querySelector('.ppchat-close').addEventListener('click', function () {
-    panel.hidden = true;
+    toggle(false);
   });
 
   form.addEventListener('submit', function (e) {
@@ -360,7 +389,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     input.value = '';
     add(text, 'user');
     sendBtn.disabled = true;
-    var thinking = add('…', 'bot thinking');
+    var thinking = addTyping();
     fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
