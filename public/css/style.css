@@ -3621,6 +3621,14 @@ main.article { background: var(--cream); display: block; }
   border: 1px solid rgba(237,232,217,.08);
   border-bottom-left-radius: 5px;
 }
+.ppchat-msg a {
+  display: inline-block; margin-top: 3px;
+  background: var(--gold); color: var(--dark);
+  font-weight: 700; text-decoration: none;
+  padding: 5px 12px; border-radius: 14px;
+  transition: transform .15s, filter .15s;
+}
+.ppchat-msg a:hover { transform: translateY(-1px); filter: brightness(1.07); }
 .ppchat-typing {
   display: flex; gap: 4px; align-items: center; padding: 13px 14px;
 }

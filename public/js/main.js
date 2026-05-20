@@ -327,7 +327,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       '</div>' +
       '<button class="ppchat-close" aria-label="Cerrar">✕</button>' +
     '</div>' +
-    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola mi vida! 🔥 Soy Pepe, el asistente de Pizzería Popular. ¿Te doy una mano? Preguntame por horarios, locales, la carta o el delivery.</div></div>' +
+    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola! 🔥 Soy Pepe. ¿En qué te ayudo? Preguntame por locales, carta, promos o delivery.</div></div>' +
     '<form class="ppchat-form"><input type="text" placeholder="Escribile a Pepe…" autocomplete="off" />' +
     '<button type="submit" aria-label="Enviar">➤</button></form>';
 
@@ -339,10 +339,29 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   var sendBtn = form.querySelector('button');
   var history = [];
 
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  // Convierte [texto](ruta) en enlaces clicables. Solo rutas internas o http(s).
+  function linkify(text) {
+    return esc(text).replace(
+      /\[([^\]]+)\]\((\/[^\s)]*|https?:\/\/[^\s)]+)\)/g,
+      function (m, label, url) {
+        var ext = /^https?:/i.test(url);
+        return '<a href="' + url + '"' +
+               (ext ? ' target="_blank" rel="noopener"' : '') + '>' + label + '</a>';
+      }
+    );
+  }
+
   function add(text, cls) {
     var d = document.createElement('div');
     d.className = 'ppchat-msg ' + cls;
-    d.textContent = text;
+    if (cls.indexOf('bot') !== -1) {
+      d.innerHTML = linkify(text);
+    } else {
+      d.textContent = text;
+    }
     log.appendChild(d);
     log.scrollTop = log.scrollHeight;
     return d;
