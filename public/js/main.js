@@ -352,9 +352,9 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-  // Convierte [texto](ruta) en enlaces clicables. Solo rutas internas o http(s).
+  // Convierte [texto](ruta) en enlaces clicables y **texto** en negrita.
   function linkify(text) {
-    return esc(text).replace(
+    var html = esc(text).replace(
       /\[([^\]]+)\]\((\/[^\s)]*|https?:\/\/[^\s)]+)\)/g,
       function (m, label, url) {
         var ext = /^https?:/i.test(url);
@@ -362,6 +362,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
                (ext ? ' target="_blank" rel="noopener"' : '') + '>' + label + '</a>';
       }
     );
+    return html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
   }
 
   function add(text, cls) {
@@ -386,16 +387,41 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     return d;
   }
 
+  // En móvil: ajusta el panel al área realmente visible (clave con el teclado
+  // abierto) para que la conversación no se descentre ni la página haga zoom.
+  function fitPanel() {
+    var vv = window.visualViewport;
+    if (window.innerWidth > 480 || !vv) {
+      panel.style.top = ''; panel.style.bottom = ''; panel.style.height = '';
+      return;
+    }
+    panel.style.top = (vv.offsetTop + 8) + 'px';
+    panel.style.bottom = 'auto';
+    panel.style.height = (vv.height - 16) + 'px';
+  }
+
   function toggle(open) {
     if (open) {
       panel.hidden = false;
       btn.classList.add('chat-open');
+      fitPanel();
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', fitPanel);
+        window.visualViewport.addEventListener('scroll', fitPanel);
+      }
       requestAnimationFrame(function () { panel.classList.add('show'); });
       setTimeout(function () { input.focus(); }, 80);
     } else {
       panel.classList.remove('show');
       btn.classList.remove('chat-open');
-      setTimeout(function () { panel.hidden = true; }, 260);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', fitPanel);
+        window.visualViewport.removeEventListener('scroll', fitPanel);
+      }
+      setTimeout(function () {
+        panel.hidden = true;
+        panel.style.top = ''; panel.style.bottom = ''; panel.style.height = '';
+      }, 260);
     }
   }
 
