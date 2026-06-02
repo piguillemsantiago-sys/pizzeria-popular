@@ -4,10 +4,10 @@
 Sitio web de Pizzería Popular (cadena argentina de pizza al horno de leña en España, 6 locales) + un **panel de administración con IA** + un **chatbot público "Pepe"**. HTML/CSS/JS vanilla + Node/Express. Producción en un VPS propio.
 
 ## ESTADO ACTUAL
-- Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`. Working tree limpio.
-- **Producción: VPS DigitalOcean.** En vivo: `http://167.99.240.64` (sin dominio/HTTPS todavía).
-- Panel admin operativo en `/admin/` con 4 pestañas: **Promociones, Blog, Calendario, Pepe**.
-- Chatbot público **Pepe** funcionando en toda la web.
+- Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`. Working tree limpio. Copia de trabajo local: **`C:\Dev\pizzeria-popular`** (NO la carpeta de `Documents/01-Clientes/Pizzeria-Popular`, que es solo material/assets viejos y tiene un handoff desactualizado).
+- **Producción: VPS DigitalOcean** (`167.99.240.64`). **En vivo con dominio + HTTPS** (verificado 2026-06-02, HTTP 200): `https://grupoajax.es`, `https://www.grupoajax.es`, `https://pizzeriapopular.es`, `https://www.pizzeriapopular.es`. Nginx enruta por `server_name` (curl directo a la IP da 404, es normal). Home EN en `/en/home`.
+- Panel admin operativo en `/admin/` con 4 pestañas: **Promociones, Blog, Calendario, Pepe**. **Rediseñado** esta sesión: tema negro premium + dorado.
+- Chatbot público **Pepe** funcionando en toda la web. Registro de chats **operativo** (tablas creadas esta sesión).
 - `.env` (local y VPS): `PORT, NODE_ENV, GOOGLE_PLACES_API_KEY, SMTP_*, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY, GDRIVE_FOLDER_ID (opcional)`. `.env` gitignored.
 
 ## INFRAESTRUCTURA — VPS
@@ -38,7 +38,7 @@ Widget de chat en toda la web (`public/js/main.js`, fin del archivo). `lib/chatb
 - Proyecto compartido **"AJAX Sistema de Gestión"** (ref `zaoaxkewnratzenklyth`). Tablas del panel con prefijo `ppweb_`.
 - Tablas: `ppweb_promos`, `ppweb_admins`, `ppweb_posts`, `ppweb_chat_logs`, `ppweb_chat_insights`.
 - SQL (ya ejecutados, en la raíz): `supabase-schema.sql`, `supabase-posts.sql`, `supabase-chat-logs.sql`.
-- ⚠️ VERIFICAR: que `supabase-chat-logs.sql` esté corrido en Supabase — sin esas tablas la pestaña Pepe da error y no se guardan chats.
+- ✅ RESUELTO (2026-06-02): faltaban `ppweb_chat_logs` y `ppweb_chat_insights` (nunca se había corrido `supabase-chat-logs.sql`) → la pestaña Pepe daba "Could not find the table ... in schema cache" y NO se guardaba ningún chat. El usuario corrió el SQL en el SQL Editor; tablas verificadas (HTTP 200) y registro probado end-to-end. Empieza a acumular datos desde ahora (antes no guardaba nada).
 - Storage: bucket `ppweb-blog` (imágenes del blog).
 
 ## INTEGRACIONES
@@ -76,13 +76,20 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 ## CRONS (en `index.js`)
 - Ratings Google: domingo 3am. — Autopublicar posts: diario 6am. — Análisis del chat de Pepe: diario 7am.
 
+## CAMBIOS DE ESTA SESIÓN (2026-06-02)
+- `public/pages/index.html` — tarjeta "NUEVO LOCAL · Benidorm" (línea ~327) usaba por error la foto de Russafa (`tl-russafa.jpg`); ahora apunta a `tl-benidorm-local.jpg`. Corregidas barras `\` → `/`. Commit `9efddc8`.
+- `public/en/home.html` — misma corrección en la home en inglés. Commit `d2d72be`.
+- `public/images/extracted/tl-benidorm-local.jpg` — **nueva** foto real del local (origen `Downloads/web benidorm.JPG`, 4 personas). Comprimida con .NET System.Drawing: 5,26 MB → ~79 KB (1100×617, JPEG q82). En el VPS no hay ImageMagick/sharp/ffmpeg.
+- `public/admin/admin.css` — **rediseño completo** del panel (solo CSS, HTML/JS intactos): tema negro real (`--pp-bg #08080a`) con glow dorado sutil, profundidad por capas, pestañas tipo segmented control, botones con gradiente/sombra, tarjetas con hover, inputs con focus ring dorado, scrollbars finos, login y modales pulidos. Commit `1649a5e`. Las variables de marca (`--pp-gold #D8A460` / `--pp-gold-bright #F5C66B`) se mantienen.
+- Supabase: creadas `ppweb_chat_logs` y `ppweb_chat_insights` (ver sección SUPABASE).
+
 ## BUGS PENDIENTES
 - Ninguno conocido al cierre.
 
 ## PRÓXIMO PASO CONCRETO
 1. **Integración AJAX:** cuando el usuario pase los emails de los admins de AJAX → darlos de alta en `ppweb_admins`. Cuando valide el módulo de AJAX → retirar el panel viejo `/admin` del VPS.
-2. Verificar que `supabase-chat-logs.sql` esté corrido en Supabase.
-3. **Dominio + HTTPS:** cuando el usuario apunte el DNS A (`@` y `www` → `167.99.240.64`), correr `sudo certbot --nginx -d pizzeriapopular.es -d www.pizzeriapopular.es` y actualizar `server_name` en Nginx.
+2. Nada urgente. Pepe ya acumula consultas: en unos días revisar la pestaña Pepe ("Lo que más preguntan" + "Analizar con IA") para ajustar el chatbot o detectar dudas frecuentes.
+3. (HECHO) Dominio + HTTPS ya activos en `grupoajax.es` y `pizzeriapopular.es`. Si el cliente prefiere un dominio canónico, definir cuál y redirigir el otro.
 
 ## COSAS ABIERTAS / RIESGOS
 - Dominio sin apuntar (DNS pendiente del usuario).
