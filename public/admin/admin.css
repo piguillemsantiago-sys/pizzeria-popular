@@ -573,6 +573,13 @@ button { font-family: inherit; cursor: pointer; }
 }
 .pepe-kb-actions button:hover { border-color: var(--pp-gold); color: var(--pp-gold); }
 .pepe-kb-actions .danger:hover { border-color: var(--pp-danger); color: var(--pp-danger); }
+.pepe-kb-actions .kb-save { border-color: var(--pp-gold); color: var(--pp-gold-bright); }
+.pepe-kb-edit {
+  flex: 1; background: var(--pp-bg); border: 1px solid var(--pp-gold);
+  border-radius: 8px; padding: 8px 11px; color: var(--pp-text);
+  font-family: inherit; font-size: .85rem; box-shadow: var(--gold-glow);
+}
+.pepe-kb-edit:focus { outline: none; }
 
 @media (max-width: 700px) {
   .stat-cards { grid-template-columns: 1fr 1fr; }

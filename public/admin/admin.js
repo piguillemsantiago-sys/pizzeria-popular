@@ -645,6 +645,7 @@
   /* ==================== PEPE — ESTADÍSTICAS DEL CHAT ==================== */
   let pepeLoaded = false;
   let lastPepeRecos = []; // recomendaciones para Pepe del último análisis
+  let pepeKb = [];        // base de conocimiento cargada (para editar en línea)
 
   function renderPepeChart(porDia) {
     const max = Math.max(1, ...porDia.map((d) => d.count));
@@ -746,17 +747,19 @@
 
   /* ==================== CEREBRO DE PEPE (base de conocimiento) ==================== */
   function renderPepeKnowledge(list) {
+    pepeKb = list || [];
     const box = $('pepeKbList');
-    if (!list || !list.length) {
+    if (!pepeKb.length) {
       box.innerHTML = '<p class="empty">Pepe todavía no tiene conocimiento extra. Agregá el primero arriba.</p>';
       return;
     }
-    box.innerHTML = list.map((k) =>
-      '<div class="pepe-kb-item' + (k.activo ? '' : ' off') + '">' +
+    box.innerHTML = pepeKb.map((k) =>
+      '<div class="pepe-kb-item' + (k.activo ? '' : ' off') + '" data-id="' + k.id + '">' +
         '<span class="pepe-kb-text">' + esc(k.contenido) + '</span>' +
         (k.origen === 'ia' ? '<span class="tag tag-lang">IA</span>' : '') +
         '<div class="pepe-kb-actions">' +
           '<button data-act="toggle" data-id="' + k.id + '">' + (k.activo ? 'Activo' : 'Inactivo') + '</button>' +
+          '<button data-act="edit" data-id="' + k.id + '">Editar</button>' +
           '<button data-act="del" data-id="' + k.id + '" class="danger">Borrar</button>' +
         '</div>' +
       '</div>').join('');
@@ -787,15 +790,35 @@
   async function onPepeKbClick(e) {
     const btn = e.target.closest('button[data-act]');
     if (!btn) return;
-    const id = btn.dataset.id;
+    const act = btn.dataset.act;
+    const item = btn.closest('.pepe-kb-item');
+    const id = btn.dataset.id || (item && item.dataset.id);
     try {
-      if (btn.dataset.act === 'toggle') {
+      if (act === 'toggle') {
         const activo = btn.textContent.trim() === 'Activo';
         await api('/api/admin/pepe/knowledge/' + id, 'PATCH', { activo: !activo });
         await loadPepeKnowledge();
-      } else if (btn.dataset.act === 'del') {
+      } else if (act === 'del') {
         if (!confirm('¿Borrar este conocimiento de Pepe?')) return;
         await api('/api/admin/pepe/knowledge/' + id, 'DELETE');
+        await loadPepeKnowledge();
+      } else if (act === 'edit') {
+        const k = pepeKb.find((x) => String(x.id) === String(id));
+        item.innerHTML =
+          '<input class="pepe-kb-edit" type="text" />' +
+          '<div class="pepe-kb-actions">' +
+            '<button data-act="save" data-id="' + id + '" class="kb-save">Guardar</button>' +
+            '<button data-act="cancel">Cancelar</button>' +
+          '</div>';
+        const inp = item.querySelector('.pepe-kb-edit');
+        inp.value = k ? k.contenido : '';
+        inp.focus();
+      } else if (act === 'cancel') {
+        renderPepeKnowledge(pepeKb);
+      } else if (act === 'save') {
+        const text = item.querySelector('.pepe-kb-edit').value.trim();
+        if (!text) return;
+        await api('/api/admin/pepe/knowledge/' + id, 'PATCH', { contenido: text });
         await loadPepeKnowledge();
       }
     } catch (err) { alert(err.message); }
