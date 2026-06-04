@@ -717,10 +717,10 @@
   async function loadPepeStats() {
     try {
       const d = await api('/api/admin/chat/stats');
-      $('stTotal').textContent = d.total || 0;
-      $('stConv').textContent = d.conversaciones || 0;
-      $('st7').textContent = d.ultimos7 || 0;
-      $('stHoy').textContent = d.hoy || 0;
+      $('stPersonas').textContent = d.personas || 0;
+      $('stPersonasHoy').textContent = d.personasHoy || 0;
+      $('stPersonas7').textContent = d.personas7 || 0;
+      $('stMensajes').textContent = d.total || 0;
       renderPepeChart(d.porDia || []);
       renderPepeRepeated(d.recurrentes);
       renderPepeRecent(d.recientes);
