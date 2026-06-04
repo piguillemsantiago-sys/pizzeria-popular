@@ -761,6 +761,21 @@
     if (tab === 'pepe' && !pepeLoaded) loadPepeStats();
   }
 
+  /* ==================== SECCIONES (sidebar) ==================== */
+  const SECTION_LABELS = {
+    'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
+    'inteligencia': 'Inteligencia', 'generador': 'Generador', 'web': 'Web',
+  };
+  function switchSection(section) {
+    document.querySelectorAll('.dash-nav-item').forEach((b) =>
+      b.classList.toggle('active', b.dataset.section === section));
+    document.querySelectorAll('.dash-section').forEach((s) => {
+      s.hidden = s.id !== 'section-' + section;
+    });
+    const crumb = $('dashCrumb');
+    if (crumb) crumb.textContent = SECTION_LABELS[section] || '';
+  }
+
   /* ==================== ARRANQUE ==================== */
   (async function init() {
     let cfg;
@@ -781,7 +796,12 @@
     $('loading').hidden = true;
     $('panel').hidden = false;
 
-    // Pestañas
+    // Secciones (sidebar del dashboard)
+    document.querySelectorAll('.dash-nav-item').forEach((b) =>
+      b.addEventListener('click', () => switchSection(b.dataset.section)));
+    switchSection('web');
+
+    // Pestañas (sub-secciones de Web)
     document.querySelectorAll('.admin-tab').forEach((t) =>
       t.addEventListener('click', () => switchTab(t.dataset.tab)));
 

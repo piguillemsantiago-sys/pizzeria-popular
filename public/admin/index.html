@@ -11,17 +11,49 @@
 </head>
 <body class="admin-app">
 
-  <header class="admin-header">
-    <div class="admin-brand">Pizzería <span>Popular</span> · Panel</div>
-    <div class="admin-user">
-      <span id="adminEmail"></span>
-      <button id="logoutBtn">Salir</button>
-    </div>
-  </header>
+  <div class="dash">
+    <aside class="dash-sidebar">
+      <div class="dash-brand">Pizzería <span>Popular</span></div>
+      <nav class="dash-nav">
+        <div class="dash-area">
+          <p class="dash-area-head">Marketing</p>
+          <div class="dash-area-items">
+            <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
+            <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
+            <button class="dash-nav-item" data-section="inteligencia"><span class="dash-nav-ico">📊</span> Inteligencia</button>
+            <button class="dash-nav-item" data-section="generador"><span class="dash-nav-ico">✨</span> Generador</button>
+            <button class="dash-nav-item" data-section="web"><span class="dash-nav-ico">🌐</span> Web</button>
+          </div>
+        </div>
+      </nav>
+    </aside>
 
-  <main class="admin-main">
-    <div class="admin-loading" id="loading">Cargando…</div>
+    <div class="dash-main">
+      <header class="admin-header">
+        <div class="dash-crumb"><span class="dash-crumb-area">Marketing</span><span class="dash-crumb-sep">›</span><span id="dashCrumb">Web</span></div>
+        <div class="admin-user">
+          <span id="adminEmail"></span>
+          <button id="logoutBtn">Salir</button>
+        </div>
+      </header>
 
+      <main class="admin-main">
+        <div class="admin-loading" id="loading">Cargando…</div>
+
+        <section class="dash-section soon-wrap" id="section-cal-mkt" hidden>
+          <div class="soon"><div class="soon-ico">🗓️</div><h2>Calendario</h2><p>Calendario general de marketing: campañas, fechas clave y publicaciones de todos los canales en una sola vista.</p><span class="soon-tag">Próximamente</span></div>
+        </section>
+        <section class="dash-section soon-wrap" id="section-planificacion" hidden>
+          <div class="soon"><div class="soon-ico">🧭</div><h2>Planificación</h2><p>Planificá las campañas y acciones de marketing: objetivos, tareas, responsables y fechas.</p><span class="soon-tag">Próximamente</span></div>
+        </section>
+        <section class="dash-section soon-wrap" id="section-inteligencia" hidden>
+          <div class="soon"><div class="soon-ico">📊</div><h2>Inteligencia</h2><p>Métricas y análisis del negocio: reseñas, tráfico, conversiones y aprendizajes accionables.</p><span class="soon-tag">Próximamente</span></div>
+        </section>
+        <section class="dash-section soon-wrap" id="section-generador" hidden>
+          <div class="soon"><div class="soon-ico">✨</div><h2>Generador</h2><p>Generá contenido con IA: copies, imágenes y piezas para redes, mail y web.</p><span class="soon-tag">Próximamente</span></div>
+        </section>
+
+        <section class="dash-section" id="section-web" hidden>
     <section class="admin-panel" id="panel" hidden>
       <div class="admin-tabs">
         <button class="admin-tab active" data-tab="promos">Promociones</button>
@@ -135,7 +167,10 @@
         </div>
       </div>
     </section>
-  </main>
+        </section>
+      </main>
+    </div>
+  </div>
 
   <!-- Modal crear/editar promo -->
   <div class="modal-overlay" id="modal" hidden>
