@@ -533,6 +533,46 @@ button { font-family: inherit; cursor: pointer; }
 .pepe-tema-ej { font-size: .72rem; color: var(--pp-faint); margin-top: 3px; }
 .pepe-recos { margin: 0; padding-left: 18px; }
 .pepe-recos li { font-size: .85rem; color: rgba(236,234,228,.86); margin-bottom: 8px; line-height: 1.55; }
+.pepe-recos-pepe { list-style: none; padding-left: 0; }
+.pepe-recos-pepe li {
+  display: flex; align-items: flex-start; gap: 10px; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid var(--pp-line);
+}
+.pepe-recos-pepe li:last-child { border-bottom: none; }
+.pepe-recos-pepe li span { flex: 1; }
+.pepe-teach {
+  flex-shrink: 0; background: rgba(216,164,96,.12); border: 1px solid rgba(216,164,96,.4);
+  color: var(--pp-gold-bright); border-radius: 8px; padding: 5px 11px; font-size: .72rem;
+  font-weight: 700; font-family: inherit; cursor: pointer; white-space: nowrap; transition: all .15s;
+}
+.pepe-teach:hover { background: rgba(216,164,96,.22); }
+.pepe-teach:disabled { opacity: .8; cursor: default; }
+
+/* Cerebro de Pepe — base de conocimiento */
+.pepe-kb-intro { font-size: .82rem; color: var(--pp-muted); margin-bottom: 14px; line-height: 1.55; }
+.pepe-kb-form { display: flex; gap: 8px; margin-bottom: 14px; }
+.pepe-kb-form input {
+  flex: 1; background: var(--pp-bg-soft); border: 1px solid var(--pp-line);
+  border-radius: 10px; padding: 11px 13px; color: var(--pp-text);
+  font-family: inherit; font-size: .88rem; transition: border-color .18s, box-shadow .18s;
+}
+.pepe-kb-form input::placeholder { color: var(--pp-faint); }
+.pepe-kb-form input:focus { outline: none; border-color: var(--pp-gold); box-shadow: var(--gold-glow); }
+.pepe-kb-list { display: flex; flex-direction: column; gap: 8px; }
+.pepe-kb-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--pp-bg-soft); border: 1px solid var(--pp-line);
+  border-radius: 10px; padding: 10px 12px;
+}
+.pepe-kb-item.off { opacity: .5; }
+.pepe-kb-text { flex: 1; font-size: .85rem; line-height: 1.45; }
+.pepe-kb-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.pepe-kb-actions button {
+  background: transparent; border: 1px solid var(--pp-line-2); color: var(--pp-text);
+  border-radius: 8px; padding: 6px 11px; font-size: .74rem; font-weight: 600; transition: all .15s;
+}
+.pepe-kb-actions button:hover { border-color: var(--pp-gold); color: var(--pp-gold); }
+.pepe-kb-actions .danger:hover { border-color: var(--pp-danger); color: var(--pp-danger); }
 
 @media (max-width: 700px) {
   .stat-cards { grid-template-columns: 1fr 1fr; }

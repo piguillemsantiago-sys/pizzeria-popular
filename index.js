@@ -11,7 +11,7 @@ const { renderPost } = require('./lib/render-post');
 const { interpret, applyPlan } = require('./lib/assistant');
 const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
 const { listFolder, downloadFile } = require('./lib/drive');
-const { chat, rateOk } = require('./lib/chatbot');
+const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 
 const app = express();
@@ -533,6 +533,46 @@ app.post('/api/admin/chat/analyze', requireAdmin, async (req, res) => {
     console.error('[ChatStats] Error al analizar:', e.message);
     res.status(500).json({ error: 'No se pudo analizar: ' + e.message });
   }
+});
+
+// ---- Cerebro de Pepe: base de conocimiento editable ----
+app.get('/api/admin/pepe/knowledge', requireAdmin, async (req, res) => {
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_pepe_conocimiento').select('*')
+    .order('created_at', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data || []);
+});
+
+app.post('/api/admin/pepe/knowledge', requireAdmin, async (req, res) => {
+  const contenido = String(req.body.contenido || '').trim();
+  if (!contenido) return res.status(400).json({ error: 'El contenido es obligatorio.' });
+  const origen = req.body.origen === 'ia' ? 'ia' : 'manual';
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_pepe_conocimiento')
+    .insert({ contenido: contenido.slice(0, 1000), origen }).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  reloadKnowledge();
+  res.json(data);
+});
+
+app.patch('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
+  const upd = {};
+  if (req.body.activo !== undefined) upd.activo = !!req.body.activo;
+  if (req.body.contenido !== undefined) upd.contenido = String(req.body.contenido).trim().slice(0, 1000);
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_pepe_conocimiento').update(upd).eq('id', req.params.id).select().single();
+  if (error) return res.status(500).json({ error: error.message });
+  reloadKnowledge();
+  res.json(data);
+});
+
+app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
+  const { error } = await supabaseAdmin
+    .from('ppweb_pepe_conocimiento').delete().eq('id', req.params.id);
+  if (error) return res.status(500).json({ error: error.message });
+  reloadKnowledge();
+  res.json({ ok: true });
 });
 
 // ========== 404 ==========

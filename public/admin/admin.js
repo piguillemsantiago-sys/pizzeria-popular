@@ -644,6 +644,7 @@
 
   /* ==================== PEPE — ESTADÍSTICAS DEL CHAT ==================== */
   let pepeLoaded = false;
+  let lastPepeRecos = []; // recomendaciones para Pepe del último análisis
 
   function renderPepeChart(porDia) {
     const max = Math.max(1, ...porDia.map((d) => d.count));
@@ -707,9 +708,18 @@
           '</div>').join('') +
         '</div>';
     }
-    if (ins.recomendaciones && ins.recomendaciones.length) {
-      html += '<h3>Recomendaciones</h3><ul class="pepe-recos">' +
-        ins.recomendaciones.map((r) => '<li>' + esc(r) + '</li>').join('') + '</ul>';
+    const webRecos = ins.recomendaciones_web || ins.recomendaciones || [];
+    if (webRecos.length) {
+      html += '<h3>🌐 Recomendaciones para la web</h3><ul class="pepe-recos">' +
+        webRecos.map((r) => '<li>' + esc(r) + '</li>').join('') + '</ul>';
+    }
+    lastPepeRecos = ins.recomendaciones_pepe || [];
+    if (lastPepeRecos.length) {
+      html += '<h3>🧠 Recomendaciones para Pepe</h3><ul class="pepe-recos pepe-recos-pepe">' +
+        lastPepeRecos.map((r, i) =>
+          '<li><span>' + esc(r) + '</span>' +
+          '<button class="pepe-teach" data-teach="' + i + '">➕ Enseñar a Pepe</button></li>'
+        ).join('') + '</ul>';
     }
     box.innerHTML = html || '<p class="empty">El análisis no devolvió datos.</p>';
   }
@@ -728,8 +738,81 @@
       $('pepeLoading').hidden = true;
       $('pepeContent').hidden = false;
       pepeLoaded = true;
+      loadPepeKnowledge();
     } catch (err) {
       $('pepeLoading').textContent = 'Error al cargar: ' + err.message;
+    }
+  }
+
+  /* ==================== CEREBRO DE PEPE (base de conocimiento) ==================== */
+  function renderPepeKnowledge(list) {
+    const box = $('pepeKbList');
+    if (!list || !list.length) {
+      box.innerHTML = '<p class="empty">Pepe todavía no tiene conocimiento extra. Agregá el primero arriba.</p>';
+      return;
+    }
+    box.innerHTML = list.map((k) =>
+      '<div class="pepe-kb-item' + (k.activo ? '' : ' off') + '">' +
+        '<span class="pepe-kb-text">' + esc(k.contenido) + '</span>' +
+        (k.origen === 'ia' ? '<span class="tag tag-lang">IA</span>' : '') +
+        '<div class="pepe-kb-actions">' +
+          '<button data-act="toggle" data-id="' + k.id + '">' + (k.activo ? 'Activo' : 'Inactivo') + '</button>' +
+          '<button data-act="del" data-id="' + k.id + '" class="danger">Borrar</button>' +
+        '</div>' +
+      '</div>').join('');
+  }
+
+  async function loadPepeKnowledge() {
+    try {
+      renderPepeKnowledge(await api('/api/admin/pepe/knowledge'));
+    } catch (err) {
+      $('pepeKbList').innerHTML = '<p class="empty">Error al cargar el conocimiento: ' + esc(err.message) + '</p>';
+    }
+  }
+
+  async function onPepeKbSubmit(e) {
+    e.preventDefault();
+    const input = $('pepeKbInput');
+    const text = input.value.trim();
+    if (!text) return;
+    $('pepeKbAdd').disabled = true;
+    try {
+      await api('/api/admin/pepe/knowledge', 'POST', { contenido: text });
+      input.value = '';
+      await loadPepeKnowledge();
+    } catch (err) { alert(err.message); }
+    finally { $('pepeKbAdd').disabled = false; }
+  }
+
+  async function onPepeKbClick(e) {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    try {
+      if (btn.dataset.act === 'toggle') {
+        const activo = btn.textContent.trim() === 'Activo';
+        await api('/api/admin/pepe/knowledge/' + id, 'PATCH', { activo: !activo });
+        await loadPepeKnowledge();
+      } else if (btn.dataset.act === 'del') {
+        if (!confirm('¿Borrar este conocimiento de Pepe?')) return;
+        await api('/api/admin/pepe/knowledge/' + id, 'DELETE');
+        await loadPepeKnowledge();
+      }
+    } catch (err) { alert(err.message); }
+  }
+
+  // Carga una recomendación de la IA directo al cerebro de Pepe.
+  async function teachPepe(text, btn) {
+    if (!text) return;
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Agregando…';
+    try {
+      await api('/api/admin/pepe/knowledge', 'POST', { contenido: text, origen: 'ia' });
+      btn.textContent = '✓ Enseñado';
+      if ($('pepeKbList')) await loadPepeKnowledge();
+    } catch (err) {
+      btn.textContent = orig; btn.disabled = false; alert(err.message);
     }
   }
 
@@ -847,6 +930,15 @@
 
     // Pepe — estadísticas del chat
     $('pepeAnalyzeBtn').addEventListener('click', onPepeAnalyze);
+
+    // Cerebro de Pepe (base de conocimiento)
+    $('pepeKbForm').addEventListener('submit', onPepeKbSubmit);
+    $('pepeKbList').addEventListener('click', onPepeKbClick);
+    $('pepeInsight').addEventListener('click', (e) => {
+      const b = e.target.closest('.pepe-teach');
+      if (!b) return;
+      teachPepe(lastPepeRecos[parseInt(b.dataset.teach, 10)], b);
+    });
 
     // Salir
     $('logoutBtn').addEventListener('click', async () => {
