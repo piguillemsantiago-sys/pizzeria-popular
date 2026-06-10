@@ -13,6 +13,7 @@ const { interpretBlog, applyBlogPlan } = require('./lib/blog-assistant');
 const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
+const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -576,6 +577,36 @@ app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
   res.json({ ok: true });
 });
 
+// ---- Inteligencia: tablero + informes semanales ----
+app.get('/api/admin/intel/overview', requireAdmin, async (req, res) => {
+  try {
+    res.json(await getOverview());
+  } catch (e) {
+    console.error('[Intel] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo cargar Inteligencia: ' + e.message });
+  }
+});
+
+app.get('/api/admin/intel/informes', requireAdmin, async (req, res) => {
+  try {
+    res.json(await getInformes());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Genera un informe a pedido. El mail sale solo con el cron de los lunes.
+app.post('/api/admin/intel/informes', requireAdmin, async (req, res) => {
+  try {
+    const row = await generarInforme();
+    if (req.body && req.body.enviar) await emailInforme(row);
+    res.json(row);
+  } catch (e) {
+    console.error('[Intel] Error al generar:', e.message);
+    res.status(500).json({ error: 'No se pudo generar el informe: ' + e.message });
+  }
+});
+
 // ========== 404 ==========
 app.use((req, res) => {
   res.status(404).sendFile(path.join(PUBLIC, 'pages/404.html'));
@@ -614,6 +645,18 @@ cron.schedule('0 7 * * *', async () => {
     console.log('[Cron] Análisis del chat generado.');
   } catch (e) {
     console.error('[Cron chat] Error:', e.message);
+  }
+});
+
+// ========== CRON: Informe semanal de Inteligencia (lunes 8am) ==========
+cron.schedule('0 8 * * 1', async () => {
+  console.log('[Cron] Generando informe semanal de Inteligencia...');
+  try {
+    const row = await generarInforme();
+    const enviado = await emailInforme(row);
+    console.log('[Cron] Informe generado' + (enviado ? ' y enviado por mail.' : ' (mail no configurado).'));
+  } catch (e) {
+    console.error('[Cron intel] Error:', e.message);
   }
 });
 

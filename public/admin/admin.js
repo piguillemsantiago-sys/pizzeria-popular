@@ -855,6 +855,123 @@
     }
   }
 
+  /* ==================== INTELIGENCIA ==================== */
+  let intelLoaded = false;
+  let intelInformes = [];
+
+  function fmtDelta(n) {
+    if (n == null) return '';
+    if (n > 0) return ' <span class="delta delta-up">+' + n + '</span>';
+    if (n < 0) return ' <span class="delta delta-down">' + n + '</span>';
+    return ' <span class="delta">=</span>';
+  }
+
+  function renderIntelOverview(d) {
+    $('inRating').textContent = d.ratings ? d.ratings.promedio + ' ★' : '—';
+    $('inReviews').textContent = d.ratings ? d.ratings.total : '—';
+    $('inPersonas7').textContent = d.pepe ? d.pepe.personas7 : '—';
+    $('inPosts').textContent = d.blog ? d.blog.publicados : '—';
+    if (d.ratings && d.ratings.updatedAt) {
+      $('inUpdated').textContent = 'Google · actualizado el ' +
+        new Date(d.ratings.updatedAt).toLocaleDateString('es-ES') + ' (se refresca solo los domingos)';
+    }
+
+    // Reseñas por local, con variación vs el último informe guardado.
+    const prevPorLocal = (d.ultimoInforme && d.ultimoInforme.data &&
+      d.ultimoInforme.data.metricas && d.ultimoInforme.data.metricas.reviewsPorLocal) || null;
+    const locs = d.ratings ? d.ratings.locales : [];
+    $('intelLocals').innerHTML = locs.length ? locs.map((l) => {
+      const delta = prevPorLocal && prevPorLocal[l.slug] != null ? l.reviews - prevPorLocal[l.slug] : null;
+      return '<div class="intel-local">' +
+        '<span class="intel-local-name">' + esc(l.name) + ' <small>' + esc(l.city) + '</small></span>' +
+        '<span class="intel-local-rating">' + l.rating + ' ★</span>' +
+        '<span class="intel-local-reviews">' + l.reviews + ' reseñas' +
+          (delta != null ? fmtDelta(delta) : '') + '</span>' +
+        '</div>';
+    }).join('') : '<p class="empty">Sin datos de Google todavía.</p>';
+
+    // Contenido en marcha
+    const b = d.blog || {};
+    let cont = '<p class="intel-line">' + (b.publicados || 0) + ' publicados · ' +
+      (b.pendientes || 0) + ' pendientes · ' + (b.preparacion || 0) + ' en preparación</p>';
+    if (b.proximos && b.proximos.length) {
+      cont += '<ul class="pepe-recos">' + b.proximos.map((p) =>
+        '<li>' + esc(p.titulo) + ' <small>(' + esc(p.idioma) +
+        (p.fecha ? ' · sale ' + esc(p.fecha) : '') + ')</small></li>').join('') + '</ul>';
+    }
+    $('intelContenido').innerHTML = cont;
+
+    $('intelPromos').innerHTML = (d.promosActivas && d.promosActivas.length)
+      ? '<ul class="pepe-recos">' + d.promosActivas.map((t) => '<li>' + esc(t) + '</li>').join('') + '</ul>'
+      : '<p class="empty">No hay promos activas.</p>';
+  }
+
+  function renderInforme(row) {
+    const box = $('intelInforme');
+    if (!row) {
+      box.innerHTML = '<p class="empty">Todavía no hay informes. Tocá «Generar informe ahora» para crear el primero; después salen solos cada lunes.</p>';
+      return;
+    }
+    const inf = (row.data && row.data.informe) || {};
+    let html = '<p class="pepe-when">Generado el ' +
+      new Date(row.created_at).toLocaleString('es-ES') +
+      (row.enviado ? ' · enviado por mail ✓' : '') + '</p>';
+    if (inf.resumen) html += '<p class="pepe-resumen">' + esc(inf.resumen) + '</p>';
+    const sec = (t, arr) => (arr && arr.length)
+      ? '<h3>' + t + '</h3><ul class="pepe-recos">' +
+        arr.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
+      : '';
+    html += sec('⭐ Reputación', inf.reputacion);
+    html += sec('💬 Audiencia (Pepe)', inf.audiencia);
+    html += sec('📝 Contenido', inf.contenido);
+    html += sec('✅ Acciones para esta semana', inf.acciones);
+    box.innerHTML = html;
+  }
+
+  function renderIntelHist(activeId) {
+    const box = $('intelHist');
+    box.innerHTML = intelInformes.length < 2 ? '' : intelInformes.map((r) =>
+      '<button class="intel-chip' + (String(r.id) === String(activeId) ? ' active' : '') +
+      '" data-id="' + r.id + '">' +
+      new Date(r.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }) +
+      '</button>').join('');
+  }
+
+  async function loadIntel() {
+    try {
+      const d = await api('/api/admin/intel/overview');
+      renderIntelOverview(d);
+      try { intelInformes = await api('/api/admin/intel/informes'); }
+      catch (e) { intelInformes = []; }
+      const first = intelInformes[0] || null;
+      renderIntelHist(first ? first.id : null);
+      renderInforme(first);
+      $('intelLoading').hidden = true;
+      $('intelContent').hidden = false;
+      intelLoaded = true;
+    } catch (err) {
+      $('intelLoading').textContent = 'Error al cargar: ' + err.message;
+    }
+  }
+
+  async function onIntelGenerate() {
+    const btn = $('intelGenBtn');
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Generando… (~30 s)';
+    try {
+      const row = await api('/api/admin/intel/informes', 'POST', {});
+      intelInformes.unshift(row);
+      renderIntelHist(row.id);
+      renderInforme(row);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -880,6 +997,7 @@
     });
     const crumb = $('dashCrumb');
     if (crumb) crumb.textContent = SECTION_LABELS[section] || '';
+    if (section === 'inteligencia' && !intelLoaded) loadIntel();
   }
 
   /* ==================== ARRANQUE ==================== */
@@ -961,6 +1079,16 @@
       const b = e.target.closest('.pepe-teach');
       if (!b) return;
       teachPepe(lastPepeRecos[parseInt(b.dataset.teach, 10)], b);
+    });
+
+    // Inteligencia
+    $('intelGenBtn').addEventListener('click', onIntelGenerate);
+    $('intelHist').addEventListener('click', (e) => {
+      const b = e.target.closest('.intel-chip');
+      if (!b) return;
+      const row = intelInformes.find((r) => String(r.id) === String(b.dataset.id));
+      renderIntelHist(row ? row.id : null);
+      renderInforme(row || null);
     });
 
     // Salir

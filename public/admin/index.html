@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=5" />
+  <link rel="stylesheet" href="/admin/admin.css?v=6" />
 </head>
 <body class="admin-app">
 
@@ -46,8 +46,44 @@
         <section class="dash-section soon-wrap" id="section-planificacion" hidden>
           <div class="soon"><div class="soon-ico">🧭</div><h2>Planificación</h2><p>Planificá las campañas y acciones de marketing: objetivos, tareas, responsables y fechas.</p><span class="soon-tag">Próximamente</span></div>
         </section>
-        <section class="dash-section soon-wrap" id="section-inteligencia" hidden>
-          <div class="soon"><div class="soon-ico">📊</div><h2>Inteligencia</h2><p>Métricas y análisis del negocio: reseñas, tráfico, conversiones y aprendizajes accionables.</p><span class="soon-tag">Próximamente</span></div>
+        <section class="dash-section" id="section-inteligencia" hidden>
+          <div class="panel-head">
+            <h1>Inteligencia</h1>
+            <button class="btn-primary" id="intelGenBtn">✨ Generar informe ahora</button>
+          </div>
+
+          <div class="pepe-loading" id="intelLoading">Cargando datos…</div>
+
+          <div id="intelContent" hidden>
+            <div class="stat-cards">
+              <div class="stat-card"><span class="stat-num" id="inRating">–</span><span class="stat-lbl">Rating promedio Google</span></div>
+              <div class="stat-card"><span class="stat-num" id="inReviews">–</span><span class="stat-lbl">Reseñas totales</span></div>
+              <div class="stat-card"><span class="stat-num" id="inPersonas7">–</span><span class="stat-lbl">Personas con Pepe · 7 días</span></div>
+              <div class="stat-card"><span class="stat-num" id="inPosts">–</span><span class="stat-lbl">Posts publicados</span></div>
+            </div>
+
+            <div class="pepe-block">
+              <h2>Reseñas por local <small id="inUpdated"></small></h2>
+              <div id="intelLocals"></div>
+            </div>
+
+            <div class="pepe-cols">
+              <div class="pepe-block">
+                <h2>Contenido en marcha</h2>
+                <div id="intelContenido"></div>
+              </div>
+              <div class="pepe-block">
+                <h2>Promos activas</h2>
+                <div id="intelPromos"></div>
+              </div>
+            </div>
+
+            <div class="pepe-block">
+              <h2>📬 Informe semanal <small>se genera y se envía solo los lunes 8:00 a pizzeriapopular@grupoajax.es</small></h2>
+              <div class="intel-hist" id="intelHist"></div>
+              <div id="intelInforme"></div>
+            </div>
+          </div>
         </section>
         <section class="dash-section soon-wrap" id="section-generador" hidden>
           <div class="soon"><div class="soon-ico">✨</div><h2>Generador</h2><p>Generá contenido con IA: copies, imágenes y piezas para redes, mail y web.</p><span class="soon-tag">Próximamente</span></div>
@@ -318,6 +354,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=5"></script>
+  <script src="/admin/admin.js?v=6"></script>
 </body>
 </html>
