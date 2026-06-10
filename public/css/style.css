@@ -3328,7 +3328,7 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero-bg {
   position: absolute; left: 0; right: 0; top: -12%; bottom: -12%;
-  background-size: cover; background-position: center;
+  background-size: cover; background-position: center right;
   will-change: transform; z-index: 0;
 }
 .article-hero::after {
