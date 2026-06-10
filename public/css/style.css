@@ -3324,7 +3324,7 @@ main.article { background: var(--cream); display: block; }
 /* ---- HERO full-bleed con parallax ---- */
 .article-hero {
   position: relative; min-height: 92vh; display: flex;
-  align-items: flex-end; overflow: hidden;
+  align-items: center; overflow: hidden;
 }
 .article-hero-bg {
   position: absolute; left: 0; right: 0; top: -12%; bottom: -12%;
@@ -3333,13 +3333,17 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
-  background: linear-gradient(to bottom,
-    rgba(13,13,13,.55) 0%, rgba(13,13,13,.15) 38%,
-    rgba(13,13,13,.78) 68%, rgba(13,13,13,.97) 100%);
+  /* Texto a la izquierda: scrim lateral fuerte que se disuelve hacia la
+     derecha (la foto respira), + velo suave abajo para la fila de meta. */
+  background:
+    linear-gradient(to right,
+      rgba(13,13,13,.94) 0%, rgba(13,13,13,.78) 38%,
+      rgba(13,13,13,.25) 68%, rgba(13,13,13,.05) 100%),
+    linear-gradient(to top, rgba(13,13,13,.55) 0%, rgba(13,13,13,0) 26%);
 }
 .article-hero-inner {
-  position: relative; z-index: 2; width: 100%; max-width: 1000px;
-  margin: 0 auto; padding: 0 6% 9vh;
+  position: relative; z-index: 2; width: 100%; max-width: 1240px;
+  margin: 0 auto; padding: 12vh 6% 9vh;
 }
 .article-eyebrow {
   display: inline-block; font-size: .68rem; letter-spacing: .26em;
@@ -3349,13 +3353,13 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero h1 {
   font-family: 'Abril Fatface', serif; color: #fff;
-  font-size: clamp(2.3rem, 6.4vw, 4.8rem); line-height: 1.05;
-  letter-spacing: .01em; margin: 0 0 1rem; max-width: 17ch;
+  font-size: clamp(2.3rem, 5.2vw, 4rem); line-height: 1.05;
+  letter-spacing: .01em; margin: 0 0 1rem; max-width: 15ch;
   text-shadow: 0 6px 36px rgba(0,0,0,.55);
 }
 .article-hero-sub {
   font-size: clamp(1rem, 2.1vw, 1.35rem); color: rgba(255,255,255,.86);
-  font-weight: 300; margin: 0 0 1.7rem; max-width: 44ch; line-height: 1.55;
+  font-weight: 300; margin: 0 0 1.7rem; max-width: 38ch; line-height: 1.55;
 }
 .article-meta {
   display: flex; flex-wrap: wrap; gap: .55rem .85rem; align-items: center;
@@ -3562,7 +3566,13 @@ main.article { background: var(--cream); display: block; }
   .article-gallery { columns: 2 150px; }
 }
 @media (max-width: 600px) {
-  .article-hero { min-height: 88vh; }
+  .article-hero { min-height: 88vh; align-items: flex-end; }
+  /* En el móvil el texto ocupa todo el ancho: vuelve el scrim de abajo. */
+  .article-hero::after {
+    background: linear-gradient(to bottom,
+      rgba(13,13,13,.55) 0%, rgba(13,13,13,.15) 38%,
+      rgba(13,13,13,.78) 68%, rgba(13,13,13,.97) 100%);
+  }
   .article-feature { min-height: 52vh; }
   .article-gallery { columns: 2 130px; }
   .article-body p, .article-body li { font-size: 1rem; }
