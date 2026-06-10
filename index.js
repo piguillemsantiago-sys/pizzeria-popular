@@ -469,7 +469,8 @@ app.post('/api/admin/blog-assistant', requireAdmin, async (req, res) => {
       return res.status(400).json({ error: 'Escribí una instrucción.' });
     }
     const { data: posts } = await supabaseAdmin
-      .from('ppweb_posts').select('id,titulo,idioma,estado,slug')
+      .from('ppweb_posts')
+      .select('id,titulo,idioma,estado,slug,subtitulo,eyebrow,meta_desc,keyword,hero_image,fecha,local,contenido')
       .order('created_at', { ascending: false });
     const result = await interpretBlog(history || [], String(message), photos || [], posts || []);
     res.json(result);
