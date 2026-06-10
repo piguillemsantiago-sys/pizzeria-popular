@@ -6,7 +6,7 @@ Sitio web de Pizzería Popular (cadena argentina de pizza al horno de leña en E
 ## ESTADO ACTUAL
 - Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`. Working tree limpio. Copia de trabajo local: **`C:\Dev\pizzeria-popular`** (NO la carpeta de `Documents/01-Clientes/Pizzeria-Popular`, que es solo material/assets viejos y tiene un handoff desactualizado).
 - **Producción: VPS DigitalOcean** (`167.99.240.64`). **En vivo con dominio + HTTPS** (verificado 2026-06-02, HTTP 200): `https://grupoajax.es`, `https://www.grupoajax.es`, `https://pizzeriapopular.es`, `https://www.pizzeriapopular.es`. Nginx enruta por `server_name` (curl directo a la IP da 404, es normal). Home EN en `/en/home`.
-- Panel admin operativo en `/admin/` — ahora es un **dashboard con sidebar** (tema negro premium + dorado). Área **Marketing** con 5 secciones: Calendario, Planificación, Inteligencia, Generador (placeholders "Próximamente") y **Web** (contiene el panel real: Promociones, Blog, Calendario, Pepe). Nav por `switchSection` en `admin.js`. Assets versionados con `?v=N` (cache-busting) — al editar `admin.css`/`admin.js` hay que **bumpear la versión** en `index.html` (van por v=5).
+- Panel admin operativo en `/admin/` — **dashboard con sidebar** (tema negro premium + dorado). Área **Marketing** con 5 secciones: **Web** (Promociones, Blog, Calendario, Pepe) e **Inteligencia** (tablero + informe semanal IA, construida 2026-06-10) FUNCIONALES; Calendario, Planificación y Generador siguen como placeholders "Próximamente". Nav por `switchSection` en `admin.js`. Assets versionados con `?v=N` (cache-busting) — al editar `admin.css`/`admin.js` hay que **bumpear la versión** en `index.html` (van por **v=6**).
 - Chatbot público **Pepe** funcionando en toda la web. **Crece desde el panel** (base de conocimiento editable) y lee promos/horarios reales de la base. Registro de chats operativo.
 - `.env` (local y VPS): `PORT, NODE_ENV, GOOGLE_PLACES_API_KEY, SMTP_*, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY, GDRIVE_FOLDER_ID (opcional)`. `.env` gitignored.
 
@@ -23,7 +23,8 @@ Panel privado en `/admin/`. Login Supabase Auth + `requireAdmin` server-side + R
 - **Blog:** ABM de posts con 3 estados (`preparacion`/`pendiente`/`publicado`), autopublicación (cron 6am), previsualización (`/admin/preview/:id/`). Asistente IA que genera el post completo ES+EN con la plantilla `.article-*` (`lib/blog-assistant.js`, opus-4-7, visión). Selector de fotos: subida directa + Google Drive.
 - **Calendario:** posts del blog por fecha.
 - **Pepe:** estadísticas centradas en **personas** (sesiones únicas: total/hoy/últimos 7 días) + "Mensajes respondidos", gráfico por día, lo más preguntado, últimas consultas. Análisis IA con recomendaciones **divididas en web y Pepe** (botón manual + cron diario 7am); `analyze()` ve también las respuestas de Pepe. `lib/chat-stats.js` (opus-4-7). Incluye el **Cerebro de Pepe** (ver abajo).
-- **Cerebro de Pepe** (pestaña Pepe): base de conocimiento editable (`ppweb_pepe_conocimiento`). Agregar/editar-en-línea/activar/borrar datos y autorizaciones que Pepe usa al instante. Las recos IA "para Pepe" tienen botón "➕ Enseñar a Pepe" que las carga acá. CRUD: `/api/admin/pepe/knowledge`.
+- **Cerebro de Pepe** (pestaña Pepe): base de conocimiento editable (`ppweb_pepe_conocimiento`). Agregar/editar-en-línea/activar/borrar datos y autorizaciones que Pepe usa al instante. Las recos IA "para Pepe" tienen botón "➕ Enseñar a Pepe" que las carga acá. CRUD: `/api/admin/pepe/knowledge`. Entradas actuales: sin TACC (id 3), precios orientativos de la carta de Valencia (id 4), menús de grupo por WhatsApp (id 5).
+- **Inteligencia** (sección del sidebar, `lib/intel.js`): tablero con rating/reseñas Google por local (con variación vs informe anterior), personas de Pepe, estado del blog y promos activas + **informe semanal IA** (opus-4-7) que cruza todo, guarda en `ppweb_informes` y se manda por mail a `pizzeriapopular@grupoajax.es`. Cron lunes 8am + botón "Generar informe ahora" + historial. Rutas: `/api/admin/intel/{overview,informes}` (GET) y POST informes. Primer informe generado 2026-06-10 (línea base).
 - Admin dado de alta: `piguillemsantiago@gmail.com` (user_id `34323240-a10f-4ac9-8ceb-b7a40cf611ce`).
 
 ## CHATBOT PÚBLICO — "PEPE"
@@ -31,7 +32,7 @@ Widget de chat en toda la web (`public/js/main.js`, fin del archivo). `lib/chatb
 - Se **lanza desde la pizza flotante** (no hay botón aparte). Punto verde de disponibilidad. Nubecita de invitación discreta (1 vez por sesión).
 - Diseño claro. Avatar = robot cocinero SVG (`public/images/pepe-robot.svg`).
 - **Tono humano y cálido** (reescrito 2026-06-04): se relajó el límite duro de 40 palabras → respuestas naturales de 1-5 frases, `max_tokens` 320. Sigue con todas las barreras anti-invento.
-- Sabe: 6 locales (dirección, teléfono, **WhatsApp `wa.me`**), carta (varía por local), delivery, reservas, links de la web. El prompt se arma así: `SYSTEM + knowledgeBlock() + promosBlock() + horariosBlock()`, cada bloque con cache 60s:
+- Sabe: 6 locales (dirección, teléfono, **WhatsApp `wa.me`**), carta (varía por local), delivery, reservas, links de la web. El prompt se arma así: `SYSTEM + knowledgeBlock() + promosBlock() + horariosBlock() + blogBlock()`, cada bloque con cache 60s:
   - `horariosBlock()` — horarios reales de Google Places.
   - `promosBlock()` — **promos vigentes** leídas de `ppweb_promos` (idioma es). Pepe cuenta la promo concreta, no solo el link. NO duplicar promos en el Cerebro.
   - `knowledgeBlock()` — el **Cerebro** (`ppweb_pepe_conocimiento`). Solo para info que NO está en ninguna sección de la web. `reloadKnowledge()` invalida el cache al editar desde el panel.
@@ -41,7 +42,7 @@ Widget de chat en toda la web (`public/js/main.js`, fin del archivo). `lib/chatb
 
 ## SUPABASE / DATOS
 - Proyecto compartido **"AJAX Sistema de Gestión"** (ref `zaoaxkewnratzenklyth`). Tablas del panel con prefijo `ppweb_`.
-- Tablas: `ppweb_promos`, `ppweb_admins`, `ppweb_posts`, `ppweb_chat_logs`, `ppweb_chat_insights`, `ppweb_pepe_conocimiento` (Cerebro de Pepe, creada 2026-06-04).
+- Tablas: `ppweb_promos`, `ppweb_admins`, `ppweb_posts`, `ppweb_chat_logs`, `ppweb_chat_insights`, `ppweb_pepe_conocimiento` (Cerebro de Pepe, creada 2026-06-04), `ppweb_informes` (informes semanales de Inteligencia, creada 2026-06-10, SQL versionado en `supabase-informes.sql`).
 - SQL (ya ejecutados, en la raíz): `supabase-schema.sql`, `supabase-posts.sql`, `supabase-chat-logs.sql`. ⚠️ La tabla `ppweb_pepe_conocimiento` se creó a mano en el SQL Editor (no hay archivo .sql versionado todavía): `id bigint identity pk, contenido text, activo bool default true, origen text default 'manual', created_at timestamptz`. RLS activado.
 - ✅ RESUELTO (2026-06-02): faltaban `ppweb_chat_logs` y `ppweb_chat_insights` (nunca se había corrido `supabase-chat-logs.sql`) → la pestaña Pepe daba "Could not find the table ... in schema cache" y NO se guardaba ningún chat. El usuario corrió el SQL en el SQL Editor; tablas verificadas (HTTP 200) y registro probado end-to-end. Empieza a acumular datos desde ahora (antes no guardaba nada).
 - Storage: bucket `ppweb-blog` (imágenes del blog).
@@ -79,9 +80,17 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 - `deploy.sh`, `supabase-*.sql`, `.claude/skills/blog/SKILL.md`.
 
 ## CRONS (en `index.js`)
-- Ratings Google: domingo 3am. — Autopublicar posts: diario 6am. — Análisis del chat de Pepe: diario 7am.
+- Ratings Google: domingo 3am. — Autopublicar posts: diario 6am. — Análisis del chat de Pepe: diario 7am. — **Informe semanal de Inteligencia: lunes 8am** (genera + manda por mail; si SMTP no está configurado, solo guarda).
 
-## CAMBIOS DE ESTA SESIÓN (2026-06-04)
+## CAMBIOS DE ESTA SESIÓN (2026-06-10)
+- **Respaldo del trabajo en vivo de la mañana** (commit `7b2352c`): asistente de blog edita posts existentes (recibe el contenido completo), Pepe lee el blog publicado (`blogBlock()` en `lib/chatbot.js`), `deploy.sh` excluye `referencia.html`. Detalle en `memory.md` 2026-06-10 (incluye fix de Nginx `proxy_read_timeout 300s` — config NO versionada, vive en el VPS).
+- **Sección Inteligencia construida** (commit `09e3595`): `lib/intel.js` (getOverview/generarInforme/emailInforme/getInformes), tabla `ppweb_informes`, rutas `/api/admin/intel/*`, cron lunes 8am, UI completa en el panel (assets a `?v=6`). Primer informe generado y verificado end-to-end.
+- **Acciones del informe ejecutadas**: precios orientativos cargados al Cerebro de Pepe **leídos de la carta del sistema AJAX** (API `https://habit-tracker-production-b9ab.up.railway.app/api/menu/full/<slug>` — items multiidioma con `prices[]` por variante) + menús de grupo por WhatsApp. Probado en vivo: Pepe responde precios con disclaimer y deriva grupos al WhatsApp del local. La comunicación de promos ya estaba resuelta (Menú del día + 2×1 con condiciones en `ppweb_promos`).
+- **Banco de imágenes definido**: la carpeta de Drive conectada es el banco oficial (Fotos Sucurales con sesiones profesionales por local, Producción Marzo/Abril, etc.). Falta que el usuario cree la carpeta "Equipo" con fotos del staff trabajando.
+- **Post "Sumate al equipo" completado con fotos del banco** (ES+EN, sigue en `preparacion`): hero + 3 figuras de la sesión de Playa San Juan (cocineras en el pase, pizza en el horno, cartel "La vida es linda"). El hero se **recompuso con sharp** tras iteraciones de feedback: lienzo 2800×1400 con el equipo recortado a la derecha y abajo (caras a media altura), izquierda rellena con la misma foto difuminada/oscura, fundidos en bordes izquierdo y superior. Técnica establecida para fotos con sujeto centrado.
+- **Template de posts mejorado** (commits `9f5d11b`, `f237b7c`, `51a4445`, `746af6a`): CTA final con foto del horno de fondo + overlay (antes degradado marrón plano; asset `public/images/blog/cta-horno.jpg`); hero editorial con texto a la izquierda y scrim lateral que se disuelve a la derecha; en móvil (≤600px) vuelve el scrim inferior; `.article-hero-bg` ancla `center right`.
+
+## CAMBIOS DE LA SESIÓN 2026-06-04
 - **Dashboard con sidebar** (`public/admin/index.html` + `admin.js` + `admin.css`): área Marketing → Web (panel actual) + 4 placeholders. `switchSection()`. Commits `dd0bc14`, `f4c63b3` (cache-busting `?v=`).
 - **Estadísticas de Pepe → personas** (`chat-stats.js getStats`, `admin.js`, `index.html`): tarjetas Personas total/hoy/7-días + Mensajes respondidos (antes contaban mensajes). Commit `65ad1e1`.
 - **Pepe que crece** (commit `abe0d0f`): tono humano en `lib/chatbot.js` (sin límite de 40 palabras, max_tokens 320); **Cerebro** `ppweb_pepe_conocimiento` con CRUD `/api/admin/pepe/knowledge` + inyección al prompt (`knowledgeBlock`, `reloadKnowledge`); `analyze()` divide `recomendaciones_web` / `recomendaciones_pepe` y ve las respuestas de Pepe; botón "Enseñar a Pepe".
@@ -101,14 +110,20 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 - Ninguno conocido al cierre.
 
 ## PRÓXIMO PASO CONCRETO
-1. **Seguir cargando el Cerebro de Pepe** con datos que NO están en la web: reservas de grupos grandes, mascotas, estacionamiento/accesibilidad, platos a recomendar. Redactarlos honestos y afirmativos (como el de sin TACC). El usuario los pasa cuando los tenga a mano.
-2. **Construir las secciones de Marketing** (hoy placeholders): Calendario, Planificación, Inteligencia, Generador. Definir con el usuario qué hace cada una antes de armarla.
-3. **Integración AJAX:** cuando el usuario pase los emails de los admins de AJAX → alta en `ppweb_admins`. OJO: el dashboard nuevo (sidebar) divergió más del módulo de AJAX — reevaluar si la integración sigue en pie o si este dashboard es la nueva dirección.
-4. Pepe ya acumula consultas reales: en unos días revisar la pestaña Pepe ("Lo que más preguntan" + "Analizar con IA") y usar "Enseñar a Pepe" para alimentar el Cerebro.
-5. (Opcional) Versionar el SQL de `ppweb_pepe_conocimiento` como `supabase-pepe-conocimiento.sql` en la raíz, para no perder el esquema.
+1. **Cerrar el post "Sumate al equipo"**: el hero v3 (caras a media altura) quedó pendiente del OK del usuario. Si está OK → publicar ES+EN (cambiar `estado` a `publicado`, fecha de hoy). Pepe lo toma solo.
+2. **Post del Mundial** (`mundial-de-futbol-en-pizzeria-popular`, ES+EN en preparación): el Mundial arrancó el 11/6 — pierde valor cada día. OJO: la sección "04 — Promos" promete "combos especiales los días de partido" que NO existen en `ppweb_promos` — ajustar antes de publicar (o confirmar con el usuario que existen en los locales). No tiene fotos.
+3. **Borrar/despublicar "Post de prueba del panel"** (slug `post-de-prueba`): está PUBLICADO en el blog real y Pepe lo lee. El usuario no aprobó el borrado todavía — preguntarle.
+4. **Seguir el plan de automatización de Marketing** (orden acordado): promos con vigencia automática (fechas desde/hasta + cron) → Generador con propuesta semanal de contenido → Calendario general. Planificación al final.
+5. Pepe acumula consultas reales: revisar la pestaña Pepe y usar "Enseñar a Pepe". El usuario quedó en crear la carpeta **"Equipo"** en el Drive con fotos del staff.
+6. **Integración AJAX:** cuando el usuario pase los emails de los admins de AJAX → alta en `ppweb_admins`. OJO: el dashboard nuevo divergió del módulo de AJAX — reevaluar si la integración sigue en pie.
+7. (Opcional) Versionar el SQL de `ppweb_pepe_conocimiento` como `supabase-pepe-conocimiento.sql`.
 
 ## COSAS ABIERTAS / RIESGOS
-- Caché del admin: al editar `admin.css`/`admin.js` SIEMPRE bumpear `?v=N` en `index.html` (y en `login.html` el css), si no el navegador sirve la versión vieja (ya pasó en esta sesión: panel sin estilo + sección Web en negro).
+- **Hero del post Sumate**: v3 aplicada (recomposición con sharp), falta el OK final del usuario. Si pide otro ajuste, el script de referencia está descrito en CAMBIOS 2026-06-10 (lienzo 2:1, fg con `dest-in` + gradientes SVG).
+- Los cambios de scrim/hero/CTA del template afectan a TODOS los posts servidos desde la base — al publicar el post del Mundial, revisar cómo queda su hero con el layout editorial (texto izquierda).
+- El primer informe de Inteligencia automático sale el **lunes 16/6 8am** y se manda por mail — verificar que llegue (SMTP ya configurado; el manual del 10/6 se generó sin envío).
+- Precios cargados a Pepe son un snapshot de la carta de Russafa (10/6): si cambian los precios en el sistema AJAX, quedan desactualizados en el Cerebro (editarlos desde la pestaña Pepe).
+- Caché del admin: al editar `admin.css`/`admin.js` SIEMPRE bumpear `?v=N` en `index.html` (y en `login.html` el css), si no el navegador sirve la versión vieja (ya pasó: panel sin estilo + sección Web en negro).
 - Cerebro de Pepe vs base: NO cargar al Cerebro datos que ya viven en la web (promos, horarios) — Pepe los lee solo y duplicarlos genera desincronización.
 - Generación de imágenes con Gemini/Nano Banana Pro: conversada, pendiente de `GEMINI_API_KEY`.
 - Supabase compartido: el `service_role` da acceso TOTAL a la base de AJAX. El código solo debe tocar tablas `ppweb_*`.
