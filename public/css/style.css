@@ -3324,27 +3324,42 @@ main.article { background: var(--cream); display: block; }
 /* ---- HERO full-bleed con parallax ---- */
 .article-hero {
   position: relative; min-height: 92vh; display: flex;
-  align-items: center; overflow: hidden; background: #0d0d0d;
+  align-items: flex-end; overflow: hidden;
 }
-/* La foto vive SOLO en el lado derecho (64%): nunca queda abajo del texto,
-   sin importar el tamaño de la ventana. Borde izquierdo fundido. */
 .article-hero-bg {
-  position: absolute; left: 36%; right: 0; top: -12%; bottom: -12%;
+  position: absolute; left: 0; right: 0; top: -12%; bottom: -12%;
   background-size: cover; background-position: center;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
-          mask-image: linear-gradient(to right, transparent 0, #000 24%);
   will-change: transform; z-index: 0;
 }
 .article-hero::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
-  /* Velo suave abajo para la fila de meta. */
-  background: linear-gradient(to top, rgba(13,13,13,.5) 0%, rgba(13,13,13,0) 24%);
+  background: linear-gradient(to bottom,
+    rgba(13,13,13,.5) 0%, rgba(13,13,13,.15) 38%, rgba(13,13,13,.88) 100%);
 }
 .article-hero-inner {
-  /* Anclado al margen izquierdo: el texto vive en la franja difuminada
-     y la foto queda limpia a la derecha. */
-  position: relative; z-index: 2; width: 100%; max-width: none;
-  margin: 0; padding: 12vh 6% 9vh 5%;
+  position: relative; z-index: 2; width: 100%; max-width: 1000px;
+  margin: 0 auto; padding: 0 6% 9vh;
+}
+/* ---- Variante "--split" (hero_image termina en #split): para fotos con
+   el sujeto al CENTRO. Texto en franja oscura izquierda (36%), foto solo
+   en el lado derecho — nunca queda debajo del texto. ---- */
+.article-hero--split { align-items: center; background: #0d0d0d; }
+.article-hero--split .article-hero-bg {
+  left: 36%;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
+          mask-image: linear-gradient(to right, transparent 0, #000 24%);
+}
+.article-hero--split::after {
+  background: linear-gradient(to top, rgba(13,13,13,.5) 0%, rgba(13,13,13,0) 24%);
+}
+.article-hero--split .article-hero-inner {
+  max-width: none; margin: 0; padding: 12vh 6% 9vh 5%;
+}
+.article-hero--split h1 {
+  font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height: 1.08; max-width: 15ch;
+}
+.article-hero--split .article-hero-sub {
+  font-size: clamp(.95rem, 1.7vw, 1.2rem); max-width: 36ch;
 }
 .article-eyebrow {
   display: inline-block; font-size: .68rem; letter-spacing: .26em;
@@ -3354,13 +3369,13 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero h1 {
   font-family: 'Abril Fatface', serif; color: #fff;
-  font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height: 1.08;
-  letter-spacing: .01em; margin: 0 0 1rem; max-width: 15ch;
+  font-size: clamp(2.3rem, 6.4vw, 4.8rem); line-height: 1.05;
+  letter-spacing: .01em; margin: 0 0 1rem; max-width: 17ch;
   text-shadow: 0 6px 36px rgba(0,0,0,.55);
 }
 .article-hero-sub {
-  font-size: clamp(.95rem, 1.7vw, 1.2rem); color: rgba(255,255,255,.86);
-  font-weight: 300; margin: 0 0 1.7rem; max-width: 36ch; line-height: 1.55;
+  font-size: clamp(1rem, 2.1vw, 1.35rem); color: rgba(255,255,255,.86);
+  font-weight: 300; margin: 0 0 1.7rem; max-width: 44ch; line-height: 1.55;
 }
 .article-meta {
   display: flex; flex-wrap: wrap; gap: .55rem .85rem; align-items: center;
@@ -3567,11 +3582,12 @@ main.article { background: var(--cream); display: block; }
   .article-gallery { columns: 2 150px; }
 }
 @media (max-width: 600px) {
-  .article-hero { min-height: 88vh; align-items: flex-end; }
-  /* En el móvil la foto vuelve a ocupar todo el ancho y el texto va
-     abajo sobre el scrim inferior. */
-  .article-hero-bg { left: 0; -webkit-mask-image: none; mask-image: none; }
-  .article-hero::after {
+  .article-hero { min-height: 88vh; }
+  /* Variante split en móvil: la foto vuelve a ocupar todo el ancho y el
+     texto va abajo sobre el scrim inferior clásico. */
+  .article-hero--split { align-items: flex-end; }
+  .article-hero--split .article-hero-bg { left: 0; -webkit-mask-image: none; mask-image: none; }
+  .article-hero--split::after {
     background: linear-gradient(to bottom,
       rgba(13,13,13,.55) 0%, rgba(13,13,13,.15) 38%,
       rgba(13,13,13,.78) 68%, rgba(13,13,13,.97) 100%);
