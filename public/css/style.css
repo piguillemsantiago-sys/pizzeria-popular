@@ -3342,8 +3342,10 @@ main.article { background: var(--cream); display: block; }
     linear-gradient(to top, rgba(13,13,13,.55) 0%, rgba(13,13,13,0) 26%);
 }
 .article-hero-inner {
-  position: relative; z-index: 2; width: 100%; max-width: 1240px;
-  margin: 0 auto; padding: 12vh 6% 9vh;
+  /* Anclado al margen izquierdo: el texto vive en la franja difuminada
+     y la foto queda limpia a la derecha. */
+  position: relative; z-index: 2; width: 100%; max-width: none;
+  margin: 0; padding: 12vh 6% 9vh 5%;
 }
 .article-eyebrow {
   display: inline-block; font-size: .68rem; letter-spacing: .26em;
@@ -3353,13 +3355,13 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero h1 {
   font-family: 'Abril Fatface', serif; color: #fff;
-  font-size: clamp(2.3rem, 5.2vw, 4rem); line-height: 1.05;
-  letter-spacing: .01em; margin: 0 0 1rem; max-width: 15ch;
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.08;
+  letter-spacing: .01em; margin: 0 0 1rem; max-width: 16ch;
   text-shadow: 0 6px 36px rgba(0,0,0,.55);
 }
 .article-hero-sub {
-  font-size: clamp(1rem, 2.1vw, 1.35rem); color: rgba(255,255,255,.86);
-  font-weight: 300; margin: 0 0 1.7rem; max-width: 38ch; line-height: 1.55;
+  font-size: clamp(.95rem, 1.7vw, 1.2rem); color: rgba(255,255,255,.86);
+  font-weight: 300; margin: 0 0 1.7rem; max-width: 36ch; line-height: 1.55;
 }
 .article-meta {
   display: flex; flex-wrap: wrap; gap: .55rem .85rem; align-items: center;
