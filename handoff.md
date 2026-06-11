@@ -82,7 +82,14 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 ## CRONS (en `index.js`)
 - Ratings Google: domingo 3am. — Autopublicar posts: diario 6am. — Análisis del chat de Pepe: diario 7am. — **Informe semanal de Inteligencia: lunes 8am** (genera + manda por mail; si SMTP no está configurado, solo guarda).
 
-## CAMBIOS DE ESTA SESIÓN (2026-06-10)
+## CAMBIOS DE ESTA SESIÓN (2026-06-10/11 · continuación)
+- **"Sumate al equipo" PUBLICADO** (ES+EN) con fotos del banco elegidas por feedback iterativo: hero del equipo (variante split), abrazo primer plano, pizza vistosa (Producción Abril), cartel "La vida es linda". Quitado bullet "Repartidores", agregado requisito de papeles en regla.
+- **Hero dividido = variante OPT-IN por post** (`#split` al final de `hero_image` → clase `article-hero--split`, interpretado por `lib/render-post.js`): texto en franja izquierda, foto solo en el lado derecho. El default volvió al hero clásico (lección: NO aplicar fixes globales por un caso puntual — el primer intento rompió el hero de Benidorm). En móvil el split vuelve a foto completa + scrim inferior, con el margen de parallax abajo (caras visibles) y tipografía más chica (1.6rem/1.4 — display chica necesita MÁS interlineado).
+- **Fix bug preexistente**: el `nav` global del sitio es `position:fixed` y el `<nav>` del índice del artículo lo heredaba → los links del índice aparecían pegados arriba de la página en TODOS los posts. Override `.article-toc nav { position: static }`.
+- **Listado /blog/ dinámico** (ES y EN): era estático y le pegaba a la API del WordPress viejo (muerto) — los posts del panel nunca aparecían. Ahora `GET /api/posts?lang=` (público, solo publicados) + el listado renderiza posts de la base + 5 legacy estáticos, ordenado por fecha. "Post de prueba" despublicado.
+- **Criterio codificado**: reglas de elección de hero y veracidad (no inventar promos) en el SYSTEM de `lib/blog-assistant.js` y en `.claude/skills/blog/SKILL.md`. Flujo de verificación visual: captura real con `npx playwright screenshot` (390×844 y 1440×900) + análisis crítico antes de avisar al usuario.
+
+## CAMBIOS DE LA SESIÓN 2026-06-10 (primera parte)
 - **Respaldo del trabajo en vivo de la mañana** (commit `7b2352c`): asistente de blog edita posts existentes (recibe el contenido completo), Pepe lee el blog publicado (`blogBlock()` en `lib/chatbot.js`), `deploy.sh` excluye `referencia.html`. Detalle en `memory.md` 2026-06-10 (incluye fix de Nginx `proxy_read_timeout 300s` — config NO versionada, vive en el VPS).
 - **Sección Inteligencia construida** (commit `09e3595`): `lib/intel.js` (getOverview/generarInforme/emailInforme/getInformes), tabla `ppweb_informes`, rutas `/api/admin/intel/*`, cron lunes 8am, UI completa en el panel (assets a `?v=6`). Primer informe generado y verificado end-to-end.
 - **Acciones del informe ejecutadas**: precios orientativos cargados al Cerebro de Pepe **leídos de la carta del sistema AJAX** (API `https://habit-tracker-production-b9ab.up.railway.app/api/menu/full/<slug>` — items multiidioma con `prices[]` por variante) + menús de grupo por WhatsApp. Probado en vivo: Pepe responde precios con disclaimer y deriva grupos al WhatsApp del local. La comunicación de promos ya estaba resuelta (Menú del día + 2×1 con condiciones en `ppweb_promos`).
@@ -110,9 +117,9 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 - Ninguno conocido al cierre.
 
 ## PRÓXIMO PASO CONCRETO
-1. **Cerrar el post "Sumate al equipo"**: el hero v3 (caras a media altura) quedó pendiente del OK del usuario. Si está OK → publicar ES+EN (cambiar `estado` a `publicado`, fecha de hoy). Pepe lo toma solo.
-2. **Post del Mundial** (`mundial-de-futbol-en-pizzeria-popular`, ES+EN en preparación): el Mundial arrancó el 11/6 — pierde valor cada día. OJO: la sección "04 — Promos" promete "combos especiales los días de partido" que NO existen en `ppweb_promos` — ajustar antes de publicar (o confirmar con el usuario que existen en los locales). No tiene fotos.
-3. **Borrar/despublicar "Post de prueba del panel"** (slug `post-de-prueba`): está PUBLICADO en el blog real y Pepe lo lee. El usuario no aprobó el borrado todavía — preguntarle.
+1. ✅ HECHO (2026-06-11): "Sumate al equipo" PUBLICADO ES+EN y visible en /blog/ (el listado ahora es dinámico, ver CAMBIOS).
+2. **Post del Mundial** (`mundial-de-futbol-en-pizzeria-popular`, ES+EN en preparación): el Mundial arrancó el 11/6 — pierde valor cada día. OJO: la sección "04 — Promos" promete "combos especiales los días de partido" que NO existen en `ppweb_promos` — ajustar antes de publicar (o confirmar con el usuario que existen en los locales). No tiene fotos (usar el banco de Drive con el criterio de la skill /blog).
+3. "Post de prueba del panel" (slug `post-de-prueba`): despublicado (está en `preparacion`). Falta decidir si se borra definitivo desde el panel.
 4. **Seguir el plan de automatización de Marketing** (orden acordado): promos con vigencia automática (fechas desde/hasta + cron) → Generador con propuesta semanal de contenido → Calendario general. Planificación al final.
 5. Pepe acumula consultas reales: revisar la pestaña Pepe y usar "Enseñar a Pepe". El usuario quedó en crear la carpeta **"Equipo"** en el Drive con fotos del staff.
 6. **Integración AJAX:** cuando el usuario pase los emails de los admins de AJAX → alta en `ppweb_admins`. OJO: el dashboard nuevo divergió del módulo de AJAX — reevaluar si la integración sigue en pie.
