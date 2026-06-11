@@ -104,69 +104,58 @@
 
   <script>
   (function() {
-    const API = 'https://pizzeriapopular.es/wp-json/wp/v2/posts?per_page=20&_embed&_fields=id,title,excerpt,date,link,categories,_embedded,_links';
+    // Posts from the admin panel (database) + legacy static posts.
+    // The old WordPress is gone: everything is served from here.
+    const LEGACY = [
+      { titulo: "🎉 We've arrived in Benidorm! New location facing the Mediterranean",
+        url: '/en/we-have-arrived-in-benidorm/', fecha: '2026-05-19',
+        img: '/images/blog/benidorm/benidorm-hero.jpg',
+        excerpt: "After 9 months of renovation, we're opening our sixth pizzeria in one of the most beautiful spots on the Costa Blanca, in the Balcón del Mediterráneo area." },
+    ];
 
-    // WordPress categories that identify English posts.
-    const EN_CATS = [54, 60, 37, 51, 14];
-    const isEnglish = post => (post.categories || []).some(c => EN_CATS.includes(c));
-
-    // New post published as a local page (does not live in WordPress).
-    const benidormCard = `
-      <article class="blog-card">
-        <a href="/en/we-have-arrived-in-benidorm/" class="blog-img-wrap"><img src="/images/blog/benidorm/benidorm-hero.jpg" alt="Pizzería Popular Benidorm" loading="lazy"></a>
-        <div class="blog-body">
-          <p class="blog-date">19 May 2026</p>
-          <h3 class="blog-title"><a href="/en/we-have-arrived-in-benidorm/">🎉 We've arrived in Benidorm! New location facing the Mediterranean</a></h3>
-          <p class="blog-excerpt">After 9 months of renovation, we're opening our sixth pizzeria in one of the most beautiful spots on the Costa Blanca, in the Balcón del Mediterráneo area.</p>
-          <a href="/en/we-have-arrived-in-benidorm/" class="blog-link">Read more →</a>
-        </div>
-      </article>`;
-
-    function stripHtml(html) {
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html;
-      return tmp.textContent || tmp.innerText || '';
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, c =>
+        ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
     }
-
     function formatDate(str) {
       const d = new Date(str);
-      return d.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+      return isNaN(d.getTime()) ? '' :
+        d.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+    }
+    function card(p) {
+      const thumb = p.img
+        ? `<a href="${p.url}" class="blog-img-wrap"><img src="${esc(p.img)}" alt="${esc(p.titulo)}" loading="lazy"></a>`
+        : `<div class="blog-img-placeholder"><img src="/images/extracted/logo.png" alt="Pizzería Popular" style="width:60px;opacity:.4;filter:brightness(2);"></div>`;
+      const fecha = formatDate(p.fecha);
+      return `
+        <article class="blog-card">
+          ${thumb}
+          <div class="blog-body">
+            ${fecha ? `<p class="blog-date">${fecha}</p>` : ''}
+            <h3 class="blog-title"><a href="${p.url}">${esc(p.titulo)}</a></h3>
+            ${p.excerpt ? `<p class="blog-excerpt">${esc(p.excerpt)}</p>` : ''}
+            <a href="${p.url}" class="blog-link">Read more →</a>
+          </div>
+        </article>`;
+    }
+    function render(items) {
+      items.sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+      document.getElementById('blogGrid').innerHTML = items.map(card).join('');
     }
 
-    function getImg(post) {
-      try { return post._embedded['wp:featuredmedia'][0].source_url; }
-      catch(e) { return null; }
-    }
-
-    fetch(API)
+    fetch('/api/posts?lang=en')
       .then(r => r.json())
-      .then(allPosts => {
-        const grid = document.getElementById('blogGrid');
-        // English posts only
-        const posts = (allPosts || []).filter(isEnglish);
-        grid.innerHTML = benidormCard + posts.map(post => {
-          const img = getImg(post);
-          const title = post.title.rendered;
-          const excerpt = stripHtml(post.excerpt.rendered).replace(/\[…\]/, '').trim().slice(0, 140) + '…';
-          const date = formatDate(post.date);
-          const thumb = img
-            ? `<a href="${post.link}" target="_blank" class="blog-img-wrap"><img src="${img}" alt="${title}" loading="lazy"></a>`
-            : `<div class="blog-img-placeholder"><img src="/images/extracted/logo.png" alt="Pizzería Popular" style="width:60px;opacity:.4;filter:brightness(2);"></div>`;
-          return `
-            <article class="blog-card">
-              ${thumb}
-              <div class="blog-body">
-                <p class="blog-date">${date}</p>
-                <h3 class="blog-title"><a href="${post.link}" target="_blank">${title}</a></h3>
-                <p class="blog-excerpt">${excerpt}</p>
-                <a href="${post.link}" target="_blank" class="blog-link">Leer más →</a>
-              </div>
-            </article>`;
-        }).join('');
+      .then(posts => {
+        const db = (Array.isArray(posts) ? posts : []).map(p => ({
+          titulo: p.titulo,
+          url: '/en/blog/' + p.slug + '/',
+          fecha: p.fecha,
+          img: p.hero_image || null,
+          excerpt: (p.subtitulo || p.meta_desc || '').slice(0, 160),
+        }));
+        render(db.concat(LEGACY));
       })
-      .catch(() => {
-        document.getElementById('blogGrid').innerHTML = benidormCard + '<p style="text-align:center;color:#7A7266;grid-column:1/-1;padding:40px;">Could not load the rest of the articles. <a href="https://pizzeriapopular.es/blog/" target="_blank" style="color:#D8A460;">View on website →</a></p>';
-      });
+      .catch(() => render(LEGACY.slice()));
   })();
   </script>
 

@@ -104,70 +104,70 @@
 
   <script>
   (function() {
-    const API = 'https://pizzeriapopular.es/wp-json/wp/v2/posts?per_page=20&_embed&_fields=id,title,excerpt,date,link,categories,_embedded,_links';
+    // Posts del panel (base de datos) + posts viejos estáticos del sitio.
+    // El WordPress viejo ya no existe: todo se sirve desde acá.
+    const LEGACY = [
+      { titulo: '🎉 ¡Llegamos a Benidorm! Nuevo local frente al Mediterráneo',
+        url: '/llegamos-a-benidorm/', fecha: '2026-05-19',
+        img: '/images/blog/benidorm/benidorm-hero.jpg',
+        excerpt: 'Después de 9 meses de obra, abrimos nuestra sexta pizzería en uno de los puntos más bonitos de la Costa Blanca, en la zona del Balcón del Mediterráneo.' },
+      { titulo: 'Pizzería Popular llega a Madrid · Boadilla del Monte',
+        url: '/pizzeria-popular-llega-a-madrid/', fecha: '2025-05-20', img: null,
+        excerpt: 'Abrimos nuestro primer local en la Comunidad de Madrid.' },
+      { titulo: 'Pizzerías cerca de ti: descubre Pizzería Popular',
+        url: '/pizzerias-cerca-de-ti-descubre-pizzeria-popular/', fecha: '2025-05-12', img: null,
+        excerpt: 'Dónde encontrarnos y qué hace distinta a nuestra pizza argentina al horno de leña.' },
+      { titulo: 'Cómo abrir una franquicia de éxito con Pizzería Popular',
+        url: '/como-abrir-una-franquicia-de-exito-con-pizzeria-popular/', fecha: '2025-04-29', img: null,
+        excerpt: 'Lo que tenés que saber para sumarte a la familia Popular con tu propio local.' },
+      { titulo: 'Ingredientes frescos y auténticos: el alma de nuestras pizzerías',
+        url: '/ingredientes-frescos-y-autenticos-el-alma-de-nuestras-pizzerias/', fecha: '2025-01-15', img: null,
+        excerpt: 'Masa madre, salsa casera y horno de leña: así cocinamos todos los días.' },
+    ];
 
-    // Categorías de WordPress que identifican posts en inglés.
-    // Cualquier post sin estas categorías se considera español.
-    const EN_CATS = [54, 60, 37, 51, 14];
-    const isEnglish = post => (post.categories || []).some(c => EN_CATS.includes(c));
-
-    // Post nuevo publicado como página local (no vive en WordPress).
-    const benidormCard = `
-      <article class="blog-card">
-        <a href="/llegamos-a-benidorm/" class="blog-img-wrap"><img src="/images/blog/benidorm/benidorm-hero.jpg" alt="Pizzería Popular Benidorm" loading="lazy"></a>
-        <div class="blog-body">
-          <p class="blog-date">19 de mayo de 2026</p>
-          <h3 class="blog-title"><a href="/llegamos-a-benidorm/">🎉 ¡Llegamos a Benidorm! Nuevo local frente al Mediterráneo</a></h3>
-          <p class="blog-excerpt">Después de 9 meses de obra, abrimos nuestra sexta pizzería en uno de los puntos más bonitos de la Costa Blanca, en la zona del Balcón del Mediterráneo.</p>
-          <a href="/llegamos-a-benidorm/" class="blog-link">Leer más →</a>
-        </div>
-      </article>`;
-
-    function stripHtml(html) {
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html;
-      return tmp.textContent || tmp.innerText || '';
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, c =>
+        ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
     }
-
     function formatDate(str) {
       const d = new Date(str);
-      return d.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+      return isNaN(d.getTime()) ? '' :
+        d.toLocaleDateString('es-ES', { day:'numeric', month:'long', year:'numeric' });
+    }
+    function card(p) {
+      const thumb = p.img
+        ? `<a href="${p.url}" class="blog-img-wrap"><img src="${esc(p.img)}" alt="${esc(p.titulo)}" loading="lazy"></a>`
+        : `<div class="blog-img-placeholder"><img src="/images/extracted/logo.png" alt="Pizzería Popular" style="width:60px;opacity:.4;filter:brightness(2);"></div>`;
+      const fecha = formatDate(p.fecha);
+      return `
+        <article class="blog-card">
+          ${thumb}
+          <div class="blog-body">
+            ${fecha ? `<p class="blog-date">${fecha}</p>` : ''}
+            <h3 class="blog-title"><a href="${p.url}">${esc(p.titulo)}</a></h3>
+            ${p.excerpt ? `<p class="blog-excerpt">${esc(p.excerpt)}</p>` : ''}
+            <a href="${p.url}" class="blog-link">Leer más →</a>
+          </div>
+        </article>`;
+    }
+    function render(items) {
+      items.sort((a, b) => String(b.fecha).localeCompare(String(a.fecha)));
+      document.getElementById('blogGrid').innerHTML = items.map(card).join('');
     }
 
-    function getImg(post) {
-      try { return post._embedded['wp:featuredmedia'][0].source_url; }
-      catch(e) { return null; }
-    }
-
-    fetch(API)
+    fetch('/api/posts?lang=es')
       .then(r => r.json())
-      .then(allPosts => {
-        const grid = document.getElementById('blogGrid');
-        // Solo posts en español
-        const posts = (allPosts || []).filter(p => !isEnglish(p));
-        grid.innerHTML = benidormCard + posts.map(post => {
-          const img = getImg(post);
-          const title = post.title.rendered;
-          const excerpt = stripHtml(post.excerpt.rendered).replace(/\[…\]/, '').trim().slice(0, 140) + '…';
-          const date = formatDate(post.date);
-          const thumb = img
-            ? `<a href="${post.link}" target="_blank" class="blog-img-wrap"><img src="${img}" alt="${title}" loading="lazy"></a>`
-            : `<div class="blog-img-placeholder"><img src="/images/extracted/logo.png" alt="Pizzería Popular" style="width:60px;opacity:.4;filter:brightness(2);"></div>`;
-          return `
-            <article class="blog-card">
-              ${thumb}
-              <div class="blog-body">
-                <p class="blog-date">${date}</p>
-                <h3 class="blog-title"><a href="${post.link}" target="_blank">${title}</a></h3>
-                <p class="blog-excerpt">${excerpt}</p>
-                <a href="${post.link}" target="_blank" class="blog-link">Leer más →</a>
-              </div>
-            </article>`;
-        }).join('');
+      .then(posts => {
+        const db = (Array.isArray(posts) ? posts : []).map(p => ({
+          titulo: p.titulo,
+          url: '/blog/' + p.slug + '/',
+          fecha: p.fecha,
+          img: p.hero_image || null,
+          excerpt: (p.subtitulo || p.meta_desc || '').slice(0, 160),
+        }));
+        render(db.concat(LEGACY));
       })
-      .catch(() => {
-        document.getElementById('blogGrid').innerHTML = benidormCard + '<p style="text-align:center;color:#7A7266;grid-column:1/-1;padding:40px;">No se pudieron cargar el resto de artículos. <a href="https://pizzeriapopular.es/blog/" target="_blank" style="color:#D8A460;">Ver en la web →</a></p>';
-      });
+      .catch(() => render(LEGACY.slice()));
   })();
   </script>
 

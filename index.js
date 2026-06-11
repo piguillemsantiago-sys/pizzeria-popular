@@ -279,6 +279,21 @@ app.get('/api/promos', async (req, res) => {
   res.json(data || []);
 });
 
+// Posts públicos (solo publicados) — usado por el listado /blog/.
+app.get('/api/posts', async (req, res) => {
+  const lang = req.query.lang === 'en' ? 'en' : 'es';
+  const { data, error } = await supabaseAdmin
+    .from('ppweb_posts')
+    .select('titulo,slug,fecha,subtitulo,meta_desc,hero_image')
+    .eq('idioma', lang)
+    .eq('estado', 'publicado')
+    .order('fecha', { ascending: false });
+  if (error) return res.status(500).json({ error: error.message });
+  // El sufijo #split del hero es solo para el layout del post, no para el listado.
+  res.json((data || []).map((p) =>
+    Object.assign({}, p, { hero_image: String(p.hero_image || '').replace(/#split$/i, '') })));
+});
+
 // Listado completo para el panel (incluye inactivas).
 app.get('/api/admin/promos', requireAdmin, async (req, res) => {
   const { data, error } = await supabaseAdmin
