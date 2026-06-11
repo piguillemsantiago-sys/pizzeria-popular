@@ -596,6 +596,7 @@ app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
 
 // ---- Generador: piezas para redes (historias y carruseles) ----
 app.get('/api/admin/gen/status', requireAdmin, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
   try {
     const banco = await estadoBanco();
     res.json({ gemini: geminiDisponible(), banco: banco.indexadas });

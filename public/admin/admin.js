@@ -987,7 +987,7 @@
 
   async function loadGen() {
     try {
-      const st = await api('/api/admin/gen/status');
+      const st = await api('/api/admin/gen/status?t=' + Date.now());
       genGemini = !!st.gemini;
       $('genGeminiTag').hidden = genGemini;
       $('genBancoTag').textContent = 'Banco: ' + (st.banco || 0) + ' fotos';
