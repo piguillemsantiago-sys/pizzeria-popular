@@ -33,6 +33,23 @@ cada post salga consistente, con buen SEO y sin saltear pasos.
 Cálido, familiar, argentino. Cercano, no corporativo. Usa el "vos". Guiños como
 "¡Hola mi vida! 🔥". Emocional pero concreto.
 
+## Criterio de fotos y hero (OBLIGATORIO)
+
+El título va montado sobre la foto del hero — elegir con criterio:
+
+- **Foto panorámica con "aire"** (cielo, mar, espacio vacío) y el sujeto a un
+  costado → hero clásico (default).
+- **Foto con el sujeto al centro** (gente posando, caras grandes, producto al
+  medio) → variante dividida: agregar `#split` al final de `hero_image` (posts
+  de la base; lo interpreta `lib/render-post.js`) o clase `article-hero--split`
+  (posts estáticos). Texto a la izquierda, foto limpia a la derecha.
+- NUNCA de hero: fotos donde el título tape caras, o con carteles/texto propio
+  que compita con el título.
+- Las fotos salen del **banco de imágenes** (Google Drive conectado al panel,
+  `lib/drive.js`): elegir de ahí, optimizar con sharp y subir al storage.
+- Veracidad: no prometer promos/combos/precios que no estén en `ppweb_promos`
+  o confirmados por el usuario.
+
 ## Pasos
 
 ### 1. Definir el tema y el SEO

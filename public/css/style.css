@@ -3343,14 +3343,21 @@ main.article { background: var(--cream); display: block; }
 /* ---- Variante "--split" (hero_image termina en #split): para fotos con
    el sujeto al CENTRO. Texto en franja oscura izquierda (36%), foto solo
    en el lado derecho — nunca queda debajo del texto. ---- */
-.article-hero--split { align-items: center; background: #0d0d0d; }
+.article-hero--split {
+  align-items: center;
+  /* Marrón cálido con luz, no negro pleno. */
+  background: linear-gradient(120deg, #2a2018 0%, #15100c 80%);
+}
 .article-hero--split .article-hero-bg {
-  left: 36%;
-  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
-          mask-image: linear-gradient(to right, transparent 0, #000 24%);
+  left: 26%;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 34%);
+          mask-image: linear-gradient(to right, transparent 0, #000 34%);
 }
 .article-hero--split::after {
-  background: linear-gradient(to top, rgba(13,13,13,.5) 0%, rgba(13,13,13,0) 24%);
+  /* Scrim suave sobre el borde fundido + velo abajo para la meta. */
+  background:
+    linear-gradient(to right, rgba(21,16,12,.55) 0%, rgba(21,16,12,0) 52%),
+    linear-gradient(to top, rgba(13,13,13,.5) 0%, rgba(13,13,13,0) 24%);
 }
 .article-hero--split .article-hero-inner {
   max-width: none; margin: 0; padding: 12vh 6% 9vh 5%;
@@ -3408,6 +3415,12 @@ main.article { background: var(--cream); display: block; }
 .article-toc-label {
   font-size: .64rem; letter-spacing: .22em; text-transform: uppercase;
   color: rgba(57,46,44,.45); font-weight: 700; margin-bottom: .9rem;
+}
+/* El nav global del sitio es position:fixed — el nav del índice NO debe
+   heredarlo (bug: los links del índice quedaban pegados arriba de la página,
+   detrás del logo y el menú). */
+.article-toc nav {
+  position: static; display: block; padding: 0; z-index: auto;
 }
 .article-toc a {
   display: block; font-size: .8rem; color: rgba(57,46,44,.6);
