@@ -626,6 +626,7 @@ button { font-family: inherit; cursor: pointer; }
   border: 1px solid var(--pp-line-2); border-radius: 99px; padding: 5px 12px;
   display: inline-block;
 }
+.gen-gemini-tag[hidden] { display: none; }
 .gen-foto-motivo {
   font-size: .72rem; color: var(--pp-gold); line-height: 1.4;
   margin: 6px 0 0; font-style: italic;
