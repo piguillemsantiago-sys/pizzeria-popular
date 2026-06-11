@@ -990,7 +990,8 @@
       const st = await api('/api/admin/gen/status?t=' + Date.now());
       genGemini = !!st.gemini;
       $('genGeminiTag').hidden = genGemini;
-      $('genBancoTag').textContent = 'Banco: ' + (st.banco || 0) + ' fotos';
+      $('genBancoTag').textContent = 'Banco: ' + (st.banco || 0) + ' fotos' +
+        (st.referencia ? ' · ' + st.referencia + ' de referencia' : '');
       genLoaded = true;
     } catch (e) { /* no crítico */ }
   }

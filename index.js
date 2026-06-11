@@ -16,6 +16,7 @@ const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-sta
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
 const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
+const { listarReferencias } = require('./lib/referencia');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -597,11 +598,13 @@ app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
 // ---- Generador: piezas para redes (historias y carruseles) ----
 app.get('/api/admin/gen/status', requireAdmin, async (req, res) => {
   res.set('Cache-Control', 'no-store');
+  let referencia = 0;
+  try { referencia = (await listarReferencias()).length; } catch (e) { /* opcional */ }
   try {
     const banco = await estadoBanco();
-    res.json({ gemini: geminiDisponible(), banco: banco.indexadas });
+    res.json({ gemini: geminiDisponible(), banco: banco.indexadas, referencia });
   } catch (e) {
-    res.json({ gemini: geminiDisponible(), banco: 0 });
+    res.json({ gemini: geminiDisponible(), banco: 0, referencia });
   }
 });
 
