@@ -990,8 +990,27 @@
       const st = await api('/api/admin/gen/status');
       genGemini = !!st.gemini;
       $('genGeminiTag').hidden = genGemini;
+      $('genBancoTag').textContent = 'Banco: ' + (st.banco || 0) + ' fotos';
       genLoaded = true;
     } catch (e) { /* no crítico */ }
+  }
+
+  async function onGenSync() {
+    const btn = $('genSyncBtn');
+    btn.disabled = true;
+    btn.textContent = 'Sincronizando…';
+    $('genBancoTag').textContent = 'Banco: indexando fotos nuevas…';
+    try {
+      const r = await api('/api/admin/gen/sync-banco', 'POST', {});
+      $('genBancoTag').textContent = 'Banco: ' + r.indexadas + ' fotos';
+      alert('Banco actualizado: ' + r.nuevas + ' foto(s) nueva(s) indexada(s). Total: ' + r.indexadas + '.' +
+        (r.fallidas ? ' (' + r.fallidas + ' no se pudieron leer)' : ''));
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔄 Sincronizar banco';
+    }
   }
 
   function renderGenPlacas() {
@@ -1012,8 +1031,9 @@
               : (p.iaPrompt
                 ? '<div class="gen-foto-empty">🤖 IA:<br/>' + esc(p.iaPrompt.slice(0, 60)) + '…</div>'
                 : '<div class="gen-foto-empty">Sin foto</div>')) +
+            (p.motivo ? '<p class="gen-foto-motivo">✨ ' + esc(p.motivo) + '</p>' : '') +
             '<div class="gen-foto-btns">' +
-              '<button type="button" data-act="drive" data-i="' + i + '">📁 Banco</button>' +
+              '<button type="button" data-act="drive" data-i="' + i + '">📁 Cambiar</button>' +
               '<button type="button" data-act="ia" data-i="' + i + '">🤖 IA</button>' +
             '</div>' +
           '</div>' +
@@ -1036,16 +1056,18 @@
     btn.textContent = 'Pensando… (~20 s)';
     try {
       genState.formato = $('genFormato').value;
+      btn.textContent = 'Eligiendo texto y fotos… (~30 s)';
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
-        fotoUrl: null, iaPrompt: null,
+        fotoUrl: p.fotoUrl || null, iaPrompt: null, motivo: p.motivo || '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
       $('genCaptionBlock').hidden = !genState.caption;
       $('genResultBlock').hidden = true;
       renderGenPlacas();
+      if (out.bancoAviso) alert(out.bancoAviso);
     } catch (err) {
       alert(err.message);
     } finally {
@@ -1240,6 +1262,7 @@
 
     // Generador
     $('genForm').addEventListener('submit', onGenCopy);
+    $('genSyncBtn').addEventListener('click', onGenSync);
     $('genComponerBtn').addEventListener('click', onGenComponer);
     $('genPlacas').addEventListener('click', onGenPlacaClick);
     $('genPlacas').addEventListener('input', onGenPlacaInput);

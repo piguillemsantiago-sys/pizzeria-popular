@@ -14,7 +14,8 @@ const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
-const { generarCopy, generarPiezas, geminiDisponible } = require('./lib/generador');
+const { generarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
+const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -594,18 +595,52 @@ app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
 });
 
 // ---- Generador: piezas para redes (historias y carruseles) ----
-app.get('/api/admin/gen/status', requireAdmin, (req, res) => {
-  res.json({ gemini: geminiDisponible() });
+app.get('/api/admin/gen/status', requireAdmin, async (req, res) => {
+  try {
+    const banco = await estadoBanco();
+    res.json({ gemini: geminiDisponible(), banco: banco.indexadas });
+  } catch (e) {
+    res.json({ gemini: geminiDisponible(), banco: 0 });
+  }
 });
 
-// La IA escribe el copy de las placas.
+// Indexa el banco de imágenes (Drive → catálogo descrito por IA).
+app.post('/api/admin/gen/sync-banco', requireAdmin, async (req, res) => {
+  try {
+    const r = await sincronizarBanco({ limit: req.body && req.body.limit });
+    res.json(r);
+  } catch (e) {
+    console.error('[Banco] Error:', e.message);
+    res.status(500).json({ error: 'No pude sincronizar el banco: ' + e.message });
+  }
+});
+
+// La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   try {
     const { instruccion, formato } = req.body;
     if (!instruccion || !String(instruccion).trim()) {
       return res.status(400).json({ error: 'Contame qué querés comunicar.' });
     }
-    res.json(await generarCopy(String(instruccion), formato));
+    const copy = await generarCopy(String(instruccion), formato);
+    // Selección automática de fotos del banco (si está indexado).
+    try {
+      const elecciones = await elegirFotos(String(instruccion), formato || 'historia', copy.placas);
+      await Promise.all(copy.placas.map(async (p, i) => {
+        const el = elecciones[i];
+        if (el && el.driveId) {
+          p.fotoUrl = await materializarFoto(el.driveId);
+          p.motivo = el.motivo || '';
+        }
+      }));
+      copy.bancoUsado = true;
+    } catch (e) {
+      copy.bancoUsado = false;
+      copy.bancoAviso = e.code === 'BANCO_VACIO'
+        ? 'El banco todavía no está indexado: tocá «Sincronizar banco» para que elija las fotos solo.'
+        : 'No pude elegir fotos del banco automáticamente: ' + e.message;
+    }
+    res.json(copy);
   } catch (e) {
     console.error('[Gen copy] Error:', e.message);
     res.status(500).json({ error: 'No pude generar el copy: ' + e.message });

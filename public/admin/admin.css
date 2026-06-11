@@ -612,9 +612,23 @@ button { font-family: inherit; cursor: pointer; }
 .intel-chip.active { border-color: var(--pp-gold); color: var(--pp-gold-bright); }
 
 /* ============ Generador ============ */
+.gen-head-right { display: flex; align-items: center; gap: 12px; }
+.gen-banco-tag { font-size: .76rem; color: var(--pp-muted); }
+.btn-ghost {
+  background: transparent; border: 1px solid var(--pp-line-2); color: var(--pp-text);
+  border-radius: 10px; padding: 8px 14px; font-size: .78rem; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+}
+.btn-ghost:hover { border-color: var(--pp-gold); color: var(--pp-gold); }
+.btn-ghost[disabled] { opacity: .5; cursor: default; }
 .gen-gemini-tag {
-  font-size: .72rem; color: var(--pp-faint);
+  font-size: .72rem; color: var(--pp-faint); margin: 0 0 14px;
   border: 1px solid var(--pp-line-2); border-radius: 99px; padding: 5px 12px;
+  display: inline-block;
+}
+.gen-foto-motivo {
+  font-size: .72rem; color: var(--pp-gold); line-height: 1.4;
+  margin: 6px 0 0; font-style: italic;
 }
 .gen-form select {
   background: var(--pp-bg); color: var(--pp-text);

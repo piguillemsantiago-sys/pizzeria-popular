@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=7" />
+  <link rel="stylesheet" href="/admin/admin.css?v=8" />
 </head>
 <body class="admin-app">
 
@@ -88,11 +88,15 @@
         <section class="dash-section" id="section-generador" hidden>
           <div class="panel-head">
             <h1>Generador</h1>
-            <span class="gen-gemini-tag" id="genGeminiTag" hidden>🤖 IA de imágenes: inactiva (falta GEMINI_API_KEY)</span>
+            <div class="gen-head-right">
+              <span class="gen-banco-tag" id="genBancoTag">Banco: …</span>
+              <button class="btn-ghost" id="genSyncBtn">🔄 Sincronizar banco</button>
+            </div>
           </div>
+          <p class="gen-gemini-tag" id="genGeminiTag" hidden>🤖 IA de imágenes: inactiva (falta GEMINI_API_KEY)</p>
 
           <div class="assistant">
-            <div class="assistant-head">✨ Piezas para redes <span>contame qué querés comunicar y armo historia o carrusel</span></div>
+            <div class="assistant-head">✨ Piezas para redes <span>contame qué querés y elijo el texto y las fotos del banco</span></div>
             <form class="assistant-form gen-form" id="genForm">
               <select id="genFormato">
                 <option value="historia">Historia (1080×1920)</option>
@@ -385,6 +389,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=7"></script>
+  <script src="/admin/admin.js?v=8"></script>
 </body>
 </html>
