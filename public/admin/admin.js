@@ -1060,7 +1060,8 @@
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
-        fotoUrl: p.fotoUrl || null, iaPrompt: null, motivo: p.motivo || '',
+        fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
+        iaPrompt: null, motivo: p.motivo || '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1084,14 +1085,18 @@
       drivePickCb = (urls) => {
         if (urls.length) {
           genState.placas[i].fotoUrl = urls[0];
+          genState.placas[i].driveId = null; // foto cambiada a mano: usar la URL
           genState.placas[i].iaPrompt = null;
+          genState.placas[i].motivo = '';
           // Si eligió varias, reparte en las placas siguientes sin foto.
           let k = i + 1;
           for (const u of urls.slice(1)) {
             while (k < genState.placas.length && genState.placas[k].fotoUrl) k++;
             if (k >= genState.placas.length) break;
             genState.placas[k].fotoUrl = u;
+            genState.placas[k].driveId = null;
             genState.placas[k].iaPrompt = null;
+            genState.placas[k].motivo = '';
           }
           renderGenPlacas();
         }
@@ -1108,6 +1113,8 @@
       if (!prompt) return;
       genState.placas[i].iaPrompt = prompt.trim();
       genState.placas[i].fotoUrl = null;
+      genState.placas[i].driveId = null;
+      genState.placas[i].motivo = '';
       renderGenPlacas();
     }
   }
@@ -1132,6 +1139,7 @@
         formato: genState.formato,
         placas: genState.placas.map((p) => ({
           titulo: p.titulo, bajada: p.bajada, cta: p.cta,
+          driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
         })),
       });

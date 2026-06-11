@@ -629,7 +629,8 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
       await Promise.all(copy.placas.map(async (p, i) => {
         const el = elecciones[i];
         if (el && el.driveId) {
-          p.fotoUrl = await materializarFoto(el.driveId);
+          p.driveId = el.driveId;                 // para componer en full-res
+          p.fotoUrl = await materializarFoto(el.driveId); // para previsualizar
           p.motivo = el.motivo || '';
         }
       }));
