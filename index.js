@@ -694,7 +694,7 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
         bajada: nu.bajada != null ? nu.bajada : orig.bajada,
         cta: nu.cta != null ? nu.cta : orig.cta,
         lugar: nu.lugar != null ? nu.lugar : orig.lugar,
-        estilo: nu.estilo || orig.estilo || 'auto',
+        estilo: nu.estilo || orig.estilo || 'clasico',
         logo: nu.logo || orig.logo || 'wordmark-blanco',
         _cambiarFoto: !!nu.cambiarFoto,
         _fotoHint: nu.fotoHint || '',
