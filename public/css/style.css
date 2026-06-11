@@ -3324,22 +3324,21 @@ main.article { background: var(--cream); display: block; }
 /* ---- HERO full-bleed con parallax ---- */
 .article-hero {
   position: relative; min-height: 92vh; display: flex;
-  align-items: center; overflow: hidden;
+  align-items: center; overflow: hidden; background: #0d0d0d;
 }
+/* La foto vive SOLO en el lado derecho (64%): nunca queda abajo del texto,
+   sin importar el tamaño de la ventana. Borde izquierdo fundido. */
 .article-hero-bg {
-  position: absolute; left: 0; right: 0; top: -12%; bottom: -12%;
-  background-size: cover; background-position: center right;
+  position: absolute; left: 36%; right: 0; top: -12%; bottom: -12%;
+  background-size: cover; background-position: center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24%);
+          mask-image: linear-gradient(to right, transparent 0, #000 24%);
   will-change: transform; z-index: 0;
 }
 .article-hero::after {
   content: ''; position: absolute; inset: 0; z-index: 1;
-  /* Texto a la izquierda: scrim lateral fuerte que se disuelve hacia la
-     derecha (la foto respira), + velo suave abajo para la fila de meta. */
-  background:
-    linear-gradient(to right,
-      rgba(13,13,13,.94) 0%, rgba(13,13,13,.78) 38%,
-      rgba(13,13,13,.25) 68%, rgba(13,13,13,.05) 100%),
-    linear-gradient(to top, rgba(13,13,13,.55) 0%, rgba(13,13,13,0) 26%);
+  /* Velo suave abajo para la fila de meta. */
+  background: linear-gradient(to top, rgba(13,13,13,.5) 0%, rgba(13,13,13,0) 24%);
 }
 .article-hero-inner {
   /* Anclado al margen izquierdo: el texto vive en la franja difuminada
@@ -3355,8 +3354,8 @@ main.article { background: var(--cream); display: block; }
 }
 .article-hero h1 {
   font-family: 'Abril Fatface', serif; color: #fff;
-  font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.08;
-  letter-spacing: .01em; margin: 0 0 1rem; max-width: 16ch;
+  font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height: 1.08;
+  letter-spacing: .01em; margin: 0 0 1rem; max-width: 15ch;
   text-shadow: 0 6px 36px rgba(0,0,0,.55);
 }
 .article-hero-sub {
@@ -3569,7 +3568,9 @@ main.article { background: var(--cream); display: block; }
 }
 @media (max-width: 600px) {
   .article-hero { min-height: 88vh; align-items: flex-end; }
-  /* En el móvil el texto ocupa todo el ancho: vuelve el scrim de abajo. */
+  /* En el móvil la foto vuelve a ocupar todo el ancho y el texto va
+     abajo sobre el scrim inferior. */
+  .article-hero-bg { left: 0; -webkit-mask-image: none; mask-image: none; }
   .article-hero::after {
     background: linear-gradient(to bottom,
       rgba(13,13,13,.55) 0%, rgba(13,13,13,.15) 38%,
