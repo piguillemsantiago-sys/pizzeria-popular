@@ -690,8 +690,10 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
       return {
         ...orig,
         titulo: nu.titulo != null ? nu.titulo : orig.titulo,
+        acento: nu.acento != null ? nu.acento : orig.acento,
         bajada: nu.bajada != null ? nu.bajada : orig.bajada,
         cta: nu.cta != null ? nu.cta : orig.cta,
+        lugar: nu.lugar != null ? nu.lugar : orig.lugar,
         logo: nu.logo || orig.logo || 'wordmark-blanco',
         _cambiarFoto: !!nu.cambiarFoto,
         _fotoHint: nu.fotoHint || '',

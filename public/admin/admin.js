@@ -1057,8 +1057,10 @@
           '</div>' +
           '<div class="gen-placa-campos">' +
             '<label>Título<input type="text" data-campo="titulo" data-i="' + i + '" value="' + esc(p.titulo || '') + '" /></label>' +
+            '<label>Acento dorado <small>(cursiva)</small><input type="text" data-campo="acento" data-i="' + i + '" value="' + esc(p.acento || '') + '" placeholder="ej: felicidad, te esperamos" /></label>' +
             '<label>Bajada<input type="text" data-campo="bajada" data-i="' + i + '" value="' + esc(p.bajada || '') + '" /></label>' +
             '<label>Botón (CTA)<input type="text" data-campo="cta" data-i="' + i + '" value="' + esc(p.cta || '') + '" /></label>' +
+            '<label>Ubicación <small>(opcional)</small><input type="text" data-campo="lugar" data-i="' + i + '" value="' + esc(p.lugar || '') + '" placeholder="ej: Av. Niza 9, Alicante" /></label>' +
             '<label>Logo' + logoSelect(i, p.logo) + '</label>' +
           '</div>' +
         '</div>' +
@@ -1079,7 +1081,8 @@
       btn.textContent = 'Eligiendo texto y fotos… (~30 s)';
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
-        titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
+        titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
+        cta: p.cta || '', lugar: p.lugar || '',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'wordmark-blanco',
@@ -1187,7 +1190,7 @@
       const out = await api('/api/admin/gen/piezas', 'POST', {
         formato: genState.formato,
         placas: genState.placas.map((p) => ({
-          titulo: p.titulo, bajada: p.bajada, cta: p.cta,
+          titulo: p.titulo, acento: p.acento, bajada: p.bajada, cta: p.cta, lugar: p.lugar,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
           logo: p.logo || undefined,
