@@ -539,6 +539,7 @@
   /* ==================== SELECTOR DE GOOGLE DRIVE ==================== */
   let driveStack = [];   // [{id, name}] — navegación de carpetas
   let driveSel = {};     // { fileId: nombre } imágenes marcadas
+  let drivePickCb = null; // callback opcional: quien abre el modal recibe las URLs
 
   function openDriveModal() {
     driveStack = [{ id: '', name: 'Inicio' }];
@@ -598,6 +599,13 @@
     $('driveError').textContent = 'Importando ' + ids.length + ' imagen(es)…';
     try {
       const res = await api('/api/admin/drive/import', 'POST', { ids });
+      if (drivePickCb) {
+        // Otro módulo (ej. Generador) pidió las fotos: se las paso a él.
+        const cb = drivePickCb; drivePickCb = null;
+        cb(res.urls || []);
+        closeDriveModal();
+        return;
+      }
       for (const url of res.urls || []) {
         blogPhotos.push({ url: url, loading: false, error: false });
       }
@@ -972,6 +980,154 @@
     }
   }
 
+  /* ==================== GENERADOR ==================== */
+  let genLoaded = false;
+  let genGemini = false;
+  let genState = { formato: 'historia', placas: [], caption: '' };
+
+  async function loadGen() {
+    try {
+      const st = await api('/api/admin/gen/status');
+      genGemini = !!st.gemini;
+      $('genGeminiTag').hidden = genGemini;
+      genLoaded = true;
+    } catch (e) { /* no crítico */ }
+  }
+
+  function renderGenPlacas() {
+    const box = $('genPlacas');
+    if (!genState.placas.length) {
+      box.innerHTML = '';
+      $('genActions').hidden = true;
+      return;
+    }
+    box.innerHTML = genState.placas.map((p, i) =>
+      '<div class="gen-placa pepe-block">' +
+        '<h2>Placa ' + (i + 1) + ' de ' + genState.placas.length +
+          ' <small>' + esc(genState.formato) + '</small></h2>' +
+        '<div class="gen-placa-grid">' +
+          '<div class="gen-placa-foto">' +
+            (p.fotoUrl
+              ? '<img src="' + esc(p.fotoUrl) + '" alt="" />'
+              : (p.iaPrompt
+                ? '<div class="gen-foto-empty">🤖 IA:<br/>' + esc(p.iaPrompt.slice(0, 60)) + '…</div>'
+                : '<div class="gen-foto-empty">Sin foto</div>')) +
+            '<div class="gen-foto-btns">' +
+              '<button type="button" data-act="drive" data-i="' + i + '">📁 Banco</button>' +
+              '<button type="button" data-act="ia" data-i="' + i + '">🤖 IA</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="gen-placa-campos">' +
+            '<label>Título<input type="text" data-campo="titulo" data-i="' + i + '" value="' + esc(p.titulo || '') + '" /></label>' +
+            '<label>Bajada<input type="text" data-campo="bajada" data-i="' + i + '" value="' + esc(p.bajada || '') + '" /></label>' +
+            '<label>Botón (CTA)<input type="text" data-campo="cta" data-i="' + i + '" value="' + esc(p.cta || '') + '" /></label>' +
+          '</div>' +
+        '</div>' +
+      '</div>').join('');
+    $('genActions').hidden = false;
+  }
+
+  async function onGenCopy(e) {
+    e.preventDefault();
+    const instruccion = $('genInput').value.trim();
+    if (!instruccion) return;
+    const btn = $('genCopyBtn');
+    btn.disabled = true;
+    btn.textContent = 'Pensando… (~20 s)';
+    try {
+      genState.formato = $('genFormato').value;
+      const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
+      genState.placas = (out.placas || []).map((p) => ({
+        titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
+        fotoUrl: null, iaPrompt: null,
+      }));
+      genState.caption = out.caption || '';
+      $('genCaption').value = genState.caption;
+      $('genCaptionBlock').hidden = !genState.caption;
+      $('genResultBlock').hidden = true;
+      renderGenPlacas();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Generar copy';
+    }
+  }
+
+  function onGenPlacaClick(e) {
+    const btn = e.target.closest('button[data-act]');
+    if (!btn) return;
+    const i = parseInt(btn.dataset.i, 10);
+    if (btn.dataset.act === 'drive') {
+      drivePickCb = (urls) => {
+        if (urls.length) {
+          genState.placas[i].fotoUrl = urls[0];
+          genState.placas[i].iaPrompt = null;
+          // Si eligió varias, reparte en las placas siguientes sin foto.
+          let k = i + 1;
+          for (const u of urls.slice(1)) {
+            while (k < genState.placas.length && genState.placas[k].fotoUrl) k++;
+            if (k >= genState.placas.length) break;
+            genState.placas[k].fotoUrl = u;
+            genState.placas[k].iaPrompt = null;
+          }
+          renderGenPlacas();
+        }
+      };
+      openDriveModal();
+    } else if (btn.dataset.act === 'ia') {
+      if (!genGemini) {
+        alert('La generación de imágenes con IA todavía no está activa: falta cargar GEMINI_API_KEY en el .env del servidor.');
+        return;
+      }
+      const sugerido = 'Foto realista para redes de una pizzería argentina de horno de leña: ' +
+        (genState.placas[i].titulo || '');
+      const prompt = window.prompt('Describí la imagen a generar:', sugerido);
+      if (!prompt) return;
+      genState.placas[i].iaPrompt = prompt.trim();
+      genState.placas[i].fotoUrl = null;
+      renderGenPlacas();
+    }
+  }
+
+  function onGenPlacaInput(e) {
+    const inp = e.target.closest('input[data-campo]');
+    if (!inp) return;
+    genState.placas[parseInt(inp.dataset.i, 10)][inp.dataset.campo] = inp.value;
+  }
+
+  async function onGenComponer() {
+    const sinFoto = genState.placas.findIndex((p) => !p.fotoUrl && !p.iaPrompt);
+    if (sinFoto !== -1) {
+      alert('La placa ' + (sinFoto + 1) + ' no tiene foto. Elegila del banco (📁) o generala con IA (🤖).');
+      return;
+    }
+    const btn = $('genComponerBtn');
+    btn.disabled = true;
+    btn.textContent = 'Componiendo… (~' + (genState.placas.length * 8) + ' s)';
+    try {
+      const out = await api('/api/admin/gen/piezas', 'POST', {
+        formato: genState.formato,
+        placas: genState.placas.map((p) => ({
+          titulo: p.titulo, bajada: p.bajada, cta: p.cta,
+          fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
+        })),
+      });
+      $('genResults').innerHTML = (out.urls || []).map((u, i) =>
+        '<a class="gen-result" href="' + esc(u) + '" target="_blank" rel="noopener">' +
+          '<img src="' + esc(u) + '" alt="Placa ' + (i + 1) + '" loading="lazy" />' +
+          '<span>Placa ' + (i + 1) + ' ⬇</span>' +
+        '</a>').join('');
+      $('genResultBlock').hidden = false;
+      $('genResultBlock').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🎨 Componer piezas';
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -998,6 +1154,7 @@
     const crumb = $('dashCrumb');
     if (crumb) crumb.textContent = SECTION_LABELS[section] || '';
     if (section === 'inteligencia' && !intelLoaded) loadIntel();
+    if (section === 'generador' && !genLoaded) loadGen();
   }
 
   /* ==================== ARRANQUE ==================== */
@@ -1080,6 +1237,12 @@
       if (!b) return;
       teachPepe(lastPepeRecos[parseInt(b.dataset.teach, 10)], b);
     });
+
+    // Generador
+    $('genForm').addEventListener('submit', onGenCopy);
+    $('genComponerBtn').addEventListener('click', onGenComponer);
+    $('genPlacas').addEventListener('click', onGenPlacaClick);
+    $('genPlacas').addEventListener('input', onGenPlacaInput);
 
     // Inteligencia
     $('intelGenBtn').addEventListener('click', onIntelGenerate);

@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=6" />
+  <link rel="stylesheet" href="/admin/admin.css?v=7" />
 </head>
 <body class="admin-app">
 
@@ -85,8 +85,39 @@
             </div>
           </div>
         </section>
-        <section class="dash-section soon-wrap" id="section-generador" hidden>
-          <div class="soon"><div class="soon-ico">✨</div><h2>Generador</h2><p>Generá contenido con IA: copies, imágenes y piezas para redes, mail y web.</p><span class="soon-tag">Próximamente</span></div>
+        <section class="dash-section" id="section-generador" hidden>
+          <div class="panel-head">
+            <h1>Generador</h1>
+            <span class="gen-gemini-tag" id="genGeminiTag" hidden>🤖 IA de imágenes: inactiva (falta GEMINI_API_KEY)</span>
+          </div>
+
+          <div class="assistant">
+            <div class="assistant-head">✨ Piezas para redes <span>contame qué querés comunicar y armo historia o carrusel</span></div>
+            <form class="assistant-form gen-form" id="genForm">
+              <select id="genFormato">
+                <option value="historia">Historia (1080×1920)</option>
+                <option value="carrusel">Carrusel (1080×1350)</option>
+              </select>
+              <input type="text" id="genInput" placeholder="Ej: promocionar el 2×1 en pizzas de los lunes en Valencia…" autocomplete="off" />
+              <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
+            </form>
+          </div>
+
+          <div id="genPlacas"></div>
+
+          <div class="gen-actions" id="genActions" hidden>
+            <button class="btn-primary" id="genComponerBtn">🎨 Componer piezas</button>
+          </div>
+
+          <div class="pepe-block" id="genCaptionBlock" hidden>
+            <h2>Caption para Instagram <small>copiá y pegá</small></h2>
+            <textarea class="gen-caption" id="genCaption" rows="5"></textarea>
+          </div>
+
+          <div class="pepe-block" id="genResultBlock" hidden>
+            <h2>Piezas listas <small>clic para abrir en grande y descargar</small></h2>
+            <div class="gen-results" id="genResults"></div>
+          </div>
         </section>
 
         <section class="dash-section" id="section-web" hidden>
@@ -354,6 +385,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=6"></script>
+  <script src="/admin/admin.js?v=7"></script>
 </body>
 </html>

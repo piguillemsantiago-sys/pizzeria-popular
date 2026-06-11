@@ -14,6 +14,7 @@ const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
+const { generarCopy, generarPiezas, geminiDisponible } = require('./lib/generador');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -590,6 +591,41 @@ app.delete('/api/admin/pepe/knowledge/:id', requireAdmin, async (req, res) => {
   if (error) return res.status(500).json({ error: error.message });
   reloadKnowledge();
   res.json({ ok: true });
+});
+
+// ---- Generador: piezas para redes (historias y carruseles) ----
+app.get('/api/admin/gen/status', requireAdmin, (req, res) => {
+  res.json({ gemini: geminiDisponible() });
+});
+
+// La IA escribe el copy de las placas.
+app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
+  try {
+    const { instruccion, formato } = req.body;
+    if (!instruccion || !String(instruccion).trim()) {
+      return res.status(400).json({ error: 'Contame qué querés comunicar.' });
+    }
+    res.json(await generarCopy(String(instruccion), formato));
+  } catch (e) {
+    console.error('[Gen copy] Error:', e.message);
+    res.status(500).json({ error: 'No pude generar el copy: ' + e.message });
+  }
+});
+
+// Compone las piezas finales (foto + gráfica de marca) y las sube al storage.
+app.post('/api/admin/gen/piezas', requireAdmin, async (req, res) => {
+  try {
+    const { formato, placas } = req.body;
+    if (!Array.isArray(placas) || !placas.length) {
+      return res.status(400).json({ error: 'No hay placas para componer.' });
+    }
+    const urls = await generarPiezas(formato, placas.slice(0, 6));
+    res.json({ urls });
+  } catch (e) {
+    console.error('[Gen piezas] Error:', e.message);
+    const status = e.code === 'NO_KEY' ? 422 : 500;
+    res.status(status).json({ error: e.message });
+  }
 });
 
 // ---- Inteligencia: tablero + informes semanales ----
