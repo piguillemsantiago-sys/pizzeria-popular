@@ -1031,13 +1031,14 @@
   }
 
   const GEN_ESTILOS = [
-    ['editorial', 'Editorial (texto abajo)'],
-    ['hero', 'Acento grande'],
-    ['centrado', 'Centrado'],
-    ['alto', 'Texto arriba'],
+    ['auto', 'Automático (criterio)'],
+    ['editorial', 'Forzar: texto abajo'],
+    ['hero', 'Forzar: acento grande'],
+    ['centrado', 'Forzar: centrado'],
+    ['alto', 'Forzar: texto arriba'],
   ];
   function estiloSelect(i, sel) {
-    sel = sel || 'editorial';
+    sel = sel || 'auto';
     return '<select data-campo="estilo" data-i="' + i + '">' +
       GEN_ESTILOS.map(([v, t]) =>
         '<option value="' + v + '"' + (v === sel ? ' selected' : '') + '>' + t + '</option>').join('') +
@@ -1097,7 +1098,7 @@
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
-        cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'editorial',
+        cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'auto',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'wordmark-blanco',
