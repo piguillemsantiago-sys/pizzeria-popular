@@ -3607,9 +3607,13 @@ main.article { background: var(--cream); display: block; }
   .article-eyebrow { font-size: .56rem; padding: .35rem .8rem; margin-bottom: .9rem; }
   .article-meta { font-size: .7rem; }
   /* Variante split en móvil: la foto vuelve a ocupar todo el ancho y el
-     texto va abajo sobre el scrim inferior clásico. */
+     texto va abajo sobre el scrim inferior clásico. El margen del parallax
+     va todo abajo: la parte ALTA de la foto (las caras) queda visible. */
   .article-hero--split { align-items: flex-end; }
-  .article-hero--split .article-hero-bg { left: 0; -webkit-mask-image: none; mask-image: none; }
+  .article-hero--split .article-hero-bg {
+    left: 0; top: 0; bottom: -24%;
+    -webkit-mask-image: none; mask-image: none;
+  }
   .article-hero--split::after {
     background: linear-gradient(to bottom,
       rgba(13,13,13,.55) 0%, rgba(13,13,13,.15) 38%,
