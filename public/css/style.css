@@ -3596,6 +3596,11 @@ main.article { background: var(--cream); display: block; }
 }
 @media (max-width: 600px) {
   .article-hero { min-height: 88vh; }
+  /* Textos del hero más chicos en el teléfono: la foto manda. */
+  .article-hero h1, .article-hero--split h1 { font-size: 1.6rem; line-height: 1.15; }
+  .article-hero-sub, .article-hero--split .article-hero-sub { font-size: .9rem; margin-bottom: 1.1rem; }
+  .article-eyebrow { font-size: .56rem; padding: .35rem .8rem; margin-bottom: .9rem; }
+  .article-meta { font-size: .7rem; }
   /* Variante split en móvil: la foto vuelve a ocupar todo el ancho y el
      texto va abajo sobre el scrim inferior clásico. */
   .article-hero--split { align-items: flex-end; }
