@@ -1013,6 +1013,22 @@
     }
   }
 
+  const GEN_LOGOS = [
+    ['wordmark-blanco', 'Marca blanca (recomendado)'],
+    ['wordmark-oscuro', 'Marca oscura'],
+    ['iso-blanco', 'Iso P blanca'],
+    ['iso-fuego', 'Iso P fuego'],
+    ['iso-rojo', 'Iso P roja'],
+    ['iso-verde', 'Iso P verde'],
+  ];
+  function logoSelect(i, sel) {
+    sel = sel || 'wordmark-blanco';
+    return '<select data-campo="logo" data-i="' + i + '">' +
+      GEN_LOGOS.map(([v, t]) =>
+        '<option value="' + v + '"' + (v === sel ? ' selected' : '') + '>' + t + '</option>').join('') +
+      '</select>';
+  }
+
   function renderGenPlacas() {
     const box = $('genPlacas');
     if (!genState.placas.length) {
@@ -1042,6 +1058,7 @@
             '<label>Título<input type="text" data-campo="titulo" data-i="' + i + '" value="' + esc(p.titulo || '') + '" /></label>' +
             '<label>Bajada<input type="text" data-campo="bajada" data-i="' + i + '" value="' + esc(p.bajada || '') + '" /></label>' +
             '<label>Botón (CTA)<input type="text" data-campo="cta" data-i="' + i + '" value="' + esc(p.cta || '') + '" /></label>' +
+            '<label>Logo' + logoSelect(i, p.logo) + '</label>' +
           '</div>' +
         '</div>' +
       '</div>').join('');
@@ -1064,7 +1081,7 @@
         titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
-        iaPrompt: null, motivo: p.motivo || '',
+        iaPrompt: null, motivo: p.motivo || '', logo: 'wordmark-blanco',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1151,7 +1168,7 @@
   }
 
   function onGenPlacaInput(e) {
-    const inp = e.target.closest('input[data-campo]');
+    const inp = e.target.closest('[data-campo]');
     if (!inp) return;
     genState.placas[parseInt(inp.dataset.i, 10)][inp.dataset.campo] = inp.value;
   }
@@ -1172,6 +1189,7 @@
           titulo: p.titulo, bajada: p.bajada, cta: p.cta,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
+          logo: p.logo || undefined,
         })),
       });
       $('genResults').innerHTML = (out.urls || []).map((u, i) =>
@@ -1305,6 +1323,7 @@
     $('genComponerBtn').addEventListener('click', onGenComponer);
     $('genPlacas').addEventListener('click', onGenPlacaClick);
     $('genPlacas').addEventListener('input', onGenPlacaInput);
+    $('genPlacas').addEventListener('change', onGenPlacaInput);
 
     // Inteligencia
     $('intelGenBtn').addEventListener('click', onIntelGenerate);
