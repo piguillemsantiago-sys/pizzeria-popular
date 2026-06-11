@@ -3363,7 +3363,8 @@ main.article { background: var(--cream); display: block; }
   max-width: none; margin: 0; padding: 12vh 6% 9vh 5%;
 }
 .article-hero--split h1 {
-  font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height: 1.08; max-width: 15ch;
+  font-size: clamp(2.1rem, 3.6vw, 3.2rem); line-height: 1.16;
+  letter-spacing: .015em; max-width: 15ch;
 }
 .article-hero--split .article-hero-sub {
   font-size: clamp(.95rem, 1.7vw, 1.2rem); max-width: 36ch;
@@ -3596,8 +3597,12 @@ main.article { background: var(--cream); display: block; }
 }
 @media (max-width: 600px) {
   .article-hero { min-height: 88vh; }
-  /* Textos del hero más chicos en el teléfono: la foto manda. */
-  .article-hero h1, .article-hero--split h1 { font-size: 1.6rem; line-height: 1.15; }
+  /* Textos del hero más chicos en el teléfono: la foto manda.
+     A tamaño chico la display necesita MÁS aire: interlineado y tracking
+     suben cuando la fuente baja. */
+  .article-hero h1, .article-hero--split h1 {
+    font-size: 1.6rem; line-height: 1.4; letter-spacing: .025em;
+  }
   .article-hero-sub, .article-hero--split .article-hero-sub { font-size: .9rem; margin-bottom: 1.1rem; }
   .article-eyebrow { font-size: .56rem; padding: .35rem .8rem; margin-bottom: .9rem; }
   .article-meta { font-size: .7rem; }
