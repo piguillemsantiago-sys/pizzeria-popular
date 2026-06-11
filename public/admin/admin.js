@@ -1030,6 +1030,20 @@
       '</select>';
   }
 
+  const GEN_ESTILOS = [
+    ['editorial', 'Editorial (texto abajo)'],
+    ['hero', 'Acento grande'],
+    ['centrado', 'Centrado'],
+    ['alto', 'Texto arriba'],
+  ];
+  function estiloSelect(i, sel) {
+    sel = sel || 'editorial';
+    return '<select data-campo="estilo" data-i="' + i + '">' +
+      GEN_ESTILOS.map(([v, t]) =>
+        '<option value="' + v + '"' + (v === sel ? ' selected' : '') + '>' + t + '</option>').join('') +
+      '</select>';
+  }
+
   function renderGenPlacas() {
     const box = $('genPlacas');
     if (!genState.placas.length) {
@@ -1061,6 +1075,7 @@
             '<label>Bajada<input type="text" data-campo="bajada" data-i="' + i + '" value="' + esc(p.bajada || '') + '" /></label>' +
             '<label>Botón (CTA)<input type="text" data-campo="cta" data-i="' + i + '" value="' + esc(p.cta || '') + '" /></label>' +
             '<label>Ubicación <small>(opcional)</small><input type="text" data-campo="lugar" data-i="' + i + '" value="' + esc(p.lugar || '') + '" placeholder="ej: Av. Niza 9, Alicante" /></label>' +
+            '<label>Estilo' + estiloSelect(i, p.estilo) + '</label>' +
             '<label>Logo' + logoSelect(i, p.logo) + '</label>' +
           '</div>' +
         '</div>' +
@@ -1082,7 +1097,7 @@
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
-        cta: p.cta || '', lugar: p.lugar || '',
+        cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'editorial',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'wordmark-blanco',
@@ -1191,6 +1206,7 @@
         formato: genState.formato,
         placas: genState.placas.map((p) => ({
           titulo: p.titulo, acento: p.acento, bajada: p.bajada, cta: p.cta, lugar: p.lugar,
+          estilo: p.estilo || undefined,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
           logo: p.logo || undefined,
