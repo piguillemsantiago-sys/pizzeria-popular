@@ -679,6 +679,16 @@ button { font-family: inherit; cursor: pointer; }
 }
 .gen-result:hover img { transform: translateY(-2px); border-color: var(--pp-gold); }
 .gen-result span { display: block; margin-top: 6px; }
+.gen-ajuste { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--pp-line); }
+.gen-ajuste label { display: block; font-size: .82rem; color: var(--pp-muted); margin-bottom: 8px; }
+.gen-ajuste-row { display: flex; gap: 10px; }
+.gen-ajuste-row input {
+  flex: 1; background: var(--pp-bg); border: 1px solid var(--pp-line-2);
+  border-radius: 10px; padding: 11px 13px; color: var(--pp-text);
+  font-family: inherit; font-size: .9rem;
+}
+.gen-ajuste-row input:focus { outline: none; border-color: var(--pp-gold); box-shadow: var(--gold-glow); }
+.gen-ajuste-row .btn-primary { white-space: nowrap; }
 
 @media (max-width: 700px) {
   .stat-cards { grid-template-columns: 1fr 1fr; }
@@ -686,4 +696,5 @@ button { font-family: inherit; cursor: pointer; }
   .intel-local { flex-wrap: wrap; }
   .intel-local-reviews { min-width: 0; }
   .gen-placa-grid { grid-template-columns: 1fr; }
+  .gen-ajuste-row { flex-direction: column; }
 }

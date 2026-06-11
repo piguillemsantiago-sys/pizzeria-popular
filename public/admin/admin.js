@@ -1207,6 +1207,39 @@
     }
   }
 
+  // Ajuste conversacional sobre el resultado: el usuario pide cambios y se rehace.
+  async function onGenAjustar() {
+    const instruccion = $('genAjusteInput').value.trim();
+    if (!instruccion) return;
+    if (!genState.placas.length) return;
+    const btn = $('genAjusteBtn');
+    btn.disabled = true;
+    btn.textContent = 'Ajustando…';
+    try {
+      const out = await api('/api/admin/gen/ajustar', 'POST', {
+        instruccion,
+        formato: genState.formato,
+        caption: genState.caption,
+        placas: genState.placas,
+      });
+      genState.placas = out.placas || genState.placas;
+      if (out.caption != null) {
+        genState.caption = out.caption;
+        $('genCaption').value = out.caption;
+        $('genCaptionBlock').hidden = !out.caption;
+      }
+      renderGenPlacas();
+      $('genAjusteInput').value = '';
+      // Rehace las piezas con los cambios aplicados.
+      await onGenComponer();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Aplicar y rehacer';
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -1324,6 +1357,10 @@
     $('genPlacas').addEventListener('click', onGenPlacaClick);
     $('genPlacas').addEventListener('input', onGenPlacaInput);
     $('genPlacas').addEventListener('change', onGenPlacaInput);
+    $('genAjusteBtn').addEventListener('click', onGenAjustar);
+    $('genAjusteInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); onGenAjustar(); }
+    });
 
     // Inteligencia
     $('intelGenBtn').addEventListener('click', onIntelGenerate);

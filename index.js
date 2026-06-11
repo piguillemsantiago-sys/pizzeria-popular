@@ -14,7 +14,7 @@ const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
-const { generarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
+const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 
 const app = express();
@@ -664,6 +664,63 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   } catch (e) {
     console.error('[Gen copy] Error:', e.message);
     res.status(500).json({ error: 'No pude generar el copy: ' + e.message });
+  }
+});
+
+// Ajuste conversacional: el usuario ya vio las piezas y pide cambios en
+// lenguaje natural. La IA reescribe copy/logo y, si hace falta, cambia la foto.
+app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
+  try {
+    const { instruccion, formato, placas, caption } = req.body;
+    if (!instruccion || !String(instruccion).trim()) {
+      return res.status(400).json({ error: 'Contame qué querés ajustar.' });
+    }
+    if (!Array.isArray(placas) || !placas.length) {
+      return res.status(400).json({ error: 'No hay piezas para ajustar.' });
+    }
+    const out = await ajustarCopy(String(instruccion), formato, placas, caption);
+
+    // Aplica los cambios de texto/logo sobre las placas actuales (preserva la foto).
+    const result = placas.map((orig, i) => {
+      const nu = out.placas[i] || {};
+      return {
+        ...orig,
+        titulo: nu.titulo != null ? nu.titulo : orig.titulo,
+        bajada: nu.bajada != null ? nu.bajada : orig.bajada,
+        cta: nu.cta != null ? nu.cta : orig.cta,
+        logo: nu.logo || orig.logo || 'wordmark-blanco',
+        _cambiarFoto: !!nu.cambiarFoto,
+        _fotoHint: nu.fotoHint || '',
+      };
+    });
+
+    // Cambia la foto solo donde la indicación lo pidió.
+    for (const p of result) {
+      if (p._cambiarFoto) {
+        try {
+          const hint = (p._fotoHint ? p._fotoHint + '. ' : '') + String(instruccion);
+          const el = (await elegirFotos(hint, formato || 'historia',
+            [{ titulo: p.titulo, bajada: p.bajada, cta: p.cta }], p.descartadas || []))[0];
+          if (el && el.driveId) {
+            p.driveId = el.driveId;
+            p.bancoId = el.bancoId;
+            p.motivo = el.motivo || '';
+            p.fotoUrl = await materializarFoto(el.driveId);
+            p.descartadas = (p.descartadas || []).concat(el.bancoId);
+            p.iaPrompt = null;
+          }
+        } catch (e) {
+          console.error('[Gen ajustar] foto:', e.message); // si falla, deja la foto actual
+        }
+      }
+      delete p._cambiarFoto;
+      delete p._fotoHint;
+    }
+
+    res.json({ placas: result, caption: out.caption != null ? out.caption : caption });
+  } catch (e) {
+    console.error('[Gen ajustar] Error:', e.message);
+    res.status(500).json({ error: 'No pude aplicar el ajuste: ' + e.message });
   }
 });
 

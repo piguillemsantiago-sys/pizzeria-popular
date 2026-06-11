@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=11" />
+  <link rel="stylesheet" href="/admin/admin.css?v=12" />
 </head>
 <body class="admin-app">
 
@@ -121,6 +121,13 @@
           <div class="pepe-block" id="genResultBlock" hidden>
             <h2>Piezas listas <small>clic para abrir en grande y descargar</small></h2>
             <div class="gen-results" id="genResults"></div>
+            <div class="gen-ajuste">
+              <label for="genAjusteInput">¿Querés cambiar algo? Decímelo y lo rehago</label>
+              <div class="gen-ajuste-row">
+                <input type="text" id="genAjusteInput" placeholder="Ej: poné un título más corto, cambiá la foto por una de pizza, usá el logo en fuego…" autocomplete="off" />
+                <button class="btn-primary" id="genAjusteBtn">Aplicar y rehacer</button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -389,6 +396,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=11"></script>
+  <script src="/admin/admin.js?v=12"></script>
 </body>
 </html>
