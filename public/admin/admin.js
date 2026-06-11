@@ -1015,15 +1015,15 @@
   }
 
   const GEN_LOGOS = [
-    ['wordmark-blanco', 'Marca blanca (recomendado)'],
-    ['wordmark-oscuro', 'Marca oscura'],
-    ['iso-blanco', 'Iso P blanca'],
+    ['iso-blanco', 'Iso P blanca (recomendado)'],
     ['iso-fuego', 'Iso P fuego'],
     ['iso-rojo', 'Iso P roja'],
     ['iso-verde', 'Iso P verde'],
+    ['wordmark-blanco', 'Marca blanca (wordmark)'],
+    ['wordmark-oscuro', 'Marca oscura'],
   ];
   function logoSelect(i, sel) {
-    sel = sel || 'wordmark-blanco';
+    sel = sel || 'iso-blanco';
     return '<select data-campo="logo" data-i="' + i + '">' +
       GEN_LOGOS.map(([v, t]) =>
         '<option value="' + v + '"' + (v === sel ? ' selected' : '') + '>' + t + '</option>').join('') +
@@ -1101,7 +1101,7 @@
         cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'auto',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
-        iaPrompt: null, motivo: p.motivo || '', logo: 'wordmark-blanco',
+        iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
