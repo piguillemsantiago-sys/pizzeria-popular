@@ -983,7 +983,7 @@
   /* ==================== GENERADOR ==================== */
   let genLoaded = false;
   let genGemini = false;
-  let genState = { formato: 'historia', placas: [], caption: '' };
+  let genState = { formato: 'historia', instruccion: '', placas: [], caption: '' };
 
   async function loadGen() {
     try {
@@ -1033,6 +1033,7 @@
                 : '<div class="gen-foto-empty">Sin foto</div>')) +
             (p.motivo ? '<p class="gen-foto-motivo">✨ ' + esc(p.motivo) + '</p>' : '') +
             '<div class="gen-foto-btns">' +
+              '<button type="button" data-act="otra" data-i="' + i + '" title="Que la IA elija otra foto del banco">🔄 Otra</button>' +
               '<button type="button" data-act="drive" data-i="' + i + '">📁 Cambiar</button>' +
               '<button type="button" data-act="ia" data-i="' + i + '">🤖 IA</button>' +
             '</div>' +
@@ -1056,11 +1057,13 @@
     btn.textContent = 'Pensando… (~20 s)';
     try {
       genState.formato = $('genFormato').value;
+      genState.instruccion = instruccion;
       btn.textContent = 'Eligiendo texto y fotos… (~30 s)';
       const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', bajada: p.bajada || '', cta: p.cta || '',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
+        bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '',
       }));
       genState.caption = out.caption || '';
@@ -1077,11 +1080,39 @@
     }
   }
 
+  async function onGenOtra(i, btn) {
+    const p = genState.placas[i];
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Buscando…';
+    try {
+      const r = await api('/api/admin/gen/reelegir', 'POST', {
+        instruccion: genState.instruccion,
+        formato: genState.formato,
+        placa: { titulo: p.titulo, bajada: p.bajada, cta: p.cta },
+        excluir: p.descartadas || [],
+      });
+      p.fotoUrl = r.fotoUrl;
+      p.driveId = r.driveId;
+      p.bancoId = r.bancoId;
+      p.iaPrompt = null;
+      p.motivo = r.motivo || '';
+      p.descartadas = (p.descartadas || []).concat(r.bancoId ? [r.bancoId] : []);
+      renderGenPlacas();
+    } catch (err) {
+      alert(err.message);
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
+  }
+
   function onGenPlacaClick(e) {
     const btn = e.target.closest('button[data-act]');
     if (!btn) return;
     const i = parseInt(btn.dataset.i, 10);
-    if (btn.dataset.act === 'drive') {
+    if (btn.dataset.act === 'otra') {
+      onGenOtra(i, btn);
+    } else if (btn.dataset.act === 'drive') {
       drivePickCb = (urls) => {
         if (urls.length) {
           genState.placas[i].fotoUrl = urls[0];

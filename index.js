@@ -615,6 +615,24 @@ app.post('/api/admin/gen/sync-banco', requireAdmin, async (req, res) => {
   }
 });
 
+// «Dame otra»: la IA elige OTRA foto del banco para una placa, excluyendo
+// las ya descartadas.
+app.post('/api/admin/gen/reelegir', requireAdmin, async (req, res) => {
+  try {
+    const { instruccion, formato, placa, excluir } = req.body;
+    if (!placa) return res.status(400).json({ error: 'Falta la placa.' });
+    const el = (await elegirFotos(String(instruccion || ''), formato || 'historia', [placa], excluir || []))[0];
+    if (!el || !el.driveId) return res.status(404).json({ error: 'No encontré otra foto distinta en el banco.' });
+    res.json({
+      driveId: el.driveId, bancoId: el.bancoId, motivo: el.motivo || '',
+      fotoUrl: await materializarFoto(el.driveId),
+    });
+  } catch (e) {
+    console.error('[Gen reelegir] Error:', e.message);
+    res.status(500).json({ error: 'No pude buscar otra foto: ' + e.message });
+  }
+});
+
 // La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   try {
@@ -630,6 +648,7 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
         const el = elecciones[i];
         if (el && el.driveId) {
           p.driveId = el.driveId;                 // para componer en full-res
+          p.bancoId = el.bancoId;                 // para «dame otra» (excluir)
           p.fotoUrl = await materializarFoto(el.driveId); // para previsualizar
           p.motivo = el.motivo || '';
         }
