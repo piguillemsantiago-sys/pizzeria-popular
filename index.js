@@ -14,6 +14,8 @@ const { listFolder, downloadFile } = require('./lib/drive');
 const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
+const { logEvento, getWebStats } = require('./lib/web-stats');
+const ig = require('./lib/instagram');
 const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
@@ -37,8 +39,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Static files
-app.use(express.static(PUBLIC));
+// Static files. Los videos se cachean fuerte (son estáticos; se invalidan con
+// el ?v= del src) para que no se re-bajen en cada carga ni en cada loop —
+// eso evita que el video del hero se trabe.
+app.use(express.static(PUBLIC, {
+  setHeaders: (res, filePath) => {
+    if (/\.(mp4|webm)$/i.test(filePath)) {
+      res.setHeader('Cache-Control', 'public, max-age=2592000, immutable'); // 30 días
+    }
+  },
+}));
 
 // ========== API: FRANCHISE CONTACT FORM ==========
 // Required env vars: SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
@@ -106,6 +116,17 @@ app.post('/api/franquicia', async (req, res) => {
     console.error('[Franquicia] Error sending email:', err.message);
     res.status(500).json({ ok: false, error: 'Error al enviar. Intentá de nuevo.' });
   }
+});
+
+// ========== API: TRACKING WEB (analítica propia, sin cookies) ==========
+// El sitio público manda pageviews y eventos (whatsapp, reserva, instagram,
+// formulario). Respuesta vacía y rápida; nunca rompe la navegación.
+app.post('/api/track', (req, res) => {
+  try {
+    const { tipo, path: p, ref } = req.body || {};
+    logEvento(req, { tipo, path: p, ref });
+  } catch (e) { /* fire-and-forget */ }
+  res.status(204).end();
 });
 
 // --- Trailing slash redirect middleware ---
@@ -664,6 +685,15 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
         ? 'El banco todavía no está indexado: tocá «Sincronizar banco» para que elija las fotos solo.'
         : 'No pude elegir fotos del banco automáticamente: ' + e.message;
     }
+    // Aviso (no bloqueante) si quedó alguna placa sin foto, para que el editor la
+    // resuelva a mano antes de componer en vez de descubrirlo recién al armar.
+    // Sólo si el banco se consultó de verdad: si falló (banco vacío / error), ya hay
+    // bancoAviso y este aviso sería redundante (doble modal por la misma causa).
+    const sinFoto = (copy.placas || []).filter((p) => !p.driveId && !p.fotoUrl).length;
+    if (sinFoto && copy.bancoUsado) {
+      copy.avisos = (copy.avisos || []).concat(
+        sinFoto + ' placa(s) quedaron sin foto: elegila a mano o tocá «Dame otra».');
+    }
     res.json(copy);
   } catch (e) {
     console.error('[Gen copy] Error:', e.message);
@@ -777,6 +807,45 @@ app.post('/api/admin/intel/informes', requireAdmin, async (req, res) => {
   }
 });
 
+// ---- Analítica: web propia + Instagram (panel) ----
+app.get('/api/admin/analitica/web', requireAdmin, async (req, res) => {
+  try {
+    res.json(await getWebStats(req.query.mes));
+  } catch (e) {
+    console.error('[Analitica web] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo cargar la analítica web: ' + e.message });
+  }
+});
+
+app.get('/api/admin/analitica/instagram', requireAdmin, async (req, res) => {
+  try {
+    res.json(await ig.getIgStats(req.query.mes));
+  } catch (e) {
+    console.error('[Analitica IG] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo cargar Instagram: ' + e.message });
+  }
+});
+
+// Mejores publicaciones de Instagram del mes (en vivo desde la API).
+app.get('/api/admin/analitica/instagram/top', requireAdmin, async (req, res) => {
+  try {
+    res.json(await ig.getTopMedia(req.query.mes));
+  } catch (e) {
+    console.error('[Analitica IG top] Error:', e.message);
+    res.status(500).json({ error: 'No se pudieron cargar las publicaciones: ' + e.message });
+  }
+});
+
+// Fuerza un snapshot de Instagram a pedido (botón «Actualizar» del panel).
+app.post('/api/admin/analitica/instagram/snapshot', requireAdmin, async (req, res) => {
+  try {
+    res.json(await ig.snapshotIg());
+  } catch (e) {
+    console.error('[Analitica IG] Snapshot:', e.message);
+    res.status(500).json({ error: 'No se pudo actualizar Instagram: ' + e.message });
+  }
+});
+
 // ========== 404 ==========
 app.use((req, res) => {
   res.status(404).sendFile(path.join(PUBLIC, 'pages/404.html'));
@@ -815,6 +884,29 @@ cron.schedule('0 7 * * *', async () => {
     console.log('[Cron] Análisis del chat generado.');
   } catch (e) {
     console.error('[Cron chat] Error:', e.message);
+  }
+});
+
+// ========== CRON: Snapshot diario de Instagram (todos los días, 6:30am) ==========
+cron.schedule('30 6 * * *', async () => {
+  if (!ig.configurado()) return;
+  console.log('[Cron] Snapshot diario de Instagram...');
+  try {
+    await ig.snapshotIg();
+    console.log('[Cron] Snapshot de Instagram guardado.');
+  } catch (e) {
+    console.error('[Cron IG] Error:', e.message);
+  }
+});
+
+// ========== CRON: Renovar token de Instagram (domingos 5am) ==========
+cron.schedule('0 5 * * 0', async () => {
+  if (!ig.configurado()) return;
+  console.log('[Cron] Renovando token de Instagram...');
+  try {
+    await ig.refreshToken();
+  } catch (e) {
+    console.error('[Cron IG token] Error:', e.message);
   }
 });
 

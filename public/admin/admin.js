@@ -681,11 +681,22 @@
       $('pepeRecent').innerHTML = '<p class="empty">Todavía no hay consultas.</p>';
       return;
     }
-    $('pepeRecent').innerHTML = list.map((r) =>
-      '<div class="pepe-msg">' +
-        '<p class="pepe-msg-u">' + esc(r.user_msg) + '</p>' +
-        (r.bot_reply ? '<p class="pepe-msg-b">' + esc(r.bot_reply) + '</p>' : '') +
-      '</div>').join('');
+    $('pepeRecent').innerHTML = list.map((c) => {
+      const turnos = c.turnos.map((t) =>
+        '<div class="pepe-msg">' +
+          '<p class="pepe-msg-u">' + esc(t.user_msg) + '</p>' +
+          (t.bot_reply ? '<p class="pepe-msg-b">' + esc(t.bot_reply) + '</p>' : '') +
+        '</div>').join('');
+      const n = c.turnos.length;
+      const fecha = new Date(c.fin).toLocaleString('es-ES',
+        { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+      return '<div class="pepe-conv">' +
+        '<div class="pepe-conv-head">' +
+          '<span class="pepe-conv-meta">' + esc(fecha) + '</span>' +
+          '<span class="pepe-conv-count">' + n + (n === 1 ? ' mensaje' : ' mensajes') + '</span>' +
+        '</div>' + turnos +
+      '</div>';
+    }).join('');
   }
 
   function renderPepeInsight(ins) {
@@ -742,7 +753,7 @@
       $('stMensajes').textContent = d.total || 0;
       renderPepeChart(d.porDia || []);
       renderPepeRepeated(d.recurrentes);
-      renderPepeRecent(d.recientes);
+      renderPepeRecent(d.conversaciones);
       renderPepeInsight(d.insight);
       $('pepeLoading').hidden = true;
       $('pepeContent').hidden = false;
@@ -980,6 +991,183 @@
     }
   }
 
+  /* ==================== ANALÍTICA (web + Instagram) ==================== */
+  let anLoaded = false;
+  let anMes = null; // 'YYYY-MM' — null = mes actual
+
+  function anMesActual() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+  function fmtNum(n) {
+    return (n == null) ? '–' : Number(n).toLocaleString('es-ES');
+  }
+  function anMesLabel(mes) {
+    const [y, m] = mes.split('-').map(Number);
+    const txt = new Date(y, m - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
+    return txt.charAt(0).toUpperCase() + txt.slice(1);
+  }
+
+  // Gráfico de barras genérico (reutiliza el estilo del chart de Pepe).
+  function renderBars(elId, items, valueKey) {
+    if (!items.length) { $(elId).innerHTML = '<p class="empty">Sin datos este mes.</p>'; return; }
+    const max = Math.max(1, ...items.map((d) => d[valueKey] || 0));
+    $(elId).innerHTML = items.map((d) => {
+      const v = d[valueKey] || 0;
+      return '<div class="chart-col" title="' + esc(d.label) + ': ' + v + '">' +
+        '<span class="chart-num">' + v + '</span>' +
+        '<div class="chart-track"><div class="chart-bar" style="height:' +
+          Math.round((v / max) * 100) + '%"></div></div>' +
+        '<span class="chart-lbl">' + esc(d.label) + '</span>' +
+      '</div>';
+    }).join('');
+  }
+
+  function setDelta(id, actual, previo) {
+    const el = $(id);
+    if (previo == null || previo === 0) { el.textContent = ''; el.className = 'an-delta'; return; }
+    const pct = Math.round(((actual - previo) / previo) * 100);
+    el.textContent = (pct >= 0 ? '+' : '') + pct + '% vs mes anterior';
+    el.className = 'an-delta' + (pct > 0 ? ' up' : pct < 0 ? ' down' : '');
+  }
+
+  function renderListaConteo(elId, items, vacio) {
+    $(elId).innerHTML = (items && items.length)
+      ? items.map((x) => '<div class="pepe-q"><span class="pepe-q-count">' + x.count + '</span>' +
+          '<span class="pepe-q-text">' + esc(x.nombre) + '</span></div>').join('')
+      : '<p class="empty">' + vacio + '</p>';
+  }
+
+  function renderAnWeb(d) {
+    $('anWebVisitas').textContent = fmtNum(d.visitas);
+    $('anWebVisitantes').textContent = fmtNum(d.visitantes);
+    $('anWebForm').textContent = fmtNum(d.formulario);
+    $('anWebWa').textContent = fmtNum(d.whatsapp);
+    $('anWebReserva').textContent = fmtNum(d.reserva);
+    $('anWebIg').textContent = fmtNum(d.instagram);
+    const prev = d.previo || {};
+    setDelta('anWebVisitasDelta', d.visitas, prev.visitas);
+    setDelta('anWebVisitantesDelta', d.visitantes, prev.visitantes);
+
+    renderBars('anWebChart', d.porDia || [], 'count');
+    renderBars('anWebHoras', (d.porHora || []).map((h) => ({
+      label: String(h.hora).padStart(2, '0'), count: h.count,
+    })), 'count');
+    renderListaConteo('anWebPaginas', d.paginas, 'Sin datos este mes.');
+    renderListaConteo('anWebFuentes', d.fuentes, 'Todavía no hay visitas este mes.');
+
+    const dv = d.dispositivos || { movil: 0, escritorio: 0 };
+    const tot = (dv.movil || 0) + (dv.escritorio || 0);
+    if (!tot) {
+      $('anWebDispositivos').innerHTML = '<p class="empty">Se empieza a medir desde ahora.</p>';
+    } else {
+      const pm = Math.round((dv.movil / tot) * 100);
+      $('anWebDispositivos').innerHTML =
+        '<div class="an-dev-bar"><div class="an-dev-movil" style="width:' + pm + '%"></div></div>' +
+        '<div class="an-dev-legend"><span>📱 Móvil ' + pm + '%</span>' +
+        '<span>🖥 Escritorio ' + (100 - pm) + '%</span></div>';
+    }
+  }
+
+  function renderAnIgTop(d) {
+    const media = (d && d.media) || [];
+    if (!media.length) {
+      $('anIgTop').innerHTML = '<p class="empty">Sin publicaciones este mes.</p>';
+      return;
+    }
+    $('anIgTop').innerHTML = media.map((p) => {
+      const met = ['❤️ ' + fmtNum(p.likes)];
+      if (p.comentarios) met.push('💬 ' + fmtNum(p.comentarios));
+      if (p.alcance != null) met.push('👁 ' + fmtNum(p.alcance));
+      if (p.guardados != null) met.push('🔖 ' + fmtNum(p.guardados));
+      return '<a class="an-media" href="' + esc(p.permalink) + '" target="_blank" rel="noopener">' +
+        '<div class="an-media-thumb"' + (p.img ? ' style="background-image:url(\'' + esc(p.img) + '\')"' : '') + '>' +
+          (p.tipo === 'VIDEO' ? '<span class="an-media-play">▶</span>' : '') + '</div>' +
+        '<p class="an-media-cap">' + esc(p.caption || '(sin texto)') + '</p>' +
+        '<p class="an-media-met">' + met.join(' · ') + '</p>' +
+      '</a>';
+    }).join('');
+  }
+
+  function renderAnIg(d) {
+    const noConf = !d || !d.configurado;
+    $('anIgNotice').hidden = !noConf;
+    $('anIgCards').style.opacity = noConf ? '.45' : '1';
+    $('anIgChartWrap').hidden = noConf;
+    $('anIgTopWrap').hidden = noConf;
+    $('anIgRefresh').hidden = noConf;
+    if (noConf) {
+      $('anIgState').textContent = '— no conectado';
+      $('anIgNotice').innerHTML = 'Instagram todavía no está conectado. Para ver seguidores, ' +
+        'alcance, interacciones y guardados hay que cargar el token de la Graph API de Meta ' +
+        '(<code>IG_USER_ID</code> e <code>IG_TOKEN</code>) en el servidor.';
+      ['anIgFollowers', 'anIgReach', 'anIgInter', 'anIgSaves'].forEach((id) => $(id).textContent = '–');
+      $('anIgDelta').textContent = '';
+      return;
+    }
+    $('anIgState').textContent = '';
+    $('anIgFollowers').textContent = fmtNum(d.seguidores);
+    $('anIgReach').textContent = fmtNum(d.alcance);
+    $('anIgInter').textContent = fmtNum(d.interacciones);
+    $('anIgSaves').textContent = fmtNum(d.guardados);
+    const delta = d.nuevosSeguidores;
+    $('anIgDelta').textContent = (delta == null) ? ''
+      : (delta >= 0 ? '+' : '') + fmtNum(delta) + ' nuevos este mes';
+    $('anIgDelta').className = 'an-delta' + (delta > 0 ? ' up' : delta < 0 ? ' down' : '');
+    renderBars('anIgChart', d.porDia || [], 'nuevos');
+  }
+
+  async function loadAnalitica() {
+    anMes = anMes || anMesActual();
+    $('anMonth').textContent = anMesLabel(anMes);
+    $('anNext').disabled = anMes >= anMesActual();
+    $('anLoading').hidden = false;
+    $('anContent').hidden = true;
+    try {
+      const [web, igd] = await Promise.all([
+        api('/api/admin/analitica/web?mes=' + anMes),
+        api('/api/admin/analitica/instagram?mes=' + anMes).catch(() => ({ configurado: false })),
+      ]);
+      renderAnWeb(web);
+      renderAnIg(igd);
+      $('anLoading').hidden = true;
+      $('anContent').hidden = false;
+      anLoaded = true;
+      // Mejores publicaciones: se cargan aparte (la API tarda un poco).
+      if (igd && igd.configurado) {
+        $('anIgTop').innerHTML = '<p class="empty">Cargando publicaciones…</p>';
+        api('/api/admin/analitica/instagram/top?mes=' + anMes)
+          .then(renderAnIgTop)
+          .catch(() => { $('anIgTop').innerHTML = '<p class="empty">No se pudieron cargar las publicaciones.</p>'; });
+      }
+    } catch (err) {
+      $('anLoading').textContent = 'Error al cargar: ' + err.message;
+    }
+  }
+
+  function anShift(delta) {
+    const [y, m] = anMes.split('-').map(Number);
+    const d = new Date(y, m - 1 + delta, 1);
+    const next = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    if (next > anMesActual()) return;
+    anMes = next;
+    loadAnalitica();
+  }
+
+  async function onIgRefresh() {
+    const btn = $('anIgRefresh');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Actualizando…';
+    try {
+      await api('/api/admin/analitica/instagram/snapshot', 'POST', {});
+      await loadAnalitica();
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  }
+
   /* ==================== GENERADOR ==================== */
   let genLoaded = false;
   let genGemini = false;
@@ -1032,9 +1220,10 @@
 
   const GEN_ESTILOS = [
     ['clasico', 'Clásico (título → pincel)'],
-    ['pincelxl', 'Pincel XL (protagonista)'],
-    ['reglas', 'Con reglas doradas'],
-    ['invertido', 'Invertido (pincel → título)'],
+    ['editorial', 'Editorial (serif a la izquierda)'],
+    ['titular', 'Titular (palabra gigante)'],
+    ['sandwich', 'Anuncio (serif + cursiva grande)'],
+    ['producto', 'Producto (serif abajo + botón)'],
   ];
   function estiloSelect(i, sel) {
     sel = sel || 'clasico';
@@ -1083,6 +1272,26 @@
     $('genActions').hidden = false;
   }
 
+  // Guía de contexto: la plantilla deja el esqueleto a completar; los ejemplos
+  // cargan un caso entero listo para editar.
+  const GEN_EJEMPLOS = {
+    plantilla: 'Promo/novedad: \nLocal: \nCuándo: \nTono: \nLlamado a la acción: ',
+    promo: 'Promo: 2×1 en pizzas\nLocal: Valencia\nCuándo: todos los lunes\nTono: divertido y cercano\nLlamado a la acción: vení con un amigo',
+    partido: 'Qué: invitamos a ver el partido de Argentina\nLocal: San Juan\nCuándo: el domingo a las 18 h\nTono: festivo, mucho aguante\nLlamado a la acción: reservá tu mesa por DM',
+    busqueda: 'Qué: búsqueda laboral, buscamos pizzero/a con experiencia\nLocal: Valencia\nTono: claro y directo\nLlamado a la acción: sumate al equipo, escribinos por DM',
+  };
+  function onGenChip(e) {
+    const chip = e.target.closest('.gen-chip');
+    if (!chip) return;
+    const txt = GEN_EJEMPLOS[chip.dataset.fill];
+    if (!txt) return;
+    const ta = $('genInput');
+    if (ta.value.trim() && !confirm('Esto reemplaza lo que escribiste. ¿Seguir?')) return;
+    ta.value = txt;
+    ta.focus();
+    ta.setSelectionRange(ta.value.length, ta.value.length);
+  }
+
   async function onGenCopy(e) {
     e.preventDefault();
     const instruccion = $('genInput').value.trim();
@@ -1108,6 +1317,9 @@
       $('genResultBlock').hidden = true;
       renderGenPlacas();
       if (out.bancoAviso) alert(out.bancoAviso);
+      if (out.avisos && out.avisos.length) {
+        alert('Avisos antes de componer (revisalos):\n\n• ' + out.avisos.join('\n• '));
+      }
     } catch (err) {
       alert(err.message);
     } finally {
@@ -1174,9 +1386,10 @@
         alert('La generación de imágenes con IA todavía no está activa: falta cargar GEMINI_API_KEY en el .env del servidor.');
         return;
       }
-      const sugerido = 'Foto realista para redes de una pizzería argentina de horno de leña: ' +
-        (genState.placas[i].titulo || '');
-      const prompt = window.prompt('Describí la imagen a generar:', sugerido);
+      const sugerido = 'Foto realista de pizza al horno de leña de una pizzería argentina: ' +
+        'mesa de madera, luz cálida, ambiente acogedor. Sin texto ni logos, con una zona lisa ' +
+        'para poner texto encima.';
+      const prompt = window.prompt('Describí la ESCENA a generar (la foto, no el mensaje):', sugerido);
       if (!prompt) return;
       genState.placas[i].iaPrompt = prompt.trim();
       genState.placas[i].fotoUrl = null;
@@ -1275,7 +1488,8 @@
   /* ==================== SECCIONES (sidebar) ==================== */
   const SECTION_LABELS = {
     'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
-    'inteligencia': 'Inteligencia', 'generador': 'Generador', 'web': 'Web',
+    'inteligencia': 'Inteligencia', 'analitica': 'Analítica',
+    'generador': 'Generador', 'web': 'Web',
   };
   function switchSection(section) {
     document.querySelectorAll('.dash-nav-item').forEach((b) =>
@@ -1286,6 +1500,7 @@
     const crumb = $('dashCrumb');
     if (crumb) crumb.textContent = SECTION_LABELS[section] || '';
     if (section === 'inteligencia' && !intelLoaded) loadIntel();
+    if (section === 'analitica' && !anLoaded) loadAnalitica();
     if (section === 'generador' && !genLoaded) loadGen();
   }
 
@@ -1372,6 +1587,10 @@
 
     // Generador
     $('genForm').addEventListener('submit', onGenCopy);
+    $('genChips').addEventListener('click', onGenChip);
+    $('genInput').addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); $('genForm').requestSubmit(); }
+    });
     $('genSyncBtn').addEventListener('click', onGenSync);
     $('genComponerBtn').addEventListener('click', onGenComponer);
     $('genPlacas').addEventListener('click', onGenPlacaClick);
@@ -1384,6 +1603,11 @@
 
     // Inteligencia
     $('intelGenBtn').addEventListener('click', onIntelGenerate);
+
+    // Analítica
+    $('anPrev').addEventListener('click', () => anShift(-1));
+    $('anNext').addEventListener('click', () => anShift(1));
+    $('anIgRefresh').addEventListener('click', onIgRefresh);
     $('intelHist').addEventListener('click', (e) => {
       const b = e.target.closest('.intel-chip');
       if (!b) return;
