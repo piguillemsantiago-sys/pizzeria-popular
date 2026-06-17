@@ -9,7 +9,7 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 echo "→ Sincronizando con el VPS..."
 # google-ratings.json se excluye: lo actualiza el cron semanal en el VPS;
 # no hay que pisarlo con la copia local en cada deploy.
-tar czf - --exclude=node_modules --exclude=.git --exclude=.env --exclude=google-ratings.json --exclude=referencia.html -C "$DIR" . \
+tar czf - --exclude=node_modules --exclude=.git --exclude=.env --exclude=google-ratings.json --exclude=ig-token.json --exclude=referencia.html -C "$DIR" . \
   | ssh pizzeria-vps "set -e
     tar xzf - -C /var/www/pizzeria-popular
     cd /var/www/pizzeria-popular

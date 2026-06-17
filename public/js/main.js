@@ -507,4 +507,40 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       hideTimer = setTimeout(killHint, 8000);
     }, 4500);
   })();
+
+  /* ============================================================
+   * Analítica propia (sin cookies): pageview + eventos clave.
+   * Manda a /api/track. No usa cookies ni guarda datos personales.
+   * ========================================================== */
+  (function () {
+    function send(tipo) {
+      var data = JSON.stringify({ tipo: tipo, path: location.pathname, ref: document.referrer });
+      try {
+        var blob = new Blob([data], { type: 'application/json' });
+        if (navigator.sendBeacon && navigator.sendBeacon('/api/track', blob)) return;
+      } catch (e) { /* sigue por fetch */ }
+      fetch('/api/track', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: data, keepalive: true,
+      }).catch(function () {});
+    }
+
+    send('pageview');
+
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var h = a.href || '';
+      if (/wa\.me|api\.whatsapp\.com/i.test(h)) send('whatsapp');
+      else if (/myrestoo\.net/i.test(h)) send('reserva');
+      else if (/instagram\.com\/pizzeriapopular/i.test(h)) send('instagram');
+    }, true);
+
+    document.addEventListener('submit', function (e) {
+      var f = e.target;
+      if (f && /^(contactForm|contactFormHome|franqForm|franqFormHome)$/.test(f.id || '')) {
+        send('formulario');
+      }
+    }, true);
+  })();
 })();

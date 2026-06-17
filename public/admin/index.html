@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=21" />
+  <link rel="stylesheet" href="/admin/admin.css?v=26" />
 </head>
 <body class="admin-app">
 
@@ -21,6 +21,7 @@
             <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
             <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
             <button class="dash-nav-item" data-section="inteligencia"><span class="dash-nav-ico">📊</span> Inteligencia</button>
+            <button class="dash-nav-item" data-section="analitica"><span class="dash-nav-ico">📈</span> Analítica</button>
             <button class="dash-nav-item" data-section="generador"><span class="dash-nav-ico">✨</span> Generador</button>
             <button class="dash-nav-item" data-section="web"><span class="dash-nav-ico">🌐</span> Web</button>
           </div>
@@ -85,6 +86,65 @@
             </div>
           </div>
         </section>
+        <section class="dash-section" id="section-analitica" hidden>
+          <div class="panel-head">
+            <h1>Analítica</h1>
+            <div class="an-monthnav">
+              <button class="an-arrow" id="anPrev" aria-label="Mes anterior">‹</button>
+              <span id="anMonth">…</span>
+              <button class="an-arrow" id="anNext" aria-label="Mes siguiente">›</button>
+            </div>
+          </div>
+
+          <div class="pepe-loading" id="anLoading">Cargando datos…</div>
+
+          <div id="anContent" hidden>
+            <!-- Instagram -->
+            <div class="pepe-block">
+              <h2>📷 Instagram <small id="anIgState"></small>
+                <button class="btn-ghost an-refresh" id="anIgRefresh">↻ Actualizar</button>
+              </h2>
+              <div class="an-notice" id="anIgNotice" hidden></div>
+              <div class="stat-cards" id="anIgCards">
+                <div class="stat-card"><span class="stat-num" id="anIgFollowers">–</span><span class="stat-lbl">Seguidores</span><span class="an-delta" id="anIgDelta"></span></div>
+                <div class="stat-card"><span class="stat-num" id="anIgReach">–</span><span class="stat-lbl">Alcance del mes</span></div>
+                <div class="stat-card"><span class="stat-num" id="anIgInter">–</span><span class="stat-lbl">Interacciones</span></div>
+                <div class="stat-card"><span class="stat-num" id="anIgSaves">–</span><span class="stat-lbl">Guardados</span></div>
+              </div>
+              <div id="anIgChartWrap"><h3>Seguidores nuevos por día</h3><div class="pepe-chart" id="anIgChart"></div></div>
+              <div id="anIgTopWrap"><h3>Mejores publicaciones del mes</h3><div class="an-media-grid" id="anIgTop"></div></div>
+            </div>
+
+            <!-- Web -->
+            <div class="pepe-block">
+              <h2>🌐 Web <small>tracker propio, sin cookies</small></h2>
+              <div class="stat-cards an-cards-6">
+                <div class="stat-card"><span class="stat-num" id="anWebVisitas">–</span><span class="stat-lbl">Visitas</span><span class="an-delta" id="anWebVisitasDelta"></span></div>
+                <div class="stat-card"><span class="stat-num" id="anWebVisitantes">–</span><span class="stat-lbl">Visitantes</span><span class="an-delta" id="anWebVisitantesDelta"></span></div>
+                <div class="stat-card"><span class="stat-num" id="anWebForm">–</span><span class="stat-lbl">Formularios enviados</span></div>
+                <div class="stat-card"><span class="stat-num" id="anWebWa">–</span><span class="stat-lbl">Clicks a WhatsApp</span></div>
+                <div class="stat-card"><span class="stat-num" id="anWebReserva">–</span><span class="stat-lbl">Intentos de reserva</span></div>
+                <div class="stat-card"><span class="stat-num" id="anWebIg">–</span><span class="stat-lbl">Clicks a Instagram</span></div>
+              </div>
+              <h3>Visitas por día</h3>
+              <div class="pepe-chart" id="anWebChart"></div>
+              <h3>Horas pico <small>(hora de España)</small></h3>
+              <div class="pepe-chart an-chart-hours" id="anWebHoras"></div>
+              <div class="an-two-cols">
+                <div>
+                  <h3>Páginas más visitadas</h3>
+                  <div id="anWebPaginas"></div>
+                </div>
+                <div>
+                  <h3>De dónde vienen</h3>
+                  <div id="anWebFuentes"></div>
+                </div>
+              </div>
+              <h3>Dispositivos</h3>
+              <div class="an-devices" id="anWebDispositivos"></div>
+            </div>
+          </div>
+        </section>
         <section class="dash-section" id="section-generador" hidden>
           <div class="panel-head">
             <h1>Generador</h1>
@@ -98,12 +158,21 @@
           <div class="assistant">
             <div class="assistant-head">✨ Piezas para redes <span>contame qué querés y elijo el texto y las fotos del banco</span></div>
             <form class="assistant-form gen-form" id="genForm">
-              <select id="genFormato">
-                <option value="historia">Historia (1080×1920)</option>
-                <option value="post">Post 4:5 (1080×1350)</option>
-                <option value="carrusel">Carrusel (1080×1350)</option>
-              </select>
-              <input type="text" id="genInput" placeholder="Ej: promocionar el 2×1 en pizzas de los lunes en Valencia…" autocomplete="off" />
+              <div class="gen-row1">
+                <select id="genFormato">
+                  <option value="historia">Historia (1080×1920)</option>
+                  <option value="post">Post 4:5 (1080×1350)</option>
+                  <option value="carrusel">Carrusel (1080×1350)</option>
+                </select>
+                <div class="gen-chips" id="genChips">
+                  <span class="gen-chip gen-chip-plant" data-fill="plantilla">📋 Plantilla</span>
+                  <span class="gen-chip" data-fill="promo">Ej: promo 2×1</span>
+                  <span class="gen-chip" data-fill="partido">Ej: partido</span>
+                  <span class="gen-chip" data-fill="busqueda">Ej: búsqueda laboral</span>
+                </div>
+              </div>
+              <textarea id="genInput" rows="4" placeholder="Contame con detalle qué querés. Ej:&#10;Promo: 2×1 en pizzas&#10;Local: Valencia&#10;Cuándo: todos los lunes&#10;Tono: divertido y cercano&#10;Llamado a la acción: vení con un amigo"></textarea>
+              <p class="gen-hint">Cuanto más contexto, mejor sale. Tratá de incluir: <b>qué</b> (promo/novedad) · <b>local</b> (Valencia, San Juan, Luceros) · <b>cuándo</b> · <b>tono</b> · <b>llamado a la acción</b>. <span class="gen-hint-kbd">Ctrl+Enter para generar</span></p>
               <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
             </form>
           </div>
@@ -397,6 +466,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=21"></script>
+  <script src="/admin/admin.js?v=26"></script>
 </body>
 </html>

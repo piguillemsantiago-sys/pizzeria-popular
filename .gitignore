@@ -4,3 +4,6 @@ node_modules/
 Thumbs.db
 *.log
 google-drive-key.json
+comp.jpg
+boot.out
+boot.err
