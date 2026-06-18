@@ -478,7 +478,25 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="iaModal" hidden>
+    <div class="modal">
+      <h2>Generar imagen con IA</h2>
+      <label>Describí la ESCENA a generar (la foto, no el mensaje):
+        <textarea id="iaPromptInput" rows="8"></textarea>
+      </label>
+      <div id="iaModeRow" style="display:flex;flex-direction:column;gap:7px;margin-top:2px">
+        <label class="check" id="iaModoFotoLabel"><input type="radio" name="iaModo" value="foto" id="iaModoFoto" /> Inspirada en la foto seleccionada (misma estética)</label>
+        <label class="check"><input type="radio" name="iaModo" value="libre" id="iaModoLibre" checked /> Libre — solo los colores de la marca</label>
+      </div>
+      <p class="modal-error" id="iaModalError"></p>
+      <div class="modal-actions">
+        <button type="button" id="iaCancel">Cancelar</button>
+        <button type="button" class="save" id="iaGenerar">Usar esta imagen</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=27"></script>
+  <script src="/admin/admin.js?v=28"></script>
 </body>
 </html>

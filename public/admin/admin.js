@@ -1412,30 +1412,48 @@
         alert('La generación de imágenes con IA todavía no está activa: falta cargar GEMINI_API_KEY en el .env del servidor.');
         return;
       }
-      // Sugerencia = el prompt experto que escribió Claude para esta placa (escenaIA).
-      // Fallback genérico si no vino (p. ej. tras un ajuste de copy).
-      const sugerido = (genState.placas[i] && genState.placas[i].escenaIA) ||
-        ('Foto realista de pizza al horno de leña de una pizzería argentina: ' +
-        'mesa de madera, luz cálida, ambiente acogedor. Sin texto ni logos, con una zona lisa ' +
-        'para poner texto encima.');
-      const prompt = window.prompt('Describí la ESCENA a generar (la foto, no el mensaje):', sugerido);
-      if (!prompt) return;
-      const p = genState.placas[i];
-      // Modo de generación: si hay una foto seleccionada, ofrecemos usarla de
-      // referencia visual; si no, va libre. Capturamos la referencia ANTES de limpiar.
-      const tieneFoto = !!(p.driveId || p.fotoUrl);
-      const conRef = tieneFoto && confirm(
-        'Generar la imagen…\n\n' +
-        '«Aceptar» → INSPIRADA en la foto seleccionada (misma estética).\n' +
-        '«Cancelar» → LIBRE, solo con los colores de la marca.');
-      p.iaRef = conRef ? { driveId: p.driveId || null, fotoUrl: p.fotoUrl || null } : null;
-      p.iaModo = conRef ? 'foto' : 'libre';
-      p.iaPrompt = prompt.trim();
-      p.fotoUrl = null;
-      p.driveId = null;
-      p.motivo = '';
-      renderGenPlacas();
+      openIaModal(i);
     }
+  }
+
+  // ---- Modal de generación con IA: textarea grande (el prompt experto, editable)
+  // + elección de modo (foto de referencia / libre). Reemplaza el prompt()/confirm()
+  // nativos, que no muestran el prompt largo. ----
+  let iaModalIdx = -1;
+  function openIaModal(i) {
+    iaModalIdx = i;
+    const p = genState.placas[i];
+    const sugerido = (p && p.escenaIA) ||
+      ('Foto realista de pizza al horno de leña de una pizzería argentina: ' +
+      'mesa de madera, luz cálida, ambiente acogedor. Sin texto ni logos, con una zona lisa ' +
+      'para poner texto encima.');
+    $('iaPromptInput').value = sugerido;
+    const tieneFoto = !!(p.driveId || p.fotoUrl);
+    $('iaModoFotoLabel').style.display = tieneFoto ? '' : 'none';
+    if (tieneFoto) $('iaModoFoto').checked = true; else $('iaModoLibre').checked = true;
+    $('iaModalError').textContent = '';
+    $('iaModal').hidden = false;
+    $('iaPromptInput').focus();
+  }
+  function closeIaModal() { $('iaModal').hidden = true; iaModalIdx = -1; }
+  function confirmIaModal() {
+    const i = iaModalIdx;
+    if (i < 0) return;
+    const txt = $('iaPromptInput').value.trim();
+    if (!txt) { $('iaModalError').textContent = 'Escribí la escena a generar.'; return; }
+    const p = genState.placas[i];
+    const sel = document.querySelector('input[name="iaModo"]:checked');
+    const tieneFoto = !!(p.driveId || p.fotoUrl);
+    // Capturamos la referencia ANTES de limpiar la foto (solo si el modo es "foto").
+    const conRef = sel && sel.value === 'foto' && tieneFoto;
+    p.iaRef = conRef ? { driveId: p.driveId || null, fotoUrl: p.fotoUrl || null } : null;
+    p.iaModo = conRef ? 'foto' : 'libre';
+    p.iaPrompt = txt;
+    p.fotoUrl = null;
+    p.driveId = null;
+    p.motivo = '';
+    closeIaModal();
+    renderGenPlacas();
   }
 
   function onGenPlacaInput(e) {
@@ -1636,6 +1654,8 @@
     $('genPlacas').addEventListener('click', onGenPlacaClick);
     $('genPlacas').addEventListener('input', onGenPlacaInput);
     $('genPlacas').addEventListener('change', onGenPlacaInput);
+    $('iaCancel').addEventListener('click', closeIaModal);
+    $('iaGenerar').addEventListener('click', confirmIaModal);
     $('genAjusteBtn').addEventListener('click', onGenAjustar);
     $('genAjusteInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); onGenAjustar(); }
