@@ -165,14 +165,16 @@
                   <option value="carrusel">Carrusel (1080×1350)</option>
                 </select>
                 <div class="gen-chips" id="genChips">
-                  <span class="gen-chip gen-chip-plant" data-fill="plantilla">📋 Plantilla</span>
-                  <span class="gen-chip" data-fill="promo">Ej: promo 2×1</span>
-                  <span class="gen-chip" data-fill="partido">Ej: partido</span>
-                  <span class="gen-chip" data-fill="busqueda">Ej: búsqueda laboral</span>
+                  <span class="gen-chip gen-chip-plant" data-fill="plantilla" title="Carga un esqueleto vacío para completar">📋 Plantilla</span>
+                  <span class="gen-chips-sep" aria-hidden="true"></span>
+                  <span class="gen-chips-label">Ejemplos:</span>
+                  <span class="gen-chip gen-chip-ej" data-fill="promo">promo 2×1</span>
+                  <span class="gen-chip gen-chip-ej" data-fill="partido">partido</span>
+                  <span class="gen-chip gen-chip-ej" data-fill="busqueda">búsqueda laboral</span>
                 </div>
               </div>
               <textarea id="genInput" rows="4" placeholder="Contame con detalle qué querés. Ej:&#10;Promo: 2×1 en pizzas&#10;Local: Valencia&#10;Cuándo: todos los lunes&#10;Tono: divertido y cercano&#10;Llamado a la acción: vení con un amigo"></textarea>
-              <p class="gen-hint">Cuanto más contexto, mejor sale. Tratá de incluir: <b>qué</b> (promo/novedad) · <b>local</b> (Valencia, San Juan, Luceros) · <b>cuándo</b> · <b>tono</b> · <b>llamado a la acción</b>. <span class="gen-hint-kbd">Ctrl+Enter para generar</span></p>
+              <p class="gen-hint">Cuanto más contexto, mejor sale — o tocá <b>Plantilla</b> para el esqueleto. <span class="gen-hint-kbd"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> para generar</span></p>
               <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
             </form>
           </div>

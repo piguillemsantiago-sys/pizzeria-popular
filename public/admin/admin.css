@@ -670,7 +670,13 @@ button { font-family: inherit; cursor: pointer; }
   user-select: none; white-space: nowrap;
 }
 .gen-chip:hover { border-color: var(--pp-gold); color: var(--pp-gold); }
-.gen-chip-plant { color: var(--pp-gold); border-color: rgba(216,164,96,.4); }
+.gen-chip-plant {
+  color: var(--pp-gold); border-color: rgba(216,164,96,.45);
+  background: rgba(216,164,96,.08); font-weight: 600;
+}
+.gen-chip-plant:hover { background: rgba(216,164,96,.16); border-color: var(--pp-gold); color: var(--pp-gold); }
+.gen-chips-sep { width: 1px; height: 16px; background: var(--pp-line-2); margin: 0 3px; align-self: center; }
+.gen-chips-label { font-size: .72rem; color: var(--pp-faint); align-self: center; }
 .gen-form textarea#genInput {
   width: 100%; box-sizing: border-box; min-height: 110px; resize: vertical;
   background: var(--pp-bg-soft); border: 1px solid var(--pp-line);
@@ -682,9 +688,11 @@ button { font-family: inherit; cursor: pointer; }
 .gen-form textarea#genInput::placeholder { color: var(--pp-faint); }
 .gen-hint { margin: 0; font-size: .76rem; color: var(--pp-faint); line-height: 1.6; }
 .gen-hint b { color: var(--pp-text); font-weight: 600; }
-.gen-hint-kbd {
-  display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 6px;
-  border: 1px solid var(--pp-line-2); color: var(--pp-faint); font-size: .72rem;
+.gen-hint-kbd { margin-left: 2px; color: var(--pp-faint); }
+.gen-hint-kbd kbd {
+  display: inline-block; padding: 1px 6px; border-radius: 5px;
+  background: var(--pp-bg); border: 1px solid var(--pp-line-2); border-bottom-width: 2px;
+  font-family: inherit; font-size: .7rem; color: var(--pp-text); line-height: 1.4;
 }
 .gen-form #genCopyBtn { align-self: flex-end; }
 .gen-placa-grid { display: grid; grid-template-columns: 190px 1fr; gap: 18px; }
