@@ -1335,6 +1335,7 @@
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
+        escenaIA: p.escenaIA || '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1411,9 +1412,12 @@
         alert('La generación de imágenes con IA todavía no está activa: falta cargar GEMINI_API_KEY en el .env del servidor.');
         return;
       }
-      const sugerido = 'Foto realista de pizza al horno de leña de una pizzería argentina: ' +
+      // Sugerencia = el prompt experto que escribió Claude para esta placa (escenaIA).
+      // Fallback genérico si no vino (p. ej. tras un ajuste de copy).
+      const sugerido = (genState.placas[i] && genState.placas[i].escenaIA) ||
+        ('Foto realista de pizza al horno de leña de una pizzería argentina: ' +
         'mesa de madera, luz cálida, ambiente acogedor. Sin texto ni logos, con una zona lisa ' +
-        'para poner texto encima.';
+        'para poner texto encima.');
       const prompt = window.prompt('Describí la ESCENA a generar (la foto, no el mensaje):', sugerido);
       if (!prompt) return;
       const p = genState.placas[i];
