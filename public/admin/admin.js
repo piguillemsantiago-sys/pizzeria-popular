@@ -1049,6 +1049,26 @@
     setDelta('anWebVisitasDelta', d.visitas, prev.visitas);
     setDelta('anWebVisitantesDelta', d.visitantes, prev.visitantes);
 
+    // Tasa de conversión.
+    $('anWebConv').innerHTML = '<span class="an-conv-num">' + (d.conversion != null ? d.conversion : 0) + '%</span>' +
+      '<span class="an-conv-txt">de los visitantes hizo una acción ' +
+      '(reservar, WhatsApp o formulario) · ' + fmtNum(d.conversionAcciones || 0) + ' personas</span>';
+
+    // Interés por local (WhatsApp + reservas).
+    const locs = d.locales || [];
+    if (!locs.length) {
+      $('anWebLocales').innerHTML = '<p class="empty">Todavía no hay clicks por local (se mide desde ahora).</p>';
+    } else {
+      const maxL = Math.max(1, ...locs.map((l) => l.total));
+      $('anWebLocales').innerHTML = locs.map((l) =>
+        '<div class="an-local">' +
+          '<span class="an-local-name">' + esc(l.local) + '</span>' +
+          '<div class="an-local-track"><div class="an-local-fill" style="width:' +
+            Math.round((l.total / maxL) * 100) + '%"></div></div>' +
+          '<span class="an-local-val">💬 ' + fmtNum(l.whatsapp) + ' · 🗓 ' + fmtNum(l.reserva) + '</span>' +
+        '</div>').join('');
+    }
+
     renderBars('anWebChart', d.porDia || [], 'count');
     renderBars('anWebHoras', (d.porHora || []).map((h) => ({
       label: String(h.hora).padStart(2, '0'), count: h.count,
@@ -1056,17 +1076,22 @@
     renderListaConteo('anWebPaginas', d.paginas, 'Sin datos este mes.');
     renderListaConteo('anWebFuentes', d.fuentes, 'Todavía no hay visitas este mes.');
 
-    const dv = d.dispositivos || { movil: 0, escritorio: 0 };
-    const tot = (dv.movil || 0) + (dv.escritorio || 0);
-    if (!tot) {
-      $('anWebDispositivos').innerHTML = '<p class="empty">Se empieza a medir desde ahora.</p>';
-    } else {
-      const pm = Math.round((dv.movil / tot) * 100);
-      $('anWebDispositivos').innerHTML =
-        '<div class="an-dev-bar"><div class="an-dev-movil" style="width:' + pm + '%"></div></div>' +
-        '<div class="an-dev-legend"><span>📱 Móvil ' + pm + '%</span>' +
-        '<span>🖥 Escritorio ' + (100 - pm) + '%</span></div>';
-    }
+    renderShareBar('anWebDispositivos', (d.dispositivos || {}).movil, (d.dispositivos || {}).escritorio,
+      '📱 Móvil', '🖥 Escritorio');
+    renderShareBar('anWebIdioma', (d.idioma || {}).es, (d.idioma || {}).en,
+      '🇪🇸 Español', '🇬🇧 Inglés');
+  }
+
+  // Barra de proporción A vs B (móvil/escritorio, ES/EN).
+  function renderShareBar(elId, a, b, labelA, labelB) {
+    a = a || 0; b = b || 0;
+    const tot = a + b;
+    if (!tot) { $(elId).innerHTML = '<p class="empty">Se empieza a medir desde ahora.</p>'; return; }
+    const pa = Math.round((a / tot) * 100);
+    $(elId).innerHTML =
+      '<div class="an-dev-bar"><div class="an-dev-movil" style="width:' + pa + '%"></div></div>' +
+      '<div class="an-dev-legend"><span>' + labelA + ' ' + pa + '%</span>' +
+      '<span>' + labelB + ' ' + (100 - pa) + '%</span></div>';
   }
 
   function renderAnIgTop(d) {
@@ -1391,10 +1416,20 @@
         'para poner texto encima.';
       const prompt = window.prompt('Describí la ESCENA a generar (la foto, no el mensaje):', sugerido);
       if (!prompt) return;
-      genState.placas[i].iaPrompt = prompt.trim();
-      genState.placas[i].fotoUrl = null;
-      genState.placas[i].driveId = null;
-      genState.placas[i].motivo = '';
+      const p = genState.placas[i];
+      // Modo de generación: si hay una foto seleccionada, ofrecemos usarla de
+      // referencia visual; si no, va libre. Capturamos la referencia ANTES de limpiar.
+      const tieneFoto = !!(p.driveId || p.fotoUrl);
+      const conRef = tieneFoto && confirm(
+        'Generar la imagen…\n\n' +
+        '«Aceptar» → INSPIRADA en la foto seleccionada (misma estética).\n' +
+        '«Cancelar» → LIBRE, solo con los colores de la marca.');
+      p.iaRef = conRef ? { driveId: p.driveId || null, fotoUrl: p.fotoUrl || null } : null;
+      p.iaModo = conRef ? 'foto' : 'libre';
+      p.iaPrompt = prompt.trim();
+      p.fotoUrl = null;
+      p.driveId = null;
+      p.motivo = '';
       renderGenPlacas();
     }
   }
@@ -1422,6 +1457,7 @@
           estilo: p.estilo || undefined,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
+          iaModo: p.iaModo || undefined, iaRef: p.iaRef || undefined,
           logo: p.logo || undefined,
         })),
       });
