@@ -521,6 +521,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     }
 
     function send(tipo, target) {
+      if (window.ppPixel) window.ppPixel(tipo, target); // refleja el evento al Pixel de Meta (solo si hay consentimiento)
       var data = JSON.stringify({ tipo: tipo, path: location.pathname, ref: document.referrer, target: target || null });
       try {
         var blob = new Blob([data], { type: 'application/json' });
@@ -551,3 +552,131 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     }, true);
   })();
 })();
+
+/* ============================================================
+ * Consentimiento de cookies (RGPD / Guía AEPD) + Meta Pixel.
+ * La analítica propia (más arriba) es cookieless: no requiere
+ * consentimiento. El Pixel de Meta SÍ usa cookies (_fbp/_fbc) y
+ * solo se inyecta tras el opt-in explícito del usuario.
+ * Módulo INDEPENDIENTE del chat: corre en toda página pública.
+ * ========================================================== */
+(function () {
+    var PIXEL_ID = '553857340784854';
+    var KEY = 'pp_cookie_consent';            // 'all' | 'reject'
+    var isEN = location.pathname.indexOf('/en/') === 0 ||
+               (document.documentElement.lang || '').toLowerCase().indexOf('en') === 0;
+
+    function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+    function set(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+
+    // --- Meta Pixel: se inyecta SOLO con consentimiento ---
+    var loaded = false;
+    function loadPixel() {
+      if (loaded || !PIXEL_ID) return;
+      loaded = true;
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+        n.queue = []; t = b.createElement(e); t.async = !0; t.src = v;
+        s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+      }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', PIXEL_ID);
+      window.fbq('track', 'PageView');
+    }
+
+    // Refleja los eventos del tracker propio al Pixel (no-op sin consentimiento).
+    window.ppPixel = function (tipo, target) {
+      if (!window.fbq) return;
+      if (tipo === 'whatsapp') window.fbq('track', 'Contact', { content_name: 'whatsapp', content_category: target || 'web' });
+      else if (tipo === 'reserva') window.fbq('track', 'Lead', { content_name: 'reserva', content_category: target || 'web' });
+      else if (tipo === 'formulario') window.fbq('track', 'Lead', { content_name: 'contacto' });
+      else if (tipo === 'instagram') window.fbq('trackCustom', 'InstagramClick');
+      // 'pageview' no se mapea: el snippet base ya dispara PageView al cargar.
+    };
+
+    // --- Banner de consentimiento ---
+    var T = isEN ? {
+      txt: 'We use our own cookieless analytics and Meta (Facebook/Instagram) cookies to measure and improve our advertising. You can accept or reject them.',
+      more: 'Cookie Policy', accept: 'Accept', reject: 'Reject', aria: 'Cookie consent'
+    } : {
+      txt: 'Usamos analítica propia sin cookies y cookies de Meta (Facebook/Instagram) para medir y mejorar nuestra publicidad. Puedes aceptarlas o rechazarlas.',
+      more: 'Política de Cookies', accept: 'Aceptar', reject: 'Rechazar', aria: 'Consentimiento de cookies'
+    };
+
+    function injectStyle() {
+      if (document.getElementById('pp-cc-style')) return;
+      var css =
+        '.pp-cc{position:fixed;left:50%;bottom:18px;transform:translate(-50%,150%);' +
+        'width:min(680px,calc(100vw - 28px));background:#2b2220;color:#EDE8D9;' +
+        'border:1px solid rgba(237,232,217,.14);border-radius:14px;' +
+        'box-shadow:0 18px 50px rgba(0,0,0,.45);padding:18px 20px;z-index:99990;' +
+        'display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;' +
+        "font-family:'Montserrat',system-ui,-apple-system,sans-serif;" +
+        'opacity:0;transition:transform .35s ease,opacity .35s ease}' +
+        '.pp-cc.show{transform:translate(-50%,0);opacity:1}' +
+        '.pp-cc-txt{margin:0;flex:1 1 280px;font-size:.82rem;line-height:1.55;color:rgba(237,232,217,.85)}' +
+        '.pp-cc-txt a{color:#D8A460;text-decoration:underline}' +
+        '.pp-cc-btns{display:flex;gap:10px;flex:0 0 auto;margin-left:auto}' +
+        '.pp-cc-btn{cursor:pointer;border-radius:9px;padding:10px 22px;font-size:.82rem;' +
+        'font-weight:600;font-family:inherit;border:1px solid transparent;line-height:1;' +
+        'transition:filter .15s ease,background .15s ease}' +
+        '.pp-cc-reject{background:transparent;color:#EDE8D9;border-color:rgba(237,232,217,.32)}' +
+        '.pp-cc-reject:hover{background:rgba(237,232,217,.08)}' +
+        '.pp-cc-accept{background:#D8A460;color:#2b2220}' +
+        '.pp-cc-accept:hover{filter:brightness(1.07)}' +
+        '@media(max-width:520px){.pp-cc{padding:16px;gap:12px;bottom:12px}' +
+        '.pp-cc-btns{width:100%}.pp-cc-btn{flex:1}}';
+      var st = document.createElement('style');
+      st.id = 'pp-cc-style'; st.textContent = css;
+      document.head.appendChild(st);
+    }
+
+    function showBanner() {
+      injectStyle();
+      if (document.getElementById('pp-cc')) return;
+      var bar = document.createElement('div');
+      bar.id = 'pp-cc'; bar.className = 'pp-cc';
+      bar.setAttribute('role', 'dialog');
+      bar.setAttribute('aria-label', T.aria);
+      bar.innerHTML =
+        '<p class="pp-cc-txt">' + T.txt +
+        ' <a href="/politica-de-cookies/">' + T.more + '</a>.</p>' +
+        '<div class="pp-cc-btns">' +
+        '<button type="button" class="pp-cc-btn pp-cc-reject" id="pp-cc-reject">' + T.reject + '</button>' +
+        '<button type="button" class="pp-cc-btn pp-cc-accept" id="pp-cc-accept">' + T.accept + '</button>' +
+        '</div>';
+      document.body.appendChild(bar);
+      requestAnimationFrame(function () { bar.classList.add('show'); });
+      document.getElementById('pp-cc-accept').addEventListener('click', function () { choose('all'); });
+      document.getElementById('pp-cc-reject').addEventListener('click', function () { choose('reject'); });
+    }
+
+    function hideBanner() {
+      var bar = document.getElementById('pp-cc');
+      if (!bar) return;
+      bar.classList.remove('show');
+      setTimeout(function () { if (bar.parentNode) bar.parentNode.removeChild(bar); }, 320);
+    }
+
+    function choose(v) {
+      set(v); hideBanner();
+      if (v === 'all') { loadPixel(); return; }
+      // Si ya se había aceptado en esta misma carga y ahora rechaza, revocar y recargar.
+      if (loaded) {
+        try { if (window.fbq) window.fbq('consent', 'revoke'); } catch (e) {}
+        location.reload();
+      }
+    }
+
+    // Permite reabrir el panel (enlace "cambiar preferencias" en la Política de Cookies).
+    window.ppCookieSettings = function () { showBanner(); };
+
+    // Arranque: respetar decisión previa; si no hay, mostrar banner.
+    var c = get();
+    if (c === 'all') loadPixel();
+    else if (c !== 'reject') {
+      if (document.body) showBanner();
+      else document.addEventListener('DOMContentLoaded', showBanner);
+    }
+  })();
