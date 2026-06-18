@@ -16,8 +16,9 @@ create table if not exists ppweb_eventos (
   device      text,            -- 'movil' | 'escritorio'
   created_at  timestamptz not null default now()
 );
--- Si la tabla ya existía sin la columna device:
+-- Si la tabla ya existía sin estas columnas:
 alter table ppweb_eventos add column if not exists device text;
+alter table ppweb_eventos add column if not exists target text; -- local destino (wa/reserva)
 create index if not exists ppweb_eventos_created_idx
   on ppweb_eventos (created_at desc);
 create index if not exists ppweb_eventos_tipo_idx

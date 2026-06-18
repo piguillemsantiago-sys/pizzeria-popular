@@ -513,8 +513,15 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
    * Manda a /api/track. No usa cookies ni guarda datos personales.
    * ========================================================== */
   (function () {
-    function send(tipo) {
-      var data = JSON.stringify({ tipo: tipo, path: location.pathname, ref: document.referrer });
+    // Identifica el local destino de un click (para el desglose por sucursal).
+    function targetFrom(href, tipo) {
+      if (tipo === 'whatsapp') { var w = href.match(/wa\.me\/(\d+)/); return w ? w[1] : null; }
+      if (tipo === 'reserva') { var r = href.match(/\/\/([a-z0-9-]+)\.myrestoo\.net/i); return r ? r[1] : null; }
+      return null;
+    }
+
+    function send(tipo, target) {
+      var data = JSON.stringify({ tipo: tipo, path: location.pathname, ref: document.referrer, target: target || null });
       try {
         var blob = new Blob([data], { type: 'application/json' });
         if (navigator.sendBeacon && navigator.sendBeacon('/api/track', blob)) return;
@@ -531,8 +538,8 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       var a = e.target.closest ? e.target.closest('a[href]') : null;
       if (!a) return;
       var h = a.href || '';
-      if (/wa\.me|api\.whatsapp\.com/i.test(h)) send('whatsapp');
-      else if (/myrestoo\.net/i.test(h)) send('reserva');
+      if (/wa\.me|api\.whatsapp\.com/i.test(h)) send('whatsapp', targetFrom(h, 'whatsapp'));
+      else if (/myrestoo\.net/i.test(h)) send('reserva', targetFrom(h, 'reserva'));
       else if (/instagram\.com\/pizzeriapopular/i.test(h)) send('instagram');
     }, true);
 

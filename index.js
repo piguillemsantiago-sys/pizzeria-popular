@@ -123,8 +123,8 @@ app.post('/api/franquicia', async (req, res) => {
 // formulario). Respuesta vacía y rápida; nunca rompe la navegación.
 app.post('/api/track', (req, res) => {
   try {
-    const { tipo, path: p, ref } = req.body || {};
-    logEvento(req, { tipo, path: p, ref });
+    const { tipo, path: p, ref, target } = req.body || {};
+    logEvento(req, { tipo, path: p, ref, target });
   } catch (e) { /* fire-and-forget */ }
   res.status(204).end();
 });

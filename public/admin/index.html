@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=26" />
+  <link rel="stylesheet" href="/admin/admin.css?v=27" />
 </head>
 <body class="admin-app">
 
@@ -126,6 +126,9 @@
                 <div class="stat-card"><span class="stat-num" id="anWebReserva">–</span><span class="stat-lbl">Intentos de reserva</span></div>
                 <div class="stat-card"><span class="stat-num" id="anWebIg">–</span><span class="stat-lbl">Clicks a Instagram</span></div>
               </div>
+              <div class="an-conv" id="anWebConv"></div>
+              <h3>Interés por local <small>(WhatsApp + reservas)</small></h3>
+              <div id="anWebLocales"></div>
               <h3>Visitas por día</h3>
               <div class="pepe-chart" id="anWebChart"></div>
               <h3>Horas pico <small>(hora de España)</small></h3>
@@ -140,8 +143,16 @@
                   <div id="anWebFuentes"></div>
                 </div>
               </div>
-              <h3>Dispositivos</h3>
-              <div class="an-devices" id="anWebDispositivos"></div>
+              <div class="an-two-cols">
+                <div>
+                  <h3>Dispositivos</h3>
+                  <div class="an-devices" id="anWebDispositivos"></div>
+                </div>
+                <div>
+                  <h3>Idioma</h3>
+                  <div class="an-devices" id="anWebIdioma"></div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -468,6 +479,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=26"></script>
+  <script src="/admin/admin.js?v=27"></script>
 </body>
 </html>
