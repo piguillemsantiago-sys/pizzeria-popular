@@ -1340,9 +1340,6 @@
             '<label>Ubicación <small>(opcional)</small><input type="text" data-campo="lugar" data-i="' + i + '" value="' + esc(p.lugar || '') + '" placeholder="ej: Av. Niza 9, Alicante" /></label>' +
             '<label>Estilo' + estiloSelect(i, p.estilo) + '</label>' +
             '<label>Logo' + logoSelect(i, p.logo) + '</label>' +
-            '<label>Retoques de diseño <small>(opcional, en tus palabras)</small>' +
-              '<input type="text" data-campo="retoque" data-i="' + i + '" value="' + esc(p.retoque || '') + '" ' +
-              'placeholder="ej: título más grande · texto más arriba · sin botón" /></label>' +
           '</div>' +
         '</div>' +
       '</div>').join('');
@@ -1387,7 +1384,7 @@
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
-        escenaIA: p.escenaIA || '', retoque: '',
+        escenaIA: p.escenaIA || '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1533,7 +1530,7 @@
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
           iaModo: p.iaModo || undefined, iaRef: p.iaRef || undefined,
           logo: p.logo || undefined,
-          retoque: p.retoque || undefined,
+          adj: p.adj || undefined,
         })),
       });
       $('genResults').innerHTML = (out.urls || []).map((u, i) =>

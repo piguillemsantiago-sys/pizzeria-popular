@@ -15,8 +15,9 @@ const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
 const { logEvento, getWebStats } = require('./lib/web-stats');
+const { snapshotGoogle, getGoogleStats } = require('./lib/google-stats');
 const ig = require('./lib/instagram');
-const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto } = require('./lib/generador');
+const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
 
@@ -712,11 +713,31 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
     if (!Array.isArray(placas) || !placas.length) {
       return res.status(400).json({ error: 'No hay piezas para ajustar.' });
     }
-    const out = await ajustarCopy(String(instruccion), formato, placas, caption);
+    // En paralelo: copy/foto/estilo/logo (ajustarCopy) + diseño tamaño/posición/ocultar
+    // (interpretarRetoque). Una sola caja maneja TODO. El diseño se mergea acumulativo
+    // sobre el adj que ya traía cada placa (rondas sucesivas suman, no pisan).
+    const [out, adjGlobal] = await Promise.all([
+      ajustarCopy(String(instruccion), formato, placas, caption),
+      interpretarRetoque(String(instruccion)),
+    ]);
+
+    // Merge acumulativo del diseño: claves nuevas pisan a las viejas (una escala en 1
+    // resetea a normal). "ocultar" se UNE entre rondas; "mostrar" lo revierte (saca de
+    // ocultar) y es transitorio (no se guarda). Devuelve undefined si queda vacío.
+    const mergeAdj = (prev, next) => {
+      if (!next) return prev || undefined;
+      const m = { ...(prev || {}), ...next };
+      let oc = Array.from(new Set([...((prev && prev.ocultar) || []), ...(next.ocultar || [])]));
+      if (next.mostrar && next.mostrar.length) oc = oc.filter((k) => !next.mostrar.includes(k));
+      delete m.mostrar;
+      if (oc.length) m.ocultar = oc; else delete m.ocultar;
+      return Object.keys(m).length ? m : undefined;
+    };
 
     // Aplica los cambios de texto/logo sobre las placas actuales (preserva la foto).
     const result = placas.map((orig, i) => {
       const nu = out.placas[i] || {};
+      const adj = mergeAdj(orig.adj, adjGlobal);
       return {
         ...orig,
         titulo: nu.titulo != null ? nu.titulo : orig.titulo,
@@ -726,6 +747,7 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
         lugar: nu.lugar != null ? nu.lugar : orig.lugar,
         estilo: nu.estilo || orig.estilo || 'clasico',
         logo: nu.logo || orig.logo || 'wordmark-blanco',
+        adj,
         _cambiarFoto: !!nu.cambiarFoto,
         _fotoHint: nu.fotoHint || '',
       };
@@ -846,6 +868,16 @@ app.post('/api/admin/analitica/instagram/snapshot', requireAdmin, async (req, re
   }
 });
 
+// Reseñas de Google por local (reusa google-places.js + histórico Supabase).
+app.get('/api/admin/analitica/google', requireAdmin, async (req, res) => {
+  try {
+    res.json(await getGoogleStats());
+  } catch (e) {
+    console.error('[Analitica Google] Error:', e.message);
+    res.status(500).json({ error: 'No se pudieron cargar las reseñas: ' + e.message });
+  }
+});
+
 // ========== 404 ==========
 app.use((req, res) => {
   res.status(404).sendFile(path.join(PUBLIC, 'pages/404.html'));
@@ -854,7 +886,14 @@ app.use((req, res) => {
 // ========== CRON: Update Google ratings every 7 days (Sunday 3am) ==========
 cron.schedule('0 3 * * 0', () => {
   console.log('[Cron] Running weekly Google ratings update...');
-  updateRatings().catch(err => console.error('[Cron] Error:', err.message));
+  updateRatings()
+    .then(() => snapshotGoogle())
+    .catch(err => console.error('[Cron] Error:', err.message));
+});
+
+// ========== CRON: Snapshot diario de reseñas Google (todos los días, 3:15am) ==========
+cron.schedule('15 3 * * *', () => {
+  snapshotGoogle().catch(err => console.error('[Cron Google snapshot] Error:', err.message));
 });
 
 // ========== CRON: Autopublicar posts pendientes (todos los días, 6am) ==========
