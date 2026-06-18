@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=27" />
+  <link rel="stylesheet" href="/admin/admin.css?v=30" />
 </head>
 <body class="admin-app">
 
@@ -153,6 +153,19 @@
                   <div class="an-devices" id="anWebIdioma"></div>
                 </div>
               </div>
+            </div>
+
+            <!-- Google / Reseñas -->
+            <div class="pepe-block">
+              <h2>⭐ Google · Reseñas <small id="anGoogleState"></small></h2>
+              <div class="stat-cards">
+                <div class="stat-card"><span class="stat-num" id="anGoogleProm">–</span><span class="stat-lbl">Valoración media</span><span class="an-delta" id="anGooglePromDelta"></span></div>
+                <div class="stat-card"><span class="stat-num" id="anGoogleTotal">–</span><span class="stat-lbl">Reseñas totales</span><span class="an-delta" id="anGoogleNuevas"></span></div>
+                <div class="stat-card"><span class="stat-num" id="anGoogleMejor">–</span><span class="stat-lbl" id="anGoogleMejorLbl">Local mejor valorado</span></div>
+                <div class="stat-card"><span class="stat-num" id="anGoogleLocales">–</span><span class="stat-lbl">Locales en Google</span></div>
+              </div>
+              <h3>Reseñas por local</h3>
+              <div id="anGoogleLocList"></div>
             </div>
           </div>
         </section>
@@ -497,6 +510,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=28"></script>
+  <script src="/admin/admin.js?v=30"></script>
 </body>
 </html>

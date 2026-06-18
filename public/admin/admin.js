@@ -1142,6 +1142,53 @@
     renderBars('anIgChart', d.porDia || [], 'nuevos');
   }
 
+  function renderAnGoogle(d) {
+    const noConf = !d || !d.configurado;
+    if (noConf) {
+      $('anGoogleState').textContent = '— sin datos';
+      ['anGoogleProm', 'anGoogleTotal', 'anGoogleMejor', 'anGoogleLocales'].forEach((id) => $(id).textContent = '–');
+      $('anGoogleLocList').innerHTML = '<p class="empty">Todavía no hay datos de Google. Se cargan automáticamente.</p>';
+      return;
+    }
+    $('anGoogleState').textContent = d.updatedAt
+      ? 'actualizado ' + new Date(d.updatedAt).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+      : '';
+    $('anGoogleProm').textContent = (d.promedio != null ? d.promedio : '–') + '★';
+    $('anGoogleTotal').textContent = fmtNum(d.total);
+
+    // Reseñas nuevas en los últimos 30 días.
+    const nu = d.nuevas30;
+    $('anGoogleNuevas').textContent = (nu == null) ? '' : (nu >= 0 ? '+' : '') + fmtNum(nu) + ' en 30 días';
+    $('anGoogleNuevas').className = 'an-delta' + (nu > 0 ? ' up' : nu < 0 ? ' down' : '');
+
+    // Variación de la valoración media.
+    const pd = (d.promedioPrev != null && d.promedio != null)
+      ? Math.round((d.promedio - d.promedioPrev) * 10) / 10 : null;
+    $('anGooglePromDelta').textContent = (!pd) ? '' : (pd > 0 ? '+' : '') + pd;
+    $('anGooglePromDelta').className = 'an-delta' + (pd > 0 ? ' up' : pd < 0 ? ' down' : '');
+
+    // Local mejor valorado.
+    $('anGoogleMejor').textContent = d.mejor ? d.mejor.rating + '★' : '–';
+    $('anGoogleMejorLbl').textContent = d.mejor ? 'Mejor: ' + d.mejor.name : 'Local mejor valorado';
+
+    $('anGoogleLocales').textContent = (d.locales || []).length;
+
+    // Reseñas por local (barra por nº de reseñas + valoración).
+    const locs = d.locales || [];
+    if (!locs.length) {
+      $('anGoogleLocList').innerHTML = '<p class="empty">Sin locales.</p>';
+    } else {
+      const maxR = Math.max(1, ...locs.map((l) => l.reviews));
+      $('anGoogleLocList').innerHTML = locs.map((l) =>
+        '<div class="an-local">' +
+          '<span class="an-local-name">' + esc(l.name) + ' <small>' + esc(l.city) + '</small></span>' +
+          '<div class="an-local-track"><div class="an-local-fill" style="width:' +
+            Math.round((l.reviews / maxR) * 100) + '%"></div></div>' +
+          '<span class="an-local-val">' + l.rating + '★ · ' + fmtNum(l.reviews) + ' reseñas</span>' +
+        '</div>').join('');
+    }
+  }
+
   async function loadAnalitica() {
     anMes = anMes || anMesActual();
     $('anMonth').textContent = anMesLabel(anMes);
@@ -1149,12 +1196,14 @@
     $('anLoading').hidden = false;
     $('anContent').hidden = true;
     try {
-      const [web, igd] = await Promise.all([
+      const [web, igd, goog] = await Promise.all([
         api('/api/admin/analitica/web?mes=' + anMes),
         api('/api/admin/analitica/instagram?mes=' + anMes).catch(() => ({ configurado: false })),
+        api('/api/admin/analitica/google').catch(() => ({ configurado: false })),
       ]);
       renderAnWeb(web);
       renderAnIg(igd);
+      renderAnGoogle(goog);
       $('anLoading').hidden = true;
       $('anContent').hidden = false;
       anLoaded = true;
@@ -1291,6 +1340,9 @@
             '<label>Ubicación <small>(opcional)</small><input type="text" data-campo="lugar" data-i="' + i + '" value="' + esc(p.lugar || '') + '" placeholder="ej: Av. Niza 9, Alicante" /></label>' +
             '<label>Estilo' + estiloSelect(i, p.estilo) + '</label>' +
             '<label>Logo' + logoSelect(i, p.logo) + '</label>' +
+            '<label>Retoques de diseño <small>(opcional, en tus palabras)</small>' +
+              '<input type="text" data-campo="retoque" data-i="' + i + '" value="' + esc(p.retoque || '') + '" ' +
+              'placeholder="ej: título más grande · texto más arriba · sin botón" /></label>' +
           '</div>' +
         '</div>' +
       '</div>').join('');
@@ -1335,7 +1387,7 @@
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
-        escenaIA: p.escenaIA || '',
+        escenaIA: p.escenaIA || '', retoque: '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1481,6 +1533,7 @@
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
           iaModo: p.iaModo || undefined, iaRef: p.iaRef || undefined,
           logo: p.logo || undefined,
+          retoque: p.retoque || undefined,
         })),
       });
       $('genResults').innerHTML = (out.urls || []).map((u, i) =>
