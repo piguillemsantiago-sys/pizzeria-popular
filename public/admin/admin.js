@@ -1189,6 +1189,39 @@
     }
   }
 
+  function renderAnMeta(d) {
+    const ids = ['anMetaSpend', 'anMetaReach', 'anMetaImpr', 'anMetaClicks', 'anMetaCtr', 'anMetaCpc'];
+    const noConf = !d || !d.configurado;
+    $('anMetaRefresh').hidden = noConf;
+    if (noConf) {
+      $('anMetaState').textContent = '— no conectado';
+      $('anMetaNotice').hidden = false;
+      $('anMetaNotice').innerHTML = 'Meta Ads no está conectado. Falta cargar el token de la API de Marketing ' +
+        '(<code>META_ADS_TOKEN</code>) en el servidor.';
+      ids.forEach((id) => $(id).textContent = '–');
+      return;
+    }
+    if (d.sinDatos) {
+      $('anMetaState').textContent = '— sin datos aún';
+      $('anMetaNotice').hidden = false;
+      $('anMetaNotice').innerHTML = 'Conectado, pero todavía no hay un snapshot guardado. ' +
+        'Tocá «↻ Actualizar» (o esperá al snapshot automático de la madrugada).';
+      ids.forEach((id) => $(id).textContent = '–');
+      return;
+    }
+    $('anMetaNotice').hidden = true;
+    $('anMetaState').textContent = d.dia
+      ? 'al ' + new Date(d.dia).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+      : '';
+    const sym = d.moneda === 'USD' ? '$' : '€';
+    $('anMetaSpend').textContent = sym + fmtNum(Math.round(d.spend));
+    $('anMetaReach').textContent = fmtNum(d.reach);
+    $('anMetaImpr').textContent = fmtNum(d.impressions);
+    $('anMetaClicks').textContent = fmtNum(d.clicks);
+    $('anMetaCtr').textContent = (d.ctr != null ? d.ctr : 0) + '%';
+    $('anMetaCpc').textContent = sym + (d.cpc != null ? d.cpc : 0);
+  }
+
   async function loadAnalitica() {
     anMes = anMes || anMesActual();
     $('anMonth').textContent = anMesLabel(anMes);
@@ -1196,14 +1229,16 @@
     $('anLoading').hidden = false;
     $('anContent').hidden = true;
     try {
-      const [web, igd, goog] = await Promise.all([
+      const [web, igd, goog, metaD] = await Promise.all([
         api('/api/admin/analitica/web?mes=' + anMes),
         api('/api/admin/analitica/instagram?mes=' + anMes).catch(() => ({ configurado: false })),
         api('/api/admin/analitica/google').catch(() => ({ configurado: false })),
+        api('/api/admin/analitica/meta').catch(() => ({ configurado: false })),
       ]);
       renderAnWeb(web);
       renderAnIg(igd);
       renderAnGoogle(goog);
+      renderAnMeta(metaD);
       $('anLoading').hidden = true;
       $('anContent').hidden = false;
       anLoaded = true;
@@ -1237,6 +1272,21 @@
       await loadAnalitica();
     } catch (err) {
       alert(err.message);
+    } finally {
+      btn.disabled = false; btn.textContent = orig;
+    }
+  }
+
+  async function onMetaRefresh() {
+    const btn = $('anMetaRefresh');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Actualizando…';
+    try {
+      await api('/api/admin/analitica/meta/snapshot', 'POST', {});
+      await loadAnalitica();
+    } catch (err) {
+      alert('No se pudo actualizar: ' + err.message +
+        '\n\nMeta limita las llamadas en modo desarrollo. Probá de nuevo en un rato.');
     } finally {
       btn.disabled = false; btn.textContent = orig;
     }
@@ -1498,6 +1548,7 @@
     p.iaRef = conRef ? { driveId: p.driveId || null, fotoUrl: p.fotoUrl || null } : null;
     p.iaModo = conRef ? 'foto' : 'libre';
     p.iaPrompt = txt;
+    p.iaFotoUrl = null; // nueva escena IA → invalidar la imagen cacheada (se regenera)
     p.fotoUrl = null;
     p.driveId = null;
     p.motivo = '';
@@ -1531,7 +1582,13 @@
           iaModo: p.iaModo || undefined, iaRef: p.iaRef || undefined,
           logo: p.logo || undefined,
           adj: p.adj || undefined,
+          iaFotoUrl: p.iaFotoUrl || undefined, // cache: reusar la imagen IA ya generada
         })),
+      });
+      // Guardar la iaFotoUrl cacheada que devolvió el server, para que el próximo
+      // recomponer/ajuste NO regenere la imagen (la pizza queda fija).
+      if (out.placas) out.placas.forEach((p, i) => {
+        if (genState.placas[i] && p && p.iaFotoUrl) genState.placas[i].iaFotoUrl = p.iaFotoUrl;
       });
       $('genResults').innerHTML = (out.urls || []).map((u, i) =>
         '<a class="gen-result" href="' + esc(u) + '" target="_blank" rel="noopener">' +
@@ -1718,6 +1775,7 @@
     $('anPrev').addEventListener('click', () => anShift(-1));
     $('anNext').addEventListener('click', () => anShift(1));
     $('anIgRefresh').addEventListener('click', onIgRefresh);
+    $('anMetaRefresh').addEventListener('click', onMetaRefresh);
     $('intelHist').addEventListener('click', (e) => {
       const b = e.target.closest('.intel-chip');
       if (!b) return;

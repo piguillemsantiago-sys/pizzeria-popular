@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=31" />
+  <link rel="stylesheet" href="/admin/admin.css?v=32" />
 </head>
 <body class="admin-app">
 
@@ -166,6 +166,22 @@
               </div>
               <h3>Reseñas por local</h3>
               <div id="anGoogleLocList"></div>
+            </div>
+
+            <!-- Meta Ads -->
+            <div class="pepe-block">
+              <h2>📊 Meta Ads <small id="anMetaState"></small>
+                <button class="btn-ghost an-refresh" id="anMetaRefresh">↻ Actualizar</button>
+              </h2>
+              <div class="an-notice" id="anMetaNotice" hidden></div>
+              <div class="stat-cards an-cards-6" id="anMetaCards">
+                <div class="stat-card"><span class="stat-num" id="anMetaSpend">–</span><span class="stat-lbl">Gasto (30 días)</span></div>
+                <div class="stat-card"><span class="stat-num" id="anMetaReach">–</span><span class="stat-lbl">Alcance</span></div>
+                <div class="stat-card"><span class="stat-num" id="anMetaImpr">–</span><span class="stat-lbl">Impresiones</span></div>
+                <div class="stat-card"><span class="stat-num" id="anMetaClicks">–</span><span class="stat-lbl">Clics</span></div>
+                <div class="stat-card"><span class="stat-num" id="anMetaCtr">–</span><span class="stat-lbl">CTR</span></div>
+                <div class="stat-card"><span class="stat-num" id="anMetaCpc">–</span><span class="stat-lbl">Costo por clic</span></div>
+              </div>
             </div>
           </div>
         </section>
@@ -510,6 +526,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=31"></script>
+  <script src="/admin/admin.js?v=33"></script>
 </body>
 </html>

@@ -16,6 +16,7 @@ const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-sta
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
 const { logEvento, getWebStats } = require('./lib/web-stats');
 const { snapshotGoogle, getGoogleStats } = require('./lib/google-stats');
+const metaAds = require('./lib/meta-ads');
 const ig = require('./lib/instagram');
 const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
@@ -790,8 +791,8 @@ app.post('/api/admin/gen/piezas', requireAdmin, async (req, res) => {
     if (!Array.isArray(placas) || !placas.length) {
       return res.status(400).json({ error: 'No hay placas para componer.' });
     }
-    const urls = await generarPiezas(formato, placas.slice(0, 6));
-    res.json({ urls });
+    const { urls, placas: outPlacas } = await generarPiezas(formato, placas.slice(0, 6));
+    res.json({ urls, placas: outPlacas }); // placas trae la iaFotoUrl cacheada
   } catch (e) {
     console.error('[Gen piezas] Error:', e.message);
     const status = e.code === 'NO_KEY' ? 422 : 500;
@@ -878,6 +879,26 @@ app.get('/api/admin/analitica/google', requireAdmin, async (req, res) => {
   }
 });
 
+// Meta Ads (Marketing API). Lee del caché diario; no llama en vivo.
+app.get('/api/admin/analitica/meta', requireAdmin, async (req, res) => {
+  try {
+    res.json(await metaAds.getMetaStats());
+  } catch (e) {
+    console.error('[Analitica Meta] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo cargar Meta Ads: ' + e.message });
+  }
+});
+
+// Fuerza un snapshot de Meta Ads a pedido (botón «Actualizar»). Ojo: rate limit.
+app.post('/api/admin/analitica/meta/snapshot', requireAdmin, async (req, res) => {
+  try {
+    res.json(await metaAds.snapshotMeta());
+  } catch (e) {
+    console.error('[Analitica Meta] Snapshot:', e.message);
+    res.status(500).json({ error: 'No se pudo actualizar Meta Ads: ' + e.message });
+  }
+});
+
 // ========== 404 ==========
 app.use((req, res) => {
   res.status(404).sendFile(path.join(PUBLIC, 'pages/404.html'));
@@ -894,6 +915,12 @@ cron.schedule('0 3 * * 0', () => {
 // ========== CRON: Snapshot diario de reseñas Google (todos los días, 3:15am) ==========
 cron.schedule('15 3 * * *', () => {
   snapshotGoogle().catch(err => console.error('[Cron Google snapshot] Error:', err.message));
+});
+
+// ========== CRON: Snapshot diario de Meta Ads (todos los días, 4am) ==========
+cron.schedule('0 4 * * *', () => {
+  if (!metaAds.configurado()) return;
+  metaAds.snapshotMeta().catch(err => console.error('[Cron Meta Ads] Error:', err.message));
 });
 
 // ========== CRON: Autopublicar posts pendientes (todos los días, 6am) ==========
