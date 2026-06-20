@@ -21,6 +21,8 @@ const ig = require('./lib/instagram');
 const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
+const menu = require('./lib/menu');
+const menuAnalytics = require('./lib/menu-analytics');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -288,8 +290,22 @@ app.get('/api/admin/config', (req, res) => {
 });
 
 // Verifica que el usuario logueado es admin autorizado.
-app.get('/api/admin/me', requireAdmin, (req, res) => {
-  res.json({ ok: true, email: req.adminUser.email, id: req.adminUser.id });
+// Incluye el scope del Menú Digital para que el front decida la visibilidad:
+//   isFullAdmin (role 'dueno') → ve todo el panel.
+//   menu.hasAccess sin isFullAdmin → gerente solo-menú (scopeado por local).
+app.get('/api/admin/me', requireAdmin, async (req, res) => {
+  let menuAccess = null;
+  try { menuAccess = await menu.getMenuAccess(req.adminUser.id); } catch (_) {}
+  const isFullAdmin = !!(menuAccess && menuAccess.role === 'dueno');
+  res.json({
+    ok: true,
+    email: req.adminUser.email,
+    id: req.adminUser.id,
+    isFullAdmin,
+    menu: menuAccess
+      ? { hasAccess: menuAccess.restaurantIds.length > 0, isOwner: menuAccess.isOwner, restaurantIds: menuAccess.restaurantIds }
+      : { hasAccess: false, isOwner: false, restaurantIds: [] },
+  });
 });
 
 // Promos públicas (solo activas) — usado por la página /promos/.
@@ -898,6 +914,79 @@ app.post('/api/admin/analitica/meta/snapshot', requireAdmin, async (req, res) =>
     res.status(500).json({ error: 'No se pudo actualizar Meta Ads: ' + e.message });
   }
 });
+
+// ========== PANEL ADMIN — MENÚ DIGITAL ==========
+// Portado de habit-tracker. Mismo proyecto Supabase; el menú PÚBLICO y los QR
+// siguen viviendo en Railway. Acá solo va el plano de CONTROL (admin).
+// Entrada gateada por requireAdmin (ppweb_admins); el scope fino por local lo
+// resuelve menu.getMenuAccess() dentro de cada handler.
+async function menuCtx(req) {
+  const access = await menu.getMenuAccess(req.adminUser.id);
+  if (!access.restaurantIds.length) {
+    const e = new Error('Sin acceso al menú digital'); e.status = 403; throw e;
+  }
+  const ajaxId = await menu.getAjaxRestaurantId();
+  return { userId: req.adminUser.id, access, ajaxId };
+}
+
+// Resuelve ctx, ejecuta fn(ctx, req, res) y serializa el retorno (si lo hay).
+// Las funciones binarias (QR) setean headers y mandan ellas → devuelven undefined.
+function menuRoute(fn) {
+  return async (req, res) => {
+    try {
+      const ctx = await menuCtx(req);
+      const out = await fn(ctx, req, res);
+      if (out !== undefined && !res.headersSent) res.json(out);
+    } catch (e) {
+      console.error('[Menú] Error:', e.message);
+      if (!res.headersSent) res.status(e.status || 500).json({ error: e.message });
+    }
+  };
+}
+
+// --- Restaurants ---
+app.get('/api/admin/menu/restaurants', requireAdmin, menuRoute((ctx) => menu.listRestaurants(ctx)));
+app.get('/api/admin/menu/restaurants/:id/qr', requireAdmin, menuRoute(async (ctx, req, res) => {
+  const out = await menu.generateQr(ctx, req.params.id, req.query);
+  res.setHeader('Content-Type', out.contentType);
+  res.setHeader('Content-Disposition', `attachment; filename="${out.filename}"`);
+  res.send(out.body);
+}));
+app.put('/api/admin/menu/restaurants/:id/hero', requireAdmin, menuRoute((ctx, req) => menu.updateHero(ctx, req.params.id, req.body)));
+app.delete('/api/admin/menu/restaurants/:id/hero', requireAdmin, menuRoute((ctx, req) => menu.deleteHero(ctx, req.params.id)));
+app.put('/api/admin/menu/restaurants/:id/contact', requireAdmin, menuRoute((ctx, req) => menu.updateContact(ctx, req.params.id, req.body)));
+
+// --- Categories ---
+app.get('/api/admin/menu/categories', requireAdmin, menuRoute((ctx, req) => menu.listCategories(ctx, req.query.restaurant_id)));
+app.post('/api/admin/menu/categories', requireAdmin, menuRoute((ctx, req) => menu.createCategory(ctx, req.body)));
+app.put('/api/admin/menu/categories/:id', requireAdmin, menuRoute((ctx, req) => menu.updateCategory(ctx, req.params.id, req.body)));
+app.delete('/api/admin/menu/categories/:id', requireAdmin, menuRoute((ctx, req) => menu.deleteCategory(ctx, req.params.id)));
+app.post('/api/admin/menu/categories/reorder', requireAdmin, menuRoute((ctx, req) => menu.reorderCategories(ctx, req.body)));
+app.post('/api/admin/menu/categories/:id/override', requireAdmin, menuRoute((ctx, req) => menu.overrideCategory(ctx, req.params.id, req.body)));
+
+// --- Subcategories ---
+app.get('/api/admin/menu/subcategories', requireAdmin, menuRoute((ctx, req) => menu.listSubcategories(ctx, req.query.category_id, req.query.restaurant_id)));
+app.post('/api/admin/menu/subcategories', requireAdmin, menuRoute((ctx, req) => menu.createSubcategory(ctx, req.body)));
+app.put('/api/admin/menu/subcategories/:id', requireAdmin, menuRoute((ctx, req) => menu.updateSubcategory(ctx, req.params.id, req.body)));
+app.delete('/api/admin/menu/subcategories/:id', requireAdmin, menuRoute((ctx, req) => menu.deleteSubcategory(ctx, req.params.id)));
+app.post('/api/admin/menu/subcategories/reorder', requireAdmin, menuRoute((ctx, req) => menu.reorderSubcategories(ctx, req.body)));
+app.post('/api/admin/menu/subcategories/:id/override', requireAdmin, menuRoute((ctx, req) => menu.overrideSubcategory(ctx, req.params.id, req.body)));
+
+// --- Items ---
+app.get('/api/admin/menu/items', requireAdmin, menuRoute((ctx, req) => menu.listItems(ctx, req.query.subcategory_id, req.query.restaurant_id)));
+app.get('/api/admin/menu/items/:id', requireAdmin, menuRoute((ctx, req) => menu.getItem(ctx, req.params.id, req.query.restaurant_id)));
+app.post('/api/admin/menu/items', requireAdmin, menuRoute((ctx, req) => menu.createItem(ctx, req.body)));
+app.put('/api/admin/menu/items/:id', requireAdmin, menuRoute((ctx, req) => menu.updateItem(ctx, req.params.id, req.body)));
+app.delete('/api/admin/menu/items/:id', requireAdmin, menuRoute((ctx, req) => menu.deleteItem(ctx, req.params.id, req.query.restaurant_id)));
+app.post('/api/admin/menu/items/reorder', requireAdmin, menuRoute((ctx, req) => menu.reorderItems(ctx, req.body)));
+app.post('/api/admin/menu/items/:id/restore', requireAdmin, menuRoute((ctx, req) => menu.restoreItem(ctx, req.params.id, req.body)));
+
+// --- Image upload ---
+app.post('/api/admin/menu/upload-image', requireAdmin, menuRoute((ctx, req) => menu.uploadImage(ctx, req.body)));
+
+// --- Analytics ---
+app.get('/api/admin/menu-analytics/summary', requireAdmin, menuRoute((ctx, req) => menuAnalytics.getSummary(ctx, req.query)));
+app.get('/api/admin/menu-analytics/global', requireAdmin, menuRoute((ctx, req) => menuAnalytics.getGlobal(ctx, req.query)));
 
 // ========== 404 ==========
 app.use((req, res) => {

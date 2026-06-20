@@ -7,7 +7,8 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=32" />
+  <link rel="stylesheet" href="/admin/admin.css?v=33" />
+  <link rel="stylesheet" href="/admin/menu.css?v=1" />
 </head>
 <body class="admin-app">
 
@@ -18,6 +19,7 @@
         <div class="dash-area">
           <p class="dash-area-head">Marketing</p>
           <div class="dash-area-items">
+            <button class="dash-nav-item" data-section="menu"><span class="dash-nav-ico">🍕</span> Menú Digital</button>
             <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
             <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
             <button class="dash-nav-item" data-section="inteligencia"><span class="dash-nav-ico">📊</span> Inteligencia</button>
@@ -86,6 +88,7 @@
             </div>
           </div>
         </section>
+        <section class="dash-section" id="section-menu" hidden><div id="menu-admin-root"></div></section>
         <section class="dash-section" id="section-analitica" hidden>
           <div class="panel-head">
             <h1>Analítica</h1>
@@ -513,6 +516,13 @@
       <label>Describí la ESCENA a generar (la foto, no el mensaje):
         <textarea id="iaPromptInput" rows="8"></textarea>
       </label>
+      <div id="iaPistasWrap" style="display:none">
+        <p class="ia-pistas-label">¿Querés destacar algo en la escena? (opcional)</p>
+        <div id="iaPistas" class="ia-pistas"></div>
+      </div>
+      <label>O agregá algo a mano (opcional):
+        <input type="text" id="iaExtraInput" placeholder="Ej: con globos de colores" />
+      </label>
       <div id="iaModeRow" style="display:flex;flex-direction:column;gap:7px;margin-top:2px">
         <label class="check" id="iaModoFotoLabel"><input type="radio" name="iaModo" value="foto" id="iaModoFoto" /> Inspirada en la foto seleccionada (misma estética)</label>
         <label class="check"><input type="radio" name="iaModo" value="libre" id="iaModoLibre" checked /> Libre — solo los colores de la marca</label>
@@ -526,6 +536,10 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=33"></script>
+  <script src="/admin/admin.js?v=35"></script>
+  <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+  <script src="/admin/menu.js?v=1"></script>
 </body>
 </html>

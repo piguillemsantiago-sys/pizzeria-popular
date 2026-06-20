@@ -39,6 +39,38 @@
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   }
 
+  // ============================================================
+  // Puente para el módulo de Menú Digital (public/admin/menu.js).
+  // menu.js es un script aparte (objeto global MenuAdminModule) que consume
+  // estos helpers del host. Se replica el contrato del sistema origen:
+  //  · API.{get,post,put,del} NUNCA tira: devuelve null en error y avisa con
+  //    toast (el módulo hace `if (!r) …`). Va sobre api() → token fresco.
+  //  · App.token se mantiene sincronizado con la sesión Supabase (los fetch
+  //    directos de QR/analytics del módulo lo usan). App.showAreas es no-op.
+  //  · showToast: el panel no tenía → se define acá.
+  // ============================================================
+  let menuLoaded = false;
+  function showToast(message) {
+    let c = document.querySelector('.toast-container');
+    if (!c) { c = document.createElement('div'); c.className = 'toast-container'; document.body.appendChild(c); }
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = message;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+  const API = {
+    async _wrap(p) { try { return await p; } catch (e) { showToast('Error: ' + (e.message || 'servidor')); return null; } },
+    get(url) { return this._wrap(api(url, 'GET')); },
+    post(url, body) { return this._wrap(api(url, 'POST', body)); },
+    put(url, body) { return this._wrap(api(url, 'PUT', body)); },
+    del(url) { return this._wrap(api(url, 'DELETE')); },
+  };
+  window.API = API;
+  window.showToast = showToast;
+  window.App = { token: null, showAreas() {}, logout() { location.href = '/admin/login/'; } };
+  window.PPAdmin = { esc, api, sb: null };
+
   /* ==================== PROMOCIONES ==================== */
   function renderPromos() {
     const list = $('promoList');
@@ -1435,6 +1467,7 @@
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
         escenaIA: p.escenaIA || '',
+        escenaPistas: Array.isArray(p.escenaPistas) ? p.escenaPistas : [],
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1527,6 +1560,20 @@
       'mesa de madera, luz cálida, ambiente acogedor. Sin texto ni logos, con una zona lisa ' +
       'para poner texto encima.');
     $('iaPromptInput').value = sugerido;
+    // Pistas: elementos sugeridos por la IA para ESTA placa. Se tocan para sumarlos a
+    // la escena (no escribís un prompt técnico). Se redibujan limpios en cada apertura.
+    const pistas = (p && Array.isArray(p.escenaPistas)) ? p.escenaPistas : [];
+    const cont = $('iaPistas');
+    if (pistas.length) {
+      cont.innerHTML = pistas.map((s) =>
+        '<button type="button" class="ia-pista" data-pista="' + esc(s) + '">' + esc(s) + '</button>'
+      ).join('');
+      $('iaPistasWrap').style.display = '';
+    } else {
+      cont.innerHTML = '';
+      $('iaPistasWrap').style.display = 'none';
+    }
+    $('iaExtraInput').value = '';
     const tieneFoto = !!(p.driveId || p.fotoUrl);
     $('iaModoFotoLabel').style.display = tieneFoto ? '' : 'none';
     if (tieneFoto) $('iaModoFoto').checked = true; else $('iaModoLibre').checked = true;
@@ -1547,7 +1594,16 @@
     const conRef = sel && sel.value === 'foto' && tieneFoto;
     p.iaRef = conRef ? { driveId: p.driveId || null, fotoUrl: p.fotoUrl || null } : null;
     p.iaModo = conRef ? 'foto' : 'libre';
-    p.iaPrompt = txt;
+    // Elementos elegidos (chips tocados + texto libre) → se suman al prompt como
+    // instrucción explícita. El server ya envuelve con "sin texto/logos" y la estética.
+    const chips = Array.prototype.slice.call(
+      document.querySelectorAll('#iaPistas .ia-pista.on')
+    ).map((b) => b.dataset.pista);
+    const extra = $('iaExtraInput').value.trim();
+    const destacar = chips.concat(extra ? [extra] : []).filter(Boolean);
+    p.iaPrompt = destacar.length
+      ? txt + '\n\nDestacá especialmente en la escena: ' + destacar.join(', ') + '.'
+      : txt;
     p.iaFotoUrl = null; // nueva escena IA → invalidar la imagen cacheada (se regenera)
     p.fotoUrl = null;
     p.driveId = null;
@@ -1654,7 +1710,7 @@
   const SECTION_LABELS = {
     'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
     'inteligencia': 'Inteligencia', 'analitica': 'Analítica',
-    'generador': 'Generador', 'web': 'Web',
+    'generador': 'Generador', 'web': 'Web', 'menu': 'Menú Digital',
   };
   function switchSection(section) {
     document.querySelectorAll('.dash-nav-item').forEach((b) =>
@@ -1667,6 +1723,7 @@
     if (section === 'inteligencia' && !intelLoaded) loadIntel();
     if (section === 'analitica' && !anLoaded) loadAnalitica();
     if (section === 'generador' && !genLoaded) loadGen();
+    if (section === 'menu' && !menuLoaded) { menuLoaded = true; MenuAdminModule.load(); }
   }
 
   /* ==================== ARRANQUE ==================== */
@@ -1675,12 +1732,17 @@
     try {
       cfg = await fetch('/api/admin/config').then((r) => r.json());
       sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+      window.PPAdmin.sb = sb;
+      // El módulo de Menú hace fetch directo (QR/analytics) con App.token; lo
+      // mantenemos fresco — Supabase auto-refresca y emite el evento.
+      sb.auth.onAuthStateChange((_evt, session) => { window.App.token = session ? session.access_token : null; });
     } catch (e) {
       $('loading').textContent = 'No se pudo iniciar el panel.';
       return;
     }
     const { data: { session } } = await sb.auth.getSession();
     if (!session) { location.href = '/admin/login/'; return; }
+    window.App.token = session.access_token;
 
     let me;
     try { me = await api('/api/admin/me'); }
@@ -1689,10 +1751,35 @@
     $('loading').hidden = true;
     $('panel').hidden = false;
 
+    // Salir (vale para todos los perfiles, también el gerente solo-menú)
+    $('logoutBtn').addEventListener('click', async () => {
+      await sb.auth.signOut();
+      location.href = '/admin/login/';
+    });
+
     // Secciones (sidebar del dashboard)
     document.querySelectorAll('.dash-nav-item').forEach((b) =>
       b.addEventListener('click', () => switchSection(b.dataset.section)));
-    switchSection('web');
+
+    // Visibilidad por permiso (ver /api/admin/me):
+    //  · isFullAdmin (role 'dueno') → ve todo el panel.
+    //  · con acceso al menú pero sin ser dueño → gerente SOLO-menú: se oculta y
+    //    se elimina el resto de secciones, y se corta el init antes de cablear
+    //    nodos que ya no existen (evita el null.addEventListener).
+    //  · sin acceso al menú → se oculta la entrada "Menú Digital".
+    const hasMenu = !!(me.menu && me.menu.hasAccess);
+    const onlyMenu = hasMenu && !me.isFullAdmin;
+    document.querySelectorAll('.dash-nav-item').forEach((b) => {
+      const sec = b.dataset.section;
+      if (sec === 'menu' && !hasMenu) { b.hidden = true; return; }
+      if (onlyMenu && sec !== 'menu') {
+        b.hidden = true;
+        const s = document.getElementById('section-' + sec);
+        if (s) s.remove();
+      }
+    });
+    switchSection(onlyMenu ? 'menu' : 'web');
+    if (onlyMenu) return; // gerente solo-menú: no hay más que cablear
 
     // Pestañas (sub-secciones de Web)
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -1763,6 +1850,10 @@
     $('genPlacas').addEventListener('change', onGenPlacaInput);
     $('iaCancel').addEventListener('click', closeIaModal);
     $('iaGenerar').addEventListener('click', confirmIaModal);
+    $('iaPistas').addEventListener('click', (e) => {
+      const b = e.target.closest('.ia-pista');
+      if (b) b.classList.toggle('on');
+    });
     $('genAjusteBtn').addEventListener('click', onGenAjustar);
     $('genAjusteInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); onGenAjustar(); }
@@ -1782,12 +1873,6 @@
       const row = intelInformes.find((r) => String(r.id) === String(b.dataset.id));
       renderIntelHist(row ? row.id : null);
       renderInforme(row || null);
-    });
-
-    // Salir
-    $('logoutBtn').addEventListener('click', async () => {
-      await sb.auth.signOut();
-      location.href = '/admin/login/';
     });
 
     try {
