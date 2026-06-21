@@ -1944,9 +1944,12 @@
     // Analítica
     $('anPrev').addEventListener('click', () => anShift(-1));
     $('anNext').addEventListener('click', () => anShift(1));
-    $('anIgRefresh').addEventListener('click', onIgRefresh);
-    $('anMetaRefresh').addEventListener('click', onMetaRefresh);
+    $('anIgRefresh').addEventListener('click', (e) => { e.stopPropagation(); onIgRefresh(); });
+    $('anMetaRefresh').addEventListener('click', (e) => { e.stopPropagation(); onMetaRefresh(); });
     $('anCartaGoto').addEventListener('click', () => switchSection('menu'));
+    // Acordeón de Analítica: cada cabecera abre/cierra su tarjeta.
+    document.querySelectorAll('#section-analitica .an-acc-head').forEach((h) =>
+      h.addEventListener('click', () => h.parentElement.classList.toggle('open')));
     $('intelHist').addEventListener('click', (e) => {
       const b = e.target.closest('.intel-chip');
       if (!b) return;

@@ -7,10 +7,13 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=35" />
+  <link rel="stylesheet" href="/admin/admin.css?v=38" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
+
+  <div class="aurora" aria-hidden="true"><i></i></div>
+  <div class="scrim" aria-hidden="true"></div>
 
   <div class="dash">
     <aside class="dash-sidebar">
@@ -107,102 +110,125 @@
           <div class="pepe-loading" id="anLoading">Cargando datos…</div>
 
           <div id="anContent" hidden>
-            <!-- Instagram -->
-            <div class="pepe-block">
-              <h2>📷 Instagram <small id="anIgState"></small>
-                <button class="btn-ghost an-refresh" id="anIgRefresh">↻ Actualizar</button>
-              </h2>
-              <div class="an-notice" id="anIgNotice" hidden></div>
-              <div class="stat-cards" id="anIgCards">
-                <div class="stat-card"><span class="stat-num" id="anIgFollowers">–</span><span class="stat-lbl">Seguidores</span><span class="an-delta" id="anIgDelta"></span></div>
-                <div class="stat-card"><span class="stat-num" id="anIgReach">–</span><span class="stat-lbl">Alcance del mes</span></div>
-                <div class="stat-card"><span class="stat-num" id="anIgInter">–</span><span class="stat-lbl">Interacciones</span></div>
-                <div class="stat-card"><span class="stat-num" id="anIgSaves">–</span><span class="stat-lbl">Guardados</span></div>
-              </div>
-              <div id="anIgChartWrap"><h3>Seguidores nuevos por día</h3><div class="pepe-chart" id="anIgChart"></div></div>
-              <div id="anIgTopWrap"><h3>Mejores publicaciones del mes</h3><div class="an-media-grid" id="anIgTop"></div></div>
-            </div>
-
             <!-- Web -->
-            <div class="pepe-block">
-              <h2>🌐 Web <small>tracker propio, sin cookies</small></h2>
-              <div class="stat-cards an-cards-6">
-                <div class="stat-card"><span class="stat-num" id="anWebVisitas">–</span><span class="stat-lbl">Visitas</span><span class="an-delta" id="anWebVisitasDelta"></span></div>
-                <div class="stat-card"><span class="stat-num" id="anWebVisitantes">–</span><span class="stat-lbl">Visitantes</span><span class="an-delta" id="anWebVisitantesDelta"></span></div>
-                <div class="stat-card"><span class="stat-num" id="anWebForm">–</span><span class="stat-lbl">Formularios enviados</span></div>
-                <div class="stat-card"><span class="stat-num" id="anWebWa">–</span><span class="stat-lbl">Clicks a WhatsApp</span></div>
-                <div class="stat-card"><span class="stat-num" id="anWebReserva">–</span><span class="stat-lbl">Intentos de reserva</span></div>
-                <div class="stat-card"><span class="stat-num" id="anWebIg">–</span><span class="stat-lbl">Clicks a Instagram</span></div>
+            <div class="pepe-block an-acc">
+              <div class="an-acc-head">
+                <h2>🌐 Web <small>tracker propio, sin cookies</small></h2>
+                <span class="an-acc-chev" aria-hidden="true">▾</span>
               </div>
-              <div class="an-conv" id="anWebConv"></div>
-              <h3>Interés por local <small>(WhatsApp + reservas)</small></h3>
-              <div id="anWebLocales"></div>
-              <h3>Visitas por día</h3>
-              <div class="pepe-chart" id="anWebChart"></div>
-              <h3>Horas pico <small>(hora de España)</small></h3>
-              <div class="pepe-chart an-chart-hours" id="anWebHoras"></div>
-              <div class="an-two-cols">
-                <div>
-                  <h3>Páginas más visitadas</h3>
-                  <div id="anWebPaginas"></div>
+              <div class="an-acc-body">
+                <div class="stat-cards an-cards-6">
+                  <div class="stat-card"><span class="stat-num" id="anWebVisitas">–</span><span class="stat-lbl">Visitas</span><span class="an-delta" id="anWebVisitasDelta"></span></div>
+                  <div class="stat-card"><span class="stat-num" id="anWebVisitantes">–</span><span class="stat-lbl">Visitantes</span><span class="an-delta" id="anWebVisitantesDelta"></span></div>
+                  <div class="stat-card"><span class="stat-num" id="anWebForm">–</span><span class="stat-lbl">Formularios enviados</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anWebWa">–</span><span class="stat-lbl">Clicks a WhatsApp</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anWebReserva">–</span><span class="stat-lbl">Intentos de reserva</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anWebIg">–</span><span class="stat-lbl">Clicks a Instagram</span></div>
                 </div>
-                <div>
-                  <h3>De dónde vienen</h3>
-                  <div id="anWebFuentes"></div>
+                <div class="an-conv" id="anWebConv"></div>
+                <h3>Interés por local <small>(WhatsApp + reservas)</small></h3>
+                <div id="anWebLocales"></div>
+                <h3>Visitas por día</h3>
+                <div class="pepe-chart" id="anWebChart"></div>
+                <h3>Horas pico <small>(hora de España)</small></h3>
+                <div class="pepe-chart an-chart-hours" id="anWebHoras"></div>
+                <div class="an-two-cols">
+                  <div>
+                    <h3>Páginas más visitadas</h3>
+                    <div id="anWebPaginas"></div>
+                  </div>
+                  <div>
+                    <h3>De dónde vienen</h3>
+                    <div id="anWebFuentes"></div>
+                  </div>
                 </div>
-              </div>
-              <div class="an-two-cols">
-                <div>
-                  <h3>Dispositivos</h3>
-                  <div class="an-devices" id="anWebDispositivos"></div>
-                </div>
-                <div>
-                  <h3>Idioma</h3>
-                  <div class="an-devices" id="anWebIdioma"></div>
+                <div class="an-two-cols">
+                  <div>
+                    <h3>Dispositivos</h3>
+                    <div class="an-devices" id="anWebDispositivos"></div>
+                  </div>
+                  <div>
+                    <h3>Idioma</h3>
+                    <div class="an-devices" id="anWebIdioma"></div>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Carta · Menú Digital -->
-            <div class="pepe-block">
-              <h2>🍕 Carta · Menú Digital <small>aperturas de la carta (QR, web, Maps, redes)</small></h2>
-              <div class="stat-cards">
-                <div class="stat-card"><span class="stat-num" id="anCartaVisitas">–</span><span class="stat-lbl">Aperturas de la carta</span></div>
-                <div class="stat-card"><span class="stat-num" id="anCartaUnicos">–</span><span class="stat-lbl">Visitantes únicos</span></div>
-                <div class="stat-card"><span class="stat-num" id="anCartaNlocales">–</span><span class="stat-lbl">Locales con actividad</span></div>
-                <div class="stat-card"><span class="stat-num" id="anCartaTop">–</span><span class="stat-lbl">Local más activo</span></div>
+            <div class="pepe-block an-acc">
+              <div class="an-acc-head">
+                <h2>🍕 Carta · Menú Digital <small>aperturas de la carta (QR, web, Maps, redes)</small></h2>
+                <span class="an-acc-chev" aria-hidden="true">▾</span>
               </div>
-              <h3>Aperturas por local <small>+ plato más visto</small></h3>
-              <div id="anCartaList"></div>
-              <p class="an-cta-row"><button type="button" class="an-cta-link" id="anCartaGoto">Ver el detalle completo en Menú Digital →</button></p>
+              <div class="an-acc-body">
+                <div class="stat-cards">
+                  <div class="stat-card"><span class="stat-num" id="anCartaVisitas">–</span><span class="stat-lbl">Aperturas de la carta</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anCartaUnicos">–</span><span class="stat-lbl">Visitantes únicos</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anCartaNlocales">–</span><span class="stat-lbl">Locales con actividad</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anCartaTop">–</span><span class="stat-lbl">Local más activo</span></div>
+                </div>
+                <h3>Aperturas por local <small>+ plato más visto</small></h3>
+                <div id="anCartaList"></div>
+                <p class="an-cta-row"><button type="button" class="an-cta-link" id="anCartaGoto">Ver el detalle completo en Menú Digital →</button></p>
+              </div>
+            </div>
+
+            <!-- Instagram -->
+            <div class="pepe-block an-acc">
+              <div class="an-acc-head">
+                <h2>📷 Instagram <small id="anIgState"></small></h2>
+                <button class="btn-ghost an-refresh" id="anIgRefresh">↻ Actualizar</button>
+                <span class="an-acc-chev" aria-hidden="true">▾</span>
+              </div>
+              <div class="an-acc-body">
+                <div class="an-notice" id="anIgNotice" hidden></div>
+                <div class="stat-cards" id="anIgCards">
+                  <div class="stat-card"><span class="stat-num" id="anIgFollowers">–</span><span class="stat-lbl">Seguidores</span><span class="an-delta" id="anIgDelta"></span></div>
+                  <div class="stat-card"><span class="stat-num" id="anIgReach">–</span><span class="stat-lbl">Alcance del mes</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anIgInter">–</span><span class="stat-lbl">Interacciones</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anIgSaves">–</span><span class="stat-lbl">Guardados</span></div>
+                </div>
+                <div id="anIgChartWrap"><h3>Seguidores nuevos por día</h3><div class="pepe-chart" id="anIgChart"></div></div>
+                <div id="anIgTopWrap"><h3>Mejores publicaciones del mes</h3><div class="an-media-grid" id="anIgTop"></div></div>
+              </div>
             </div>
 
             <!-- Google / Reseñas -->
-            <div class="pepe-block">
-              <h2>⭐ Google · Reseñas <small id="anGoogleState"></small></h2>
-              <div class="stat-cards">
-                <div class="stat-card"><span class="stat-num" id="anGoogleProm">–</span><span class="stat-lbl">Valoración media</span><span class="an-delta" id="anGooglePromDelta"></span></div>
-                <div class="stat-card"><span class="stat-num" id="anGoogleTotal">–</span><span class="stat-lbl">Reseñas totales</span><span class="an-delta" id="anGoogleNuevas"></span></div>
-                <div class="stat-card"><span class="stat-num" id="anGoogleMejor">–</span><span class="stat-lbl" id="anGoogleMejorLbl">Local mejor valorado</span></div>
-                <div class="stat-card"><span class="stat-num" id="anGoogleLocales">–</span><span class="stat-lbl">Locales en Google</span></div>
+            <div class="pepe-block an-acc">
+              <div class="an-acc-head">
+                <h2>⭐ Google · Reseñas <small id="anGoogleState"></small></h2>
+                <span class="an-acc-chev" aria-hidden="true">▾</span>
               </div>
-              <h3>Reseñas por local</h3>
-              <div id="anGoogleLocList"></div>
+              <div class="an-acc-body">
+                <div class="stat-cards">
+                  <div class="stat-card"><span class="stat-num" id="anGoogleProm">–</span><span class="stat-lbl">Valoración media</span><span class="an-delta" id="anGooglePromDelta"></span></div>
+                  <div class="stat-card"><span class="stat-num" id="anGoogleTotal">–</span><span class="stat-lbl">Reseñas totales</span><span class="an-delta" id="anGoogleNuevas"></span></div>
+                  <div class="stat-card"><span class="stat-num" id="anGoogleMejor">–</span><span class="stat-lbl" id="anGoogleMejorLbl">Local mejor valorado</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anGoogleLocales">–</span><span class="stat-lbl">Locales en Google</span></div>
+                </div>
+                <h3>Reseñas por local</h3>
+                <div id="anGoogleLocList"></div>
+              </div>
             </div>
 
             <!-- Meta Ads -->
-            <div class="pepe-block">
-              <h2>📊 Meta Ads <small id="anMetaState"></small>
+            <div class="pepe-block an-acc">
+              <div class="an-acc-head">
+                <h2>📊 Meta Ads <small id="anMetaState"></small></h2>
                 <button class="btn-ghost an-refresh" id="anMetaRefresh">↻ Actualizar</button>
-              </h2>
-              <div class="an-notice" id="anMetaNotice" hidden></div>
-              <div class="stat-cards an-cards-6" id="anMetaCards">
-                <div class="stat-card"><span class="stat-num" id="anMetaSpend">–</span><span class="stat-lbl">Gasto (30 días)</span></div>
-                <div class="stat-card"><span class="stat-num" id="anMetaReach">–</span><span class="stat-lbl">Alcance</span></div>
-                <div class="stat-card"><span class="stat-num" id="anMetaImpr">–</span><span class="stat-lbl">Impresiones</span></div>
-                <div class="stat-card"><span class="stat-num" id="anMetaClicks">–</span><span class="stat-lbl">Clics</span></div>
-                <div class="stat-card"><span class="stat-num" id="anMetaCtr">–</span><span class="stat-lbl">CTR</span></div>
-                <div class="stat-card"><span class="stat-num" id="anMetaCpc">–</span><span class="stat-lbl">Costo por clic</span></div>
+                <span class="an-acc-chev" aria-hidden="true">▾</span>
+              </div>
+              <div class="an-acc-body">
+                <div class="an-notice" id="anMetaNotice" hidden></div>
+                <div class="stat-cards an-cards-6" id="anMetaCards">
+                  <div class="stat-card"><span class="stat-num" id="anMetaSpend">–</span><span class="stat-lbl">Gasto (30 días)</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anMetaReach">–</span><span class="stat-lbl">Alcance</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anMetaImpr">–</span><span class="stat-lbl">Impresiones</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anMetaClicks">–</span><span class="stat-lbl">Clics</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anMetaCtr">–</span><span class="stat-lbl">CTR</span></div>
+                  <div class="stat-card"><span class="stat-num" id="anMetaCpc">–</span><span class="stat-lbl">Costo por clic</span></div>
+                </div>
               </div>
             </div>
           </div>
@@ -559,7 +585,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=38"></script>
+  <script src="/admin/admin.js?v=39"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
