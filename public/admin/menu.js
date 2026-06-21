@@ -1713,7 +1713,7 @@ const MenuAdminModule = {
     // Embudo de la visita (4 etapas; hover = conteo + % de caída)
     const f = d.funnel || { scan: 0, category: 0, item: 0, action: 0 };
     const fSteps = [
-      { lab: 'Escanean el QR', ico: '📲', n: f.scan, tip: 'Total de personas que abrieron la carta' },
+      { lab: 'Abren la carta', ico: '📖', n: f.scan, tip: 'Total de aperturas de la carta (QR, web, Maps, redes…)' },
       { lab: 'Ven una categoría', ico: '📂', n: f.category, tip: 'Tocaron al menos una categoría' },
       { lab: 'Abren un plato', ico: '🍕', n: f.item, tip: 'Abrieron el detalle de al menos un plato' },
       { lab: 'Tocan un botón', ico: '👆', n: f.action, tip: 'WiFi, WhatsApp, Instagram o reseña de Google' },
@@ -1728,7 +1728,7 @@ const MenuAdminModule = {
         <span class="ma-fn-pct">${pct}%</span>
       </div>`;
     }).join('');
-    const funnelNote = `De cada 100 que escanean el QR, ~${fPct(f.category)} ven una categoría, ~${fPct(f.item)} abren un plato y ~${fPct(f.action)} tocan un botón.`;
+    const funnelNote = `De cada 100 que abren la carta, ~${fPct(f.category)} ven una categoría, ~${fPct(f.item)} abren un plato y ~${fPct(f.action)} tocan un botón.`;
 
     // Heatmap día×hora (cada celda con tooltip nativo al pasar el mouse)
     const hm = d.heatmap || { days: [], grid: [], max: 0 };
