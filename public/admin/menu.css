@@ -50,6 +50,17 @@
 #section-menu .ma-fn-pct { width: 46px; flex-shrink: 0; text-align: right; font-size: 12px; font-weight: 600; color: #cdb079; }
 #section-menu .ma-fn-note { margin-top: 13px; font-size: 12px; line-height: 1.5; color: #9a9a9f; }
 
+/* ── ¿De dónde vienen? (origen) ── */
+#section-menu .ma-or { display: flex; flex-direction: column; gap: 9px; }
+#section-menu .ma-or-row { display: flex; align-items: center; gap: 12px; }
+#section-menu .ma-or-lab { width: 150px; flex-shrink: 0; font-size: 12px; color: #d8d8d8; }
+#section-menu .ma-or-track { flex: 1; height: 10px; background: #232325; border-radius: 6px; overflow: hidden; }
+#section-menu .ma-or-bar { display: block; height: 100%; border-radius: 6px; background: linear-gradient(90deg, #b98e3e, #d4a853); transition: filter .15s; }
+#section-menu .ma-or-row:hover .ma-or-bar { filter: brightness(1.12); }
+#section-menu .ma-or-val { width: 78px; flex-shrink: 0; text-align: right; font-size: 13px; font-weight: 700; color: #cdb079; }
+#section-menu .ma-or-n { font-size: 11px; font-weight: 500; color: #9a9a9f; }
+#section-menu .ma-or-empty { font-size: 12px; line-height: 1.5; color: #9a9a9f; padding: 6px 0; }
+
 /* ── Heatmap día × hora ── */
 #section-menu .ma-an-sub { font-size: 11px; font-weight: 400; color: #8a8a8f; }
 #section-menu .ma-hm { display: flex; flex-direction: column; gap: 3px; overflow-x: auto; padding-bottom: 4px; }

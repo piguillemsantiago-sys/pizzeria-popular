@@ -1747,6 +1747,30 @@ const MenuAdminModule = {
     });
     heatmapHtml += '</div>';
 
+    // ¿De dónde vienen? (origen de la visita — solo aperturas con tracking de referrer)
+    const og = d.origen || { total: 0, counts: {} };
+    const ogTotal = og.total || 0;
+    const ogRows = [
+      { key: 'directo', lab: 'QR o directo', ico: '📷' },
+      { key: 'web', lab: 'Web propia', ico: '🌐' },
+      { key: 'google', lab: 'Google / Maps', ico: '🗺️' },
+      { key: 'redes', lab: 'Redes (IG/FB)', ico: '📱' },
+      { key: 'otros', lab: 'Otros sitios', ico: '🔗' },
+    ];
+    const ogSorted = ogRows
+      .map((r) => ({ ...r, n: (og.counts && og.counts[r.key]) || 0 }))
+      .sort((a, b) => b.n - a.n);
+    const ogHtml = ogTotal
+      ? ogSorted.map((r) => {
+          const pct = Math.round((r.n / ogTotal) * 100);
+          return `<div class="ma-or-row" title="${_esc(r.lab)}: ${fmt(r.n)} (${pct}%)">
+            <span class="ma-or-lab">${r.ico} ${r.lab}</span>
+            <span class="ma-or-track"><span class="ma-or-bar" style="width:${Math.max(pct, 2)}%"></span></span>
+            <span class="ma-or-val">${pct}%<span class="ma-or-n"> · ${fmt(r.n)}</span></span>
+          </div>`;
+        }).join('')
+      : '<div class="ma-or-empty">Todavía sin datos de origen. Se empieza a medir desde ahora: en unos días vas a ver de dónde llega la gente (tu web, Google/Maps, redes o QR).</div>';
+
     root.innerHTML = `
       <div class="ma-an-cards">
         <div class="ma-an-card"><span class="ma-an-card-label">Visitas hoy</span><span class="ma-an-card-value">${fmt(m.visits_today)}</span></div>
@@ -1797,6 +1821,12 @@ const MenuAdminModule = {
           </div>
         </section>
       </div>
+
+      <section class="ma-an-section">
+        <h4>¿De dónde vienen? <span class="ma-an-sub">· cómo llegan a la carta · se mide desde ahora</span></h4>
+        <div class="ma-or">${ogHtml}</div>
+        ${ogTotal ? '<div class="ma-fn-note">QR y directo van juntos (un QR no deja rastro de origen); el resto sí se distingue: tu web, Google/Maps y redes.</div>' : ''}
+      </section>
 
       <section class="ma-an-section">
         <h4>Cuándo te visitan <span class="ma-an-sub">· día × hora (UTC) · pasá el mouse</span></h4>
