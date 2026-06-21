@@ -1647,6 +1647,45 @@
     renderGenPlacas();
   }
 
+  // Afinar prompt: manda el borrador + chips marcados + texto a mano a un experto que
+  // los reteje en un prompt pulido para Gemini, y lo escribe de vuelta en el textarea.
+  // Como los elementos quedan integrados, limpiamos chips y texto a mano (ya están adentro).
+  async function onAfinarPrompt() {
+    const i = iaModalIdx;
+    if (i < 0) return;
+    const p = genState.placas[i] || {};
+    const chips = Array.prototype.slice.call(
+      document.querySelectorAll('#iaPistas .ia-pista.on')
+    ).map((b) => b.dataset.pista);
+    const extra = $('iaExtraInput').value.trim();
+    const destacar = chips.concat(extra ? [extra] : []).filter(Boolean);
+    const contexto = [p.titulo, p.acento, p.bajada].filter(Boolean).join(' · ');
+    const btn = $('iaAfinar');
+    const prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '✨ Afinando…';
+    $('iaModalError').textContent = '';
+    try {
+      const out = await api('/api/admin/gen/prompt-experto', 'POST', {
+        borrador: $('iaPromptInput').value,
+        destacar: destacar,
+        contexto: contexto,
+        formato: genState.formato,
+      });
+      if (out && out.prompt) {
+        $('iaPromptInput').value = out.prompt;
+        // Ya están integrados en el prompt: desmarcamos chips y vaciamos el texto a mano.
+        document.querySelectorAll('#iaPistas .ia-pista.on').forEach((b) => b.classList.remove('on'));
+        $('iaExtraInput').value = '';
+      }
+    } catch (e) {
+      $('iaModalError').textContent = e.message || 'No pude afinar el prompt.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = prev;
+    }
+  }
+
   function onGenPlacaInput(e) {
     const inp = e.target.closest('[data-campo]');
     if (!inp) return;
@@ -1745,6 +1784,7 @@
   /* ==================== SECCIONES (sidebar) ==================== */
   const SECTION_LABELS = {
     'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
+    'google-maps': 'Google Maps',
     'inteligencia': 'Inteligencia', 'analitica': 'Analítica',
     'generador': 'Generador', 'web': 'Web', 'menu': 'Menú Digital',
   };
@@ -1888,6 +1928,7 @@
     $('genPlacas').addEventListener('change', onGenPlacaInput);
     $('iaCancel').addEventListener('click', closeIaModal);
     $('iaGenerar').addEventListener('click', confirmIaModal);
+    $('iaAfinar').addEventListener('click', onAfinarPrompt);
     $('iaPistas').addEventListener('click', (e) => {
       const b = e.target.closest('.ia-pista');
       if (b) b.classList.toggle('on');

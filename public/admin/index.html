@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=34" />
+  <link rel="stylesheet" href="/admin/admin.css?v=35" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -25,6 +25,7 @@
             <button class="dash-nav-item" data-section="inteligencia"><span class="dash-nav-ico">📊</span> Inteligencia</button>
             <button class="dash-nav-item" data-section="analitica"><span class="dash-nav-ico">📈</span> Analítica</button>
             <p class="dash-nav-sep">Próximamente</p>
+            <button class="dash-nav-item" data-section="google-maps"><span class="dash-nav-ico">🗺️</span> Google Maps</button>
             <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
             <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
           </div>
@@ -49,6 +50,9 @@
         </section>
         <section class="dash-section soon-wrap" id="section-planificacion" hidden>
           <div class="soon"><div class="soon-ico">🧭</div><h2>Planificación</h2><p>Planificá las campañas y acciones de marketing: objetivos, tareas, responsables y fechas.</p><span class="soon-tag">Próximamente</span></div>
+        </section>
+        <section class="dash-section soon-wrap" id="section-google-maps" hidden>
+          <div class="soon"><div class="soon-ico">🗺️</div><h2>Google Maps</h2><p>Gestión de los perfiles de Google de cada local: configurar las fichas, sacar estadísticas (que irán a Analítica), gestionar las reseñas y publicar novedades.</p><span class="soon-tag">Próximamente</span></div>
         </section>
         <section class="dash-section" id="section-inteligencia" hidden>
           <div class="panel-head">
@@ -538,6 +542,10 @@
       <label>O agregá algo a mano (opcional):
         <input type="text" id="iaExtraInput" placeholder="Ej: con globos de colores" />
       </label>
+      <div class="ia-afinar-row">
+        <button type="button" id="iaAfinar" class="ia-afinar">✨ Afinar prompt para Gemini</button>
+        <span class="ia-afinar-hint">Un experto reteje la escena + lo que marcaste en un prompt pulido.</span>
+      </div>
       <div id="iaModeRow" style="display:flex;flex-direction:column;gap:7px;margin-top:2px">
         <label class="check" id="iaModoFotoLabel"><input type="radio" name="iaModo" value="foto" id="iaModoFoto" /> Inspirada en la foto seleccionada (misma estética)</label>
         <label class="check"><input type="radio" name="iaModo" value="libre" id="iaModoLibre" checked /> Libre — solo los colores de la marca</label>
@@ -551,7 +559,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=37"></script>
+  <script src="/admin/admin.js?v=38"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
