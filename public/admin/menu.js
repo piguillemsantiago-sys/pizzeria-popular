@@ -1713,22 +1713,22 @@ const MenuAdminModule = {
     // Embudo de la visita (4 etapas; hover = conteo + % de caída)
     const f = d.funnel || { scan: 0, category: 0, item: 0, action: 0 };
     const fSteps = [
-      { lab: 'Escanean el QR', ico: '📲', n: f.scan },
-      { lab: 'Ven una categoría', ico: '📂', n: f.category },
-      { lab: 'Abren un plato', ico: '🍕', n: f.item },
-      { lab: 'Tocan una acción', ico: '👆', n: f.action },
+      { lab: 'Escanean el QR', ico: '📲', n: f.scan, tip: 'Total de personas que abrieron la carta' },
+      { lab: 'Ven una categoría', ico: '📂', n: f.category, tip: 'Tocaron al menos una categoría' },
+      { lab: 'Abren un plato', ico: '🍕', n: f.item, tip: 'Abrieron el detalle de al menos un plato' },
+      { lab: 'Tocan un botón', ico: '👆', n: f.action, tip: 'WiFi, WhatsApp, Instagram o reseña de Google' },
     ];
     const fBase = f.scan || 1;
-    const funnelHtml = fSteps.map((s, i) => {
-      const pct = Math.round((s.n / fBase) * 100);
-      const prev = i ? fSteps[i - 1].n : s.n;
-      const drop = (i && prev) ? Math.round((1 - s.n / prev) * 100) : 0;
-      return `<div class="ma-fn-step" title="${_esc(s.lab)}: ${fmt(s.n)} (${pct}% del total)">
+    const fPct = (n) => Math.round((n / fBase) * 100);
+    const funnelHtml = fSteps.map((s) => {
+      const pct = fPct(s.n);
+      return `<div class="ma-fn-step" title="${_esc(s.tip)} — ${fmt(s.n)} (${pct}% del total)">
         <span class="ma-fn-lab">${s.ico} ${s.lab}</span>
         <span class="ma-fn-track"><span class="ma-fn-bar" style="width:${Math.max(pct, 4)}%">${fmt(s.n)}</span></span>
-        <span class="ma-fn-pct">${i ? (drop > 0 ? '−' + drop + '%' : '·') : '100%'}</span>
+        <span class="ma-fn-pct">${pct}%</span>
       </div>`;
     }).join('');
+    const funnelNote = `De cada 100 que escanean el QR, ~${fPct(f.category)} ven una categoría, ~${fPct(f.item)} abren un plato y ~${fPct(f.action)} tocan un botón.`;
 
     // Heatmap día×hora (cada celda con tooltip nativo al pasar el mouse)
     const hm = d.heatmap || { days: [], grid: [], max: 0 };
@@ -1784,8 +1784,9 @@ const MenuAdminModule = {
 
       <div class="ma-an-grid">
         <section class="ma-an-section">
-          <h4>Embudo de la visita</h4>
+          <h4>Embudo de la visita <span class="ma-an-sub">· de cada visita, cuántos avanzan</span></h4>
           <div class="ma-fn">${funnelHtml}</div>
+          <div class="ma-fn-note">${funnelNote}</div>
         </section>
         <section class="ma-an-section">
           <h4>Dispositivos</h4>

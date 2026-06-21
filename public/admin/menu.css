@@ -47,7 +47,8 @@
 #section-menu .ma-fn-track { flex: 1; height: 26px; background: #232325; border-radius: 6px; overflow: hidden; }
 #section-menu .ma-fn-bar { display: flex; align-items: center; justify-content: flex-end; height: 100%; min-width: 26px; padding-right: 9px; border-radius: 6px; background: linear-gradient(90deg, #b98e3e, #d4a853); color: #1a1a1a; font-size: 12px; font-weight: 700; transition: filter .15s; }
 #section-menu .ma-fn-step:hover .ma-fn-bar { filter: brightness(1.12); }
-#section-menu .ma-fn-pct { width: 46px; flex-shrink: 0; text-align: right; font-size: 12px; color: #e07a7a; }
+#section-menu .ma-fn-pct { width: 46px; flex-shrink: 0; text-align: right; font-size: 12px; font-weight: 600; color: #cdb079; }
+#section-menu .ma-fn-note { margin-top: 13px; font-size: 12px; line-height: 1.5; color: #9a9a9f; }
 
 /* ── Heatmap día × hora ── */
 #section-menu .ma-an-sub { font-size: 11px; font-weight: 400; color: #8a8a8f; }
