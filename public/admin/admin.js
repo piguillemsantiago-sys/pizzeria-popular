@@ -1039,6 +1039,37 @@
     const txt = new Date(y, m - 1, 1).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
     return txt.charAt(0).toUpperCase() + txt.slice(1);
   }
+  // Rango ISO (desde/hasta) de un mes 'YYYY-MM' para los endpoints de la carta.
+  function anMesRango(mes) {
+    const [y, m] = mes.split('-').map(Number);
+    const ultimo = new Date(y, m, 0).getDate();
+    return { from: mes + '-01T00:00:00', to: mes + '-' + String(ultimo).padStart(2, '0') + 'T23:59:59' };
+  }
+
+  // Bloque "Carta · Menú Digital" en la sección Analítica (mensual, todos los locales).
+  function renderAnCarta(d) {
+    const tot = (d && d.totals) ? d.totals : { visits: 0, unique_visitors: 0 };
+    const locs = (d && d.restaurants) ? d.restaurants : [];
+    const activos = locs.filter((l) => l.visits > 0);
+    $('anCartaVisitas').textContent = fmtNum(tot.visits);
+    $('anCartaUnicos').textContent = fmtNum(tot.unique_visitors);
+    $('anCartaNlocales').textContent = fmtNum(activos.length);
+    $('anCartaTop').textContent = activos.length ? activos[0].name : '–';
+    if (!activos.length) {
+      $('anCartaList').innerHTML = '<p class="empty">Sin aperturas de la carta este mes.</p>';
+      return;
+    }
+    const max = Math.max(1, ...activos.map((l) => l.visits));
+    $('anCartaList').innerHTML = activos.map((l) => {
+      const plato = l.top_item ? (' · 🍕 ' + esc(l.top_item.name)) : '';
+      return '<div class="an-local">' +
+        '<span class="an-local-name">' + esc(l.name) + '</span>' +
+        '<div class="an-local-track"><div class="an-local-fill" style="width:' +
+          Math.round((l.visits / max) * 100) + '%"></div></div>' +
+        '<span class="an-local-val">' + fmtNum(l.visits) + ' aperturas' + plato + '</span>' +
+      '</div>';
+    }).join('');
+  }
 
   // Gráfico de barras genérico (reutiliza el estilo del chart de Pepe).
   function renderBars(elId, items, valueKey) {
@@ -1261,16 +1292,19 @@
     $('anLoading').hidden = false;
     $('anContent').hidden = true;
     try {
-      const [web, igd, goog, metaD] = await Promise.all([
+      const cr = anMesRango(anMes);
+      const [web, igd, goog, metaD, carta] = await Promise.all([
         api('/api/admin/analitica/web?mes=' + anMes),
         api('/api/admin/analitica/instagram?mes=' + anMes).catch(() => ({ configurado: false })),
         api('/api/admin/analitica/google').catch(() => ({ configurado: false })),
         api('/api/admin/analitica/meta').catch(() => ({ configurado: false })),
+        api('/api/admin/menu-analytics/global?range=custom&from=' + encodeURIComponent(cr.from) + '&to=' + encodeURIComponent(cr.to)).catch(() => null),
       ]);
       renderAnWeb(web);
       renderAnIg(igd);
       renderAnGoogle(goog);
       renderAnMeta(metaD);
+      renderAnCarta(carta);
       $('anLoading').hidden = true;
       $('anContent').hidden = false;
       anLoaded = true;
@@ -1468,6 +1502,7 @@
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
         escenaIA: p.escenaIA || '',
         escenaPistas: Array.isArray(p.escenaPistas) ? p.escenaPistas : [],
+        banderas: Array.isArray(p.banderas) ? p.banderas : [],
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1632,6 +1667,7 @@
         formato: genState.formato,
         placas: genState.placas.map((p) => ({
           titulo: p.titulo, acento: p.acento, bajada: p.bajada, cta: p.cta, lugar: p.lugar,
+          banderas: (p.banderas && p.banderas.length) ? p.banderas : undefined,
           estilo: p.estilo || undefined,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
@@ -1778,6 +1814,8 @@
         if (s) s.remove();
       }
     });
+    // Gerente solo-menú: sin secciones "Próximamente", ocultar también el separador.
+    if (onlyMenu) document.querySelectorAll('.dash-nav-sep').forEach((el) => { el.hidden = true; });
     switchSection(onlyMenu ? 'menu' : 'web');
     if (onlyMenu) return; // gerente solo-menú: no hay más que cablear
 
@@ -1867,6 +1905,7 @@
     $('anNext').addEventListener('click', () => anShift(1));
     $('anIgRefresh').addEventListener('click', onIgRefresh);
     $('anMetaRefresh').addEventListener('click', onMetaRefresh);
+    $('anCartaGoto').addEventListener('click', () => switchSection('menu'));
     $('intelHist').addEventListener('click', (e) => {
       const b = e.target.closest('.intel-chip');
       if (!b) return;

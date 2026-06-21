@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=33" />
+  <link rel="stylesheet" href="/admin/admin.css?v=34" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -19,13 +19,14 @@
         <div class="dash-area">
           <p class="dash-area-head">Marketing</p>
           <div class="dash-area-items">
+            <button class="dash-nav-item" data-section="web"><span class="dash-nav-ico">🌐</span> Web</button>
             <button class="dash-nav-item" data-section="menu"><span class="dash-nav-ico">🍕</span> Menú Digital</button>
-            <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
-            <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
+            <button class="dash-nav-item" data-section="generador"><span class="dash-nav-ico">✨</span> Generador</button>
             <button class="dash-nav-item" data-section="inteligencia"><span class="dash-nav-ico">📊</span> Inteligencia</button>
             <button class="dash-nav-item" data-section="analitica"><span class="dash-nav-ico">📈</span> Analítica</button>
-            <button class="dash-nav-item" data-section="generador"><span class="dash-nav-ico">✨</span> Generador</button>
-            <button class="dash-nav-item" data-section="web"><span class="dash-nav-ico">🌐</span> Web</button>
+            <p class="dash-nav-sep">Próximamente</p>
+            <button class="dash-nav-item" data-section="cal-mkt"><span class="dash-nav-ico">🗓️</span> Calendario</button>
+            <button class="dash-nav-item" data-section="planificacion"><span class="dash-nav-ico">🧭</span> Planificación</button>
           </div>
         </div>
       </nav>
@@ -156,6 +157,20 @@
                   <div class="an-devices" id="anWebIdioma"></div>
                 </div>
               </div>
+            </div>
+
+            <!-- Carta · Menú Digital -->
+            <div class="pepe-block">
+              <h2>🍕 Carta · Menú Digital <small>aperturas de la carta (QR, web, Maps, redes)</small></h2>
+              <div class="stat-cards">
+                <div class="stat-card"><span class="stat-num" id="anCartaVisitas">–</span><span class="stat-lbl">Aperturas de la carta</span></div>
+                <div class="stat-card"><span class="stat-num" id="anCartaUnicos">–</span><span class="stat-lbl">Visitantes únicos</span></div>
+                <div class="stat-card"><span class="stat-num" id="anCartaNlocales">–</span><span class="stat-lbl">Locales con actividad</span></div>
+                <div class="stat-card"><span class="stat-num" id="anCartaTop">–</span><span class="stat-lbl">Local más activo</span></div>
+              </div>
+              <h3>Aperturas por local <small>+ plato más visto</small></h3>
+              <div id="anCartaList"></div>
+              <p class="an-cta-row"><button type="button" class="an-cta-link" id="anCartaGoto">Ver el detalle completo en Menú Digital →</button></p>
             </div>
 
             <!-- Google / Reseñas -->
@@ -536,7 +551,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=36"></script>
+  <script src="/admin/admin.js?v=37"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
