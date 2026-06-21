@@ -1710,6 +1710,43 @@ const MenuAdminModule = {
 
     const dev = d.devices || { mobile: 0, desktop: 0, mobile_percent: 0, desktop_percent: 0 };
 
+    // Embudo de la visita (4 etapas; hover = conteo + % de caída)
+    const f = d.funnel || { scan: 0, category: 0, item: 0, action: 0 };
+    const fSteps = [
+      { lab: 'Escanean el QR', ico: '📲', n: f.scan },
+      { lab: 'Ven una categoría', ico: '📂', n: f.category },
+      { lab: 'Abren un plato', ico: '🍕', n: f.item },
+      { lab: 'Tocan una acción', ico: '👆', n: f.action },
+    ];
+    const fBase = f.scan || 1;
+    const funnelHtml = fSteps.map((s, i) => {
+      const pct = Math.round((s.n / fBase) * 100);
+      const prev = i ? fSteps[i - 1].n : s.n;
+      const drop = (i && prev) ? Math.round((1 - s.n / prev) * 100) : 0;
+      return `<div class="ma-fn-step" title="${_esc(s.lab)}: ${fmt(s.n)} (${pct}% del total)">
+        <span class="ma-fn-lab">${s.ico} ${s.lab}</span>
+        <span class="ma-fn-track"><span class="ma-fn-bar" style="width:${Math.max(pct, 4)}%">${fmt(s.n)}</span></span>
+        <span class="ma-fn-pct">${i ? (drop > 0 ? '−' + drop + '%' : '·') : '100%'}</span>
+      </div>`;
+    }).join('');
+
+    // Heatmap día×hora (cada celda con tooltip nativo al pasar el mouse)
+    const hm = d.heatmap || { days: [], grid: [], max: 0 };
+    const hmMax = hm.max || 1;
+    let heatmapHtml = '<div class="ma-hm"><div class="ma-hm-row ma-hm-head"><span class="ma-hm-daylab"></span>';
+    for (let h = 0; h < 24; h++) heatmapHtml += `<span class="ma-hm-h">${h % 6 === 0 ? h : ''}</span>`;
+    heatmapHtml += '</div>';
+    (hm.days || []).forEach((day, di) => {
+      heatmapHtml += `<div class="ma-hm-row"><span class="ma-hm-daylab">${day}</span>`;
+      for (let h = 0; h < 24; h++) {
+        const v = (hm.grid[di] || [])[h] || 0;
+        const bg = v ? `rgba(212,168,83,${(0.12 + 0.88 * (v / hmMax)).toFixed(2)})` : 'rgba(255,255,255,0.03)';
+        heatmapHtml += `<span class="ma-hm-cell" style="background:${bg}" title="${day} ${h}:00 · ${fmt(v)} visita${v === 1 ? '' : 's'}"></span>`;
+      }
+      heatmapHtml += '</div>';
+    });
+    heatmapHtml += '</div>';
+
     root.innerHTML = `
       <div class="ma-an-cards">
         <div class="ma-an-card"><span class="ma-an-card-label">Visitas hoy</span><span class="ma-an-card-value">${fmt(m.visits_today)}</span></div>
@@ -1747,6 +1784,10 @@ const MenuAdminModule = {
 
       <div class="ma-an-grid">
         <section class="ma-an-section">
+          <h4>Embudo de la visita</h4>
+          <div class="ma-fn">${funnelHtml}</div>
+        </section>
+        <section class="ma-an-section">
           <h4>Dispositivos</h4>
           <div class="ma-an-devices">
             <div class="ma-an-device"><span class="ma-an-device-label">📱 Mobile</span><span class="ma-an-device-bar"><span class="ma-an-device-fill" style="width:${dev.mobile_percent}%"></span></span><span class="ma-an-device-pct">${dev.mobile_percent}%</span></div>
@@ -1754,16 +1795,16 @@ const MenuAdminModule = {
             <div class="ma-an-device-meta">Total dispositivos únicos: ${fmt(dev.mobile + dev.desktop)}</div>
           </div>
         </section>
-        <section class="ma-an-section">
-          <h4>Horarios pico (UTC)</h4>
-          <div class="ma-an-chart-wrap ma-an-chart-wrap-sm"><canvas id="an-chart-hours"></canvas></div>
-        </section>
       </div>
+
+      <section class="ma-an-section">
+        <h4>Cuándo te visitan <span class="ma-an-sub">· día × hora (UTC) · pasá el mouse</span></h4>
+        ${heatmapHtml}
+      </section>
     `;
 
     this._drawVisitsChart(d.visits_by_day || []);
     this._drawLangsChart(d.languages || []);
-    this._drawHoursChart(d.hourly || []);
   },
 
   _renderAnalyticsGlobal(root, d) {

@@ -40,6 +40,24 @@
 }
 @keyframes pp-toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
+/* ── Embudo de la visita ── */
+#section-menu .ma-fn { display: flex; flex-direction: column; gap: 8px; }
+#section-menu .ma-fn-step { display: flex; align-items: center; gap: 10px; }
+#section-menu .ma-fn-lab { width: 150px; flex-shrink: 0; font-size: 12px; color: #d8d8d8; }
+#section-menu .ma-fn-track { flex: 1; height: 26px; background: #232325; border-radius: 6px; overflow: hidden; }
+#section-menu .ma-fn-bar { display: flex; align-items: center; justify-content: flex-end; height: 100%; min-width: 26px; padding-right: 9px; border-radius: 6px; background: linear-gradient(90deg, #b98e3e, #d4a853); color: #1a1a1a; font-size: 12px; font-weight: 700; transition: filter .15s; }
+#section-menu .ma-fn-step:hover .ma-fn-bar { filter: brightness(1.12); }
+#section-menu .ma-fn-pct { width: 46px; flex-shrink: 0; text-align: right; font-size: 12px; color: #e07a7a; }
+
+/* ── Heatmap día × hora ── */
+#section-menu .ma-an-sub { font-size: 11px; font-weight: 400; color: #8a8a8f; }
+#section-menu .ma-hm { display: flex; flex-direction: column; gap: 3px; overflow-x: auto; padding-bottom: 4px; }
+#section-menu .ma-hm-row { display: flex; gap: 3px; align-items: center; }
+#section-menu .ma-hm-daylab { width: 32px; flex-shrink: 0; text-align: right; padding-right: 5px; font-size: 11px; color: #9a9a9f; }
+#section-menu .ma-hm-h { flex: 1 0 14px; min-width: 14px; text-align: center; font-size: 9px; color: #6f6f74; }
+#section-menu .ma-hm-cell { flex: 1 0 14px; min-width: 14px; height: 18px; border-radius: 3px; cursor: default; outline: 1px solid transparent; transition: transform .1s, outline-color .1s; }
+#section-menu .ma-hm-cell:hover { transform: scale(1.35); outline-color: #d4a853; }
+
 .ma-header {
   display: flex; align-items: center; gap: 12px;
   margin-bottom: 16px; flex-wrap: wrap;
