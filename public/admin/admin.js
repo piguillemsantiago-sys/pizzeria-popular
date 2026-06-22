@@ -1837,6 +1837,253 @@
     if (tab === 'pepe' && !pepeLoaded) loadPepeStats();
   }
 
+  /* ==================== RESEÑAS GOOGLE (sección Google Maps) ==================== */
+  let resenasLoaded = false;
+  const GM_LOCAL_NAMES = {
+    'luceros': 'Luceros', 'playa-san-juan': 'Playa San Juan', 'russafa': 'Russafa',
+    'santa-clara': 'Santa Clara', 'boadilla': 'Boadilla', 'benidorm': 'Benidorm',
+  };
+  function gmStars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+  function gmFmtDate(iso) {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: '2-digit' });
+  }
+
+  async function loadResenas() {
+    resenasLoaded = true;
+    let stars = 0;
+    let lastGen = null;   // { local_id, texto, estrellas, cliente_nombre, fecha, idioma_detectado, variantes, modelo_usado }
+    let hOffset = 0;
+    const H_LIMIT = 50;
+    let lastItems = [];
+    let detail = null;    // reseña abierta en el modal
+
+    const fFecha = $('gmFFecha');
+    if (fFecha && !fFecha.value) fFecha.value = new Date().toISOString().slice(0, 10);
+
+    // Llamada a la API con toast en error (api() ya adjunta el Bearer de Supabase).
+    async function call(path, method, body) {
+      try { return await api(path, method, body); }
+      catch (e) { showToast('Error: ' + (e.message || 'servidor')); throw e; }
+    }
+
+    // ---- Métricas ----
+    async function loadMetrics() {
+      const local = $('gmLocal').value;
+      const q = local ? '?local_id=' + local : '';
+      try {
+        const m = await call('/api/admin/resenas/metricas' + q, 'GET');
+        $('gmTotal').textContent = m.total_mes;
+        $('gmResp').textContent = m.respondidas_mes + ' / ' + m.pendientes_mes;
+        $('gmMedia').textContent = m.puntuacion_media_mes ? m.puntuacion_media_mes.toFixed(2) : '—';
+        $('gmTiempo').textContent = m.tiempo_medio_respuesta_horas ? m.tiempo_medio_respuesta_horas + ' h' : '—';
+        const d = m.distribucion_estrellas || {};
+        $('gmDistrib').textContent = `5★:${d[5] || 0}  4★:${d[4] || 0}  3★:${d[3] || 0}  2★:${d[2] || 0}  1★:${d[1] || 0}`;
+      } catch (e) { /* toast ya */ }
+    }
+
+    // ---- Estrellas ----
+    function paintStars() {
+      document.querySelectorAll('#gmFStars .rg-star').forEach((s) =>
+        s.classList.toggle('active', parseInt(s.dataset.v, 10) <= stars));
+    }
+    $('gmFStars').addEventListener('click', (e) => {
+      if (!e.target.classList.contains('rg-star')) return;
+      stars = parseInt(e.target.dataset.v, 10);
+      paintStars();
+    });
+    $('gmFTexto').addEventListener('input', (e) => {
+      e.target.style.height = 'auto';
+      e.target.style.height = (e.target.scrollHeight + 2) + 'px';
+    });
+    $('gmLocal').addEventListener('change', () => {
+      const v = $('gmLocal').value;
+      if (v && !$('gmFLocal').value) $('gmFLocal').value = v;
+      loadMetrics(); loadHistorial();
+    });
+
+    // ---- Generar variantes ----
+    $('gmGenerar').addEventListener('click', async () => {
+      const local_id = $('gmFLocal').value || $('gmLocal').value;
+      const texto = $('gmFTexto').value.trim();
+      const cliente = $('gmFCliente').value.trim();
+      const fecha = $('gmFFecha').value;
+      if (!local_id) { showToast('Elegí un local'); return; }
+      if (!texto) { showToast('Pegá el texto de la reseña'); return; }
+      if (!stars) { showToast('Marcá las estrellas'); return; }
+      if (!fecha) { showToast('Elegí la fecha de la reseña'); return; }
+
+      const btn = $('gmGenerar');
+      btn.disabled = true;
+      $('gmVariantsWrap').style.display = 'none';
+      $('gmLoading').style.display = 'block';
+      try {
+        const r = await call('/api/admin/resenas/generar', 'POST',
+          { local_id, texto, estrellas: stars, cliente_nombre: cliente || null });
+        lastGen = {
+          local_id, texto, estrellas: stars, cliente_nombre: cliente || null, fecha,
+          idioma_detectado: r.idioma_detectado, variantes: r.variantes, modelo_usado: r.modelo_usado,
+        };
+        renderVariants(r.variantes, r.idioma_detectado);
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; $('gmLoading').style.display = 'none'; }
+    });
+
+    function renderVariants(variantes, idioma) {
+      const wrap = $('gmVariants');
+      wrap.innerHTML = variantes.map((v, i) => `
+        <div class="rg-variant" data-i="${i}">
+          <div class="rg-variant-head"><span>Opción ${i + 1}</span><span class="rg-variant-tag">${esc(idioma || 'es')}</span></div>
+          <textarea class="rg-variant-text" data-i="${i}">${esc(v)}</textarea>
+          <div class="rg-variant-actions">
+            <button class="rg-btn-ghost" data-act="copy" data-i="${i}">📋 Copiar</button>
+            <button class="rg-btn" data-act="use" data-i="${i}">Usar esta</button>
+          </div>
+        </div>`).join('');
+      $('gmVariantsWrap').style.display = 'block';
+      wrap.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => handleVariant(b)));
+    }
+
+    async function handleVariant(btn) {
+      const i = parseInt(btn.dataset.i, 10);
+      const ta = $('gmVariants').querySelector(`.rg-variant-text[data-i="${i}"]`);
+      const text = ta.value;
+      if (btn.dataset.act === 'copy') {
+        try { await navigator.clipboard.writeText(text); const o = btn.innerHTML; btn.innerHTML = '✓ Copiado'; setTimeout(() => { btn.innerHTML = o; }, 2000); }
+        catch (e) { showToast('No se pudo copiar'); }
+        return;
+      }
+      // act === 'use'
+      if (!lastGen) return;
+      const original = lastGen.variantes[i];
+      const editado = text !== original ? text : null;
+      btn.disabled = true; btn.textContent = 'Guardando…';
+      try {
+        try { await navigator.clipboard.writeText(text); } catch (e) {}
+        await call('/api/admin/resenas/guardar', 'POST', {
+          local_id: lastGen.local_id, texto_original: lastGen.texto, estrellas: lastGen.estrellas,
+          cliente_nombre: lastGen.cliente_nombre, fecha_resena: lastGen.fecha,
+          idioma_detectado: lastGen.idioma_detectado, variantes_generadas: lastGen.variantes,
+          respuesta_elegida: original, respuesta_editada: editado, modelo_usado: lastGen.modelo_usado,
+        });
+        showToast('Guardado y copiado al portapapeles');
+        $('gmFTexto').value = ''; $('gmFCliente').value = ''; stars = 0; paintStars();
+        $('gmVariantsWrap').style.display = 'none'; lastGen = null;
+        loadMetrics(); loadHistorial();
+      } catch (e) { btn.disabled = false; btn.textContent = 'Usar esta'; }
+    }
+
+    // ---- Histórico ----
+    function buildQs() {
+      const local = $('gmHLocal').value || $('gmLocal').value;
+      const p = new URLSearchParams();
+      if (local) p.set('local_id', local);
+      if ($('gmHEstrellas').value) p.set('estrellas', $('gmHEstrellas').value);
+      if ($('gmHEstado').value) p.set('estado', $('gmHEstado').value);
+      if ($('gmHDesde').value) p.set('desde', $('gmHDesde').value);
+      if ($('gmHHasta').value) { const d = new Date($('gmHHasta').value); d.setHours(23, 59, 59, 999); p.set('hasta', d.toISOString()); }
+      p.set('limit', H_LIMIT); p.set('offset', hOffset);
+      return '?' + p.toString();
+    }
+
+    async function loadHistorial() {
+      $('gmHBody').innerHTML = '<tr><td colspan="7" class="rg-empty">Cargando…</td></tr>';
+      try {
+        const r = await call('/api/admin/resenas/historial' + buildQs(), 'GET');
+        lastItems = r.items;
+        $('gmHCount').textContent = r.total;
+        if (!r.items.length) {
+          $('gmHBody').innerHTML = '<tr><td colspan="7" class="rg-empty">Sin reseñas</td></tr>';
+        } else {
+          $('gmHBody').innerHTML = r.items.map((it, idx) => `
+            <tr>
+              <td>${gmFmtDate(it.fecha_resena)}</td>
+              <td>${esc(GM_LOCAL_NAMES[it.local_id] || it.local_id)}</td>
+              <td>${esc(it.cliente_nombre || '—')}</td>
+              <td><span class="rg-stars-mini">${gmStars(it.estrellas)}</span></td>
+              <td><div class="rg-truncate" title="${esc(it.texto_original)}">${esc(it.texto_original)}</div></td>
+              <td><span class="rg-badge rg-badge-${esc(it.estado)}">${esc(it.estado)}</span></td>
+              <td><button class="rg-btn-ghost" data-idx="${idx}">Ver</button></td>
+            </tr>`).join('');
+          $('gmHBody').querySelectorAll('button').forEach((b) =>
+            b.addEventListener('click', () => openDetail(lastItems[parseInt(b.dataset.idx, 10)])));
+        }
+        const start = r.total === 0 ? 0 : hOffset + 1;
+        const end = Math.min(hOffset + H_LIMIT, r.total);
+        $('gmHRango').textContent = `${start}–${end} de ${r.total}`;
+        $('gmHPrev').disabled = hOffset === 0;
+        $('gmHNext').disabled = end >= r.total;
+      } catch (e) {
+        $('gmHBody').innerHTML = '<tr><td colspan="7" class="rg-empty">Error al cargar</td></tr>';
+      }
+    }
+
+    $('gmHAplicar').addEventListener('click', () => { hOffset = 0; loadHistorial(); });
+    $('gmHLimpiar').addEventListener('click', () => {
+      $('gmHLocal').value = ''; $('gmHEstrellas').value = ''; $('gmHEstado').value = '';
+      $('gmHDesde').value = ''; $('gmHHasta').value = ''; hOffset = 0; loadHistorial();
+    });
+    $('gmHPrev').addEventListener('click', () => { if (hOffset > 0) { hOffset = Math.max(0, hOffset - H_LIMIT); loadHistorial(); } });
+    $('gmHNext').addEventListener('click', () => { hOffset += H_LIMIT; loadHistorial(); });
+
+    // ---- Modal detalle / editar (issue 8: Ver permite regenerar/editar) ----
+    function openDetail(it) {
+      detail = it;
+      $('gmDTitle').textContent = `${gmStars(it.estrellas)}  ·  Popular ${GM_LOCAL_NAMES[it.local_id] || it.local_id}`;
+      $('gmDMeta').textContent = `${gmFmtDate(it.fecha_resena)}  ·  ${it.cliente_nombre || 'Anónimo'}  ·  ${it.idioma_detectado || '—'}  ·  ${it.estado}`;
+      $('gmDOriginal').textContent = it.texto_original;
+      $('gmDRespTextarea').value = it.respuesta_editada || it.respuesta_elegida || '';
+      $('gmDVariants').innerHTML = '';
+      $('gmModal').classList.add('open');
+    }
+    function closeDetail() { $('gmModal').classList.remove('open'); detail = null; }
+    $('gmDClose').addEventListener('click', closeDetail);
+    $('gmModal').addEventListener('click', (e) => { if (e.target.id === 'gmModal') closeDetail(); });
+
+    $('gmDRegenerar').addEventListener('click', async () => {
+      if (!detail) return;
+      const btn = $('gmDRegenerar');
+      const o = btn.textContent; btn.disabled = true; btn.textContent = 'Generando…';
+      try {
+        const r = await call('/api/admin/resenas/generar', 'POST', {
+          local_id: detail.local_id, texto: detail.texto_original,
+          estrellas: detail.estrellas, cliente_nombre: detail.cliente_nombre || null,
+        });
+        $('gmDVariants').innerHTML = r.variantes.map((v, i) => `
+          <div class="rg-variant" data-i="${i}">
+            <div class="rg-variant-head"><span>Opción ${i + 1}</span><span class="rg-variant-tag">${esc(r.idioma_detectado || 'es')}</span></div>
+            <textarea class="rg-variant-text" data-i="${i}">${esc(v)}</textarea>
+            <div class="rg-variant-actions"><button class="rg-btn-ghost" data-i="${i}">Usar en respuesta</button></div>
+          </div>`).join('');
+        $('gmDVariants').querySelectorAll('button').forEach((b) =>
+          b.addEventListener('click', () => {
+            const ta = $('gmDVariants').querySelector(`.rg-variant-text[data-i="${b.dataset.i}"]`);
+            $('gmDRespTextarea').value = ta.value;
+          }));
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = o; }
+    });
+
+    $('gmDGuardar').addEventListener('click', async () => {
+      if (!detail) return;
+      const nueva = $('gmDRespTextarea').value.trim();
+      if (!nueva) { showToast('La respuesta no puede quedar vacía'); return; }
+      const btn = $('gmDGuardar');
+      btn.disabled = true; btn.textContent = 'Guardando…';
+      try {
+        await call('/api/admin/resenas/' + detail.id, 'PUT', { respuesta_editada: nueva, estado: 'respondida' });
+        try { await navigator.clipboard.writeText(nueva); } catch (e) {}
+        showToast('Cambios guardados y copiados');
+        closeDetail(); loadMetrics(); loadHistorial();
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
+    });
+
+    // Carga inicial
+    loadMetrics();
+    loadHistorial();
+  }
+
   /* ==================== SECCIONES (sidebar) ==================== */
   const SECTION_LABELS = {
     'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
@@ -1855,6 +2102,7 @@
     if (section === 'inteligencia' && !intelLoaded) loadIntel();
     if (section === 'analitica' && !anLoaded) loadAnalitica();
     if (section === 'generador' && !genLoaded) loadGen();
+    if (section === 'google-maps' && !resenasLoaded) loadResenas();
     if (section === 'menu' && !menuLoaded) { menuLoaded = true; MenuAdminModule.load(); }
   }
 
@@ -1912,6 +2160,13 @@
     });
     // Gerente solo-menú: sin secciones "Próximamente", ocultar también el separador.
     if (onlyMenu) document.querySelectorAll('.dash-nav-sep').forEach((el) => { el.hidden = true; });
+    // Reseñas (Google Maps) es solo-dueño: ocultar para quien no sea full admin.
+    if (!me.isFullAdmin) {
+      const gmBtn = document.querySelector('.dash-nav-item[data-section="google-maps"]');
+      if (gmBtn) gmBtn.hidden = true;
+      const gmSec = document.getElementById('section-google-maps');
+      if (gmSec) gmSec.remove();
+    }
     switchSection(onlyMenu ? 'menu' : 'web');
     if (onlyMenu) return; // gerente solo-menú: no hay más que cablear
 

@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=38" />
+  <link rel="stylesheet" href="/admin/admin.css?v=39" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -54,8 +54,256 @@
         <section class="dash-section soon-wrap" id="section-planificacion" hidden>
           <div class="soon"><div class="soon-ico">🧭</div><h2>Planificación</h2><p>Planificá las campañas y acciones de marketing: objetivos, tareas, responsables y fechas.</p><span class="soon-tag">Próximamente</span></div>
         </section>
-        <section class="dash-section soon-wrap" id="section-google-maps" hidden>
-          <div class="soon"><div class="soon-ico">🗺️</div><h2>Google Maps</h2><p>Gestión de los perfiles de Google de cada local: configurar las fichas, sacar estadísticas (que irán a Analítica), gestionar las reseñas y publicar novedades.</p><span class="soon-tag">Próximamente</span></div>
+        <section class="dash-section" id="section-google-maps" hidden>
+          <style>
+          #section-google-maps {
+            --gold:#d4a853; --gold-soft:rgba(212,168,83,.15);
+            --rg-bg:#11111b; --rg-card:#1a1a26; --rg-card-hover:#21212f;
+            --rg-input:#15151f; --rg-border:rgba(255,255,255,.09);
+            --rg-text:#e9e9f2; --rg-muted:#8a8aa3;
+            --rg-radius:14px; --rg-radius-sm:9px;
+            --rg-warn:#ffd166; --rg-ok:#34d399; --rg-bad:#f87171;
+          }
+          #section-google-maps .rg-note { background:var(--gold-soft); border:1px solid rgba(212,168,83,.35); color:var(--rg-text); border-radius:var(--rg-radius-sm); padding:10px 14px; font-size:12.5px; margin-bottom:16px; line-height:1.5; }
+          #section-google-maps .rg-note b { color:var(--gold); }
+          #section-google-maps .rg-localsel { background:var(--rg-input); color:var(--rg-text); border:1px solid var(--rg-border); padding:7px 11px; border-radius:var(--rg-radius-sm); font-size:13px; }
+
+          #section-google-maps .rg-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+          #section-google-maps .rg-metric { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:14px 16px; }
+          #section-google-maps .rg-metric-label { font-size:11px; color:var(--rg-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+          #section-google-maps .rg-metric-value { font-size:24px; font-weight:700; color:var(--gold); }
+          #section-google-maps .rg-metric-sub { font-size:11px; color:var(--rg-muted); margin-top:4px; }
+
+          #section-google-maps .rg-card { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:18px; margin-bottom:16px; }
+          #section-google-maps .rg-card h2 { font-size:14px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.5px; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
+          #section-google-maps .rg-card h2 .count { background:var(--gold-soft); color:var(--gold); font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700; }
+
+          #section-google-maps .rg-form-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+          #section-google-maps .rg-field { display:flex; flex-direction:column; gap:4px; }
+          #section-google-maps .rg-field label { font-size:11px; color:var(--rg-muted); text-transform:uppercase; letter-spacing:.5px; }
+          #section-google-maps .rg-field input, #section-google-maps .rg-field select, #section-google-maps .rg-field textarea { background:var(--rg-input); border:1px solid var(--rg-border); color:var(--rg-text); padding:8px 10px; border-radius:var(--rg-radius-sm); font-family:inherit; font-size:14px; }
+          #section-google-maps .rg-field input:focus, #section-google-maps .rg-field select:focus, #section-google-maps .rg-field textarea:focus { outline:0; border-color:var(--gold); }
+
+          #section-google-maps .rg-stars { display:flex; gap:4px; align-items:center; padding:6px 0; }
+          #section-google-maps .rg-star { font-size:24px; color:#3a3a55; cursor:pointer; transition:transform .1s; user-select:none; }
+          #section-google-maps .rg-star:hover { transform:scale(1.15); }
+          #section-google-maps .rg-star.active { color:var(--gold); text-shadow:0 0 6px rgba(212,168,83,.5); }
+          #section-google-maps .rg-textarea { width:100%; min-height:90px; resize:vertical; }
+
+          #section-google-maps .rg-btn { background:var(--gold); color:#1a1a2e; border:0; padding:10px 18px; border-radius:var(--rg-radius-sm); font-weight:700; cursor:pointer; font-size:14px; }
+          #section-google-maps .rg-btn:hover { background:#e0b760; }
+          #section-google-maps .rg-btn:disabled { background:#5a5a7a; color:var(--rg-muted); cursor:not-allowed; }
+          #section-google-maps .rg-btn-sec { background:var(--rg-border); color:var(--rg-text); border:0; padding:8px 14px; border-radius:var(--rg-radius-sm); font-weight:600; cursor:pointer; font-size:13px; }
+          #section-google-maps .rg-btn-ghost { background:transparent; color:var(--rg-muted); border:1px solid var(--rg-border); padding:6px 10px; border-radius:var(--rg-radius-sm); cursor:pointer; font-size:12px; }
+          #section-google-maps .rg-btn-ghost:hover { color:var(--rg-text); border-color:var(--gold); }
+
+          #section-google-maps .rg-variants { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+          #section-google-maps .rg-variant { background:var(--rg-bg); border:1px solid var(--rg-border); border-radius:var(--rg-radius-sm); padding:12px; display:flex; flex-direction:column; gap:8px; }
+          #section-google-maps .rg-variant-head { display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--rg-muted); text-transform:uppercase; letter-spacing:.5px; }
+          #section-google-maps .rg-variant-tag { background:var(--gold-soft); color:var(--gold); padding:2px 8px; border-radius:10px; font-weight:700; }
+          #section-google-maps .rg-variant-text { background:transparent; border:1px solid transparent; color:var(--rg-text); padding:8px; border-radius:var(--rg-radius-sm); resize:vertical; min-height:120px; font-family:inherit; font-size:13px; line-height:1.5; }
+          #section-google-maps .rg-variant-text:focus { outline:0; background:var(--rg-input); border-color:var(--gold); }
+          #section-google-maps .rg-variant-actions { display:flex; gap:6px; justify-content:flex-end; }
+
+          #section-google-maps .rg-empty { text-align:center; padding:24px; color:var(--rg-muted); font-size:13px; }
+          #section-google-maps .rg-loading { text-align:center; padding:32px; color:var(--rg-muted); }
+          #section-google-maps .rg-spinner { display:inline-block; width:20px; height:20px; border:2px solid var(--rg-border); border-top-color:var(--gold); border-radius:50%; animation:rg-spin 1s linear infinite; }
+          @keyframes rg-spin { to { transform:rotate(360deg); } }
+
+          #section-google-maps .rg-table { width:100%; border-collapse:collapse; font-size:13px; }
+          #section-google-maps .rg-table th { text-align:left; padding:8px 10px; color:var(--rg-muted); font-size:11px; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid var(--rg-border); font-weight:600; }
+          #section-google-maps .rg-table td { padding:10px; border-bottom:1px solid var(--rg-border); vertical-align:top; }
+          #section-google-maps .rg-table tr:hover td { background:var(--rg-card-hover); }
+          #section-google-maps .rg-truncate { max-width:380px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+          #section-google-maps .rg-stars-mini { color:var(--gold); font-size:13px; letter-spacing:1px; }
+          #section-google-maps .rg-badge { display:inline-block; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700; text-transform:uppercase; }
+          #section-google-maps .rg-badge-pendiente { background:rgba(255,209,102,.2); color:var(--rg-warn); }
+          #section-google-maps .rg-badge-respondida { background:rgba(52,211,153,.2); color:var(--rg-ok); }
+          #section-google-maps .rg-badge-descartada { background:rgba(138,138,163,.2); color:var(--rg-muted); }
+
+          #section-google-maps .rg-filters { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:12px; }
+          #section-google-maps .rg-filters .rg-field { min-width:120px; }
+          #section-google-maps .rg-pager { display:flex; gap:8px; justify-content:center; align-items:center; padding:12px; color:var(--rg-muted); font-size:12px; }
+
+          #section-google-maps .rg-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; z-index:9000; }
+          #section-google-maps .rg-modal-overlay.open { display:flex; }
+          #section-google-maps .rg-modal { background:var(--rg-card); border:1px solid var(--gold); border-radius:var(--rg-radius); padding:18px; max-width:640px; width:92%; max-height:84vh; overflow-y:auto; }
+          #section-google-maps .rg-modal h3 { color:var(--gold); margin:0 0 10px; font-size:15px; }
+          #section-google-maps .rg-modal .rg-meta { font-size:12px; color:var(--rg-muted); margin-bottom:10px; }
+          #section-google-maps .rg-modal pre { background:var(--rg-bg); padding:12px; border-radius:var(--rg-radius-sm); white-space:pre-wrap; word-break:break-word; font-family:inherit; font-size:13px; line-height:1.5; border:1px solid var(--rg-border); margin:0 0 10px; }
+          #section-google-maps .rg-modal-label { font-size:11px; color:var(--rg-muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px; }
+          #section-google-maps .rg-modal textarea { width:100%; min-height:120px; resize:vertical; background:var(--rg-input); border:1px solid var(--rg-border); color:var(--rg-text); padding:10px; border-radius:var(--rg-radius-sm); font-family:inherit; font-size:13px; line-height:1.5; }
+          #section-google-maps .rg-modal textarea:focus { outline:0; border-color:var(--gold); }
+          #section-google-maps .rg-modal-foot { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+
+          @media (max-width:800px) {
+            #section-google-maps .rg-metrics { grid-template-columns:repeat(2,1fr); }
+            #section-google-maps .rg-form-row { grid-template-columns:1fr; }
+            #section-google-maps .rg-variants { grid-template-columns:1fr; }
+            #section-google-maps .rg-truncate { max-width:160px; }
+          }
+          </style>
+
+          <div class="panel-head">
+            <h1><span style="color:var(--gold)">★</span> Reseñas Google</h1>
+            <select id="gmLocal" class="rg-localsel">
+              <option value="">Todos los locales</option>
+              <option value="luceros">Luceros</option>
+              <option value="playa-san-juan">Playa San Juan</option>
+              <option value="russafa">Russafa</option>
+              <option value="santa-clara">Santa Clara</option>
+              <option value="boadilla">Boadilla</option>
+              <option value="benidorm">Benidorm</option>
+            </select>
+          </div>
+
+          <div class="rg-note">
+            <b>Modo manual (Fase 1).</b> Pegá la reseña, generá la respuesta con IA en el tono Popular y copiala a Google.
+            La conexión automática con Google (traer reseñas y publicar respuestas sin copiar/pegar) se activa en cuanto Google apruebe la API.
+          </div>
+
+          <!-- Métricas -->
+          <div class="rg-metrics">
+            <div class="rg-metric">
+              <div class="rg-metric-label">Reseñas del mes</div>
+              <div class="rg-metric-value" id="gmTotal">—</div>
+            </div>
+            <div class="rg-metric">
+              <div class="rg-metric-label">Respondidas / Pendientes</div>
+              <div class="rg-metric-value" id="gmResp">— / —</div>
+            </div>
+            <div class="rg-metric">
+              <div class="rg-metric-label">Puntuación media (mes)</div>
+              <div class="rg-metric-value" id="gmMedia">—</div>
+              <div class="rg-metric-sub" id="gmDistrib"></div>
+            </div>
+            <div class="rg-metric">
+              <div class="rg-metric-label">Tiempo medio respuesta</div>
+              <div class="rg-metric-value" id="gmTiempo">—</div>
+            </div>
+          </div>
+
+          <!-- Nueva reseña -->
+          <div class="rg-card">
+            <h2>+ Nueva reseña</h2>
+            <div class="rg-form-row">
+              <div class="rg-field">
+                <label>Local</label>
+                <select id="gmFLocal">
+                  <option value="">Elegí un local</option>
+                  <option value="luceros">Luceros</option>
+                  <option value="playa-san-juan">Playa San Juan</option>
+                  <option value="russafa">Russafa</option>
+                  <option value="santa-clara">Santa Clara</option>
+                  <option value="boadilla">Boadilla</option>
+                  <option value="benidorm">Benidorm</option>
+                </select>
+              </div>
+              <div class="rg-field">
+                <label>Cliente (opcional)</label>
+                <input type="text" id="gmFCliente" placeholder="Nombre del cliente">
+              </div>
+              <div class="rg-field">
+                <label>Fecha de la reseña</label>
+                <input type="date" id="gmFFecha">
+              </div>
+            </div>
+            <div class="rg-form-row" style="grid-template-columns:1fr 2fr;">
+              <div class="rg-field">
+                <label>Estrellas</label>
+                <div class="rg-stars" id="gmFStars">
+                  <span class="rg-star" data-v="1">★</span>
+                  <span class="rg-star" data-v="2">★</span>
+                  <span class="rg-star" data-v="3">★</span>
+                  <span class="rg-star" data-v="4">★</span>
+                  <span class="rg-star" data-v="5">★</span>
+                </div>
+              </div>
+              <div class="rg-field">
+                <label>Texto de la reseña</label>
+                <textarea class="rg-textarea" id="gmFTexto" placeholder="Pegá acá el texto de la reseña..."></textarea>
+              </div>
+            </div>
+            <button class="rg-btn" id="gmGenerar">Generar 3 respuestas</button>
+            <div id="gmVariantsWrap" style="display:none;"><div class="rg-variants" id="gmVariants"></div></div>
+            <div id="gmLoading" class="rg-loading" style="display:none;">
+              <div class="rg-spinner"></div>
+              <div style="margin-top:10px;">Generando variantes con Claude…</div>
+            </div>
+          </div>
+
+          <!-- Histórico -->
+          <div class="rg-card">
+            <h2>Histórico <span class="count" id="gmHCount">0</span></h2>
+            <div class="rg-filters">
+              <div class="rg-field">
+                <label>Local</label>
+                <select id="gmHLocal">
+                  <option value="">Todos</option>
+                  <option value="luceros">Luceros</option>
+                  <option value="playa-san-juan">Playa San Juan</option>
+                  <option value="russafa">Russafa</option>
+                  <option value="santa-clara">Santa Clara</option>
+                  <option value="boadilla">Boadilla</option>
+                  <option value="benidorm">Benidorm</option>
+                </select>
+              </div>
+              <div class="rg-field">
+                <label>Estrellas</label>
+                <select id="gmHEstrellas">
+                  <option value="">Todas</option>
+                  <option value="5">5 ★</option><option value="4">4 ★</option>
+                  <option value="3">3 ★</option><option value="2">2 ★</option><option value="1">1 ★</option>
+                </select>
+              </div>
+              <div class="rg-field">
+                <label>Estado</label>
+                <select id="gmHEstado">
+                  <option value="">Todos</option>
+                  <option value="pendiente">Pendiente</option>
+                  <option value="respondida">Respondida</option>
+                  <option value="descartada">Descartada</option>
+                </select>
+              </div>
+              <div class="rg-field"><label>Desde</label><input type="date" id="gmHDesde"></div>
+              <div class="rg-field"><label>Hasta</label><input type="date" id="gmHHasta"></div>
+              <button class="rg-btn-sec" id="gmHAplicar">Aplicar</button>
+              <button class="rg-btn-ghost" id="gmHLimpiar">Limpiar</button>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="rg-table">
+                <thead>
+                  <tr><th>Fecha</th><th>Local</th><th>Cliente</th><th>★</th><th>Texto</th><th>Estado</th><th></th></tr>
+                </thead>
+                <tbody id="gmHBody">
+                  <tr><td colspan="7" class="rg-empty">Cargando…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="rg-pager">
+              <button class="rg-btn-ghost" id="gmHPrev">‹ Anterior</button>
+              <span id="gmHRango">—</span>
+              <button class="rg-btn-ghost" id="gmHNext">Siguiente ›</button>
+            </div>
+          </div>
+
+          <!-- Modal detalle / editar -->
+          <div class="rg-modal-overlay" id="gmModal">
+            <div class="rg-modal">
+              <h3 id="gmDTitle">Reseña</h3>
+              <div class="rg-meta" id="gmDMeta"></div>
+              <div class="rg-modal-label">Reseña original</div>
+              <pre id="gmDOriginal"></pre>
+              <div class="rg-modal-label">Respuesta</div>
+              <textarea id="gmDRespTextarea"></textarea>
+              <div id="gmDVariants" class="rg-variants" style="margin-top:12px;"></div>
+              <div class="rg-modal-foot">
+                <button class="rg-btn-ghost" id="gmDClose">Cerrar</button>
+                <button class="rg-btn-sec" id="gmDRegenerar">✨ Regenerar con IA</button>
+                <button class="rg-btn" id="gmDGuardar">Guardar cambios</button>
+              </div>
+            </div>
+          </div>
         </section>
         <section class="dash-section" id="section-inteligencia" hidden>
           <div class="panel-head">
@@ -602,7 +850,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=39"></script>
+  <script src="/admin/admin.js?v=40"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

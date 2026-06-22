@@ -23,6 +23,7 @@ const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = requ
 const { listarReferencias } = require('./lib/referencia');
 const menu = require('./lib/menu');
 const menuAnalytics = require('./lib/menu-analytics');
+const resenas = require('./lib/google-reviews');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -982,6 +983,60 @@ app.post('/api/admin/analitica/meta/snapshot', requireAdmin, async (req, res) =>
     console.error('[Analitica Meta] Snapshot:', e.message);
     res.status(500).json({ error: 'No se pudo actualizar Meta Ads: ' + e.message });
   }
+});
+
+// ========== PANEL ADMIN — RESEÑAS GOOGLE (sección Google Maps) ==========
+// Gestión de reseñas con IA. Fase 1 (semi-manual): generar 3 respuestas con el
+// tono Popular → elegir/editar → guardar en pp_resenas_google. Solo dueño.
+// Ver lib/google-reviews.js. Fase 2 (cuando Google apruebe la Business Profile
+// API): backfill + cron + publicación automática de respuestas.
+
+// Gate dueño-only: además de admin, role 'dueno' (mismo criterio que /api/admin/me).
+async function requireOwner(req, res, next) {
+  try {
+    const access = await menu.getMenuAccess(req.adminUser.id);
+    if (access && access.role === 'dueno') return next();
+  } catch (_) {}
+  return res.status(403).json({ error: 'Solo el dueño puede gestionar las reseñas.' });
+}
+
+app.post('/api/admin/resenas/generar', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.generar(req.body || {})); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.post('/api/admin/resenas/guardar', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.guardar(req.body || {})); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.get('/api/admin/resenas/historial', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.historial(req.query)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.get('/api/admin/resenas/metricas', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.metricas(req.query)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.put('/api/admin/resenas/:id', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.actualizar(req.params.id, req.body || {})); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.get('/api/admin/resenas/pendientes/count', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.pendientesCount()); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.post('/api/admin/resenas/notificar-telegram', requireAdmin, requireOwner, async (req, res) => {
+  const { local_id, estrellas, texto_original, cliente_nombre } = req.body || {};
+  if (!resenas.validateLocal(local_id)) return res.status(400).json({ error: 'local_id inválido' });
+  if (!Number.isInteger(estrellas)) return res.status(400).json({ error: 'estrellas inválido' });
+  if (!texto_original) return res.status(400).json({ error: 'texto_original requerido' });
+  try { res.json(await resenas.notificarTelegram({ local_id, estrellas, texto_original, cliente_nombre })); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
 // ========== PANEL ADMIN — MENÚ DIGITAL ==========
