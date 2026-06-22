@@ -494,6 +494,30 @@ button { font-family: inherit; cursor: pointer; }
 .modal-actions .save { background: linear-gradient(180deg, var(--pp-gold-bright), var(--pp-gold)); color: #eaf2fb; border: none; }
 .modal-actions .save:hover { filter: brightness(1.05); background: linear-gradient(180deg, var(--pp-gold-bright), var(--pp-gold)); }
 .modal-error { color: var(--pp-danger); font-size: .8rem; min-height: 1em; }
+
+/* Hero con IA (Gemini) en el editor de posts */
+.hero-ia { margin: -4px 0 12px; }
+.hero-ia-toggle {
+  border: 1px dashed var(--pp-line-2); background: transparent; color: var(--pp-muted);
+  border-radius: var(--radius-sm); padding: 8px 13px; font-size: .82rem; cursor: pointer; transition: all .15s;
+}
+.hero-ia-toggle:hover { color: var(--pp-text); border-color: var(--pp-gold); }
+.hero-ia-panel {
+  margin-top: 10px; padding: 12px; border: 1px solid var(--pp-line);
+  border-radius: var(--radius-sm); background: var(--pp-bg-soft);
+}
+.hero-ia-panel textarea { width: 100%; }
+.hero-ia-actions { display: flex; gap: 8px; margin-top: 8px; }
+.hero-ia-actions button {
+  border-radius: 10px; padding: 9px 16px; font-weight: 700; font-size: .82rem; cursor: pointer;
+  border: 1px solid var(--pp-line-2); background: transparent; color: var(--pp-text); transition: all .15s;
+}
+.hero-ia-actions button:hover { background: var(--pp-card-hover); }
+.hero-ia-actions .save { background: linear-gradient(180deg, var(--pp-gold-bright), var(--pp-gold)); color: #eaf2fb; border: none; }
+.hero-ia-actions button:disabled { opacity: .55; cursor: default; }
+.hero-ia-preview { margin-top: 10px; }
+.hero-ia-preview img { width: 100%; border-radius: var(--radius-sm); display: block; }
+.hero-ia-hint { font-size: .76rem; color: var(--pp-muted); margin: 6px 0 0; }
 .ia-pistas-label { font-size: .8rem; color: var(--pp-muted); margin: 0 0 2px; }
 .ia-pistas { display: flex; flex-wrap: wrap; gap: 7px; }
 .ia-pista {

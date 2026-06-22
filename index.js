@@ -18,7 +18,7 @@ const { logEvento, getWebStats } = require('./lib/web-stats');
 const { snapshotGoogle, getGoogleStats } = require('./lib/google-stats');
 const metaAds = require('./lib/meta-ads');
 const ig = require('./lib/instagram');
-const { generarCopy, ajustarCopy, generarPiezas, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
+const { generarCopy, ajustarCopy, generarPiezas, generarImagenIA, afinarPromptIA, sugerirEscenaBlog, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
 const menu = require('./lib/menu');
@@ -426,6 +426,55 @@ app.delete('/api/admin/posts/:id', requireAdmin, async (req, res) => {
   res.json({ ok: true });
 });
 
+// ---- Imagen de portada (hero) generada con IA (Gemini "nano banana") ----
+// Equivalente del generador de placas, pero enfocado en blog: la salida es una FOTO
+// PURA (sin texto ni logo horneados), apaisada 16:9, pensada para que el título del
+// post se monte encima por CSS. Sugiere la escena desde el propio post y la genera.
+
+// Sugiere una escena fotográfica para el hero, a partir del título/bajada/contenido.
+app.post('/api/admin/posts/hero-ia/sugerir', requireAdmin, async (req, res) => {
+  try {
+    const { titulo, subtitulo, contenido } = req.body;
+    const prompt = await sugerirEscenaBlog({
+      titulo: String(titulo || ''),
+      subtitulo: String(subtitulo || ''),
+      contenido: String(contenido || ''),
+    });
+    res.json({ prompt });
+  } catch (e) {
+    console.error('[Hero IA sugerir] Error:', e.message);
+    res.status(500).json({ error: 'No pude sugerir la escena: ' + e.message });
+  }
+});
+
+// Genera la foto de portada con Gemini y la sube al Storage. Devuelve la URL pública
+// lista para cargar como hero_image del post.
+app.post('/api/admin/posts/hero-ia', requireAdmin, async (req, res) => {
+  try {
+    const sharp = require('sharp');
+    const { prompt } = req.body;
+    if (!prompt || !String(prompt).trim()) {
+      return res.status(400).json({ error: 'Describí la escena a generar.' });
+    }
+    if (!geminiDisponible()) {
+      return res.status(400).json({ error: 'Falta GEMINI_API_KEY en el servidor: la generación con IA no está activa.' });
+    }
+    const raw = await generarImagenIA(String(prompt), { aspecto: '16:9' });
+    const optim = await sharp(raw).rotate()
+      .resize({ width: 1600, withoutEnlargement: true })
+      .jpeg({ quality: 84, mozjpeg: true }).toBuffer();
+    const objectPath = 'blog/hero-ia-' + Date.now() + '.jpg';
+    const { error } = await supabaseAdmin.storage.from('ppweb-blog')
+      .upload(objectPath, optim, { contentType: 'image/jpeg', upsert: false });
+    if (error) return res.status(500).json({ error: error.message });
+    const { data } = supabaseAdmin.storage.from('ppweb-blog').getPublicUrl(objectPath);
+    res.json({ url: data.publicUrl });
+  } catch (e) {
+    console.error('[Hero IA] Error:', e.message);
+    res.status(500).json({ error: 'No pude generar la imagen: ' + e.message });
+  }
+});
+
 // ---- Asistente de IA (promociones) ----
 // Interpreta una instrucción y devuelve { reply, plan }. NO ejecuta nada.
 app.post('/api/admin/assistant', requireAdmin, async (req, res) => {
@@ -719,6 +768,24 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   }
 });
 
+// Afinar el prompt de imagen: un experto reteje el borrador de escena + los
+// elementos a destacar en un solo prompt fotográfico pulido para Gemini.
+app.post('/api/admin/gen/prompt-experto', requireAdmin, async (req, res) => {
+  try {
+    const { borrador, destacar, contexto, formato } = req.body;
+    const prompt = await afinarPromptIA({
+      borrador: String(borrador || ''),
+      destacar: Array.isArray(destacar) ? destacar.map((s) => String(s)).filter(Boolean) : [],
+      contexto: String(contexto || ''),
+      formato: formato || 'historia',
+    });
+    res.json({ prompt });
+  } catch (e) {
+    console.error('[Gen prompt-experto] Error:', e.message);
+    res.status(500).json({ error: 'No pude afinar el prompt: ' + e.message });
+  }
+});
+
 // Ajuste conversacional: el usuario ya vio las piezas y pide cambios en
 // lenguaje natural. La IA reescribe copy/logo y, si hace falta, cambia la foto.
 app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
@@ -762,6 +829,8 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
         bajada: nu.bajada != null ? nu.bajada : orig.bajada,
         cta: nu.cta != null ? nu.cta : orig.cta,
         lugar: nu.lugar != null ? nu.lugar : orig.lugar,
+        banderas: nu.banderas != null ? nu.banderas : (orig.banderas || []),
+        evento: nu.evento != null ? nu.evento : (orig.evento || ''),
         estilo: nu.estilo || orig.estilo || 'clasico',
         logo: nu.logo || orig.logo || 'wordmark-blanco',
         adj,

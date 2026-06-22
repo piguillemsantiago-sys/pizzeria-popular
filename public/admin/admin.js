@@ -248,9 +248,63 @@
     f.meta_desc.value = post ? (post.meta_desc || '') : '';
     f.keyword.value = post ? (post.keyword || '') : '';
     f.contenido.value = post ? (post.contenido || '') : '';
+    resetHeroIa();
     $('postModal').hidden = false;
   }
   function closePostModal() { $('postModal').hidden = true; }
+
+  // ---- Hero con IA (Gemini): sugiere la escena desde el post, genera una foto de
+  // portada LIMPIA (sin texto), la sube al Storage y la carga como hero_image. ----
+  function resetHeroIa() {
+    $('heroIaPanel').hidden = true;
+    $('heroIaPrompt').value = '';
+    $('heroIaError').textContent = '';
+    $('heroIaPreview').hidden = true;
+    $('heroIaImg').removeAttribute('src');
+  }
+
+  async function onHeroIaSugerir() {
+    const f = $('postForm');
+    const btn = $('heroIaSugerir');
+    const prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = '✨ Pensando…';
+    $('heroIaError').textContent = '';
+    try {
+      const out = await api('/api/admin/posts/hero-ia/sugerir', 'POST', {
+        titulo: f.titulo.value, subtitulo: f.subtitulo.value, contenido: f.contenido.value,
+      });
+      if (out && out.prompt) $('heroIaPrompt').value = out.prompt;
+    } catch (e) {
+      $('heroIaError').textContent = e.message || 'No pude sugerir la escena.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = prev;
+    }
+  }
+
+  async function onHeroIaGen() {
+    const prompt = $('heroIaPrompt').value.trim();
+    if (!prompt) { $('heroIaError').textContent = 'Escribí o sugerí una escena primero.'; return; }
+    const btn = $('heroIaGen');
+    const prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Generando… (~30 s)';
+    $('heroIaError').textContent = '';
+    try {
+      const out = await api('/api/admin/posts/hero-ia', 'POST', { prompt });
+      if (out && out.url) {
+        $('postForm').hero_image.value = out.url;
+        $('heroIaImg').src = out.url;
+        $('heroIaPreview').hidden = false;
+      }
+    } catch (e) {
+      $('heroIaError').textContent = e.message || 'No pude generar la imagen.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = prev;
+    }
+  }
 
   async function savePostModal(e) {
     e.preventDefault();
@@ -1503,6 +1557,7 @@
         escenaIA: p.escenaIA || '',
         escenaPistas: Array.isArray(p.escenaPistas) ? p.escenaPistas : [],
         banderas: Array.isArray(p.banderas) ? p.banderas : [],
+        evento: p.evento || '',
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1707,6 +1762,7 @@
         placas: genState.placas.map((p) => ({
           titulo: p.titulo, acento: p.acento, bajada: p.bajada, cta: p.cta, lugar: p.lugar,
           banderas: (p.banderas && p.banderas.length) ? p.banderas : undefined,
+          evento: p.evento || undefined,
           estilo: p.estilo || undefined,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
@@ -1877,6 +1933,9 @@
     $('postList').addEventListener('click', onPostListClick);
     $('postList').addEventListener('change', onPostEstadoChange);
     $('postModal').addEventListener('click', (e) => { if (e.target.id === 'postModal') closePostModal(); });
+    $('heroIaToggle').addEventListener('click', () => { $('heroIaPanel').hidden = !$('heroIaPanel').hidden; });
+    $('heroIaSugerir').addEventListener('click', onHeroIaSugerir);
+    $('heroIaGen').addEventListener('click', onHeroIaGen);
 
     // Asistente IA (promos)
     $('assistantForm').addEventListener('submit', onAssistantSubmit);

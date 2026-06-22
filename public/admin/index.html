@@ -520,6 +520,23 @@
         <label>Imagen del hero (ruta o URL)
           <input type="text" name="hero_image" placeholder="/images/blog/..." />
         </label>
+        <div class="hero-ia">
+          <button type="button" id="heroIaToggle" class="hero-ia-toggle">🍌 Generar imagen de portada con IA (Gemini)</button>
+          <div class="hero-ia-panel" id="heroIaPanel" hidden>
+            <label>Escena a generar <small>(la foto sale de acá; sin texto, apaisada)</small>
+              <textarea id="heroIaPrompt" rows="4" placeholder="Describí la escena… o tocá «Sugerir escena» para que la IA la arme desde el post."></textarea>
+            </label>
+            <div class="hero-ia-actions">
+              <button type="button" id="heroIaSugerir">✨ Sugerir escena</button>
+              <button type="button" id="heroIaGen" class="save">Generar imagen</button>
+            </div>
+            <p class="modal-error" id="heroIaError"></p>
+            <div class="hero-ia-preview" id="heroIaPreview" hidden>
+              <img id="heroIaImg" alt="Vista previa del hero generado" />
+              <p class="hero-ia-hint">✅ Imagen generada y cargada como portada. Tocá «Guardar» para confirmar el post.</p>
+            </div>
+          </div>
+        </div>
         <label>Meta description (SEO)
           <textarea name="meta_desc"></textarea>
         </label>
