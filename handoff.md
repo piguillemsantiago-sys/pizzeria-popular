@@ -6,7 +6,7 @@ Sitio web de Pizzería Popular (cadena argentina de pizza al horno de leña en E
 ## ESTADO ACTUAL
 - Repo: `github.com/piguillemsantiago-sys/pizzeria-popular`, branch `main`. Working tree limpio. Copia de trabajo local: **`C:\Dev\pizzeria-popular`** (NO la carpeta de `Documents/01-Clientes/Pizzeria-Popular`, que es solo material/assets viejos y tiene un handoff desactualizado).
 - **Producción: VPS DigitalOcean** (`167.99.240.64`). **En vivo con dominio + HTTPS** (verificado 2026-06-02, HTTP 200): `https://grupoajax.es`, `https://www.grupoajax.es`, `https://pizzeriapopular.es`, `https://www.pizzeriapopular.es`. Nginx enruta por `server_name` (curl directo a la IP da 404, es normal). Home EN en `/en/home`.
-- Panel admin operativo en `/admin/` — **dashboard con sidebar** (tema negro premium + dorado). Área **Marketing** con 5 secciones: **Web** (Promociones, Blog, Calendario, Pepe) e **Inteligencia** (tablero + informe semanal IA, construida 2026-06-10) FUNCIONALES; Calendario, Planificación y Generador siguen como placeholders "Próximamente". Nav por `switchSection` en `admin.js`. Assets versionados con `?v=N` (cache-busting) — al editar `admin.css`/`admin.js` hay que **bumpear la versión** en `index.html` (van por **v=6**).
+- Panel admin operativo en `/admin/` — **dashboard con sidebar** (tema negro premium; **el acento pasó de dorado a AZUL MARINO + aurora de fondo el 2026-06-23 — aplicado en local, NO deployado**, ver CAMBIOS). Área **Marketing** con 5 secciones: **Web** (Promociones, Blog, Calendario, Pepe) e **Inteligencia** (tablero + informe semanal IA, construida 2026-06-10) FUNCIONALES; Calendario, Planificación y Generador siguen como placeholders "Próximamente". Nav por `switchSection` en `admin.js`. Assets versionados con `?v=N` (cache-busting) — al editar `admin.css`/`admin.js` hay que **bumpear la versión** en `index.html` (van por **v=6**).
 - Chatbot público **Pepe** funcionando en toda la web. **Crece desde el panel** (base de conocimiento editable) y lee promos/horarios reales de la base. Registro de chats operativo.
 - `.env` (local y VPS): `PORT, NODE_ENV, GOOGLE_PLACES_API_KEY, SMTP_*, SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY, ANTHROPIC_API_KEY, GDRIVE_FOLDER_ID (opcional)`. `.env` gitignored.
 
@@ -68,7 +68,7 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 - Supabase: reutilizar el proyecto "AJAX Sistema de Gestión". NO crear proyecto nuevo. Tablas siempre con prefijo `ppweb_`.
 - La IA del panel NO edita código: solo acciones acotadas sobre datos `ppweb_*`.
 - Bug recurrente CSS: elemento con `[hidden]` pero regla que pone `display:flex/block` → agregar `.selector[hidden]{display:none}`.
-- Mail oficial: `pizzeriapopular@grupoajax.es`. Dorado de marca: `#D8A460` / brillante `#F5C66B`.
+- Mail oficial: `pizzeriapopular@grupoajax.es`. Dorado de marca (placas/contenido generado del Generador): `#D8A460` / `#F5C66B`. **OJO: el ACENTO de la UI del panel admin ya NO es dorado — pasó a AZUL MARINO `#3E6FA8`/`#5B91CF` el 2026-06-23 (ver CAMBIOS). El dorado queda solo para el contenido de marca, no para el chrome del panel.**
 
 ## ARCHIVOS CLAVE
 - `index.js` — backend Express: rutas del sitio, `/api/contacto`, `/api/franquicia`, `/api/chat`, `/api/admin/*`, crons.
@@ -81,6 +81,19 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 
 ## CRONS (en `index.js`)
 - Ratings Google: domingo 3am. — Autopublicar posts: diario 6am. — Análisis del chat de Pepe: diario 7am. — **Informe semanal de Inteligencia: lunes 8am** (genera + manda por mail; si SMTP no está configurado, solo guarda).
+
+## CAMBIOS DE LA SESIÓN 2026-06-23 — Rediseño visual del panel: dorado → AZUL MARINO
+- **Sesión de exploración de diseño del panel admin.** Se mostraron 3 estilos sobre la pantalla real de Promociones (maquetas standalone): "Aurora glass" (oscuro premium con aurora animada + glass), "Editorial" (crema + serif) y "Bento cockpit" (tiles + Ctrl+K). El dueño eligió **Aurora glass**.
+- Se probaron variantes de clima (Brasa/Serena/Boreal) y después 3 paradigmas nuevos de diseño+interacción ("El Horno" sala de control, "El Tablón" lienzo infinito, "La Semana Viva" agenda) — **lo confundieron** ("estoy perdido") → se volvió a Aurora glass. Lección guardada en memoria `diseno-no-abrumar` (pocas opciones aterrizadas por vez + renders reales).
+- El dueño **rechazó el dorado/amarillo** y los acentos cálidos (terracota/tomate/albahaca/cobre) → eligió **AZUL MARINO**.
+- **Aplicado al panel real (`admin.css` + `index.html` + `login.html`):**
+  - Dorado → marino: tokens `--pp-gold #3E6FA8` / `--pp-gold-bright #5B91CF` / `--pp-gold-deep #2E5070`; todos los `rgba(216,164,96,..)`→`rgba(62,111,168,..)`; texto de botones `#2a1f12`→`#eaf2fb` (claro sobre azul); `--pp-bg #08080a`→`#070809` (negro azulado). Grep de restos dorados: limpio.
+  - **Aurora de fondo viva**: divs `.aurora`+`.scrim` agregados a `index.html` y `login.html` + CSS de blooms azules animados (`au1/au2/au3`), scrim, capas (`.dash`/`.login-card` z-index:2) y glow azul en hover de `.stat-card`/`.promo-row`.
+  - Verificado con captura del **login real** servido en `localhost:3000` (marino OK, sin dorado).
+  - `admin.css` e `index.html` quedaron **commiteados** (en `822a28e` "Analitica: tarjetas en acordeon"; `index.html` carga `admin.css?v=38`). **`login.html` sigue SIN commitear** (le agregué la aurora y su `?v` quedó en v=2 en HEAD).
+- Maquetas (`_proto-*.html`) y capturas `.png` de exploración: creadas y **borradas** al cierre (nunca commiteadas). En `public/admin/` quedan solo los 6 archivos reales.
+- Tonos de azul alternos listos para regenerar si el dueño quiere afinar: **Cobalto** (más brillante `#3B7DE0`) y **Acero** (más sobrio `#5E7C99`).
+- **DEPLOY NO HECHO** — bloqueado por backend a medio hacer en el working tree (ver RIESGOS + PRÓXIMO PASO).
 
 ## CAMBIOS DE ESTA SESIÓN (2026-06-10/11 · continuación)
 - **"Sumate al equipo" PUBLICADO** (ES+EN) con fotos del banco elegidas por feedback iterativo: hero del equipo (variante split), abrazo primer plano, pizza vistosa (Producción Abril), cartel "La vida es linda". Quitado bullet "Repartidores", agregado requisito de papeles en regla.
@@ -114,9 +127,10 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 - Supabase: creadas `ppweb_chat_logs` y `ppweb_chat_insights` (ver sección SUPABASE).
 
 ## BUGS PENDIENTES
-- Ninguno conocido al cierre.
+- ⚠️ **HEAD de git INCONSISTENTE (crítico para deploy/checkout):** el `index.js` commiteado (HEAD `822a28e`, líneas 18-19) hace `require('./lib/google-stats')` y `require('./lib/meta-ads')`, pero **`lib/google-stats.js` y `lib/meta-ads.js` NO están commiteados** (untracked). Un `git checkout`/clone limpio rompe la app (módulos faltantes). En vivo no se nota porque `deploy.sh` empaqueta el working tree (incluye los untracked). Hay que **commitear esos 2 lib + `index.js` + `lib/generador.js` juntos** cuando la feature (Meta Ads + Google stats) esté lista, o el repo queda roto.
 
 ## PRÓXIMO PASO CONCRETO
+0. **DECIDIR EL DEPLOY DEL COLOR AZUL MARINO (2026-06-23):** el cambio de UI está commiteado (`admin.css`/`index.html`) pero NO en vivo. `deploy.sh` empaqueta TODO el working tree → arrastraría el backend a medio hacer (Meta Ads/Google stats/`generador.js` 198 líneas). Opciones: (a) terminar + commitear el backend y deployar todo junto; (b) NO deployar hasta que el backend esté listo (el color se va junto, recomendado si hay dudas); (c) deploy selectivo del color — DELICADO: HEAD depende de `lib/meta-ads.js`/`lib/google-stats.js` untracked (ver BUGS), hay que commitearlos antes o el deploy queda inconsistente; `git stash` de la WIP rompería el `require`. **Confirmar con el dueño el estado real del backend antes de tocar producción.** Falta también commitear `login.html` (aurora) y bumpear su `?v`.
 1. ✅ HECHO (2026-06-11): "Sumate al equipo" PUBLICADO ES+EN y visible en /blog/ (el listado ahora es dinámico, ver CAMBIOS).
 2. **Post del Mundial** (`mundial-de-futbol-en-pizzeria-popular`, ES+EN en preparación): el Mundial arrancó el 11/6 — pierde valor cada día. OJO: la sección "04 — Promos" promete "combos especiales los días de partido" que NO existen en `ppweb_promos` — ajustar antes de publicar (o confirmar con el usuario que existen en los locales). No tiene fotos (usar el banco de Drive con el criterio de la skill /blog).
 3. "Post de prueba del panel" (slug `post-de-prueba`): despublicado (está en `preparacion`). Falta decidir si se borra definitivo desde el panel.
@@ -126,6 +140,7 @@ El panel de la web se está integrando como **módulo nativo dentro del Sistema 
 7. (Opcional) Versionar el SQL de `ppweb_pepe_conocimiento` como `supabase-pepe-conocimiento.sql`.
 
 ## COSAS ABIERTAS / RIESGOS
+- **DEPLOY BLOQUEADO por backend WIP (2026-06-23):** el working tree tiene cambios sin terminar fuera del color — `lib/generador.js` (198 líneas), `lib/google-stats.js` + `lib/meta-ads.js` (nuevos, requeridos por `index.js`), `index.js`, `lib/drive.js`, `lib/referencia.js`, `supabase-web-analytics.sql`, `memory.md`. Como `deploy.sh` empaqueta el working tree entero, **deployar el color ahora también empuja todo eso a producción.** No deployar sin confirmar que esa feature está terminada/probada. El color marino está a salvo: commiteado en `822a28e`.
 - **Hero del post Sumate**: v3 aplicada (recomposición con sharp), falta el OK final del usuario. Si pide otro ajuste, el script de referencia está descrito en CAMBIOS 2026-06-10 (lienzo 2:1, fg con `dest-in` + gradientes SVG).
 - Los cambios de scrim/hero/CTA del template afectan a TODOS los posts servidos desde la base — al publicar el post del Mundial, revisar cómo queda su hero con el layout editorial (texto izquierda).
 - El primer informe de Inteligencia automático sale el **lunes 16/6 8am** y se manda por mail — verificar que llegue (SMTP ya configurado; el manual del 10/6 se generó sin envío).
