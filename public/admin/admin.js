@@ -2435,6 +2435,9 @@
     });
     $('genSyncBtn').addEventListener('click', onGenSync);
     $('genComponerBtn').addEventListener('click', onGenComponer);
+    // El caption editado a mano tiene que volver al estado: sin esto, un ajuste
+    // posterior manda el caption viejo y pisa la edición del usuario.
+    $('genCaption').addEventListener('input', () => { genState.caption = $('genCaption').value; });
     $('genPlacas').addEventListener('click', onGenPlacaClick);
     $('genPlacas').addEventListener('input', onGenPlacaInput);
     $('genPlacas').addEventListener('change', onGenPlacaInput);

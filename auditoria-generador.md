@@ -90,13 +90,21 @@ Cero few-shot: cada copy arranca de cero, solo con el system prompt + guía de e
 
 ## Plan propuesto (acotado, en fases)
 
-### Fase 1 — Matar los errores (1 sesión de trabajo)
-1. `max_tokens` 1500 → 4000 en copy y ajuste (A1).
-2. Structured outputs en las 5 llamadas → JSON garantizado (A5).
-3. Ajuste conservador: schema con campos opcionales + "devolvé solo lo que cambia"; banderas/evento visibles en el estado y nunca pisados por vacío (A2, A3).
-4. Listener del caption (A4).
-5. Estilo elegido por la IA, no random (A6).
-6. `CLAUDE_COPY_MODEL` por env, default `claude-opus-4-8` (A7).
+### Fase 1 — Matar los errores ✅ HECHA (2 jul 2026, testeada en vivo)
+1. ✅ `max_tokens` 1500 → 4000 en copy y ajuste (A1).
+2. ✅ Structured outputs en las 6 llamadas JSON (copy, ajuste, retoque, visión banco,
+   elección de fotos, guía de estilo) (A5). Nota técnica: la API rechaza el schema del
+   AJUSTE ("Schema is too complex", ~11 campos opcionales) → `crearConSchema()` degrada
+   solo a la llamada sin schema (parseJsonIA rescata) y recuerda el rechazo por proceso.
+   Los otros 5 schemas compilan y garantizan JSON.
+3. ✅ Ajuste conservador: "devolvé SOLO los campos que cambian" + banderas/evento
+   visibles en el estado (A2, A3). Testeado: "título más grande" devuelve {} y
+   sobreviven banderas+EN VIVO; "sacá las banderas" las vacía; "cambiá el título"
+   toca solo el título.
+4. ✅ Listener del caption en admin.js + bump a ?v=48 (A4).
+5. ✅ Estilo elegido por la IA según contenido, con variedad en carrusel (A6).
+6. ✅ `CLAUDE_COPY_MODEL` por env, default `claude-opus-4-8` (A7). El retoque sigue
+   con `CLAUDE_RETOQUE_MODEL` (default haiku-4-5).
 
 ### Fase 2 — REDEFINIDA (pedido del dueño, 2 jul): placa completa por IA con marca en claro
 Visión: que la IA genere la placa COMPLETA ya diseñada (no solo el fondo), sabiendo
