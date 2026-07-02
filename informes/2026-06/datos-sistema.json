@@ -1,0 +1,1999 @@
+{
+  "generado_para": "2026-06",
+  "ventana_utc": {
+    "from": "2026-05-31T22:00:00.000Z",
+    "to": "2026-06-30T21:59:59.999Z"
+  },
+  "menu_digital": {
+    "Benidorm": {
+      "visitas_junio": 2038,
+      "visitantes_unicos_junio": 1015,
+      "funnel": {
+        "scan": 1015,
+        "category": 863,
+        "item": 377,
+        "action": 47
+      },
+      "top_items": [
+        {
+          "menu_item_id": "ee126dc1-7569-47b8-8008-01d55290662e",
+          "name": "Cacciatore",
+          "count": 55
+        },
+        {
+          "menu_item_id": "35f24d64-0284-4f47-b89e-083cac66a1f4",
+          "name": "Americana",
+          "count": 48
+        },
+        {
+          "menu_item_id": "515ec93a-968e-4a31-aab7-1daba9c37a98",
+          "name": "Especial",
+          "count": 42
+        },
+        {
+          "menu_item_id": "1bb0f99b-43fa-48c0-a4f4-435a0beabb90",
+          "name": "Especial (Argentina) 800-900 gramos",
+          "count": 42
+        },
+        {
+          "menu_item_id": "880cb2f2-dd14-4591-bbb8-e566e11b8400",
+          "name": "Pappardelle",
+          "count": 39
+        },
+        {
+          "menu_item_id": "ff1893a2-7aab-493e-8b76-190507bcc3eb",
+          "name": "América del Norte",
+          "count": 39
+        },
+        {
+          "menu_item_id": "c5377ff5-5dfe-4904-b6fe-399a47ec0eaf",
+          "name": "Mediterranea",
+          "count": 39
+        },
+        {
+          "menu_item_id": "64a44687-37af-45e8-b376-457f3422ad6f",
+          "name": "Nuestra César",
+          "count": 36
+        },
+        {
+          "menu_item_id": "5f8079b3-3006-46b4-8536-e2ae599a3dc5",
+          "name": "Fugazzeta (Argentina) 800-900 gramos",
+          "count": 35
+        },
+        {
+          "menu_item_id": "3adcd16d-4017-4275-86c4-e64d12ac8e6d",
+          "name": "Sandwich de Milanesa",
+          "count": 33
+        }
+      ],
+      "top_categories": [
+        {
+          "category_id": "77531ac0-f260-4c54-b4ba-a06673946939",
+          "name": "Pizzas",
+          "count": 921
+        },
+        {
+          "category_id": "f7f45eee-d3ac-4f17-9ea4-9ffdf7198c16",
+          "name": "Milanesas",
+          "count": 483
+        },
+        {
+          "category_id": "348d134e-1e25-407b-8f2f-469f7ba285fb",
+          "name": "Pastas",
+          "count": 413
+        },
+        {
+          "category_id": "422454c9-36b6-4cc6-a5ca-32910526f6ca",
+          "name": "Para empezar",
+          "count": 404
+        },
+        {
+          "category_id": "45c24647-6ab3-4541-be01-1b0cb2b5ed43",
+          "name": "Bebidas",
+          "count": 280
+        }
+      ],
+      "top_searches": [
+        {
+          "query": "pizza",
+          "count": 6
+        },
+        {
+          "query": "pi",
+          "count": 5
+        },
+        {
+          "query": "ouzza",
+          "count": 3
+        },
+        {
+          "query": "ca",
+          "count": 3
+        },
+        {
+          "query": "ka",
+          "count": 3
+        },
+        {
+          "query": "carne",
+          "count": 2
+        },
+        {
+          "query": "fr",
+          "count": 2
+        },
+        {
+          "query": "cafe",
+          "count": 2
+        },
+        {
+          "query": "gluten free",
+          "count": 1
+        },
+        {
+          "query": "gluten",
+          "count": 1
+        }
+      ],
+      "languages": [
+        {
+          "lang": "es",
+          "count": 1864,
+          "percent": 89.9
+        },
+        {
+          "lang": "en",
+          "count": 142,
+          "percent": 6.8
+        },
+        {
+          "lang": "ru",
+          "count": 24,
+          "percent": 1.2
+        },
+        {
+          "lang": "de",
+          "count": 23,
+          "percent": 1.1
+        },
+        {
+          "lang": "uk",
+          "count": 11,
+          "percent": 0.5
+        },
+        {
+          "lang": "fr",
+          "count": 7,
+          "percent": 0.3
+        },
+        {
+          "lang": "it",
+          "count": 2,
+          "percent": 0.1
+        }
+      ],
+      "devices": {
+        "mobile": 978,
+        "desktop": 38,
+        "mobile_percent": 96.3,
+        "desktop_percent": 3.7
+      },
+      "origen": {
+        "total": 605,
+        "counts": {
+          "directo": 562,
+          "web": 0,
+          "google": 43,
+          "redes": 0,
+          "otros": 0
+        }
+      }
+    },
+    "Boadilla": {
+      "visitas_junio": 0,
+      "visitantes_unicos_junio": 0,
+      "funnel": {
+        "scan": 0,
+        "category": 0,
+        "item": 0,
+        "action": 0
+      },
+      "top_items": [],
+      "top_categories": [],
+      "top_searches": [],
+      "languages": [],
+      "devices": {
+        "mobile": 0,
+        "desktop": 0,
+        "mobile_percent": 0,
+        "desktop_percent": 0
+      },
+      "origen": {
+        "total": 0,
+        "counts": {
+          "directo": 0,
+          "web": 0,
+          "google": 0,
+          "redes": 0,
+          "otros": 0
+        }
+      }
+    },
+    "Luceros": {
+      "visitas_junio": 1429,
+      "visitantes_unicos_junio": 785,
+      "funnel": {
+        "scan": 785,
+        "category": 644,
+        "item": 303,
+        "action": 35
+      },
+      "top_items": [
+        {
+          "menu_item_id": "622800fd-866c-4728-935a-8dc11eae71ab",
+          "name": "Mozzarella (Argentina) 800-900 gramos",
+          "count": 48
+        },
+        {
+          "menu_item_id": "1bb0f99b-43fa-48c0-a4f4-435a0beabb90",
+          "name": "Especial (Argentina) 800-900 gramos",
+          "count": 44
+        },
+        {
+          "menu_item_id": "5f8079b3-3006-46b4-8536-e2ae599a3dc5",
+          "name": "Fugazzeta (Argentina) 800-900 gramos",
+          "count": 41
+        },
+        {
+          "menu_item_id": "35f24d64-0284-4f47-b89e-083cac66a1f4",
+          "name": "Americana",
+          "count": 35
+        },
+        {
+          "menu_item_id": "ee126dc1-7569-47b8-8008-01d55290662e",
+          "name": "Cacciatore",
+          "count": 32
+        },
+        {
+          "menu_item_id": "8c88ca95-3294-44f9-a78e-c398e55f9bac",
+          "name": "Popular",
+          "count": 32
+        },
+        {
+          "menu_item_id": "dc135cf9-5f84-4bba-aeba-c0c23281ec5d",
+          "name": "Bismark Tomate",
+          "count": 31
+        },
+        {
+          "menu_item_id": "515ec93a-968e-4a31-aab7-1daba9c37a98",
+          "name": "Especial",
+          "count": 31
+        },
+        {
+          "menu_item_id": "de36e34d-6136-42d0-b69c-e5d45731fcef",
+          "name": "La Popular",
+          "count": 29
+        },
+        {
+          "menu_item_id": "880cb2f2-dd14-4591-bbb8-e566e11b8400",
+          "name": "Pappardelle",
+          "count": 28
+        }
+      ],
+      "top_categories": [
+        {
+          "category_id": "77531ac0-f260-4c54-b4ba-a06673946939",
+          "name": "Pizzas",
+          "count": 665
+        },
+        {
+          "category_id": "f7f45eee-d3ac-4f17-9ea4-9ffdf7198c16",
+          "name": "Milanesas",
+          "count": 335
+        },
+        {
+          "category_id": "422454c9-36b6-4cc6-a5ca-32910526f6ca",
+          "name": "Para empezar",
+          "count": 294
+        },
+        {
+          "category_id": "348d134e-1e25-407b-8f2f-469f7ba285fb",
+          "name": "Pastas",
+          "count": 233
+        },
+        {
+          "category_id": "410cd1d7-2939-4d4f-9431-245bc41d2462",
+          "name": "Sandwiches",
+          "count": 189
+        }
+      ],
+      "top_searches": [
+        {
+          "query": "pizza",
+          "count": 6
+        },
+        {
+          "query": "café",
+          "count": 3
+        },
+        {
+          "query": "pizza sin gluten",
+          "count": 2
+        },
+        {
+          "query": "pizza sin glu",
+          "count": 2
+        },
+        {
+          "query": "pizza sin gl",
+          "count": 2
+        },
+        {
+          "query": "pizza sin g",
+          "count": 2
+        },
+        {
+          "query": "pizza s",
+          "count": 2
+        },
+        {
+          "query": "pi",
+          "count": 2
+        },
+        {
+          "query": "ca",
+          "count": 2
+        },
+        {
+          "query": "cafe",
+          "count": 2
+        }
+      ],
+      "languages": [
+        {
+          "lang": "es",
+          "count": 1432,
+          "percent": 96.8
+        },
+        {
+          "lang": "en",
+          "count": 34,
+          "percent": 2.3
+        },
+        {
+          "lang": "de",
+          "count": 6,
+          "percent": 0.4
+        },
+        {
+          "lang": "it",
+          "count": 5,
+          "percent": 0.3
+        },
+        {
+          "lang": "fr",
+          "count": 3,
+          "percent": 0.2
+        }
+      ],
+      "devices": {
+        "mobile": 740,
+        "desktop": 45,
+        "mobile_percent": 94.3,
+        "desktop_percent": 5.7
+      },
+      "origen": {
+        "total": 468,
+        "counts": {
+          "directo": 415,
+          "web": 2,
+          "google": 51,
+          "redes": 0,
+          "otros": 0
+        }
+      }
+    },
+    "Playa San Juan": {
+      "visitas_junio": 3949,
+      "visitantes_unicos_junio": 2045,
+      "funnel": {
+        "scan": 2045,
+        "category": 1694,
+        "item": 1053,
+        "action": 102
+      },
+      "top_items": [
+        {
+          "menu_item_id": "ee126dc1-7569-47b8-8008-01d55290662e",
+          "name": "Cacciatore",
+          "count": 173
+        },
+        {
+          "menu_item_id": "35f24d64-0284-4f47-b89e-083cac66a1f4",
+          "name": "Americana",
+          "count": 161
+        },
+        {
+          "menu_item_id": "dc135cf9-5f84-4bba-aeba-c0c23281ec5d",
+          "name": "Bismark Tomate",
+          "count": 150
+        },
+        {
+          "menu_item_id": "1bb0f99b-43fa-48c0-a4f4-435a0beabb90",
+          "name": "Especial (Argentina) 800-900 gramos",
+          "count": 142
+        },
+        {
+          "menu_item_id": "8c88ca95-3294-44f9-a78e-c398e55f9bac",
+          "name": "Popular",
+          "count": 133
+        },
+        {
+          "menu_item_id": "fdbd03ed-6bdb-484f-8554-162c4bcabf85",
+          "name": "Criolla",
+          "count": 131
+        },
+        {
+          "menu_item_id": "5ba3214b-beb6-4a66-bec0-aaf7cac852cd",
+          "name": "Capresse",
+          "count": 129
+        },
+        {
+          "menu_item_id": "4a2f6a2e-23f1-49aa-ad23-fcacc9c2109e",
+          "name": "Rúcula",
+          "count": 122
+        },
+        {
+          "menu_item_id": "5f8079b3-3006-46b4-8536-e2ae599a3dc5",
+          "name": "Fugazzeta (Argentina) 800-900 gramos",
+          "count": 122
+        },
+        {
+          "menu_item_id": "880cb2f2-dd14-4591-bbb8-e566e11b8400",
+          "name": "Pappardelle",
+          "count": 122
+        }
+      ],
+      "top_categories": [
+        {
+          "category_id": "77531ac0-f260-4c54-b4ba-a06673946939",
+          "name": "Pizzas",
+          "count": 2131
+        },
+        {
+          "category_id": "f7f45eee-d3ac-4f17-9ea4-9ffdf7198c16",
+          "name": "Milanesas",
+          "count": 1152
+        },
+        {
+          "category_id": "422454c9-36b6-4cc6-a5ca-32910526f6ca",
+          "name": "Para empezar",
+          "count": 1054
+        },
+        {
+          "category_id": "348d134e-1e25-407b-8f2f-469f7ba285fb",
+          "name": "Pastas",
+          "count": 923
+        },
+        {
+          "category_id": "f00dcd8d-717e-4def-b485-e30010e3c7e2",
+          "name": "Ensaladas",
+          "count": 609
+        }
+      ],
+      "top_searches": [
+        {
+          "query": "sin gluten",
+          "count": 6
+        },
+        {
+          "query": "sin",
+          "count": 5
+        },
+        {
+          "query": "pizza",
+          "count": 3
+        },
+        {
+          "query": "pi",
+          "count": 3
+        },
+        {
+          "query": "código postal av costablanca",
+          "count": 2
+        },
+        {
+          "query": "papas",
+          "count": 2
+        },
+        {
+          "query": "pa",
+          "count": 2
+        },
+        {
+          "query": "milanesa",
+          "count": 2
+        },
+        {
+          "query": "milane",
+          "count": 2
+        },
+        {
+          "query": "sanguich de",
+          "count": 2
+        }
+      ],
+      "languages": [
+        {
+          "lang": "es",
+          "count": 3773,
+          "percent": 93.6
+        },
+        {
+          "lang": "en",
+          "count": 169,
+          "percent": 4.2
+        },
+        {
+          "lang": "de",
+          "count": 35,
+          "percent": 0.9
+        },
+        {
+          "lang": "uk",
+          "count": 24,
+          "percent": 0.6
+        },
+        {
+          "lang": "fr",
+          "count": 14,
+          "percent": 0.3
+        },
+        {
+          "lang": "ru",
+          "count": 9,
+          "percent": 0.2
+        },
+        {
+          "lang": "it",
+          "count": 6,
+          "percent": 0.1
+        },
+        {
+          "lang": "zh",
+          "count": 3,
+          "percent": 0.1
+        }
+      ],
+      "devices": {
+        "mobile": 1990,
+        "desktop": 56,
+        "mobile_percent": 97.3,
+        "desktop_percent": 2.7
+      },
+      "origen": {
+        "total": 1510,
+        "counts": {
+          "directo": 1412,
+          "web": 0,
+          "google": 92,
+          "redes": 0,
+          "otros": 6
+        }
+      }
+    },
+    "Russafa": {
+      "visitas_junio": 2654,
+      "visitantes_unicos_junio": 1367,
+      "funnel": {
+        "scan": 1367,
+        "category": 1170,
+        "item": 689,
+        "action": 68
+      },
+      "top_items": [
+        {
+          "menu_item_id": "c1bee827-6e0e-45ab-b237-9d37af473664",
+          "name": "Buenos Aires (Fugazzeta)",
+          "count": 116
+        },
+        {
+          "menu_item_id": "8c88ca95-3294-44f9-a78e-c398e55f9bac",
+          "name": "Popular",
+          "count": 103
+        },
+        {
+          "menu_item_id": "35f24d64-0284-4f47-b89e-083cac66a1f4",
+          "name": "Americana",
+          "count": 100
+        },
+        {
+          "menu_item_id": "ee126dc1-7569-47b8-8008-01d55290662e",
+          "name": "Cacciatore",
+          "count": 87
+        },
+        {
+          "menu_item_id": "5f8079b3-3006-46b4-8536-e2ae599a3dc5",
+          "name": "Fugazzeta (Argentina) 800-900 gramos",
+          "count": 86
+        },
+        {
+          "menu_item_id": "4a2f6a2e-23f1-49aa-ad23-fcacc9c2109e",
+          "name": "Rúcula",
+          "count": 85
+        },
+        {
+          "menu_item_id": "e058d0dd-63ac-4ff6-842b-e96290a08b8f",
+          "name": "Nápoles",
+          "count": 84
+        },
+        {
+          "menu_item_id": "ff1893a2-7aab-493e-8b76-190507bcc3eb",
+          "name": "América del Norte",
+          "count": 80
+        },
+        {
+          "menu_item_id": "fdbd03ed-6bdb-484f-8554-162c4bcabf85",
+          "name": "Criolla",
+          "count": 80
+        },
+        {
+          "menu_item_id": "622800fd-866c-4728-935a-8dc11eae71ab",
+          "name": "Mozzarella (Argentina) 800-900 gramos",
+          "count": 80
+        }
+      ],
+      "top_categories": [
+        {
+          "category_id": "77531ac0-f260-4c54-b4ba-a06673946939",
+          "name": "Pizzas",
+          "count": 1416
+        },
+        {
+          "category_id": "f7f45eee-d3ac-4f17-9ea4-9ffdf7198c16",
+          "name": "Milanesas",
+          "count": 980
+        },
+        {
+          "category_id": "422454c9-36b6-4cc6-a5ca-32910526f6ca",
+          "name": "Para empezar",
+          "count": 773
+        },
+        {
+          "category_id": "348d134e-1e25-407b-8f2f-469f7ba285fb",
+          "name": "Pastas",
+          "count": 403
+        },
+        {
+          "category_id": "45c24647-6ab3-4541-be01-1b0cb2b5ed43",
+          "name": "Bebidas",
+          "count": 369
+        }
+      ],
+      "top_searches": [
+        {
+          "query": "me",
+          "count": 4
+        },
+        {
+          "query": "pun",
+          "count": 3
+        },
+        {
+          "query": "menu",
+          "count": 3
+        },
+        {
+          "query": "sin",
+          "count": 2
+        },
+        {
+          "query": "ха",
+          "count": 2
+        },
+        {
+          "query": "punto",
+          "count": 2
+        },
+        {
+          "query": "punto roma",
+          "count": 2
+        },
+        {
+          "query": "punt",
+          "count": 2
+        },
+        {
+          "query": "sin lactosa",
+          "count": 2
+        },
+        {
+          "query": "men",
+          "count": 2
+        }
+      ],
+      "languages": [
+        {
+          "lang": "es",
+          "count": 2668,
+          "percent": 97.8
+        },
+        {
+          "lang": "en",
+          "count": 39,
+          "percent": 1.4
+        },
+        {
+          "lang": "pt",
+          "count": 8,
+          "percent": 0.3
+        },
+        {
+          "lang": "uk",
+          "count": 4,
+          "percent": 0.1
+        },
+        {
+          "lang": "it",
+          "count": 3,
+          "percent": 0.1
+        },
+        {
+          "lang": "ru",
+          "count": 2,
+          "percent": 0.1
+        },
+        {
+          "lang": "fr",
+          "count": 2,
+          "percent": 0.1
+        },
+        {
+          "lang": "de",
+          "count": 2,
+          "percent": 0.1
+        }
+      ],
+      "devices": {
+        "mobile": 1338,
+        "desktop": 30,
+        "mobile_percent": 97.8,
+        "desktop_percent": 2.2
+      },
+      "origen": {
+        "total": 714,
+        "counts": {
+          "directo": 642,
+          "web": 0,
+          "google": 72,
+          "redes": 0,
+          "otros": 0
+        }
+      }
+    },
+    "Santa Clara": {
+      "visitas_junio": 874,
+      "visitantes_unicos_junio": 529,
+      "funnel": {
+        "scan": 529,
+        "category": 425,
+        "item": 214,
+        "action": 24
+      },
+      "top_items": [
+        {
+          "menu_item_id": "ee126dc1-7569-47b8-8008-01d55290662e",
+          "name": "Cacciatore",
+          "count": 38
+        },
+        {
+          "menu_item_id": "35f24d64-0284-4f47-b89e-083cac66a1f4",
+          "name": "Americana",
+          "count": 32
+        },
+        {
+          "menu_item_id": "4a2f6a2e-23f1-49aa-ad23-fcacc9c2109e",
+          "name": "Rúcula",
+          "count": 30
+        },
+        {
+          "menu_item_id": "dc135cf9-5f84-4bba-aeba-c0c23281ec5d",
+          "name": "Bismark Tomate",
+          "count": 28
+        },
+        {
+          "menu_item_id": "5f8079b3-3006-46b4-8536-e2ae599a3dc5",
+          "name": "Fugazzeta (Argentina) 800-900 gramos",
+          "count": 27
+        },
+        {
+          "menu_item_id": "c1bee827-6e0e-45ab-b237-9d37af473664",
+          "name": "Buenos Aires (Fugazzeta)",
+          "count": 25
+        },
+        {
+          "menu_item_id": "622800fd-866c-4728-935a-8dc11eae71ab",
+          "name": "Mozzarella (Argentina) 800-900 gramos",
+          "count": 25
+        },
+        {
+          "menu_item_id": "8c88ca95-3294-44f9-a78e-c398e55f9bac",
+          "name": "Popular",
+          "count": 24
+        },
+        {
+          "menu_item_id": "5ba3214b-beb6-4a66-bec0-aaf7cac852cd",
+          "name": "Capresse",
+          "count": 23
+        },
+        {
+          "menu_item_id": "1bb0f99b-43fa-48c0-a4f4-435a0beabb90",
+          "name": "Especial (Argentina) 800-900 gramos",
+          "count": 23
+        }
+      ],
+      "top_categories": [
+        {
+          "category_id": "77531ac0-f260-4c54-b4ba-a06673946939",
+          "name": "Pizzas",
+          "count": 445
+        },
+        {
+          "category_id": "f7f45eee-d3ac-4f17-9ea4-9ffdf7198c16",
+          "name": "Milanesas",
+          "count": 275
+        },
+        {
+          "category_id": "422454c9-36b6-4cc6-a5ca-32910526f6ca",
+          "name": "Para empezar",
+          "count": 224
+        },
+        {
+          "category_id": "348d134e-1e25-407b-8f2f-469f7ba285fb",
+          "name": "Pastas",
+          "count": 161
+        },
+        {
+          "category_id": "45c24647-6ab3-4541-be01-1b0cb2b5ed43",
+          "name": "Bebidas",
+          "count": 137
+        }
+      ],
+      "top_searches": [
+        {
+          "query": "fugazz",
+          "count": 2
+        },
+        {
+          "query": "carne",
+          "count": 1
+        },
+        {
+          "query": "patatas bravas",
+          "count": 1
+        },
+        {
+          "query": "patatas bra",
+          "count": 1
+        },
+        {
+          "query": "patatas v",
+          "count": 1
+        },
+        {
+          "query": "patatas",
+          "count": 1
+        },
+        {
+          "query": "pa",
+          "count": 1
+        },
+        {
+          "query": "como se puede reservar",
+          "count": 1
+        },
+        {
+          "query": "como se puede reaervat",
+          "count": 1
+        },
+        {
+          "query": "como se puede reaer",
+          "count": 1
+        }
+      ],
+      "languages": [
+        {
+          "lang": "es",
+          "count": 870,
+          "percent": 95.7
+        },
+        {
+          "lang": "en",
+          "count": 28,
+          "percent": 3.1
+        },
+        {
+          "lang": "fr",
+          "count": 5,
+          "percent": 0.6
+        },
+        {
+          "lang": "it",
+          "count": 4,
+          "percent": 0.4
+        },
+        {
+          "lang": "de",
+          "count": 2,
+          "percent": 0.2
+        }
+      ],
+      "devices": {
+        "mobile": 502,
+        "desktop": 27,
+        "mobile_percent": 94.9,
+        "desktop_percent": 5.1
+      },
+      "origen": {
+        "total": 284,
+        "counts": {
+          "directo": 281,
+          "web": 0,
+          "google": 3,
+          "redes": 0,
+          "otros": 0
+        }
+      }
+    }
+  },
+  "web": {
+    "mes": "2026-06",
+    "visitas": 5924,
+    "visitantes": 3283,
+    "whatsapp": 65,
+    "reserva": 183,
+    "comollegar": 35,
+    "instagram": 12,
+    "formulario": 2,
+    "conversion": 7,
+    "conversionAcciones": 229,
+    "porDia": [
+      {
+        "dia": 1,
+        "label": "01/06",
+        "count": 0
+      },
+      {
+        "dia": 2,
+        "label": "02/06",
+        "count": 0
+      },
+      {
+        "dia": 3,
+        "label": "03/06",
+        "count": 0
+      },
+      {
+        "dia": 4,
+        "label": "04/06",
+        "count": 0
+      },
+      {
+        "dia": 5,
+        "label": "05/06",
+        "count": 0
+      },
+      {
+        "dia": 6,
+        "label": "06/06",
+        "count": 0
+      },
+      {
+        "dia": 7,
+        "label": "07/06",
+        "count": 0
+      },
+      {
+        "dia": 8,
+        "label": "08/06",
+        "count": 0
+      },
+      {
+        "dia": 9,
+        "label": "09/06",
+        "count": 0
+      },
+      {
+        "dia": 10,
+        "label": "10/06",
+        "count": 0
+      },
+      {
+        "dia": 11,
+        "label": "11/06",
+        "count": 0
+      },
+      {
+        "dia": 12,
+        "label": "12/06",
+        "count": 0
+      },
+      {
+        "dia": 13,
+        "label": "13/06",
+        "count": 0
+      },
+      {
+        "dia": 14,
+        "label": "14/06",
+        "count": 0
+      },
+      {
+        "dia": 15,
+        "label": "15/06",
+        "count": 254
+      },
+      {
+        "dia": 16,
+        "label": "16/06",
+        "count": 288
+      },
+      {
+        "dia": 17,
+        "label": "17/06",
+        "count": 259
+      },
+      {
+        "dia": 18,
+        "label": "18/06",
+        "count": 230
+      },
+      {
+        "dia": 19,
+        "label": "19/06",
+        "count": 244
+      },
+      {
+        "dia": 20,
+        "label": "20/06",
+        "count": 319
+      },
+      {
+        "dia": 21,
+        "label": "21/06",
+        "count": 266
+      },
+      {
+        "dia": 22,
+        "label": "22/06",
+        "count": 220
+      },
+      {
+        "dia": 23,
+        "label": "23/06",
+        "count": 249
+      },
+      {
+        "dia": 24,
+        "label": "24/06",
+        "count": 327
+      },
+      {
+        "dia": 25,
+        "label": "25/06",
+        "count": 329
+      },
+      {
+        "dia": 26,
+        "label": "26/06",
+        "count": 577
+      },
+      {
+        "dia": 27,
+        "label": "27/06",
+        "count": 552
+      },
+      {
+        "dia": 28,
+        "label": "28/06",
+        "count": 615
+      },
+      {
+        "dia": 29,
+        "label": "29/06",
+        "count": 656
+      },
+      {
+        "dia": 30,
+        "label": "30/06",
+        "count": 539
+      }
+    ],
+    "porHora": [
+      {
+        "hora": 0,
+        "count": 179
+      },
+      {
+        "hora": 1,
+        "count": 96
+      },
+      {
+        "hora": 2,
+        "count": 65
+      },
+      {
+        "hora": 3,
+        "count": 44
+      },
+      {
+        "hora": 4,
+        "count": 24
+      },
+      {
+        "hora": 5,
+        "count": 22
+      },
+      {
+        "hora": 6,
+        "count": 37
+      },
+      {
+        "hora": 7,
+        "count": 39
+      },
+      {
+        "hora": 8,
+        "count": 68
+      },
+      {
+        "hora": 9,
+        "count": 122
+      },
+      {
+        "hora": 10,
+        "count": 146
+      },
+      {
+        "hora": 11,
+        "count": 267
+      },
+      {
+        "hora": 12,
+        "count": 244
+      },
+      {
+        "hora": 13,
+        "count": 347
+      },
+      {
+        "hora": 14,
+        "count": 365
+      },
+      {
+        "hora": 15,
+        "count": 361
+      },
+      {
+        "hora": 16,
+        "count": 285
+      },
+      {
+        "hora": 17,
+        "count": 400
+      },
+      {
+        "hora": 18,
+        "count": 471
+      },
+      {
+        "hora": 19,
+        "count": 462
+      },
+      {
+        "hora": 20,
+        "count": 552
+      },
+      {
+        "hora": 21,
+        "count": 622
+      },
+      {
+        "hora": 22,
+        "count": 452
+      },
+      {
+        "hora": 23,
+        "count": 254
+      }
+    ],
+    "fuentes": [
+      {
+        "nombre": "grupoajax.es",
+        "count": 1922
+      },
+      {
+        "nombre": "directo",
+        "count": 1138
+      },
+      {
+        "nombre": "instagram.com",
+        "count": 998
+      },
+      {
+        "nombre": "google.com",
+        "count": 725
+      },
+      {
+        "nombre": "m.facebook.com",
+        "count": 521
+      },
+      {
+        "nombre": "l.instagram.com",
+        "count": 255
+      },
+      {
+        "nombre": "l.facebook.com",
+        "count": 185
+      },
+      {
+        "nombre": "pizzeriapopular.es",
+        "count": 114
+      }
+    ],
+    "paginas": [
+      {
+        "nombre": "/",
+        "count": 2130
+      },
+      {
+        "nombre": "/menu-diario/",
+        "count": 1835
+      },
+      {
+        "nombre": "/carta/",
+        "count": 1106
+      },
+      {
+        "nombre": "/restaurantes/",
+        "count": 363
+      },
+      {
+        "nombre": "/en/home/",
+        "count": 144
+      },
+      {
+        "nombre": "/en/menu/",
+        "count": 110
+      },
+      {
+        "nombre": "/promos/",
+        "count": 85
+      },
+      {
+        "nombre": "/contacto/",
+        "count": 27
+      }
+    ],
+    "idioma": {
+      "es": 5628,
+      "en": 296
+    },
+    "locales": [
+      {
+        "local": "Benidorm",
+        "whatsapp": 13,
+        "reserva": 45,
+        "comollegar": 0,
+        "total": 58
+      },
+      {
+        "local": "Playa San Juan",
+        "whatsapp": 7,
+        "reserva": 31,
+        "comollegar": 0,
+        "total": 38
+      },
+      {
+        "local": "Santa Clara",
+        "whatsapp": 11,
+        "reserva": 19,
+        "comollegar": 7,
+        "total": 37
+      },
+      {
+        "local": "Russafa",
+        "whatsapp": 6,
+        "reserva": 19,
+        "comollegar": 6,
+        "total": 31
+      },
+      {
+        "local": "Luceros",
+        "whatsapp": 1,
+        "reserva": 25,
+        "comollegar": 0,
+        "total": 26
+      },
+      {
+        "local": "Boadilla",
+        "whatsapp": 8,
+        "reserva": 6,
+        "comollegar": 0,
+        "total": 14
+      }
+    ],
+    "dispositivos": {
+      "movil": 5032,
+      "escritorio": 450
+    },
+    "previo": {
+      "visitas": 0,
+      "visitantes": 0
+    }
+  },
+  "google": {
+    "actual": {
+      "configurado": true,
+      "updatedAt": "2026-05-17T18:46:11.298Z",
+      "promedio": 4.7,
+      "total": 5327,
+      "locales": [
+        {
+          "slug": "playa-san-juan",
+          "name": "Playa San Juan",
+          "city": "Alicante",
+          "rating": 4.6,
+          "reviews": 1786,
+          "target": 4.7,
+          "faltan": 256,
+          "nuevas7": -131
+        },
+        {
+          "slug": "russafa",
+          "name": "Russafa",
+          "city": "Valencia",
+          "rating": 4.6,
+          "reviews": 1255,
+          "target": 4.7,
+          "faltan": 180,
+          "nuevas7": -32
+        },
+        {
+          "slug": "luceros",
+          "name": "Luceros",
+          "city": "Alicante",
+          "rating": 4.8,
+          "reviews": 961,
+          "target": 4.9,
+          "faltan": 321,
+          "nuevas7": -84
+        },
+        {
+          "slug": "boadilla",
+          "name": "Boadilla del Monte",
+          "city": "Madrid",
+          "rating": 4.7,
+          "reviews": 925,
+          "target": 4.8,
+          "faltan": 185,
+          "nuevas7": -27
+        },
+        {
+          "slug": "santa-clara",
+          "name": "Santa Clara",
+          "city": "Valencia",
+          "rating": 4.8,
+          "reviews": 372,
+          "target": 4.9,
+          "faltan": 124,
+          "nuevas7": -67
+        },
+        {
+          "slug": "benidorm",
+          "name": "Benidorm",
+          "city": "Alicante",
+          "rating": 5,
+          "reviews": 28,
+          "target": null,
+          "faltan": null,
+          "nuevas7": -64
+        }
+      ],
+      "mejor": {
+        "name": "Benidorm",
+        "rating": 5
+      },
+      "nuevas30": null,
+      "nuevas7": -405,
+      "promedioPrev": null
+    },
+    "snapshot_inicio": null,
+    "snapshot_fin": {
+      "dia": "2026-07-01",
+      "promedio": 4.7,
+      "total": 5821,
+      "por_local": {
+        "luceros": {
+          "rating": 4.8,
+          "reviews": 1066
+        },
+        "russafa": {
+          "rating": 4.6,
+          "reviews": 1290
+        },
+        "benidorm": {
+          "rating": 4.7,
+          "reviews": 117
+        },
+        "boadilla": {
+          "rating": 4.7,
+          "reviews": 954
+        },
+        "santa-clara": {
+          "rating": 4.8,
+          "reviews": 451
+        },
+        "playa-san-juan": {
+          "rating": 4.7,
+          "reviews": 1943
+        }
+      }
+    }
+  },
+  "meta_ads": {
+    "snapshot_inicio": "2026-06-26",
+    "snapshot_fin": "2026-07-01",
+    "nota": "junio_delta = fin - inicio de snapshots acumulados; si la campaña arrancó en junio el delta ES el total",
+    "objetos": [
+      {
+        "level": "campaign",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": null,
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 71.2,
+          "impressions": 71266,
+          "clicks": 1929,
+          "link_clicks": 1682,
+          "landing_views": 1038,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 83.5,
+          "reach": 33397,
+          "impressions": 82377,
+          "clicks": 2247,
+          "link_clicks": 1914,
+          "landing_views": 1183,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "campaign",
+        "campaign_name": "Traspaso Santa Clara | WhatsApp | jun-2026",
+        "adset_name": null,
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 8.27,
+          "impressions": 2120,
+          "clicks": 79,
+          "link_clicks": 31,
+          "landing_views": 0,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 8.27,
+          "reach": 1474,
+          "impressions": 2120,
+          "clicks": 79,
+          "link_clicks": 31,
+          "landing_views": 0,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "campaign",
+        "campaign_name": "Trafico - Santa Clara - Reservas",
+        "adset_name": null,
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 27.3,
+          "impressions": 13300,
+          "clicks": 580,
+          "link_clicks": 334,
+          "landing_views": 294,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.45,
+          "reach": 120586,
+          "impressions": 189698,
+          "clicks": 9765,
+          "link_clicks": 5420,
+          "landing_views": 4225,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "campaign",
+        "campaign_name": "Trafico - Russafa - Reservas - Copia",
+        "adset_name": null,
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 27.22,
+          "impressions": 13954,
+          "clicks": 605,
+          "link_clicks": 322,
+          "landing_views": 295,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.59,
+          "reach": 126392,
+          "impressions": 200827,
+          "clicks": 9474,
+          "link_clicks": 5438,
+          "landing_views": 3977,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "adset",
+        "campaign_name": "Trafico - Santa Clara - Reservas",
+        "adset_name": "Santa Clara - Radio 3km - 25-55",
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 27.3,
+          "impressions": 13300,
+          "clicks": 580,
+          "link_clicks": 334,
+          "landing_views": 294,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.45,
+          "reach": 120549,
+          "impressions": 189698,
+          "clicks": 9765,
+          "link_clicks": 5420,
+          "landing_views": 4225,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "adset",
+        "campaign_name": "Trafico - Russafa - Reservas - Copia",
+        "adset_name": "Russafa - Radio 3km - 25-55",
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 27.22,
+          "impressions": 13954,
+          "clicks": 605,
+          "link_clicks": 322,
+          "landing_views": 295,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.59,
+          "reach": 126392,
+          "impressions": 200827,
+          "clicks": 9474,
+          "link_clicks": 5438,
+          "landing_views": 3977,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "adset",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Russafa",
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 35.72,
+          "impressions": 35770,
+          "clicks": 1032,
+          "link_clicks": 861,
+          "landing_views": 564,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 41.72,
+          "reach": 20548,
+          "impressions": 41531,
+          "clicks": 1207,
+          "link_clicks": 976,
+          "landing_views": 633,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "adset",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Santa Clara",
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 35.47,
+          "impressions": 35485,
+          "clicks": 897,
+          "link_clicks": 821,
+          "landing_views": 474,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 41.77,
+          "reach": 18571,
+          "impressions": 40835,
+          "clicks": 1040,
+          "link_clicks": 938,
+          "landing_views": 550,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "adset",
+        "campaign_name": "Traspaso Santa Clara | WhatsApp | jun-2026",
+        "adset_name": "Frío · Valencia y alrededores · excl. seguidores",
+        "ad_name": null,
+        "junio_delta": {
+          "spend": 8.31,
+          "impressions": 2130,
+          "clicks": 79,
+          "link_clicks": 31,
+          "landing_views": 0,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 8.31,
+          "reach": 1479,
+          "impressions": 2130,
+          "clicks": 79,
+          "link_clicks": 31,
+          "landing_views": 0,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "Trafico - Santa Clara - Reservas",
+        "adset_name": "Santa Clara - Radio 3km - 25-55",
+        "ad_name": "Reel - Precio nuevo - Santa Clara",
+        "junio_delta": {
+          "spend": 27.3,
+          "impressions": 13300,
+          "clicks": 580,
+          "link_clicks": 334,
+          "landing_views": 294,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.45,
+          "reach": 120549,
+          "impressions": 189698,
+          "clicks": 9765,
+          "link_clicks": 5420,
+          "landing_views": 4225,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "Trafico - Russafa - Reservas - Copia",
+        "adset_name": "Russafa - Radio 3km - 25-55",
+        "ad_name": "Reel - Precio nuevo - Russafa",
+        "junio_delta": {
+          "spend": 27.22,
+          "impressions": 13954,
+          "clicks": 605,
+          "link_clicks": 322,
+          "landing_views": 295,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 367.59,
+          "reach": 126392,
+          "impressions": 200827,
+          "clicks": 9474,
+          "link_clicks": 5438,
+          "landing_views": 3977,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Russafa",
+        "ad_name": "Russafa_milanesa",
+        "junio_delta": {
+          "spend": 31.21,
+          "impressions": 28834,
+          "clicks": 937,
+          "link_clicks": 770,
+          "landing_views": 513,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 35.3,
+          "reach": 18072,
+          "impressions": 32124,
+          "clicks": 1062,
+          "link_clicks": 847,
+          "landing_views": 560,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Russafa",
+        "ad_name": "Russafa_ñoqui",
+        "junio_delta": {
+          "spend": 1.95,
+          "impressions": 5586,
+          "clicks": 47,
+          "link_clicks": 43,
+          "landing_views": 27,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 2.92,
+          "reach": 2310,
+          "impressions": 7163,
+          "clicks": 82,
+          "link_clicks": 66,
+          "landing_views": 43,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Russafa",
+        "ad_name": "Russafa_pizza",
+        "junio_delta": {
+          "spend": 2.52,
+          "impressions": 1324,
+          "clicks": 47,
+          "link_clicks": 48,
+          "landing_views": 24,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 3.46,
+          "reach": 1641,
+          "impressions": 2218,
+          "clicks": 62,
+          "link_clicks": 63,
+          "landing_views": 30,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Santa Clara",
+        "ad_name": "Santa Clara_pizza",
+        "junio_delta": {
+          "spend": 3.13,
+          "impressions": 1062,
+          "clicks": 66,
+          "link_clicks": 68,
+          "landing_views": 40,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 4.97,
+          "reach": 2184,
+          "impressions": 2562,
+          "clicks": 97,
+          "link_clicks": 97,
+          "landing_views": 54,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Santa Clara",
+        "ad_name": "Santa Clara_milanesa - Copia",
+        "junio_delta": {
+          "spend": 6.48,
+          "impressions": 7559,
+          "clicks": 200,
+          "link_clicks": 172,
+          "landing_views": 108,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 6.99,
+          "reach": 3854,
+          "impressions": 7802,
+          "clicks": 216,
+          "link_clicks": 186,
+          "landing_views": 121,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "PP_MenuDiario_Valencia_TestCreativa",
+        "adset_name": "Santa Clara",
+        "ad_name": "Santa Clara_ñoqui - Copia",
+        "junio_delta": {
+          "spend": 25.86,
+          "impressions": 26864,
+          "clicks": 631,
+          "link_clicks": 581,
+          "landing_views": 326,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 29.81,
+          "reach": 14044,
+          "impressions": 30471,
+          "clicks": 727,
+          "link_clicks": 655,
+          "landing_views": 375,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "Traspaso Santa Clara | WhatsApp | jun-2026",
+        "adset_name": "Frío · Valencia y alrededores · excl. seguidores",
+        "ad_name": "PP · Invertir",
+        "junio_delta": {
+          "spend": 2.29,
+          "impressions": 588,
+          "clicks": 19,
+          "link_clicks": 10,
+          "landing_views": 0,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 2.29,
+          "reach": 509,
+          "impressions": 588,
+          "clicks": 19,
+          "link_clicks": 10,
+          "landing_views": 0,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "Traspaso Santa Clara | WhatsApp | jun-2026",
+        "adset_name": "Frío · Valencia y alrededores · excl. seguidores",
+        "ad_name": "PP ·Sueño",
+        "junio_delta": {
+          "spend": 1.67,
+          "impressions": 490,
+          "clicks": 26,
+          "link_clicks": 10,
+          "landing_views": 0,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 1.67,
+          "reach": 390,
+          "impressions": 490,
+          "clicks": 26,
+          "link_clicks": 10,
+          "landing_views": 0,
+          "find_location": 0
+        }
+      },
+      {
+        "level": "ad",
+        "campaign_name": "Traspaso Santa Clara | WhatsApp | jun-2026",
+        "adset_name": "Frío · Valencia y alrededores · excl. seguidores",
+        "ad_name": "PP · Invertir - Copia",
+        "junio_delta": {
+          "spend": 4.34,
+          "impressions": 1050,
+          "clicks": 34,
+          "link_clicks": 11,
+          "landing_views": 0,
+          "find_location": 0
+        },
+        "acumulado_fin": {
+          "spend": 4.34,
+          "reach": 702,
+          "impressions": 1050,
+          "clicks": 34,
+          "link_clicks": 11,
+          "landing_views": 0,
+          "find_location": 0
+        }
+      }
+    ]
+  },
+  "chat_pepe": {
+    "mensajes": 114,
+    "sesiones": 59,
+    "recurrentes": [
+      {
+        "pregunta": "alicante",
+        "veces": 2
+      },
+      {
+        "pregunta": "trabajar con ustedes",
+        "veces": 2
+      },
+      {
+        "pregunta": "hola",
+        "veces": 2
+      }
+    ],
+    "ultimo_insight": {
+      "temas": [
+        {
+          "tema": "Reservas por local",
+          "ejemplo": "Hola quiero hacer una reserva para Playa San Juan para 5 personas para esta noche",
+          "cantidad": 15
+        },
+        {
+          "tema": "Menú del día (precio, horario, qué incluye)",
+          "ejemplo": "¿Cuánto vale el menú diario incluyendo bebida?",
+          "cantidad": 14
+        },
+        {
+          "tema": "Promociones 2x1 y por día",
+          "ejemplo": "¿Cuándo es dos por uno?",
+          "cantidad": 10
+        },
+        {
+          "tema": "Precios de pizzas y milanesas",
+          "ejemplo": "Precio de la milanesa napolitana",
+          "cantidad": 10
+        },
+        {
+          "tema": "Carta, ingredientes y sabores",
+          "ejemplo": "Dime los ingredientes de la milanesa popular",
+          "cantidad": 9
+        },
+        {
+          "tema": "Opciones sin TACC / veganas / alérgenos",
+          "ejemplo": "¿Las pizzas son sin gluten?",
+          "cantidad": 7
+        },
+        {
+          "tema": "Delivery y pedidos para llevar",
+          "ejemplo": "I want to order a pepperoni pizza for pickup",
+          "cantidad": 7
+        },
+        {
+          "tema": "Empleo y CV",
+          "ejemplo": "Hola quiero dejar mi CV",
+          "cantidad": 6
+        }
+      ],
+      "resumen": "La mayoría de las consultas son sobre reservas, promociones (2x1 y menú del día) y precios de la carta. Hay bastante confusión con qué incluye el menú del día y varios usuarios angloparlantes que Pepe atiende bien, pero hay quejas puntuales por teléfonos que no atienden.",
+      "recurrentes": [
+        "¿Cuánto sale el menú del día y qué incluye (con o sin bebida)?",
+        "¿Qué días hay 2x1 y en qué locales aplica?",
+        "Precios de pizzas y milanesas por local",
+        "Reservas para un local puntual (Playa San Juan, Benidorm, Luceros)",
+        "Opciones sin gluten / celíacos",
+        "Cómo dejar el CV o postularse"
+      ],
+      "recomendaciones_web": [
+        "Publicar de forma bien visible en la web y en cada ficha de local el precio del menú del día y qué incluye (aclarando si la bebida entra o no), porque genera confusión y hasta reclamos.",
+        "Armar una tabla clara de promociones por día, con qué locales aplican (ej: 2x1 lunes pizzas y miércoles milanesas solo en Valencia) para evitar que la gente pregunte lo mismo una y otra vez.",
+        "Mostrar los precios de las pizzas y milanesas más pedidas por local en la carta online, o al menos un rango, para no depender de que llamen.",
+        "Sumar un botón de 'Reservar' bien grande por local con link directo a WhatsApp, ya que la mayoría termina reservando por ahí.",
+        "Crear una sección 'Trabajá con nosotros' con requisitos claros (papeles en regla, puestos abiertos, mails de contacto por zona) para descomprimir esa consulta.",
+        "Revisar los teléfonos publicados de Benidorm y Valencia: hubo quejas de que no atienden o que el número no existe."
+      ],
+      "recomendaciones_pepe": [
+        "El Menú del Día incluye entrada + principal + postre + bebida, de lunes a viernes al mediodía. Precios: Playa San Juan €19,50, Luceros €15,30, Santa Clara y Russafa (Valencia) confirmar, Benidorm y Boadilla confirmar.",
+        "Sí ofrecemos opciones sin TACC a base de fainá en todos los locales (clásica, napolitana, y con calabaza y champiñones), aclarando siempre que cocinamos en la misma cocina y puede haber contaminación cruzada.",
+        "Sí armamos menús para grupos y cumpleaños: coordinar directo con el local, pero Pepe puede confirmar que la opción existe sin derivar tanto.",
+        "Sí tenemos menú infantil (o confirmar que no lo tenemos) para que Pepe responda sin dudar cuando preguntan por chicos.",
+        "Los CVs se mandan a rrhh.pizzeriapopular@grupoajax.es (no a pizzeriapopular@grupoajax.es, que es el general) y los requisitos básicos son tener papeles en regla y CV actualizado.",
+        "Precio y ingredientes de la Milanesa Napolitana (la más pedida) y de las pizzas top por local, para no tener que derivar siempre al teléfono."
+      ],
+      "generatedAt": "2026-07-02T07:00:27.645721+00:00"
+    }
+  }
+}

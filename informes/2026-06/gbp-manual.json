@@ -1,5 +1,6 @@
 {
   "descripcion": "Datos del panel Rendimiento de Google Business Profile, cargados a mano desde capturas del dueño (API GBP aún en revisión de Google). Período: junio 2026.",
+  "nota_metodologica": "Los últimos ~5-7 días de junio aparecen en CERO en varias métricas (web, menú, llamadas) en TODOS los locales: es el retraso normal de consolidación de datos de GBP, no una caída real. Las cifras de fin de mes están subcontadas y los totales de junio son levemente conservadores. Corregida la hipótesis inicial de 'link de sitio web roto' (las llamadas no dependen de ningún link). Igualmente verificar la URL de sitio web de cada ficha tras la migración revertida del 24/06.",
   "periodo": "2026-06",
   "locales": {
     "santa-clara": {
@@ -11,7 +12,7 @@
       "como_llegar": 400,
       "clics_sitio_web": 119,
       "notas": [
-        "Clics al sitio web caen a CERO aprox. del 25 al 30 de junio (línea plana al final del gráfico) — verificar link de sitio web en la ficha.",
+        "Clics al sitio web en cero del 25 al 30 de junio — ver nota metodológica (retraso de datos GBP, no fallo).",
         "Pico de 'Cómo llegar' (~35/día) alrededor del 23-24 jun.",
         "Pico de llamadas (10) el 2-3 jun.",
         "Reservas con goteo constante de ~1/día en la segunda quincena."
@@ -37,7 +38,173 @@
         "rating_junio": "Estable en 5.0 casi todo el mes; caída puntual a ~4.7 el 12/06 y bajón fuerte a ~3.7 el 15/06 (reseña mala aislada), recuperado a 5.0 desde el 16/06",
         "gestion_respuestas": "Nuevas reseñas del 28-29 jun quedaron SIN responder al cierre del mes (curva 'respondidas' cae a 0 mientras entran ~4 nuevas)"
       }
+    },
+    "russafa": {
+      "nombre": "Pizzería Popular Ruzafa (València, C/ de Russafa 34)",
+      "interacciones_totales": 1027,
+      "vs_jun_2025": "-5.6%",
+      "vieron_menu": 89,
+      "vieron_menu_vs_2025": "+107.0%",
+      "llamadas": 107,
+      "llamadas_vs_2025": "+20.2%",
+      "clics_chat": 0,
+      "reservas": 67,
+      "reservas_vs_2025": "+11.7%",
+      "como_llegar": 535,
+      "como_llegar_vs_2025": "-8.9%",
+      "clics_sitio_web": 229,
+      "clics_sitio_web_vs_2025": "-25.9%",
+      "notas": [
+        "Único local con comparativa interanual visible: interacciones -5,6%, pero llamadas +20,2%, reservas +11,7% y menú +107% — cae lo pasivo, sube lo transaccional.",
+        "Clics al sitio web y menú en cero al final del mes — ver nota metodológica (retraso de datos GBP, no fallo).",
+        "Chat de la ficha: 0 clics (¿está activado?)."
+      ],
+      "voz_cliente": {
+        "fuente": "Dashboard de análisis de reseñas (capturas del dueño, resumen 29 jun 2026; ventana 30 días salvo temas=90 días)",
+        "kpis_mes": { "total_resenas": 108, "valoracion_media": 4.7, "resenas_ultima_semana": 6, "tasa_respuesta": "100%" },
+        "sentimiento": "mayormente positivo, con porción negativa/neutral algo mayor que Santa Clara",
+        "temas_positivos": {
+          "servicio_amable_y_atento": 22,
+          "calidad_de_la_pizza": 18,
+          "milanesas_grandes_y_sabrosas": 7,
+          "ambiente_confortable_y_limpio": 4,
+          "promociones_2x1": 1
+        },
+        "areas_mejora": {
+          "mala_atencion_puntual": 2,
+          "pizza_calidad_inferior_segun_algunos": 2
+        },
+        "recomendacion_dashboard": "Mejorar la empatía y atención del personal para evitar percepciones negativas puntuales; revisar consistencia en la calidad de la pizza.",
+        "dias_con_mas_resenas": "Domingo (8) y viernes (~7) al frente; miércoles y sábado los más flojos (~3)",
+        "rating_junio": "5.0 estable con caída fuerte a ~2 el 11-12/06 (reseña 1★) recuperada en días; leve caída el 28-29/06 recuperándose al 01/07",
+        "distribucion_estrellas_30d": "mayoría 5★; reseñas sueltas en 1★, 3★ y 4★",
+        "gestion_respuestas": "Tasa de respuesta 100% — todas las reseñas del mes respondidas",
+        "resenas_por_empleado": "sin datos (no hay menciones con nombre como en Santa Clara)"
+      }
+    },
+    "benidorm": {
+      "nombre": "Pizzería Popular Benidorm",
+      "interacciones_totales": 974,
+      "vieron_menu": 8,
+      "llamadas": 101,
+      "reservas": 0,
+      "como_llegar": 503,
+      "clics_sitio_web": 362,
+      "notas": [
+        "Clics al sitio web en cero del ~26 al 30 de junio — ver nota metodológica (retraso de datos GBP, no fallo).",
+        "Reservas desde la ficha: 0 en todo junio — el sistema de reservas no estaba sincronizado con la ficha. RESUELTO: el dueño lo conectó el 02/07/2026. En el informe va como 'corregido, medir en julio'. La demanda existe (45 clicks de reserva a Benidorm desde nuestra web en junio, el local nº1 en eso).",
+        "El link del menú de la ficha apunta a habit-tracker-production-b9ab.up.railway.app (URL de Railway sin marca) y solo 8 personas lo vieron.",
+        "Sin comparativa interanual visible (ficha más nueva)."
+      ],
+      "voz_cliente": {
+        "fuente": "Dashboard ValoraIA (capturas del dueño, resumen 29 jun 2026; ventana 30 días salvo temas=90 días)",
+        "kpis_mes": { "total_resenas": 124, "valoracion_media": 4.7, "resenas_ultima_semana": 22, "tasa_respuesta": "95%" },
+        "sentimiento": "positivo dominante pero con la porción negativa más visible de los locales cargados hasta ahora",
+        "temas_positivos": {
+          "calidad_comida_y_pizzas": 31,
+          "excelente_servicio": 22,
+          "vistas_impresionantes": 17,
+          "ambiente_agradable": 7,
+          "raciones_abundantes": 3
+        },
+        "areas_mejora": {
+          "mala_atencion_y_problemas_con_ingredientes": 2,
+          "calidad_inconsistente_en_platos_especificos": 2,
+          "problemas_con_reservaciones_y_espacio": 1,
+          "falta_opciones_sin_gluten": "mencionado en el análisis narrativo"
+        },
+        "recomendacion_dashboard": "Ofrecer opciones sin gluten; mejorar coordinación del servicio en horarios de cierre (ingredientes agotados); estandarizar calidad y presentación (masa de pizza, milanesa); mejorar gestión y comunicación de reservas.",
+        "dias_con_mas_resenas": "Viernes (~17) al frente, sábado (~13) y domingo/jueves (~10); lunes el más flojo (~6)",
+        "rating_junio": "Volátil: caídas a ~2 el 03/06, ~3.6 el 18/06, ~2 el 20/06 y ~3.4 el 24/06, siempre recuperando a 5.0 — hay reseñas malas recurrentes durante el mes (consistente con la baja de 4.8 a 4.7 en el snapshot)",
+        "distribucion_estrellas_30d": "5★ ~60; 1★ ~5, 2★ ~2, 4★ ~2 — la cola negativa más grande de la cadena",
+        "gestion_respuestas": "Tasa de respuesta 95%; pico de 9 respuestas el 26/06; las nuevas del 28-30/06 quedaron parcialmente sin responder"
+      }
+    },
+    "playa-san-juan": {
+      "nombre": "Pizzería Popular Playa San Juan (Alicante, Av. de Niza 9)",
+      "interacciones_totales": null,
+      "nota_interacciones": "no se capturó la pestaña Detalles; suma de componentes ≈ 1.690+ (el local más grande de la cadena)",
+      "vieron_menu": 306,
+      "vieron_menu_vs_2025": "+120.1%",
+      "llamadas": 196,
+      "llamadas_vs_2025": "-7.1%",
+      "clics_chat": 5,
+      "clics_chat_vs_2025": "+150.0%",
+      "reservas": 120,
+      "reservas_vs_2025": "+14.3%",
+      "como_llegar": 1013,
+      "como_llegar_vs_2025": "+15.4%",
+      "clics_sitio_web": 356,
+      "clics_sitio_web_vs_2025": "-30.5%",
+      "notas": [
+        "El local más potente de la cadena en Google: 1.013 'cómo llegar' (+15,4%) y 120 reservas (+14,3%), la cifra de reservas más alta de todos.",
+        "Clics a la web -30,5% interanual — mismo patrón de caída que Russafa (-25,9%): el tráfico ficha→web baja en toda la cadena vs 2025.",
+        "Vistas del menú de la ficha caen a cero desde ~17 jun y llamadas/web desde ~25-26 jun: consistente con RETRASO de consolidación de datos de GBP (~5-7 días), no con un fallo — ver nota metodológica.",
+        "El menú de la ficha +120% interanual (306 personas)."
+      ],
+      "voz_cliente": {
+        "fuente": "Dashboard ValoraIA (capturas del dueño, resumen 29 jun 2026; ventana 30 días salvo temas=90 días)",
+        "kpis_mes": { "total_resenas": 387, "valoracion_media": 4.8, "resenas_ultima_semana": 61, "tasa_respuesta": "100%" },
+        "sentimiento": "96,4% positivo — el mejor de la cadena",
+        "temas_positivos": {
+          "servicio_excelente_y_atencion_personalizada": 29,
+          "comida_deliciosa_pizzas_postres_platos_argentinos": 18,
+          "personal_amable_y_profesional": 14,
+          "local_agradable_y_bien_ubicado": 4,
+          "recomendaciones_acertadas_de_meseros_especialmente_agus": 3
+        },
+        "areas_mejora": {},
+        "recomendacion_dashboard": "Sin sugerencias identificadas en este período (único local sin áreas de mejora detectadas).",
+        "empleados_destacados": ["Cata", "Sergio", "Agus", "Leila", "Inez"],
+        "dias_con_mas_resenas": "Domingo arrasa (~60), después miércoles (~35) y viernes/sábado (~30)",
+        "rating_junio": "Base 5.0 con caídas puntuales (~3.3-3.5 el 16-17/06, ~4.3 el 12 y 23/06) siempre recuperadas — volumen tan alto que las malas se diluyen rápido",
+        "distribucion_estrellas_30d": "5★ ~155 dominante; 4★ ~10; cola 1-3★ mínima (~10 en total)",
+        "gestion_respuestas": "Tasa de respuesta 100% con 61 reseñas nuevas en la última semana — volumen y gestión sobresalientes; picos de actividad 07/06 (~17) y 28/06 (~24)"
+      }
+    },
+    "luceros": {
+      "nombre": "Pizzería Popular Luceros (Alicante, Plaça dels Lucers 16)",
+      "interacciones_totales": null,
+      "nota_interacciones": "no se capturó la pestaña Detalles; suma de componentes ≈ 945",
+      "vieron_menu": 133,
+      "vieron_menu_vs_2025": "+303.0%",
+      "llamadas": 133,
+      "llamadas_vs_2025": "+17.7%",
+      "clics_chat": 8,
+      "reservas": 37,
+      "reservas_vs_2025": "+23.3%",
+      "como_llegar": 534,
+      "como_llegar_vs_2025": "+182.5%",
+      "clics_sitio_web": 233,
+      "clics_sitio_web_vs_2025": "-3.7%",
+      "notas": [
+        "'Cómo llegar' +182,5% interanual — el mayor crecimiento de la cadena. El pico (~39/día) cae en la semana del 19-24 jun: Hogueras de San Juan, con las mascletàs EN la propia Plaza de los Luceros + la pauta Meta 'Hogueras Luceros'. La ficha capitalizó el evento.",
+        "Todo lo transaccional crece: llamadas +17,7%, reservas +23,3%, menú +303%.",
+        "Clics web -3,7% — la única métrica en rojo, y leve (mismo patrón de cadena: la ficha retiene al usuario).",
+        "Chat de la ficha activo (8 clics, concentrados a mitad de mes).",
+        "Ceros al final del mes = retraso de datos GBP (ver nota metodológica)."
+      ],
+      "voz_cliente": {
+        "fuente": "Dashboard ValoraIA (capturas del dueño, resumen 29 jun 2026; ventana 30 días salvo temas=90 días)",
+        "kpis_mes": { "total_resenas": 249, "valoracion_media": 4.9, "resenas_ultima_semana": 9, "tasa_respuesta": "100%" },
+        "sentimiento": "casi 100% positivo — 4,9 es el mejor rating de la cadena",
+        "temas_positivos": {
+          "comida_deliciosa": 39,
+          "excelente_atencion": 30,
+          "porciones_abundantes": 10,
+          "pizzas": 10,
+          "milanesa": 4
+        },
+        "areas_mejora": {},
+        "recomendacion_dashboard": "Sin sugerencias identificadas en este período.",
+        "empleados_destacados": ["Cintia", "Clara", "Valentina", "Joaco"],
+        "equipo_nfc": "PP Luceros 01 = empleado líder (12 reseñas atribuidas, 4.9); PP Luceros 02 sin reseñas — la segunda tarjeta no se está usando",
+        "dias_con_mas_resenas": "Sábado (~24) al frente; martes-jueves parejos (~12-14); lunes casi nulo (~2)",
+        "rating_junio": "5.0 clavado casi todo el mes; leve caída ~4.7 el 22/06 recuperada; caída abrupta a ~3.7 el 30/06 (reseña mala al cierre del mes — revisar y responder)",
+        "distribucion_estrellas_30d": "5★ ~80 dominante; 4★ ~4; 1★ ~2",
+        "gestion_respuestas": "Tasa de respuesta 100%; las nuevas del 28-30/06 quedaron con respuesta pendiente al cierre"
+      }
     }
   },
-  "pendiente": ["russafa", "luceros", "playa-san-juan", "benidorm", "resenas_texto_junio"]
+  "pendiente": []
 }

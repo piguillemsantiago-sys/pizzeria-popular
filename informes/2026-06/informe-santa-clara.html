@@ -1,0 +1,72 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pizzería Popular Santa Clara</title>
+<style>
+  :root { --tinta:#1a1a1a; --gris:#666; --linea:#e3e3e3; --marca:#c62828; --verde:#2e7d32; --fondo:#faf8f5; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: Georgia, 'Times New Roman', serif; color: var(--tinta); background: var(--fondo); max-width: 860px; margin: 0 auto; padding: 40px 28px; line-height: 1.55; }
+  header { border-bottom: 3px solid var(--marca); padding-bottom: 14px; margin-bottom: 26px; }
+  .kicker { font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--marca); }
+  h1 { font-size: 30px; margin-top: 4px; }
+  .sub { color: var(--gris); font-size: 14px; margin-top: 2px; }
+  h2 { font-size: 19px; margin: 30px 0 10px; border-bottom: 1px solid var(--linea); padding-bottom: 5px; }
+  h3 { font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--gris); margin: 16px 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13.5px; margin: 8px 0 4px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); border-bottom: 2px solid var(--tinta); padding: 6px 8px; }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .up { color: var(--verde); font-size: 12px; white-space: nowrap; }
+  .down { color: var(--marca); font-size: 12px; white-space: nowrap; }
+  .kpis { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
+  .kpi { flex: 1 1 120px; background: #fff; border: 1px solid var(--linea); border-radius: 8px; padding: 10px 12px; }
+  .kpi .v { font-size: 24px; font-weight: bold; font-family: Arial, sans-serif; }
+  .kpi .l { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); }
+  ul { padding-left: 20px; margin: 6px 0; }
+  li { margin: 3px 0; }
+  .acciones { background: #fff; border-left: 4px solid var(--marca); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 10px; }
+  .acciones ol { padding-left: 20px; } .acciones li { margin: 6px 0; }
+  .nota { font-size: 12px; color: var(--gris); border-top: 1px solid var(--linea); margin-top: 34px; padding-top: 10px; }
+  .destacado { background: #fff8e1; border: 1px solid #f0e0a0; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 14.5px; }
+  @media print { body { background: #fff; padding: 0; } .kpi, .acciones, .destacado { break-inside: avoid; } }
+</style></head><body>
+<header><div class="kicker">Pizzería Popular · Informe mensual · Junio 2026</div><h1>Pizzería Popular Santa Clara</h1><div class="sub">València, C/ del Convent de Sta. Clara 11</div></header>
+
+  <div class="destacado">Tu rating <b>subió de 4,7 a 4,8 ★</b> durante junio, con <b>+40 reseñas nuevas</b> en dos semanas — el mejor salto de reputación de la cadena este mes.</div>
+  <h2>1 · Tu ficha de Google en junio</h2>
+  <table><tr><th>Acción del cliente en Google</th><th class="num">Junio</th><th></th></tr>
+  <tr><td>Solicitudes "Cómo llegar"</td><td class="num"><b>400</b></td><td></td></tr><tr><td>Clics al sitio web</td><td class="num"><b>119</b></td><td></td></tr><tr><td>Llamadas desde la ficha</td><td class="num"><b>46</b></td><td></td></tr><tr><td>Reservas desde la ficha</td><td class="num"><b>23</b></td><td></td></tr><tr><td>Vieron el menú de la ficha</td><td class="num"><b>22</b></td><td></td></tr>
+  <tr><td><b>Interacciones totales</b></td><td class="num"><b>610</b></td><td></td></tr></table>
+  <h2>2 · Qué dice la gente (reseñas)</h2>
+  
+  <div class="kpis">
+    <div class="kpi"><div class="v">— ★</div><div class="l">Valoración media</div></div>
+    <div class="kpi"><div class="v">451</div><div class="l">Reseñas totales en Google</div></div>
+    <div class="kpi"><div class="v">+40</div><div class="l">Nuevas (18 jun→1 jul)</div></div>
+    <div class="kpi"><div class="v">—</div><div class="l">Tasa de respuesta</div></div>
+  </div>
+  <h3>Qué dice la gente para bien</h3><ul><li>Servicio samuel <b>22 menciones</b></li><li>Servicio juan <b>18 menciones</b></li><li>Comida deliciosa <b>14 menciones</b></li><li>Servicio florencia <b>8 menciones</b></li><li>Ambiente acogedor <b>7 menciones</b></li></ul>
+  <h3>Qué dice para mal / a vigilar</h3><ul><li>Demora en servicio <b>1 menciones</b></li><li>Malentendidos idioma y diferencia oferta inicial vs final <b>1 menciones</b></li></ul>
+  
+  <p><b>Rating durante junio:</b> Estable en 5.0 casi todo el mes; caída puntual a ~4.7 el 12/06 y bajón fuerte a ~3.7 el 15/06 (reseña mala aislada), recuperado a 5.0 desde el 16/06</p>
+  <p><b>Cuándo entran las reseñas:</b> Viernes (~20) y sábado (~19) concentran las reseñas; miércoles el más flojo (~6).</p>
+  <p><b>Gestión de respuestas:</b> Nuevas reseñas del 28-29 jun quedaron SIN responder al cierre del mes (curva 'respondidas' cae a 0 mientras entran ~4 nuevas).</p>
+  <h2>3 · Tu carta digital (QR)</h2>
+  
+  <div class="kpis">
+    <div class="kpi"><div class="v">874</div><div class="l">Aperturas de la carta</div></div>
+    <div class="kpi"><div class="v">529</div><div class="l">Personas distintas</div></div>
+    <div class="kpi"><div class="v">94.9%</div><div class="l">Desde el móvil</div></div>
+  </div>
+  <h3>Qué es lo que más se busca en la carta</h3>
+  <ul><li>“fugazz” <b>2 búsquedas</b></li><li>“carne” <b>1 búsquedas</b></li><li>“patatas bravas” <b>1 búsquedas</b></li><li>“patatas bra” <b>1 búsquedas</b></li><li>“patatas v” <b>1 búsquedas</b></li></ul>
+  <h3>Platos más mirados</h3><ul><li>Cacciatore <b>38 vistas</b></li><li>Americana <b>32 vistas</b></li><li>Rúcula <b>30 vistas</b></li><li>Bismark Tomate <b>28 vistas</b></li><li>Fugazzeta (Argentina) 800-900 gramos <b>27 vistas</b></li></ul>
+  <h3>De dónde llega la gente a la carta <span style="text-transform:none;letter-spacing:0">(medido desde el 21 jun)</span></h3>
+  <p>QR / directo: <b>281</b> · Web: <b>0</b> · Google: <b>3</b> · Redes: <b>0</b> · Otros: <b>0</b></p>
+  <h2>4 · La web de la marca</h2>
+  <p>Desde la web de la marca (grupoajax.es), en junio este local recibió <b>19 clics de reserva</b>, <b>11 de WhatsApp</b> y <b>7 de "cómo llegar"</b>.</p>
+  <h2>4b · Publicidad en Meta (campaña "Menú Diario", lanzada ~20 jun)</h2>
+  <p>Conjunto <b>Santa Clara</b>: <b>€41,77</b> invertidos · <b>40.835</b> impresiones · <b>938</b> clics al anuncio · <b>550</b> llegaron a la página del menú diario. La intención real (clic en "Cómo llegar" en la landing) se mide con nuestro tracker y se evalúa con el corte de la campaña (~7 jul).</p>
+  <h2>5 · Lectura del mes</h2>
+  <p>Mes muy sólido en reputación: la gente nombra a Samuel, Juan y Florencia una y otra vez — el servicio es tu diferencial. Los 400 "cómo llegar" muestran que la ficha trae gente al local; la carta digital todavía se usa poco (874 aperturas, la más baja de la cadena) — el QR en mesa y en el escaparate puede trabajar más. Las dos únicas quejas del período apuntan a lo mismo: prometer una oferta y que en la mesa aparezca otra cosa.</p>
+  <h2>6 · Acciones para julio</h2>
+  <div class="acciones"><ol><li>Responder las reseñas del 28-29 de junio que quedaron pendientes (son ~4).</li><li>Repasar con el equipo que la oferta que se comunica sea exactamente la que se cobra (única queja repetida del mes).</li><li>Reconocer a Samuel (22 menciones), Juan (18) y Florencia (8) — salen con nombre en las reseñas.</li><li>Dar más visibilidad al QR de la carta en mesa: es la carta menos consultada de la cadena.</li></ol></div>
+<div class="nota"><b>Nota metodológica.</b> Datos de Google Business Profile cargados manualmente desde el panel de cada ficha (la API oficial sigue en revisión de Google; desde el próximo mes se automatiza). Los últimos 5-7 días de junio aparecen subcontados en algunas métricas de Google por su retraso de consolidación — verificado contra nuestra analítica propia: la actividad real no cayó. "Voz del cliente" proviene del análisis de reseñas (ventana 30 días; temas 90 días) y es aproximado hasta tener la API. Analítica de carta digital y web: sistema propio sin cookies, junio completo. Elaborado por Grupo Ajax · 2 de julio de 2026.</div>
+</body></html>
