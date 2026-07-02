@@ -363,7 +363,7 @@ informeLocal('luceros',
     <div class="accion"><div>Decidir la línea <b>sin gluten</b> (demanda validada en 3 locales por 2 canales).</div></div>
     <div class="accion"><div>Ejecutar la <b>higiene de fichas</b> pendiente (descripciones, https, dirección Benidorm, precio) — la ficha ya es el escaparate principal.</div></div>
     <div class="accion"><div>Extender a los 5 locales la mecánica de <b>"nombrá a quien te atendió" en la reseña</b> — se mide cada mes por menciones por camarero.</div></div>
-    <div class="accion"><div>Seguimiento <b>Benidorm</b>: reservas reconectadas + plan de consistencia (único local con nota en baja).</div></div>
+    <div class="accion"><div>Seguimiento <b>Benidorm</b>: plan de consistencia (único local con nota en baja).</div></div>
     <div class="accion"><div>Armar el <b>calendario de eventos por plaza</b> para repetir la fórmula Hogueras.</div></div>
   </div></section>`;
 
