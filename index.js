@@ -864,20 +864,21 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
         adj,
         _cambiarFoto: !!nu.cambiarFoto,
         _fotoHint: nu.fotoHint || '',
+        _notaDiseno: (nu.notaDiseno || '').trim(),
       };
     });
 
-    // Placas en modo "placa completa IA": los pedidos de DISEÑO (tamaño, posición,
-    // layout) no pasan por el retoque de sharp — van como notas al redactor de
-    // prompts, que las teje en el próximo prompt. Se guardan las últimas 3.
-    if (adjGlobal) {
-      for (const p of result) {
-        if (p.modoIA === 'completa') {
-          const notas = String(p.notasDiseno || '').split(' | ').filter(Boolean);
-          notas.push(String(instruccion));
-          p.notasDiseno = notas.slice(-3).join(' | ');
-        }
+    // Placas en modo "placa completa IA": los pedidos VISUALES (layout, banderas,
+    // tamaño, colores, escena) no pasan por el retoque de sharp — el modelo de
+    // ajuste los devuelve como notaDiseno por placa y acá se acumulan (últimas 3)
+    // para que el redactor de prompts los teja en el próximo prompt.
+    for (const p of result) {
+      if (p._notaDiseno && p.modoIA === 'completa') {
+        const notas = String(p.notasDiseno || '').split(' | ').filter(Boolean);
+        notas.push(p._notaDiseno);
+        p.notasDiseno = notas.slice(-3).join(' | ');
       }
+      delete p._notaDiseno;
     }
 
     // Cambia la foto solo donde la indicación lo pidió.
