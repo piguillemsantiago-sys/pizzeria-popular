@@ -290,10 +290,10 @@ informeLocal('playa-san-juan',
 
 informeLocal('luceros',
   '<b>La mejor nota de la cadena (4,9 ★)</b> y el mayor crecimiento de visibilidad: "cómo llegar" <b>+182,5% vs junio 2025</b> — las Hogueras en la propia plaza + la pauta "Hogueras Luceros" convirtieron la ficha en un imán.',
-  'Luceros demuestra que un evento en la puerta, bien aprovechado, multiplica la ficha: el pico de "cómo llegar" (~39 por día) cayó exactamente en la semana de Hogueras. Todo lo importante creció: llamadas +17,7%, reservas +23,3%, menú de ficha +303%. En reseñas, la comida manda (39 menciones) y el equipo — Cintia, Clara, Valentina, Joaco — sostiene un 4,9 casi perfecto. Dos detalles: una reseña mala el 30 de junio bajó el promedio de ese día (revisarla y responderla), y de las dos tarjetas NFC para pedir reseñas, una consiguió 12 y la otra cero — la #2 no se está usando. Además, "pizza sin gluten" aparece en las búsquedas top de tu carta: mismo patrón que Playa San Juan.',
+  'Luceros demuestra que un evento en la puerta, bien aprovechado, multiplica la ficha: el pico de "cómo llegar" (~39 por día) cayó exactamente en la semana de Hogueras. Todo lo importante creció: llamadas +17,7%, reservas +23,3%, menú de ficha +303%. En reseñas, la comida manda (39 menciones) y el equipo — Cintia, Clara, Valentina, Joaco — sostiene un 4,9 casi perfecto. Un detalle: una reseña mala el 30 de junio bajó el promedio de ese día (revisarla y responderla). Además, "pizza sin gluten" aparece en las búsquedas top de tu carta: mismo patrón que Playa San Juan.',
   [
     'Revisar y responder la reseña negativa del 30 de junio.',
-    'Poner en uso la tarjeta NFC #2 del equipo (la #1 trajo 12 reseñas en el mes; la #2, cero).',
+    'Al pedir la reseña, invitar al cliente a <b>nombrar a quien lo atendió</b> — cada mes contamos las menciones por camarero (este mes: Cintia, Clara, Valentina y Joaco ya aparecen).',
     'Repetir la fórmula de Hogueras en el próximo evento de la plaza: pauta local + ficha al día = +182% de "cómo llegar".',
     'El lunes casi no entran reseñas y el sábado es pico: concentrar el pedido de reseñas el finde.',
   ]
@@ -333,7 +333,7 @@ informeLocal('luceros',
     <li><b>Sin gluten:</b> la demanda aparece por dos canales independientes — es lo que más busca la gente en las cartas digitales de Playa San Juan y Luceros, y hay quejas explícitas en reseñas de Benidorm. Hoy la carta no tiene respuesta. Decisión de carta a nivel marca.</li>
     <li><b>La ficha como escaparate principal:</b> los clics ficha→web caen en toda la cadena (−3,7% a −30,5% vs 2025). La gente ya no sale de Google: decide ahí. La higiene pendiente de las fichas (descripciones, fotos, https, dirección de Benidorm, rango de precio) pasa de "deseable" a prioritaria.</li>
     <li><b>Fórmula de eventos:</b> Hogueras + pauta local = +182% de visibilidad en Luceros. Replicable: calendario de eventos por plaza y pauta de €10/día la semana del evento.</li>
-    <li><b>Reseñas por empleado (tarjetas NFC):</b> donde se usa, funciona — la tarjeta líder de Luceros consiguió 12 reseñas en el mes; la segunda, cero. Vale formalizarlo en los 5 locales, con el equipo que ya sale nombrado en reseñas como embajador (Samuel/Juan/Florencia en Santa Clara; Cata/Sergio/Agus/Leila/Inez en PSJ; Cintia/Clara/Valentina/Joaco en Luceros).</li>
+    <li><b>Menciones al equipo en reseñas:</b> donde el cliente nombra a quien lo atendió, la nota acompaña — Samuel/Juan/Florencia en Santa Clara (48 menciones entre los tres), Cata/Sergio/Agus/Leila/Inez en Playa San Juan, Cintia/Clara/Valentina/Joaco en Luceros. La mecánica de marca: al pedir la reseña, invitar al cliente a <b>nombrar al camarero</b>. Se cuantifica cada mes contando menciones por nombre — sirve además como reconocimiento interno.</li>
     <li><b>Reservas de Benidorm:</b> la ficha estuvo todo junio sin sistema de reservas conectado (0 reservas con 503 "cómo llegar"). Corregido el 02/07 — verificar impacto en julio.</li>
   </ul></section>
 
@@ -368,7 +368,7 @@ informeLocal('luceros',
   <div class="acciones">
     <div class="accion"><div>Decidir la línea <b>sin gluten</b> (demanda validada en 3 locales por 2 canales).</div></div>
     <div class="accion"><div>Ejecutar la <b>higiene de fichas</b> pendiente (descripciones, https, dirección Benidorm, precio) — la ficha ya es el escaparate principal.</div></div>
-    <div class="accion"><div>Formalizar el <b>programa de reseñas por empleado (NFC)</b> en los 5 locales.</div></div>
+    <div class="accion"><div>Extender a los 5 locales la mecánica de <b>"nombrá a quien te atendió" en la reseña</b> — se mide cada mes por menciones por camarero.</div></div>
     <div class="accion"><div>Seguimiento <b>Benidorm</b>: reservas reconectadas + plan de consistencia (único local con nota en baja).</div></div>
     <div class="accion"><div>Leer el corte de la campaña <b>Menú Diario</b> (~7 jul) y decidir escalar o apagar por conjunto.</div></div>
     <div class="accion"><div>Armar el <b>calendario de eventos por plaza</b> para repetir la fórmula Hogueras.</div></div>
