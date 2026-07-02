@@ -129,10 +129,12 @@ function bloqueVoz(v, slug) {
   const malas = Object.keys(v.areas_mejora || {}).length;
   return `
   <div class="grid">
-    <div class="stat"><div class="v">⭐ ${k.valoracion_media || '—'}</div><div class="l">Nota media del mes</div></div>
+    ${k.valoracion_media
+      ? `<div class="stat"><div class="v">⭐ ${k.valoracion_media}</div><div class="l">Nota media del mes</div></div>`
+      : `<div class="stat"><div class="v">⭐ ${fin && fin.rating}</div><div class="l">Nota en Google</div></div>`}
     <div class="stat"><div class="v">${fmt(fin && fin.reviews)}</div><div class="l">Reseñas totales en Google</div></div>
     ${nuevas !== null ? `<div class="stat"><div class="v">+${nuevas}</div><div class="l">Nuevas del 18 jun al 1 jul</div></div>` : ''}
-    <div class="stat"><div class="v">${k.tasa_respuesta || '—'}</div><div class="l">Reseñas respondidas</div></div>
+    ${k.tasa_respuesta ? `<div class="stat"><div class="v">${k.tasa_respuesta}</div><div class="l">Reseñas respondidas</div></div>` : ''}
   </div>
   <h3>👍 Lo que más elogian los clientes</h3>
   ${barras(v.temas_positivos)}
