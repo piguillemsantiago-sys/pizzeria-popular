@@ -106,27 +106,36 @@ Cero few-shot: cada copy arranca de cero, solo con el system prompt + guía de e
 6. ✅ `CLAUDE_COPY_MODEL` por env, default `claude-opus-4-8` (A7). El retoque sigue
    con `CLAUDE_RETOQUE_MODEL` (default haiku-4-5).
 
-### Fase 2 — REDEFINIDA (pedido del dueño, 2 jul): placa completa por IA con marca en claro
+### Fase 2 — ✅ HECHA (2 jul 2026): placa completa por IA con marca en claro
 Visión: que la IA genere la placa COMPLETA ya diseñada (no solo el fondo), sabiendo
 de antemano la identidad de la marca. "Como Gemini", con un redactor de prompts experto.
 
-7. **Brand Kit** editable en el panel, persistido en Supabase: paleta hex (GOLD #D8A460,
-   DARK #171310), tipografías descriptas para IA (serif editorial alto contraste /
-   cursiva manuscrita fina dorada / sans limpia), mood fotográfico (horno de leña,
-   madera, luz cálida), tono, reglas duras (no "pantalla gigante", rioplatense).
-   Se inyecta en TODO prompt de imagen + 1-2 placas de referencia adjuntas como guía visual.
-8. **Redactor de prompts experto** como corazón del flujo (no opcional como hoy):
-   brief del usuario → prompt de director de arte completo (escena, composición vertical,
-   textos EXACTOS entre comillas y su ubicación, tipografía, paleta, luz, negativos).
-9. **Modo "placa completa IA"** junto al modo actual: Gemini genera diseño+texto;
-   verificación OBLIGATORIA con Claude vision (leer los textos renderizados y comparar
-   con el copy; si un dato duro salió mal → regenerar). Logo real SIEMPRE compuesto
-   encima con sharp (tipografía IA es aproximada; el logo no se negocia).
+7. ✅ **Brand Kit** (`lib/brand-kit.js` + tabla `ppweb_brand_kit`, botón 🎨 Marca en el
+   panel): 6 campos en palabras (marca, colores con hex, tipografías descriptas para IA,
+   fotografía/mood, tono, reglas duras). Defaults en código → funciona sin la tabla;
+   para EDITARLO hay que correr `supabase-brand-kit.sql` en el SQL Editor (una vez).
+   Se inyecta en TODO prompt de imagen (fondo y placa completa).
+8. ✅ **Redactor de prompts experto** (`redactarPromptPlaca`): Brand Kit + textos EXACTOS
+   entre comillas + layout según estilo + banderas por nombre de país + notas de diseño
+   del usuario + feedback del intento anterior → prompt de director de arte para Gemini.
+   Testeado en vivo: teje todo (incluida la nota "título a más de la mitad del ancho").
+9. ✅ **Modo "placa completa IA"** (selector junto al formato): Gemini genera diseño+texto
+   con 1-2 placas de referencia adjuntas; verificación OBLIGATORIA con Claude vision
+   (`verificarPlacaIA`, lee letra por letra, detecta texto inventado/faltante, banderas
+   mal, logos dibujados) → si hay error grave regenera UNA vez con el feedback; si vuelve
+   a fallar entrega el mejor intento con los errores A LA VISTA como avisos. Logo real
+   SIEMPRE compuesto encima con sharp (franja superior despejada por prompt). Cache por
+   firma del diseño: recomponer sin cambios NO regenera; el ajuste conversacional manda
+   los pedidos de diseño como notas al redactor (el retoque sharp no aplica acá).
 10. Trade-off documentado: tipografía exacta (Abuget/Abril) solo en el modo clásico;
     el modo IA la aproxima. Datos críticos (fechas/precios/direcciones) → verificados
     o en modo clásico.
-11. (Sigue valiendo) Crítico visual también para el modo clásico (B1) + composición
+11. PENDIENTE (Fase 2.5): crítico visual también para el modo clásico (B1) + composición
     en paralelo (B3).
+
+**Falta probar con Gemini real (la key vive solo en el VPS):** generar una historia y
+un carrusel en modo placa completa, mirar la verificación en acción. Todo lo demás
+(Brand Kit, redactor, verificación con vision, terminado con logo) testeado en vivo local.
 
 ### Fase 3 — Flujo de trabajo real
 10. Galería/historial de piezas generadas (ya están en storage; falta listarlas) + duplicar.

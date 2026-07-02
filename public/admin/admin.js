@@ -1442,7 +1442,7 @@
   /* ==================== GENERADOR ==================== */
   let genLoaded = false;
   let genGemini = false;
-  let genState = { formato: 'historia', instruccion: '', placas: [], caption: '' };
+  let genState = { formato: 'historia', modo: 'clasico', instruccion: '', placas: [], caption: '' };
 
   async function loadGen() {
     try {
@@ -1470,6 +1470,38 @@
     } finally {
       btn.disabled = false;
       btn.textContent = '🔄 Sincronizar banco';
+    }
+  }
+
+  // ---- Brand Kit: la identidad de marca que ve la IA de imágenes ----
+  const BK_CAMPOS = [['marca', 'bkMarca'], ['colores', 'bkColores'], ['tipografias', 'bkTipografias'],
+    ['fotografia', 'bkFotografia'], ['tono', 'bkTono'], ['reglas', 'bkReglas']];
+  async function openBkModal() {
+    $('bkError').textContent = '';
+    $('bkModal').hidden = false;
+    BK_CAMPOS.forEach(([, id]) => { $(id).value = ''; $(id).placeholder = 'Cargando…'; });
+    try {
+      const out = await api('/api/admin/gen/brand-kit');
+      BK_CAMPOS.forEach(([k, id]) => { $(id).value = (out.kit && out.kit[k]) || ''; $(id).placeholder = ''; });
+    } catch (e) {
+      $('bkError').textContent = e.message;
+    }
+  }
+  async function onBkGuardar() {
+    const body = {};
+    BK_CAMPOS.forEach(([k, id]) => { body[k] = $(id).value; });
+    const btn = $('bkGuardar');
+    btn.disabled = true;
+    btn.textContent = 'Guardando…';
+    $('bkError').textContent = '';
+    try {
+      await api('/api/admin/gen/brand-kit', 'PUT', body);
+      $('bkModal').hidden = true;
+    } catch (e) {
+      $('bkError').textContent = e.message;
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Guardar';
     }
   }
 
@@ -1514,20 +1546,29 @@
     box.innerHTML = genState.placas.map((p, i) =>
       '<div class="gen-placa pepe-block">' +
         '<h2>Placa ' + (i + 1) + ' de ' + genState.placas.length +
-          ' <small>' + esc(genState.formato) + '</small></h2>' +
+          ' <small>' + esc(genState.formato) +
+          (p.modoIA === 'completa' ? ' · 🧠 placa completa IA' : '') + '</small></h2>' +
         '<div class="gen-placa-grid">' +
           '<div class="gen-placa-foto">' +
-            (p.fotoUrl
-              ? '<img src="' + esc(p.fotoUrl) + '" alt="" />'
-              : (p.iaPrompt
-                ? '<div class="gen-foto-empty">🤖 IA:<br/>' + esc(p.iaPrompt.slice(0, 60)) + '…</div>'
-                : '<div class="gen-foto-empty">Sin foto</div>')) +
-            (p.motivo ? '<p class="gen-foto-motivo">✨ ' + esc(p.motivo) + '</p>' : '') +
-            '<div class="gen-foto-btns">' +
-              '<button type="button" data-act="otra" data-i="' + i + '" title="Que la IA elija otra foto del banco">🔄 Otra</button>' +
-              '<button type="button" data-act="drive" data-i="' + i + '">📁 Cambiar</button>' +
-              '<button type="button" data-act="ia" data-i="' + i + '">🤖 IA</button>' +
-            '</div>' +
+          (p.modoIA === 'completa'
+            // Placa completa IA: no hay foto del banco — Gemini diseña todo a
+            // partir de la escena. Acá solo se muestra/edita la escena base.
+            ? '<div class="gen-foto-empty">🧠 Gemini diseña la placa completa<br/><small>' +
+                esc(String(p.iaPrompt || p.escenaIA || '').slice(0, 90)) + '…</small></div>' +
+              '<div class="gen-foto-btns">' +
+                '<button type="button" data-act="ia" data-i="' + i + '">🖼 Escena</button>' +
+              '</div>'
+            : (p.fotoUrl
+                ? '<img src="' + esc(p.fotoUrl) + '" alt="" />'
+                : (p.iaPrompt
+                  ? '<div class="gen-foto-empty">🤖 IA:<br/>' + esc(p.iaPrompt.slice(0, 60)) + '…</div>'
+                  : '<div class="gen-foto-empty">Sin foto</div>')) +
+              (p.motivo ? '<p class="gen-foto-motivo">✨ ' + esc(p.motivo) + '</p>' : '') +
+              '<div class="gen-foto-btns">' +
+                '<button type="button" data-act="otra" data-i="' + i + '" title="Que la IA elija otra foto del banco">🔄 Otra</button>' +
+                '<button type="button" data-act="drive" data-i="' + i + '">📁 Cambiar</button>' +
+                '<button type="button" data-act="ia" data-i="' + i + '">🤖 IA</button>' +
+              '</div>') +
           '</div>' +
           '<div class="gen-placa-campos">' +
             '<label>Título<input type="text" data-campo="titulo" data-i="' + i + '" value="' + esc(p.titulo || '') + '" /></label>' +
@@ -1567,14 +1608,20 @@
     e.preventDefault();
     const instruccion = $('genInput').value.trim();
     if (!instruccion) return;
+    if ($('genModo').value === 'completa' && !genGemini) {
+      alert('El modo "Placa completa IA" necesita la IA de imágenes activa (falta GEMINI_API_KEY en el servidor).');
+      return;
+    }
     const btn = $('genCopyBtn');
     btn.disabled = true;
     btn.textContent = 'Pensando… (~20 s)';
     try {
       genState.formato = $('genFormato').value;
+      genState.modo = $('genModo').value;
       genState.instruccion = instruccion;
-      btn.textContent = 'Eligiendo texto y fotos… (~30 s)';
-      const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato });
+      const esCompleta = genState.modo === 'completa';
+      btn.textContent = esCompleta ? 'Escribiendo el copy… (~20 s)' : 'Eligiendo texto y fotos… (~30 s)';
+      const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato, modo: genState.modo });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
         cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'clasico',
@@ -1585,6 +1632,7 @@
         escenaPistas: Array.isArray(p.escenaPistas) ? p.escenaPistas : [],
         banderas: Array.isArray(p.banderas) ? p.banderas : [],
         evento: p.evento || '',
+        modoIA: esCompleta ? 'completa' : undefined,
       }));
       genState.caption = out.caption || '';
       $('genCaption').value = genState.caption;
@@ -1694,6 +1742,11 @@
     const tieneFoto = !!(p.driveId || p.fotoUrl);
     $('iaModoFotoLabel').style.display = tieneFoto ? '' : 'none';
     if (tieneFoto) $('iaModoFoto').checked = true; else $('iaModoLibre').checked = true;
+    // Placa completa IA: la escena es la BASE del diseño (el redactor experto del
+    // server arma el prompt final) → sin radios de modo ni "afinar" (ya es experto).
+    const esCompleta = p && p.modoIA === 'completa';
+    $('iaModeRow').style.display = esCompleta ? 'none' : '';
+    $('iaAfinarRow').style.display = esCompleta ? 'none' : '';
     $('iaModalError').textContent = '';
     $('iaModal').hidden = false;
     $('iaPromptInput').focus();
@@ -1722,6 +1775,7 @@
       ? txt + '\n\nDestacá especialmente en la escena: ' + destacar.join(', ') + '.'
       : txt;
     p.iaFotoUrl = null; // nueva escena IA → invalidar la imagen cacheada (se regenera)
+    p.iaPlacaUrl = null; // ídem para la placa completa IA
     p.fotoUrl = null;
     p.driveId = null;
     p.motivo = '';
@@ -1775,14 +1829,17 @@
   }
 
   async function onGenComponer() {
-    const sinFoto = genState.placas.findIndex((p) => !p.fotoUrl && !p.iaPrompt);
+    const sinFoto = genState.placas.findIndex((p) => p.modoIA !== 'completa' && !p.fotoUrl && !p.iaPrompt);
     if (sinFoto !== -1) {
       alert('La placa ' + (sinFoto + 1) + ' no tiene foto. Elegila del banco (📁) o generala con IA (🤖).');
       return;
     }
     const btn = $('genComponerBtn');
     btn.disabled = true;
-    btn.textContent = 'Componiendo… (~' + (genState.placas.length * 8) + ' s)';
+    const hayCompleta = genState.placas.some((p) => p.modoIA === 'completa');
+    btn.textContent = hayCompleta
+      ? 'Diseñando con IA y verificando… (~40 s por placa)'
+      : 'Componiendo… (~' + (genState.placas.length * 8) + ' s)';
     try {
       const out = await api('/api/admin/gen/piezas', 'POST', {
         formato: genState.formato,
@@ -1797,13 +1854,24 @@
           logo: p.logo || undefined,
           adj: p.adj || undefined,
           iaFotoUrl: p.iaFotoUrl || undefined, // cache: reusar la imagen IA ya generada
+          // Modo placa completa IA: escena + notas de diseño + cache de la placa cruda.
+          modoIA: p.modoIA || undefined,
+          escenaIA: p.escenaIA || undefined,
+          notasDiseno: p.notasDiseno || undefined,
+          iaPlacaUrl: p.iaPlacaUrl || undefined,
+          iaPlacaFirma: p.iaPlacaFirma || undefined,
         })),
       });
-      // Guardar la iaFotoUrl cacheada que devolvió el server, para que el próximo
-      // recomponer/ajuste NO regenere la imagen (la pizza queda fija).
+      // Guardar los caches que devolvió el server (imagen de fondo IA / placa
+      // completa IA), para que el próximo recomponer/ajuste NO regenere de más.
       if (out.placas) out.placas.forEach((p, i) => {
-        if (genState.placas[i] && p && p.iaFotoUrl) genState.placas[i].iaFotoUrl = p.iaFotoUrl;
+        if (!genState.placas[i] || !p) return;
+        if (p.iaFotoUrl) genState.placas[i].iaFotoUrl = p.iaFotoUrl;
+        if (p.iaPlacaUrl) { genState.placas[i].iaPlacaUrl = p.iaPlacaUrl; genState.placas[i].iaPlacaFirma = p.iaPlacaFirma; }
       });
+      if (out.avisos && out.avisos.length) {
+        alert('Avisos de la verificación:\n\n• ' + out.avisos.join('\n• '));
+      }
       $('genResults').innerHTML = (out.urls || []).map((u, i) =>
         '<a class="gen-result" href="' + esc(u) + '" target="_blank" rel="noopener">' +
           '<img src="' + esc(u) + '" alt="Placa ' + (i + 1) + '" loading="lazy" />' +
@@ -2434,6 +2502,9 @@
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); $('genForm').requestSubmit(); }
     });
     $('genSyncBtn').addEventListener('click', onGenSync);
+    $('genBrandBtn').addEventListener('click', openBkModal);
+    $('bkCancel').addEventListener('click', () => { $('bkModal').hidden = true; });
+    $('bkGuardar').addEventListener('click', onBkGuardar);
     $('genComponerBtn').addEventListener('click', onGenComponer);
     // El caption editado a mano tiene que volver al estado: sin esto, un ajuste
     // posterior manda el caption viejo y pisa la edición del usuario.

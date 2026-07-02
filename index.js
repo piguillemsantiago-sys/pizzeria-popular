@@ -21,6 +21,7 @@ const ig = require('./lib/instagram');
 const { generarCopy, ajustarCopy, generarPiezas, generarImagenIA, afinarPromptIA, sugerirEscenaBlog, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
+const { getBrandKit, saveBrandKit } = require('./lib/brand-kit');
 const menu = require('./lib/menu');
 const menuAnalytics = require('./lib/menu-analytics');
 const resenas = require('./lib/google-reviews');
@@ -698,6 +699,25 @@ app.get('/api/admin/gen/status', requireAdmin, async (req, res) => {
   }
 });
 
+// Brand Kit: la identidad de marca que se inyecta en todos los prompts de imagen.
+app.get('/api/admin/gen/brand-kit', requireAdmin, async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try {
+    res.json(await getBrandKit());
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+app.put('/api/admin/gen/brand-kit', requireAdmin, async (req, res) => {
+  try {
+    res.json(await saveBrandKit(req.body || {}));
+  } catch (e) {
+    console.error('[Brand Kit] Error:', e.message);
+    res.status(500).json({ error: 'No pude guardar el Brand Kit: ' + e.message });
+  }
+});
+
 // Indexa el banco de imágenes (Drive → catálogo descrito por IA).
 app.post('/api/admin/gen/sync-banco', requireAdmin, async (req, res) => {
   try {
@@ -730,11 +750,17 @@ app.post('/api/admin/gen/reelegir', requireAdmin, async (req, res) => {
 // La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   try {
-    const { instruccion, formato } = req.body;
+    const { instruccion, formato, modo } = req.body;
     if (!instruccion || !String(instruccion).trim()) {
       return res.status(400).json({ error: 'Contame qué querés comunicar.' });
     }
     const copy = await generarCopy(String(instruccion), formato);
+    // Modo "placa completa IA": Gemini diseña todo (fondo incluido) → no hace
+    // falta elegir fotos del banco (ahorra la llamada más lenta del flujo).
+    if (modo === 'completa') {
+      copy.bancoUsado = false;
+      return res.json(copy);
+    }
     // Selección automática de fotos del banco (si está indexado).
     try {
       const elecciones = await elegirFotos(String(instruccion), formato || 'historia', copy.placas);
@@ -841,8 +867,31 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
       };
     });
 
+    // Placas en modo "placa completa IA": los pedidos de DISEÑO (tamaño, posición,
+    // layout) no pasan por el retoque de sharp — van como notas al redactor de
+    // prompts, que las teje en el próximo prompt. Se guardan las últimas 3.
+    if (adjGlobal) {
+      for (const p of result) {
+        if (p.modoIA === 'completa') {
+          const notas = String(p.notasDiseno || '').split(' | ').filter(Boolean);
+          notas.push(String(instruccion));
+          p.notasDiseno = notas.slice(-3).join(' | ');
+        }
+      }
+    }
+
     // Cambia la foto solo donde la indicación lo pidió.
     for (const p of result) {
+      if (p._cambiarFoto && p.modoIA === 'completa') {
+        // En modo placa completa no hay banco: el pedido de otra imagen se suma
+        // a la escena base y se invalida el cache para que regenere.
+        const extra = p._fotoHint || String(instruccion);
+        p.iaPrompt = (String(p.iaPrompt || p.escenaIA || '').trim() + '. ' + extra).replace(/^\.\s*/, '');
+        p.iaPlacaUrl = null;
+        delete p._cambiarFoto;
+        delete p._fotoHint;
+        continue;
+      }
       if (p._cambiarFoto) {
         try {
           const hint = (p._fotoHint ? p._fotoHint + '. ' : '') + String(instruccion);
@@ -878,8 +927,9 @@ app.post('/api/admin/gen/piezas', requireAdmin, async (req, res) => {
     if (!Array.isArray(placas) || !placas.length) {
       return res.status(400).json({ error: 'No hay placas para componer.' });
     }
-    const { urls, placas: outPlacas } = await generarPiezas(formato, placas.slice(0, 6));
-    res.json({ urls, placas: outPlacas }); // placas trae la iaFotoUrl cacheada
+    const { urls, placas: outPlacas, avisos } = await generarPiezas(formato, placas.slice(0, 6));
+    // placas trae la iaFotoUrl/iaPlacaUrl cacheadas; avisos, la verificación de placas IA.
+    res.json({ urls, placas: outPlacas, avisos });
   } catch (e) {
     console.error('[Gen piezas] Error:', e.message);
     const status = e.code === 'NO_KEY' ? 422 : 500;

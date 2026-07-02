@@ -570,6 +570,7 @@
             <h1>Generador</h1>
             <div class="gen-head-right">
               <span class="gen-banco-tag" id="genBancoTag">Banco: …</span>
+              <button class="btn-ghost" id="genBrandBtn">🎨 Marca</button>
               <button class="btn-ghost" id="genSyncBtn">🔄 Sincronizar banco</button>
             </div>
           </div>
@@ -583,6 +584,10 @@
                   <option value="historia">Historia (1080×1920)</option>
                   <option value="post">Post 4:5 (1080×1350)</option>
                   <option value="carrusel">Carrusel (1080×1350)</option>
+                </select>
+                <select id="genModo" title="Cómo se arma la placa">
+                  <option value="clasico">Clásico — texto nítido de marca</option>
+                  <option value="completa">Placa completa IA — Gemini diseña todo</option>
                 </select>
                 <div class="gen-chips" id="genChips">
                   <span class="gen-chip gen-chip-plant" data-fill="plantilla" title="Carga un esqueleto vacío para completar">📋 Plantilla</span>
@@ -917,7 +922,7 @@
       <label>O agregá algo a mano (opcional):
         <input type="text" id="iaExtraInput" placeholder="Ej: con globos de colores" />
       </label>
-      <div class="ia-afinar-row">
+      <div class="ia-afinar-row" id="iaAfinarRow">
         <button type="button" id="iaAfinar" class="ia-afinar">✨ Afinar prompt para Gemini</button>
         <span class="ia-afinar-hint">Un experto reteje la escena + lo que marcaste en un prompt pulido.</span>
       </div>
@@ -933,8 +938,26 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="bkModal" hidden>
+    <div class="modal">
+      <h2>🎨 Marca — Brand Kit del Generador</h2>
+      <p class="gen-hint" style="margin-top:0">Esto es lo que la IA sabe de la marca antes de diseñar cualquier imagen. Escribilo en palabras, como se lo contarías a un diseñador nuevo. Un campo vacío vuelve al valor de fábrica.</p>
+      <label>La marca<textarea id="bkMarca" rows="2"></textarea></label>
+      <label>Colores<textarea id="bkColores" rows="2"></textarea></label>
+      <label>Tipografías<textarea id="bkTipografias" rows="3"></textarea></label>
+      <label>Fotografía (luz y mood)<textarea id="bkFotografia" rows="3"></textarea></label>
+      <label>Tono de los textos<textarea id="bkTono" rows="2"></textarea></label>
+      <label>Reglas duras (lo prohibido)<textarea id="bkReglas" rows="3"></textarea></label>
+      <p class="modal-error" id="bkError"></p>
+      <div class="modal-actions">
+        <button type="button" id="bkCancel">Cancelar</button>
+        <button type="button" class="save" id="bkGuardar">Guardar</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=48"></script>
+  <script src="/admin/admin.js?v=49"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
