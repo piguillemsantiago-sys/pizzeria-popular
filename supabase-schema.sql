@@ -68,7 +68,7 @@ values
    'Válido solo en los locales de Valencia (Santa Clara y Russafa). No incluye días festivos.',
    'Promo', '/images/extracted/promo-2x1-milanesas.jpg', 'Reservar mesa', 'reservar', 2, 'es'),
   ('Menú del día', 'De lunes a viernes al mediodía',
-   'Entrada + Principal + Postre + Bebida. Una experiencia completa al mejor precio.',
+   'Entrada + Principal + Postre. Una experiencia completa al mejor precio.',
    'Disponible en todos nuestros locales. No incluye días festivos.',
    null, '/images/extracted/producto-pizza-dolce.jpg', 'Ver menús', 'menus', 3, 'es'),
   ('Happy Hour', 'Caña 2€ · Pinta 3€',

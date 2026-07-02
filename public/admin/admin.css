@@ -597,19 +597,22 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Gráfico de barras por día */
 .pepe-chart {
-  display: flex; align-items: flex-end; gap: 6px; height: 150px;
+  display: flex; align-items: flex-end; gap: 5px; height: 150px; overflow: hidden;
 }
 .chart-col {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%;
+  flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%;
 }
-.chart-num { font-size: .68rem; color: var(--pp-muted); }
-.chart-track { flex: 1; width: 100%; display: flex; align-items: flex-end; }
+.chart-num { font-size: .62rem; color: var(--pp-muted); white-space: nowrap; }
+.chart-track { flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center; }
 .chart-bar {
   width: 100%; min-height: 3px; border-radius: 5px 5px 0 0;
   background: linear-gradient(180deg, var(--pp-gold-bright), var(--pp-gold));
   box-shadow: 0 0 14px -2px rgba(62,111,168,.4);
 }
-.chart-lbl { font-size: .62rem; color: var(--pp-faint); }
+.chart-lbl { font-size: .55rem; color: var(--pp-faint); white-space: nowrap; overflow: hidden; max-width: 100%; }
+/* Barras del gráfico diario: angostas y centradas para que ~31 columnas
+   entren en el recuadro (el gráfico de horas conserva sus barras anchas). */
+.pepe-chart:not(.an-chart-hours) .chart-bar { max-width: 26px; }
 
 /* Lo que más preguntan */
 .pepe-q {

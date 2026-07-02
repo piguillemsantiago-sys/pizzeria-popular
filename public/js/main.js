@@ -541,6 +541,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       var h = a.href || '';
       if (/wa\.me|api\.whatsapp\.com/i.test(h)) send('whatsapp', targetFrom(h, 'whatsapp'));
       else if (/myrestoo\.net/i.test(h)) send('reserva', targetFrom(h, 'reserva'));
+      else if (/maps\.app\.goo\.gl|google\.[a-z.]+\/maps|maps\.google\./i.test(h)) send('comollegar', a.getAttribute('data-local') || null);
       else if (/instagram\.com\/pizzeriapopular/i.test(h)) send('instagram');
     }, true);
 
@@ -590,6 +591,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       if (!window.fbq) return;
       if (tipo === 'whatsapp') window.fbq('track', 'Contact', { content_name: 'whatsapp', content_category: target || 'web' });
       else if (tipo === 'reserva') window.fbq('track', 'Lead', { content_name: 'reserva', content_category: target || 'web' });
+      else if (tipo === 'comollegar') window.fbq('track', 'FindLocation', { content_name: 'comollegar', content_category: target || 'web' });
       else if (tipo === 'formulario') window.fbq('track', 'Lead', { content_name: 'contacto' });
       else if (tipo === 'instagram') window.fbq('trackCustom', 'InstagramClick');
       // 'pageview' no se mapea: el snippet base ya dispara PageView al cargar.

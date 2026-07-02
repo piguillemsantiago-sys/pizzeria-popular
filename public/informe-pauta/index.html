@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Recorrido del cliente · Pizzería Popular</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#EDE8D9; --gold:#D8A460; --dark:#392E2C; --dark2:#241C1A;
+    --coral:#E0533D; --muted:rgba(237,232,217,.6); --line:rgba(237,232,217,.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:radial-gradient(130% 90% at 50% -5%, #4a3a35 0%, var(--dark) 40%, var(--dark2) 100%) fixed;
+    color:var(--cream); font-family:'Montserrat',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased; min-height:100vh; padding:48px 20px 70px;
+  }
+  .container{max-width:920px; margin:0 auto}
+
+  /* Header */
+  .eyebrow{font-size:14px; letter-spacing:.3em; text-transform:uppercase; color:var(--gold); font-weight:700; margin-bottom:14px; text-align:center}
+  h1{font-family:'Abril Fatface',Georgia,serif; font-weight:400; font-size:clamp(34px,6vw,56px); line-height:1.02; text-align:center}
+  h1 .em{color:var(--gold)}
+  .sub{text-align:center; color:var(--muted); font-size:clamp(15px,2.4vw,19px); margin-top:14px; font-weight:500}
+
+  /* Toggle */
+  .toggle{display:flex; justify-content:center; gap:10px; margin:30px 0 8px; flex-wrap:wrap}
+  .toggle button{
+    font-family:inherit; font-weight:700; font-size:15px; cursor:pointer;
+    background:rgba(0,0,0,.25); color:var(--cream); border:1px solid var(--line);
+    padding:11px 24px; border-radius:999px; transition:all .2s ease;
+  }
+  .toggle button:hover{border-color:var(--gold); color:var(--gold)}
+  .toggle button.active{background:var(--gold); color:var(--dark2); border-color:var(--gold)}
+  .hint{text-align:center; color:var(--muted); font-size:13.5px; margin-bottom:34px}
+
+  /* Funnel */
+  .step{
+    background:rgba(36,28,26,.55); border:1px solid var(--line); border-radius:22px;
+    padding:28px 30px; position:relative; transition:border-color .2s ease, transform .2s ease;
+  }
+  .step:hover{border-color:rgba(216,164,96,.45)}
+  .step .head{display:flex; align-items:center; gap:18px}
+  .step .ico{
+    width:62px; height:62px; flex:0 0 62px; border-radius:16px; display:grid; place-items:center;
+    font-size:30px; background:rgba(216,164,96,.14); border:1px solid rgba(216,164,96,.3);
+  }
+  .step .ht{flex:1}
+  .step .pn{font-size:13px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold); font-weight:700}
+  .step .tt{font-family:'Abril Fatface',serif; font-size:27px; margin-top:3px; line-height:1.05}
+  .step .big{text-align:right}
+  .step .big b{display:block; font-size:clamp(38px,6vw,52px); font-weight:800; color:var(--gold); line-height:1; letter-spacing:-.01em}
+  .step .big small{display:block; font-size:14px; color:var(--muted); font-weight:600; margin-top:6px}
+
+  /* Creatives */
+  .creatives{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px}
+  .creatives figure{position:relative; transition:transform .2s ease}
+  .creatives figure:hover{transform:translateY(-4px)}
+  .creatives img{width:100%; aspect-ratio:9/16; object-fit:cover; border-radius:14px; border:1px solid var(--line); box-shadow:0 12px 30px rgba(0,0,0,.4)}
+  .creatives figcaption{text-align:center; margin-top:10px; font-weight:700; font-size:16px}
+
+  /* Breakdown bars */
+  .bd{margin-top:24px}
+  .bd-title{font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:14px}
+  .bar{display:flex; align-items:center; gap:14px; margin:11px 0}
+  .bar .nm{width:90px; flex:0 0 90px; font-weight:600; font-size:15px}
+  .bar .track{flex:1; height:30px; background:rgba(0,0,0,.28); border-radius:8px; overflow:hidden}
+  .bar .fill{height:100%; width:0; background:linear-gradient(90deg,#b9823f,var(--gold)); border-radius:8px; transition:width .7s cubic-bezier(.2,.7,.2,1)}
+  .bar.lead .fill{background:linear-gradient(90deg,#c98a3e,#f0c074)}
+  .bar .vl{width:54px; flex:0 0 54px; text-align:right; font-weight:800; font-size:18px}
+  .bar.lead .vl{color:var(--gold)}
+  .bar.lead .nm::after{content:" ★"; color:var(--gold); font-size:12px}
+
+  /* Step 3 with screenshot */
+  .step3-grid{display:grid; grid-template-columns:200px 1fr; gap:28px; align-items:start; margin-top:24px}
+  .phone{text-align:center}
+  .phone a.shot{display:block; cursor:pointer}
+  .phone a.shot img{width:100%; border-radius:18px; border:3px solid rgba(237,232,217,.16); box-shadow:0 16px 40px rgba(0,0,0,.5); transition:transform .2s ease, border-color .2s ease}
+  .phone a.shot:hover img{transform:translateY(-3px); border-color:var(--gold)}
+  .view-btn{display:inline-block; margin-top:14px; background:var(--gold); color:var(--dark2); font-weight:700; font-size:14px; padding:11px 20px; border-radius:10px; text-decoration:none; transition:filter .15s ease}
+  .view-btn:hover{filter:brightness(1.08)}
+
+  /* Connector */
+  .conn{display:flex; flex-direction:column; align-items:center; padding:6px 0}
+  .conn .ln{width:2px; height:24px; background:var(--line)}
+  .conn .pill{
+    background:rgba(216,164,96,.12); border:1px solid rgba(216,164,96,.4); color:var(--gold);
+    font-weight:700; font-size:14.5px; padding:8px 18px; border-radius:999px; white-space:nowrap;
+  }
+  .conn .pill b{color:var(--cream)}
+
+  /* Step 4 (próximo) */
+  .step.next{background:rgba(36,28,26,.3); border-style:dashed}
+  .step.next .ico{background:rgba(237,232,217,.06); border-color:var(--line)}
+  .badge-soon{display:inline-block; background:rgba(216,164,96,.16); border:1px solid rgba(216,164,96,.4); color:var(--gold); font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:999px; margin-top:10px}
+  .step .desc{color:var(--muted); font-size:15px; margin-top:14px; line-height:1.55}
+
+  /* Footer */
+  .foot{margin-top:36px; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; line-height:1.7}
+  .foot b{color:var(--cream)}
+  .brand{text-align:center; font-family:'Abril Fatface',serif; font-size:20px; color:rgba(237,232,217,.45); margin-top:24px}
+
+  @media(max-width:680px){
+    .step{padding:22px 18px}
+    .step .head{flex-wrap:wrap; gap:12px}
+    .step .big{text-align:left; width:100%}
+    .step .big b{font-size:42px}
+    .step3-grid{grid-template-columns:1fr}
+    .phone{max-width:220px; margin:0 auto}
+    .bar .nm{width:74px; flex-basis:74px; font-size:14px}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="eyebrow">Pizzería Popular · Menú Diario</div>
+  <h1>El recorrido del <span class="em">cliente</span></h1>
+  <div class="sub">Cómo funciona el anuncio, paso a paso · activa desde el 25 de junio · datos al 2 de julio</div>
+
+  <div class="toggle">
+    <button data-loc="total" class="active">Los dos locales</button>
+    <button data-loc="russafa">Russafa</button>
+    <button data-loc="santaclara">Santa Clara</button>
+  </div>
+  <div class="hint">👆 Tocá un local para ver sus números · pasá el mouse por cada paso</div>
+
+  <!-- PASO 1 -->
+  <div class="step">
+    <div class="head">
+      <div class="ico">👁️</div>
+      <div class="ht"><div class="pn">Paso 1</div><div class="tt">Ven el anuncio</div></div>
+      <div class="big"><b id="reach">—</b><small><span id="impr">—</span> veces mostrado</small></div>
+    </div>
+    <div class="creatives">
+      <figure><img src="milanesa.png" alt="Milanesa"><figcaption>Milanesa</figcaption></figure>
+      <figure><img src="noqui.png" alt="Ñoquis"><figcaption>Ñoquis</figcaption></figure>
+      <figure><img src="pizza.png" alt="Pizza"><figcaption>Pizza</figcaption></figure>
+    </div>
+  </div>
+
+  <div class="conn"><div class="ln"></div><div class="pill">De los que lo vieron, <b id="conv1">—</b> tocaron</div><div class="ln"></div></div>
+
+  <!-- PASO 2 -->
+  <div class="step" id="step2">
+    <div class="head">
+      <div class="ico">👆</div>
+      <div class="ht"><div class="pn">Paso 2</div><div class="tt">Hacen click para ver el menú</div></div>
+      <div class="big"><b id="clicks">—</b><small>clics al menú</small></div>
+    </div>
+    <div class="bd">
+      <div class="bd-title">¿Qué imagen los hizo tocar?</div>
+      <div class="bar" data-img="Milanesa"><div class="nm">Milanesa</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+      <div class="bar" data-img="Ñoquis"><div class="nm">Ñoquis</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+      <div class="bar" data-img="Pizza"><div class="nm">Pizza</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="ln"></div><div class="pill">De los que tocaron, <b id="conv2">—</b> entraron</div><div class="ln"></div></div>
+
+  <!-- PASO 3 -->
+  <div class="step" id="step3">
+    <div class="head">
+      <div class="ico">📲</div>
+      <div class="ht"><div class="pn">Paso 3</div><div class="tt">Entran a la página del menú</div></div>
+      <div class="big"><b id="lpv">—</b><small>visitas a la página</small></div>
+    </div>
+    <div class="step3-grid">
+      <div class="phone">
+        <a class="shot" href="https://grupoajax.es/menu-diario/" target="_blank" rel="noopener"><img src="landing-mobile.png" alt="Página del menú"></a>
+        <a class="view-btn" href="https://grupoajax.es/menu-diario/" target="_blank" rel="noopener">🔗 Ver la página real</a>
+      </div>
+      <div class="bd" style="margin-top:4px">
+        <div class="bd-title">¿Qué imagen los trajo hasta acá?</div>
+        <div class="bar" data-img="Milanesa"><div class="nm">Milanesa</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+        <div class="bar" data-img="Ñoquis"><div class="nm">Ñoquis</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+        <div class="bar" data-img="Pizza"><div class="nm">Pizza</div><div class="track"><div class="fill"></div></div><div class="vl">—</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="conn"><div class="ln"></div><div class="pill">Último paso medible</div><div class="ln"></div></div>
+
+  <!-- PASO 4 -->
+  <div class="step">
+    <div class="head">
+      <div class="ico">📍</div>
+      <div class="ht"><div class="pn">Paso 4</div><div class="tt">Intención de ir al local</div></div>
+      <div class="big"><b id="intent">—</b><small>tocaron "Cómo llegar"</small></div>
+    </div>
+    <div class="desc">La señal más cercana a que van a venir: tocan <b>"Cómo llegar"</b> y les abrimos el mapa hasta la puerta.
+    <br><span class="badge-soon">🔗 Medido con el tracker propio de la web · desde el 26 de junio</span></div>
+  </div>
+
+  <div class="foot">
+    <b>Vieron</b> = personas distintas que cruzaron el anuncio · <b>Tocaron</b> = hicieron clic para ver el menú · <b>Entraron</b> = abrieron la página del menú · <b>Cómo llegar</b> = tocaron el botón del mapa (la señal más fuerte de que van a venir).<br>
+    Son <b>datos al 2 de julio</b> (~7 días corriendo): con la semana completa, la muestra ya es sólida y la imagen que gana en cada local está clara.
+  </div>
+  <div class="brand">Pizzería Popular</div>
+
+</div>
+
+<script>
+  const DATA = {
+    total:      { reach:34839, impr:86091, clicks:2051, lpv:1269, intent:19, click:{Milanesa:1095,'Ñoquis':796,Pizza:160}, lpvb:{Milanesa:728,'Ñoquis':457,Pizza:84} },
+    russafa:    { reach:21737, impr:43858, clicks:1038, lpv:680,  intent:10, click:{Milanesa:909,'Ñoquis':66,Pizza:63},    lpvb:{Milanesa:607,'Ñoquis':43,Pizza:30} },
+    santaclara: { reach:19395, impr:42233, clicks:1013, lpv:589,  intent:9,  click:{Milanesa:186,'Ñoquis':730,Pizza:97},   lpvb:{Milanesa:121,'Ñoquis':414,Pizza:54} },
+  };
+  const IMGS = ['Milanesa','Ñoquis','Pizza'];
+  const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  function animate(el, to){ el.textContent = fmt(to); }
+
+  function bars(stepEl, obj){
+    const max = Math.max(...IMGS.map(k => obj[k]));
+    IMGS.forEach(k => {
+      const row = stepEl.querySelector('.bar[data-img="' + k + '"]');
+      const lead = obj[k] === max;
+      row.classList.toggle('lead', lead);
+      row.querySelector('.fill').style.width = (obj[k] / max * 100) + '%';
+      row.querySelector('.vl').textContent = obj[k];
+    });
+  }
+
+  function render(loc){
+    const d = DATA[loc];
+    animate(document.getElementById('reach'), d.reach);
+    document.getElementById('impr').textContent = fmt(d.impr);
+    animate(document.getElementById('clicks'), d.clicks);
+    animate(document.getElementById('lpv'), d.lpv);
+    animate(document.getElementById('intent'), d.intent);
+    document.getElementById('conv1').textContent = (d.clicks / d.reach * 100).toFixed(1).replace('.', ',') + '%';
+    document.getElementById('conv2').textContent = Math.round(d.lpv / d.clicks * 100) + '%';
+    bars(document.getElementById('step2'), d.click);
+    bars(document.getElementById('step3'), d.lpvb);
+  }
+
+  document.querySelectorAll('.toggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.toggle button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      render(b.dataset.loc);
+    });
+  });
+
+  render('total');
+</script>
+</body>
+</html>

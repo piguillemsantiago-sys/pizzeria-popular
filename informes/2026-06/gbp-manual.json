@@ -1,0 +1,43 @@
+{
+  "descripcion": "Datos del panel Rendimiento de Google Business Profile, cargados a mano desde capturas del dueño (API GBP aún en revisión de Google). Período: junio 2026.",
+  "periodo": "2026-06",
+  "locales": {
+    "santa-clara": {
+      "nombre": "Pizzería Popular Santa Clara (València, C/ del Convent de Sta. Clara 11)",
+      "interacciones_totales": 610,
+      "vieron_menu": 22,
+      "llamadas": 46,
+      "reservas": 23,
+      "como_llegar": 400,
+      "clics_sitio_web": 119,
+      "notas": [
+        "Clics al sitio web caen a CERO aprox. del 25 al 30 de junio (línea plana al final del gráfico) — verificar link de sitio web en la ficha.",
+        "Pico de 'Cómo llegar' (~35/día) alrededor del 23-24 jun.",
+        "Pico de llamadas (10) el 2-3 jun.",
+        "Reservas con goteo constante de ~1/día en la segunda quincena."
+      ],
+      "voz_cliente": {
+        "fuente": "Dashboard de análisis de reseñas (capturas del dueño, actualizado 29 jun 2026)",
+        "ventana": "últimos 90 días — usar como proxy de junio; el mes que viene con API GBP será exacto",
+        "sentimiento": "abrumadoramente positivo (donut casi 100% verde, mínima porción negativa)",
+        "distribucion_estrellas_aprox": { "5": "~82", "4": "~3", "1": "~2" },
+        "temas_positivos": {
+          "servicio_samuel": 22,
+          "servicio_juan": 18,
+          "comida_deliciosa": 14,
+          "servicio_florencia": 8,
+          "ambiente_acogedor": 7
+        },
+        "areas_mejora": {
+          "demora_en_servicio": 1,
+          "malentendidos_idioma_y_diferencia_oferta_inicial_vs_final": 1
+        },
+        "recomendacion_dashboard": "Mejorar la comunicación para evitar malentendidos en pedidos y garantizar que las ofertas prometidas se cumplan.",
+        "dias_con_mas_resenas": "Viernes (~20) y sábado (~19) concentran las reseñas; miércoles el más flojo (~6)",
+        "rating_junio": "Estable en 5.0 casi todo el mes; caída puntual a ~4.7 el 12/06 y bajón fuerte a ~3.7 el 15/06 (reseña mala aislada), recuperado a 5.0 desde el 16/06",
+        "gestion_respuestas": "Nuevas reseñas del 28-29 jun quedaron SIN responder al cierre del mes (curva 'respondidas' cae a 0 mientras entran ~4 nuevas)"
+      }
+    }
+  },
+  "pendiente": ["russafa", "luceros", "playa-san-juan", "benidorm", "resenas_texto_junio"]
+}

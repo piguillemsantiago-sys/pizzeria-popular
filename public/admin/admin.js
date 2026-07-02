@@ -1296,14 +1296,39 @@
       $('anGoogleLocList').innerHTML = '<p class="empty">Sin locales.</p>';
     } else {
       const maxR = Math.max(1, ...locs.map((l) => l.reviews));
-      $('anGoogleLocList').innerHTML = locs.map((l) =>
-        '<div class="an-local">' +
+      $('anGoogleLocList').innerHTML = locs.map((l) => {
+        const nu = l.nuevas7 != null ? l.nuevas7 : l.nuevas30;
+        const nuTxt = nu == null ? '' : ' · ' + (nu >= 0 ? '+' : '') + fmtNum(nu) + (l.nuevas7 != null ? ' (7d)' : ' (30d)');
+        const subir = (l.rating >= 5) ? 'en el tope ⭐'
+          : (l.faltan != null ? '~' + fmtNum(l.faltan) + ' para ' + String(l.target).replace('.', ',') + '★' : '');
+        const meta = (subir || nuTxt)
+          ? '<small style="display:block;opacity:.6;font-weight:400;">' + subir + nuTxt + '</small>' : '';
+        return '<div class="an-local">' +
           '<span class="an-local-name">' + esc(l.name) + ' <small>' + esc(l.city) + '</small></span>' +
           '<div class="an-local-track"><div class="an-local-fill" style="width:' +
             Math.round((l.reviews / maxR) * 100) + '%"></div></div>' +
-          '<span class="an-local-val">' + l.rating + '★ · ' + fmtNum(l.reviews) + ' reseñas</span>' +
-        '</div>').join('');
+          '<span class="an-local-val">' + l.rating + '★ · ' + fmtNum(l.reviews) + ' reseñas' + meta + '</span>' +
+        '</div>';
+      }).join('');
     }
+  }
+
+  function renderAnGoogleVoz(d) {
+    const el = $('anGoogleVoz');
+    if (!el) return;
+    if (!d || !(d.porLocal || []).length) {
+      el.innerHTML = '<p class="empty">Sin texto de reseñas para analizar todavía.</p>';
+      return;
+    }
+    el.innerHTML = d.porLocal.map((l) => {
+      const pos = (l.positivo || []).length
+        ? '<div style="color:#3a9d5d;font-size:13px;margin:2px 0;">👍 ' + l.positivo.map(esc).join(' · ') + '</div>' : '';
+      const neg = (l.negativo || []).length
+        ? '<div style="color:#c0492f;font-size:13px;margin:2px 0;">👎 ' + l.negativo.map(esc).join(' · ') + '</div>'
+        : '<div style="opacity:.45;font-size:12.5px;margin:2px 0;">👎 sin quejas en la muestra</div>';
+      return '<div style="padding:8px 0;border-top:1px solid rgba(128,128,128,.18);">' +
+        '<div style="font-weight:600;margin-bottom:2px;">' + esc(l.local) + '</div>' + pos + neg + '</div>';
+    }).join('');
   }
 
   function renderAnMeta(d) {
@@ -1347,16 +1372,18 @@
     $('anContent').hidden = true;
     try {
       const cr = anMesRango(anMes);
-      const [web, igd, goog, metaD, carta] = await Promise.all([
+      const [web, igd, goog, metaD, carta, voz] = await Promise.all([
         api('/api/admin/analitica/web?mes=' + anMes),
         api('/api/admin/analitica/instagram?mes=' + anMes).catch(() => ({ configurado: false })),
         api('/api/admin/analitica/google').catch(() => ({ configurado: false })),
         api('/api/admin/analitica/meta').catch(() => ({ configurado: false })),
         api('/api/admin/menu-analytics/global?range=custom&from=' + encodeURIComponent(cr.from) + '&to=' + encodeURIComponent(cr.to)).catch(() => null),
+        api('/api/admin/resenas/voz').catch(() => null),
       ]);
       renderAnWeb(web);
       renderAnIg(igd);
       renderAnGoogle(goog);
+      renderAnGoogleVoz(voz);
       renderAnMeta(metaD);
       renderAnCarta(carta);
       $('anLoading').hidden = true;
@@ -1882,6 +1909,62 @@
       } catch (e) { /* toast ya */ }
     }
 
+    // ---- Panel: reseñas por local (rating, total, nuevas 7d, faltan para subir) ----
+    async function loadPanel() {
+      const body = $('gmPanelBody');
+      if (!body) return;
+      try {
+        const d = await call('/api/admin/analitica/google', 'GET');
+        if (!d || !d.configurado || !(d.locales || []).length) {
+          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:18px;opacity:.6;">Todavía no hay datos de Google. Se cargan solos.</td></tr>';
+          return;
+        }
+        body.innerHTML = d.locales.map((l) => {
+          const nu = l.nuevas7 != null ? l.nuevas7 : l.nuevas30;
+          const nuTxt = nu == null ? '<span style="opacity:.5;">—</span>'
+            : (nu > 0 ? '<b style="color:#3a9d5d;">+' + nu + '</b>'
+              : (nu < 0 ? '<b style="color:#c0492f;">' + nu + '</b>' : '0'));
+          const subir = (l.rating >= 5) ? '🏆 tope'
+            : (l.faltan != null ? '~' + fmtNum(l.faltan) + ' → ' + String(l.target).replace('.', ',') + '★'
+              : '<span style="opacity:.5;">—</span>');
+          return '<tr>' +
+            '<td>' + esc(l.name) + ' <small style="opacity:.6;">' + esc(l.city) + '</small></td>' +
+            '<td><b>' + l.rating + '★</b></td>' +
+            '<td>' + fmtNum(l.reviews) + '</td>' +
+            '<td>' + nuTxt + '</td>' +
+            '<td><span style="opacity:.85;">' + subir + '</span></td>' +
+          '</tr>';
+        }).join('');
+      } catch (e) {
+        body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:18px;opacity:.6;">No se pudo cargar.</td></tr>';
+      }
+    }
+
+    // ---- "Lo que dice la gente" — por local (positivos / negativos del texto de reseñas) ----
+    async function loadVoz() {
+      const body = $('gmVozBody');
+      if (!body) return;
+      try {
+        const d = await call('/api/admin/resenas/voz', 'GET');
+        const locs = (d && d.porLocal) || [];
+        if (!locs.length) {
+          body.innerHTML = '<p style="opacity:.6;">Todavía no hay reseñas con texto para analizar.</p>';
+          return;
+        }
+        body.innerHTML = locs.map((l) => {
+          const pos = (l.positivo || []).length
+            ? '<div style="color:#3a9d5d;font-size:13px;margin:3px 0;line-height:1.6;">👍 ' + l.positivo.map(esc).join(' · ') + '</div>' : '';
+          const neg = (l.negativo || []).length
+            ? '<div style="color:#c0492f;font-size:13px;margin:3px 0;line-height:1.6;">👎 ' + l.negativo.map(esc).join(' · ') + '</div>'
+            : '<div style="opacity:.45;font-size:12.5px;margin:3px 0;">👎 sin quejas en la muestra</div>';
+          return '<div style="padding:11px 0;border-top:1px solid rgba(128,128,128,.18);">' +
+            '<div style="font-weight:700;margin-bottom:3px;">' + esc(l.local) + '</div>' + pos + neg + '</div>';
+        }).join('');
+      } catch (e) {
+        body.innerHTML = '<p style="opacity:.6;">No se pudo cargar.</p>';
+      }
+    }
+
     // ---- Estrellas ----
     function paintStars() {
       document.querySelectorAll('#gmFStars .rg-star').forEach((s) =>
@@ -2080,15 +2163,124 @@
     });
 
     // Carga inicial
+    loadPanel();
+    loadVoz();
     loadMetrics();
     loadHistorial();
+  }
+
+  /* ==================== PAUTA ==================== */
+  let pautaLoaded = false;
+  let pautaData = null;
+
+  async function loadPauta() {
+    pautaLoaded = true;
+    try {
+      renderPauta(await api('/api/admin/pauta'));
+    } catch (e) {
+      pautaLoaded = false;
+      $('pautaNotice').hidden = false;
+      $('pautaNotice').textContent = 'No se pudo cargar la pauta: ' + e.message;
+    }
+  }
+
+  function renderPauta(d) {
+    const notice = $('pautaNotice'), body = $('pautaBody');
+    if (!d || !d.configurado) {
+      notice.hidden = false;
+      notice.innerHTML = 'Meta Ads no está conectado. Falta cargar el token de la API de Marketing (<code>META_ADS_TOKEN</code>) en el servidor.';
+      body.hidden = true; return;
+    }
+    if (d.sinDatos || !d.campañas || !d.campañas.length) {
+      notice.hidden = false;
+      notice.textContent = 'Conectado, pero todavía no hay datos guardados. Tocá «Actualizar» para traer el primer snapshot.';
+      body.hidden = true; return;
+    }
+    notice.hidden = true; body.hidden = false;
+    pautaData = d;
+    $('pautaFecha').textContent = 'Datos al ' + d.dia;
+    poblarSelector();
+  }
+
+  // Llena el selector. Por defecto solo campañas activas; con el check, todas.
+  function poblarSelector() {
+    if (!pautaData) return;
+    const verTodas = $('pautaVerTodas') && $('pautaVerTodas').checked;
+    const sel = $('pautaCampSel');
+    const items = pautaData.campañas
+      .map((c, i) => ({ c, i }))
+      .filter(({ c }) => verTodas || c.activa !== false);
+    sel.innerHTML = items.map(({ c, i }) =>
+      `<option value="${i}">${esc(c.name)}${c.activa === false ? ' · pausada' : ''}</option>`).join('');
+    renderCampaña(items.length ? +sel.value : -1);
+  }
+
+  function renderCampaña(idx) {
+    const c = pautaData && pautaData.campañas[idx];
+    if (!c) return;
+    const t = c.total;
+    $('ptSpend').textContent = '€' + fmtNum(Math.round(t.spend));
+    $('ptReach').textContent = fmtNum(t.reach);
+    $('ptImpr').textContent = fmtNum(t.impressions);
+    $('ptLink').textContent = fmtNum(t.link_clicks);
+    $('ptLanding').textContent = fmtNum(t.landing_views);
+    $('ptFind').textContent = fmtNum(t.find_location);
+    $('pautaLocales').innerHTML = c.locales.map(renderLocalPauta).join('') ||
+      '<p class="pauta-hint">Sin conjuntos por local en esta campaña.</p>';
+  }
+
+  // "Russafa_milanesa", "Santa Clara_ñoqui - Copia" → "Milanesa" / "Ñoqui".
+  function limpiarCreativo(name) {
+    const base = String(name || '').replace(/\s*-\s*copia\s*$/i, '').split('_').pop().trim();
+    return base ? base.charAt(0).toUpperCase() + base.slice(1) : '—';
+  }
+
+  function renderLocalPauta(l) {
+    const t = l.total;
+    const maxLink = Math.max(0, ...l.creativos.map((x) => x.link_clicks));
+    const rows = l.creativos.map((cr) => {
+      const lead = cr.link_clicks === maxLink && maxLink > 0;
+      return `<tr class="${lead ? 'lead' : ''}">
+        <td>${esc(limpiarCreativo(cr.name))}${lead ? ' ★' : ''}</td>
+        <td>€${fmtNum(Math.round(cr.spend))}</td>
+        <td>${fmtNum(cr.link_clicks)}</td>
+        <td>${fmtNum(cr.landing_views)}</td>
+        <td>${fmtNum(cr.find_location)}</td>
+        <td>${cr.ctr}%</td>
+        <td>€${cr.cpl}</td>
+      </tr>`;
+    }).join('');
+    return `<div class="pauta-local">
+      <div class="pauta-local-head">
+        <h3>${esc(l.name)}</h3>
+        <span>€${fmtNum(Math.round(t.spend))} · ${fmtNum(t.reach)} personas · ${fmtNum(t.link_clicks)} clics · ${fmtNum(t.landing_views)} entraron</span>
+      </div>
+      <table class="pauta-table">
+        <thead><tr><th>Imagen</th><th>Invertido</th><th>Clics al menú</th><th>Entraron</th><th>Cómo llegar</th><th>CTR enlace</th><th>€/clic</th></tr></thead>
+        <tbody>${rows || '<tr><td colspan="7">—</td></tr>'}</tbody>
+      </table>
+    </div>`;
+  }
+
+  async function onPautaRefresh() {
+    const btn = $('pautaRefresh');
+    btn.disabled = true; const prev = btn.textContent; btn.textContent = 'Actualizando…';
+    try {
+      await api('/api/admin/pauta/snapshot', 'POST', {});
+      pautaLoaded = false;
+      await loadPauta();
+    } catch (e) {
+      $('pautaNotice').hidden = false;
+      $('pautaNotice').textContent = 'No se pudo actualizar: ' + e.message +
+        '\n\nMeta limita las llamadas en modo desarrollo. Probá de nuevo en un rato.';
+    } finally { btn.disabled = false; btn.textContent = prev; }
   }
 
   /* ==================== SECCIONES (sidebar) ==================== */
   const SECTION_LABELS = {
     'cal-mkt': 'Calendario', 'planificacion': 'Planificación',
     'google-maps': 'Google Maps',
-    'inteligencia': 'Inteligencia', 'analitica': 'Analítica',
+    'inteligencia': 'Inteligencia', 'analitica': 'Analítica', 'pauta': 'Pauta',
     'generador': 'Generador', 'web': 'Web', 'menu': 'Menú Digital',
   };
   function switchSection(section) {
@@ -2101,6 +2293,7 @@
     if (crumb) crumb.textContent = SECTION_LABELS[section] || '';
     if (section === 'inteligencia' && !intelLoaded) loadIntel();
     if (section === 'analitica' && !anLoaded) loadAnalitica();
+    if (section === 'pauta' && !pautaLoaded) loadPauta();
     if (section === 'generador' && !genLoaded) loadGen();
     if (section === 'google-maps' && !resenasLoaded) loadResenas();
     if (section === 'menu' && !menuLoaded) { menuLoaded = true; MenuAdminModule.load(); }
@@ -2166,6 +2359,11 @@
       if (gmBtn) gmBtn.hidden = true;
       const gmSec = document.getElementById('section-google-maps');
       if (gmSec) gmSec.remove();
+      // Pauta también es solo-dueño (datos de inversión publicitaria).
+      const ptBtn = document.querySelector('.dash-nav-item[data-section="pauta"]');
+      if (ptBtn) ptBtn.hidden = true;
+      const ptSec = document.getElementById('section-pauta');
+      if (ptSec) ptSec.remove();
     }
     switchSection(onlyMenu ? 'menu' : 'web');
     if (onlyMenu) return; // gerente solo-menú: no hay más que cablear
@@ -2261,6 +2459,13 @@
     $('anIgRefresh').addEventListener('click', (e) => { e.stopPropagation(); onIgRefresh(); });
     $('anMetaRefresh').addEventListener('click', (e) => { e.stopPropagation(); onMetaRefresh(); });
     $('anCartaGoto').addEventListener('click', () => switchSection('menu'));
+
+    // Pauta (solo dueño; la sección se elimina arriba si no es full admin)
+    if (me.isFullAdmin) {
+      $('pautaRefresh').addEventListener('click', onPautaRefresh);
+      $('pautaCampSel').addEventListener('change', (e) => renderCampaña(+e.target.value));
+      $('pautaVerTodas').addEventListener('change', poblarSelector);
+    }
     // Acordeón de Analítica: cada cabecera abre/cierra su tarjeta.
     document.querySelectorAll('#section-analitica .an-acc-head').forEach((h) =>
       h.addEventListener('click', () => h.parentElement.classList.toggle('open')));

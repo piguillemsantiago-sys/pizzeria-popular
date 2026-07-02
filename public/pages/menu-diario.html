@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="/images/favicon-light.png" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="/images/favicon-dark.png" media="(prefers-color-scheme: light)">
+  <title>Menú Diario · 14,90€ · Pizzería Popular Valencia</title>
+  <meta name="description" content="Menú Diario en Pizzería Popular Valencia: entrante + principal + postre por 14,90€. Cocina argentina al horno de leña en Russafa y Santa Clara.">
+  <meta name="robots" content="noindex, follow">
+  <meta property="og:title" content="Menú Diario · 14,90€ · Pizzería Popular Valencia">
+  <meta property="og:description" content="Entrante + principal + postre por 14,90€. Cocina argentina al horno de leña en Russafa y Santa Clara.">
+  <meta property="og:url" content="https://grupoajax.es/menu-diario/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://grupoajax.es/images/general/og-restaurantes.jpg">
+  <meta property="og:site_name" content="Pizzería Popular">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Great+Vibes&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* ─── Menú Diario landing ─── */
+    .md-hero {
+      min-height: 92vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 130px 5% 70px;
+    }
+    .md-hero-inner { max-width: 660px; }
+    .md-eyebrow {
+      display: inline-block;
+      font-size: .72rem; letter-spacing: .28em; text-transform: uppercase;
+      color: var(--gold); font-weight: 700; margin-bottom: 1.3rem;
+    }
+    .md-title {
+      font-family: 'Abril Fatface', serif; font-weight: 400;
+      color: var(--cream);
+      font-size: clamp(3rem, 12vw, 6.2rem); line-height: .94;
+      letter-spacing: .02em; text-transform: uppercase;
+    }
+    .md-title span { color: var(--gold); display: block; }
+    .md-sub {
+      margin-top: 1.1rem;
+      font-size: clamp(.9rem, 3.4vw, 1.35rem); letter-spacing: .16em;
+      text-transform: uppercase; color: rgba(237,232,217,.92); font-weight: 600;
+    }
+    .md-price {
+      margin: 1.7rem auto 0;
+      display: inline-flex; align-items: baseline; gap: .04em;
+      background: var(--gold); color: var(--dark2);
+      padding: .3em .65em; border-radius: 16px;
+      box-shadow: 0 16px 44px rgba(216,164,96,.4);
+    }
+    .md-price-num { font-family: 'Abril Fatface', serif; font-size: clamp(2.7rem, 10vw, 4.6rem); line-height: 1; }
+    .md-price-cur { font-family: 'Abril Fatface', serif; font-size: clamp(1.7rem, 5.5vw, 2.7rem); line-height: 1; }
+    .md-trust {
+      margin-top: 1.5rem; font-size: .82rem; letter-spacing: .04em;
+      color: rgba(237,232,217,.85); font-weight: 500;
+    }
+    .md-trust b { color: var(--gold); font-weight: 700; }
+    .md-desc {
+      margin: 1.1rem auto 0; max-width: 440px;
+      color: rgba(237,232,217,.78); font-size: 1rem; line-height: 1.7; font-weight: 300;
+    }
+    .md-cta {
+      display: inline-block; margin-top: 2.1rem;
+      background: transparent; border: 1.5px solid var(--gold); color: var(--gold);
+      padding: 14px 36px; border-radius: 40px; text-decoration: none;
+      font-weight: 700; letter-spacing: .08em; font-size: .82rem; transition: all .25s;
+    }
+    .md-cta:hover { background: var(--gold); color: var(--dark2); }
+    @media (max-width: 768px) {
+      body.bg-fixed { background-attachment: scroll !important; }
+    }
+    @media (max-width: 480px) {
+      .md-hero { padding-top: 110px; min-height: 88vh; }
+      .md-title { font-size: clamp(2.6rem, 17vw, 4rem); }
+      .md-sub { font-size: .72rem; letter-spacing: .08em; }
+      .md-locales .local-card { padding-top: 2.6rem; }
+    }
+
+    /* ─── Menú (qué incluye) ─── */
+    .md-menu { padding: 6px 5% 30px; }
+    .md-menu-card {
+      max-width: 600px; margin: 0 auto;
+      background: rgba(36,28,26,.8); backdrop-filter: blur(4px);
+      border: 1px solid rgba(216,164,96,.25); border-radius: 18px;
+      padding: 32px 30px;
+    }
+    .md-menu-block + .md-menu-block { border-top: 1px solid rgba(216,164,96,.2); margin-top: 22px; padding-top: 22px; }
+    .md-menu-block h3 {
+      font-family: 'Abril Fatface', serif; font-weight: 400; color: var(--gold);
+      font-size: 1.35rem; letter-spacing: .02em;
+    }
+    .md-menu-block h3 span {
+      font-family: 'Montserrat', sans-serif; font-size: .6rem; letter-spacing: .18em;
+      text-transform: uppercase; color: rgba(237,232,217,.5); font-weight: 600; margin-left: .5rem;
+    }
+    .md-menu-block ul { list-style: none; margin-top: .9rem; display: flex; flex-direction: column; gap: .5rem; }
+    .md-menu-block li {
+      color: rgba(237,232,217,.92); font-size: .95rem; line-height: 1.4;
+      padding-left: 1.1rem; position: relative;
+    }
+    .md-menu-block li::before { content: '•'; color: var(--gold); position: absolute; left: 0; }
+    .md-menu-block li em { color: rgba(237,232,217,.55); font-style: normal; font-size: .85rem; }
+    .md-menu-dessert { color: rgba(237,232,217,.9); font-size: .95rem; margin-top: .5rem; }
+    .md-menu-note {
+      text-align: center; max-width: 600px; margin: 1.3rem auto 0;
+      color: rgba(237,232,217,.6); font-size: .8rem; font-style: italic; letter-spacing: .02em;
+    }
+
+    /* ─── Locales ─── */
+    .md-locales { padding: 30px 5% 80px; }
+    .md-locales-head { text-align: center; max-width: 640px; margin: 0 auto 2.6rem; }
+    .md-locales-head .md-eyebrow { margin-bottom: .8rem; }
+    .md-locales-head h2 {
+      font-family: 'Abril Fatface', serif; font-weight: 400; color: var(--cream);
+      font-size: clamp(1.8rem, 6vw, 2.9rem); line-height: 1.05;
+    }
+    .md-locales-head p { color: rgba(237,232,217,.7); margin-top: .7rem; font-size: .95rem; font-weight: 300; }
+    .md-locales-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+      max-width: 760px; margin: 0 auto;
+    }
+    @media (max-width: 640px) { .md-locales-grid { grid-template-columns: 1fr; } }
+    .md-locales .local-card { background: rgba(36,28,26,.78); backdrop-filter: blur(4px); padding-top: 3.4rem; }
+    .md-btn-main { background: var(--gold) !important; color: var(--dark2) !important; font-size: .82rem !important; padding: 13px 12px !important; }
+    /* El hover heredado pintaba la tarjeta de dorado y tapaba el botón "Cómo llegar".
+       Lo neutralizo: tarjetas siempre oscuras (como en mobile), solo un leve lift al pasar el mouse. */
+    .md-locales .local-card::before { display: none !important; }
+    .md-locales .local-card:hover { transform: translateY(-4px); }
+    .md-locales .local-card:hover .local-name { color: var(--cream) !important; }
+    .md-locales .local-card:hover .local-address { color: rgba(255,255,255,.95) !important; }
+    .md-locales .local-card:hover .local-rating { color: var(--gold) !important; }
+    .md-locales .local-card:hover .local-rating span { color: rgba(237,232,217,.35) !important; }
+    .md-locales .local-card:hover .tag { color: rgba(255,255,255,.95) !important; border-color: rgba(255,255,255,.35) !important; }
+    .md-locales .local-card:hover .rating-num { color: #C5A572 !important; }
+    .md-locales .local-card:hover .rating-stars { color: #FFC107 !important; }
+    .md-locales .local-card:hover .rating-reviews { color: rgba(255,255,255,.9) !important; }
+    .md-locales .local-card:hover .rating-badge { color: rgba(216,164,96,.7) !important; }
+  </style>
+</head>
+<body class="bg-fixed" style="background: linear-gradient(rgba(0,0,0,0.72), rgba(0,0,0,0.72)), url('/images/extracted/locales-bg.jpg') center/cover fixed no-repeat;">
+
+<a href="#locales" class="float-cta" id="floatCta">
+  <span class="float-cta-icon">📍</span>
+  <span class="float-text">Ver locales</span>
+</a>
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="Cerrar menú">✕</button>
+  <a href="/">Inicio</a>
+  <a href="/nosotros/">Nosotros</a>
+  <a href="/restaurantes/">Restaurantes</a>
+  <a href="/carta/">Carta</a>
+  <a href="/promos/">Promociones</a>
+  <a href="/contacto/">Contacto</a>
+  <a href="#locales" class="mobile-cta">Ver locales</a>
+</div>
+<header>
+<nav id="mainNav">
+  <a href="/" class="nav-logo"><img src="/images/extracted/logo.png" alt="Pizzería Popular" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-family:Abril+Fatface,serif;font-size:1.3rem;color:var(--cream)>Pizzería <span style=color:var(--gold)>Popular</span></span>'"></a>
+  <ul class="nav-links">
+    <li><a href="/nosotros/">Nosotros</a></li>
+    <li><a href="/restaurantes/">Restaurantes</a></li>
+    <li><a href="/carta/">Carta</a></li>
+    <li><a href="/promos/">Promociones</a></li>
+    <li><a href="/contacto/">Contacto</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-switch"><a class="lang-btn active" href="/menu-diario/">ES</a></div>
+    <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+</header>
+
+<main>
+
+  <!-- ======================== HERO / OFERTA ======================== -->
+  <section class="md-hero">
+    <div class="md-hero-inner">
+      <span class="md-eyebrow">Pizzería Popular · Valencia</span>
+      <h1 class="md-title">Menú <span>Diario</span></h1>
+      <p class="md-sub">Entrante + Principal + Postre</p>
+      <div class="md-price"><span class="md-price-num">14,90</span><span class="md-price-cur">€</span></div>
+      <p class="md-trust">⭐ <b>4,6</b> · +1.400 reseñas en Google</p>
+      <p class="md-desc">Cocina argentina al horno de leña, en el corazón de Valencia. Al mediodía, de 13 a 16 h.</p>
+      <a href="#menu" class="md-cta">Ver el menú ↓</a>
+    </div>
+  </section>
+
+  <!-- ======================== QUÉ INCLUYE ======================== -->
+  <section class="md-menu" id="menu">
+    <div class="md-locales-head" style="margin-bottom:1.8rem;">
+      <span class="md-eyebrow">El menú</span>
+      <h2>Elegís 1 de cada uno</h2>
+    </div>
+    <div class="md-menu-card">
+      <div class="md-menu-block">
+        <h3>Entrante <span>a elección</span></h3>
+        <ul>
+          <li>Empanada de carne</li>
+          <li>Empanada de jamón y queso</li>
+          <li>Empanada de queso y cebolla</li>
+          <li>Piadina de aguacate</li>
+          <li>Piadina de jamón serrano</li>
+        </ul>
+      </div>
+      <div class="md-menu-block">
+        <h3>Principal <span>a elección</span></h3>
+        <ul>
+          <li>Ensalada César</li>
+          <li>Ensalada del Forno</li>
+          <li>Pizza pequeña <em>— margherita, jamón cocido, pepperoni o fugazzeta</em></li>
+          <li>Pappardelle o ñoquis <em>— con salsa de tomate o nata</em></li>
+          <li>Milanesa con ensalada o patatas fritas</li>
+        </ul>
+      </div>
+      <div class="md-menu-block">
+        <h3>Postre o café</h3>
+        <p class="md-menu-dessert">Para cerrar como se debe 🍮 ☕</p>
+      </div>
+    </div>
+    <p class="md-menu-note">No incluye bebida · De 13:00 a 16:00 h · No válido días festivos</p>
+  </section>
+
+  <!-- ======================== LOCALES ======================== -->
+  <section class="md-locales" id="locales">
+    <div class="md-locales-head">
+      <span class="md-eyebrow">Dos locales en Valencia</span>
+      <h2>Elegí el tuyo y vení</h2>
+      <p>Tocá "Cómo llegar" y te abrimos el mapa hasta la puerta.</p>
+    </div>
+    <div class="md-locales-grid">
+
+      <div class="local-card">
+        <span class="province-badge">📍 VALENCIA</span>
+        <h3 class="local-name">Russafa</h3>
+        <p class="local-address">C/ de Russafa, 34<br>46004 Valencia</p>
+        <p class="local-rating" data-rating="russafa" data-field="rating-line" data-reviews-label="opiniones">4.6 ★★★★☆ <span>1.160 opiniones</span></p>
+        <div class="local-tags"><span class="tag">Terraza</span><span class="tag">Reservas</span><span class="tag">Delivery</span></div>
+        <div class="local-btns">
+          <a class="local-btn md-btn-main" href="https://maps.app.goo.gl/CsvUNhWe8ZyKx17a7" target="_blank" rel="noopener" data-local="Russafa">📍 Cómo llegar</a>
+          <a class="local-btn local-btn-wa" href="https://wa.me/34696150393" target="_blank" rel="noopener">💬 WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="local-card">
+        <span class="province-badge">📍 VALENCIA</span>
+        <h3 class="local-name">Santa Clara</h3>
+        <p class="local-address">C/ del Convent de Santa Clara 11<br>46002 Valencia</p>
+        <p class="local-rating" data-rating="santa-clara" data-field="rating-line" data-reviews-label="opiniones">4.8 ★★★★★ <span>244 opiniones</span></p>
+        <div class="local-tags"><span class="tag">Terraza</span><span class="tag">Reservas</span><span class="tag">Delivery</span></div>
+        <div class="local-btns">
+          <a class="local-btn md-btn-main" href="https://maps.app.goo.gl/vY9CHPyLEvZ1GW1e9" target="_blank" rel="noopener" data-local="Santa Clara">📍 Cómo llegar</a>
+          <a class="local-btn local-btn-wa" href="https://wa.me/34608376490" target="_blank" rel="noopener">💬 WhatsApp</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-bottom" style="border:none;">
+    <span class="footer-copy">© 2026 Pizzería Popular España · Cocina argentina al horno de leña</span>
+    <div style="display:flex;gap:1.5rem">
+      <a href="/aviso-legal/" style="font-size:.7rem;color:rgba(237,232,217,.35);text-decoration:none">Aviso Legal</a>
+      <a href="/politica-de-cookies/" style="font-size:.7rem;color:rgba(237,232,217,.35);text-decoration:none">Política de Cookies</a>
+      <a href="/politica-de-privacidad/" style="font-size:.7rem;color:rgba(237,232,217,.35);text-decoration:none">Política de Privacidad</a>
+    </div>
+    <span class="hola-footer">¡Hola mi vida! 🔥</span>
+  </div>
+</footer>
+
+<script src="/js/main.js?v=20260626-comollegar" defer></script>
+<script src="/js/ratings.js" defer></script>
+</body>
+</html>

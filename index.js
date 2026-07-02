@@ -152,6 +152,7 @@ const sendPage = (file) => (req, res) => {
 app.get('/', sendPage('pages/index.html'));
 app.get('/nosotros/', sendPage('pages/nosotros.html'));
 app.get('/restaurantes/', sendPage('pages/restaurantes.html'));
+app.get('/menu-diario/', sendPage('pages/menu-diario.html'));
 app.get('/carta/', sendPage('pages/carta.html'));
 app.get('/promos/', sendPage('pages/promos.html'));
 app.get('/franquicias/', sendPage('pages/franquicias.html'));
@@ -985,6 +986,28 @@ app.post('/api/admin/analitica/meta/snapshot', requireAdmin, async (req, res) =>
   }
 });
 
+// ---- PAUTA (sección "Pauta" del panel) — desglose por anuncio. Solo dueño. ----
+// Lee el snapshot por anuncio (ppweb_meta_ads): total de campaña + por local + por imagen.
+// requireOwner está definido más abajo (hoisting de function declaration).
+app.get('/api/admin/pauta', requireAdmin, requireOwner, async (req, res) => {
+  try {
+    res.json(await metaAds.getPautaData());
+  } catch (e) {
+    console.error('[Pauta] Error:', e.message);
+    res.status(500).json({ error: 'No se pudo cargar la pauta: ' + e.message });
+  }
+});
+
+// Fuerza el snapshot por anuncio a pedido (botón «Actualizar»). Ojo: rate limit.
+app.post('/api/admin/pauta/snapshot', requireAdmin, requireOwner, async (req, res) => {
+  try {
+    res.json(await metaAds.snapshotMetaAds());
+  } catch (e) {
+    console.error('[Pauta] Snapshot:', e.message);
+    res.status(500).json({ error: 'No se pudo actualizar la pauta: ' + e.message });
+  }
+});
+
 // ========== PANEL ADMIN — RESEÑAS GOOGLE (sección Google Maps) ==========
 // Gestión de reseñas con IA. Fase 1 (semi-manual): generar 3 respuestas con el
 // tono Popular → elegir/editar → guardar en pp_resenas_google. Solo dueño.
@@ -1017,6 +1040,12 @@ app.get('/api/admin/resenas/historial', requireAdmin, requireOwner, async (req, 
 
 app.get('/api/admin/resenas/metricas', requireAdmin, requireOwner, async (req, res) => {
   try { res.json(await resenas.metricas(req.query)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// "Lo que dice la gente": positivos/negativos resumidos del texto de las reseñas.
+app.get('/api/admin/resenas/voz', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.vozCliente()); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
@@ -1134,6 +1163,7 @@ cron.schedule('15 3 * * *', () => {
 cron.schedule('0 4 * * *', () => {
   if (!metaAds.configurado()) return;
   metaAds.snapshotMeta().catch(err => console.error('[Cron Meta Ads] Error:', err.message));
+  metaAds.snapshotMetaAds().catch(err => console.error('[Cron Pauta (por anuncio)] Error:', err.message));
 });
 
 // ========== CRON: Autopublicar posts pendientes (todos los días, 6am) ==========

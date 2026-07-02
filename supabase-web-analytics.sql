@@ -35,6 +35,30 @@ create table if not exists ppweb_ig_metrics (
   created_at     timestamptz not null default now()
 );
 
+-- Snapshot diario de reseñas de Google (Places API). Una fila por día.
+-- Sirve para la tendencia del panel: reseñas nuevas y evolución de la valoración.
+create table if not exists ppweb_google_metrics (
+  dia         date primary key,
+  promedio    numeric,   -- valoración media de la cadena (ej. 4.7)
+  total       integer,   -- total de reseñas sumando todos los locales
+  por_local   jsonb,     -- { slug: { rating, reviews } }
+  created_at  timestamptz not null default now()
+);
+
+-- Snapshot diario de Meta Ads (Marketing API). Una fila por día.
+-- App en modo desarrollo → solo set básico de los últimos 30 días.
+create table if not exists ppweb_meta_metrics (
+  dia          date primary key,
+  spend        numeric,    -- gasto de los últimos 30 días
+  reach        integer,    -- alcance
+  impressions  integer,    -- impresiones
+  clicks       integer,    -- clics
+  moneda       text,       -- 'EUR'
+  created_at   timestamptz not null default now()
+);
+
 -- RLS activo: sin policies públicas. Solo el backend (service_role) accede.
-alter table ppweb_eventos    enable row level security;
-alter table ppweb_ig_metrics enable row level security;
+alter table ppweb_eventos        enable row level security;
+alter table ppweb_ig_metrics     enable row level security;
+alter table ppweb_google_metrics enable row level security;
+alter table ppweb_meta_metrics   enable row level security;
