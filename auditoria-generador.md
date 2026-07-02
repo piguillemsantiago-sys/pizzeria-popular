@@ -133,9 +133,12 @@ de antemano la identidad de la marca. "Como Gemini", con un redactor de prompts 
 11. PENDIENTE (Fase 2.5): crítico visual también para el modo clásico (B1) + composición
     en paralelo (B3).
 
-**Falta probar con Gemini real (la key vive solo en el VPS):** generar una historia y
-un carrusel en modo placa completa, mirar la verificación en acción. Todo lo demás
-(Brand Kit, redactor, verificación con vision, terminado con logo) testeado en vivo local.
+**PROBADO EN PRODUCCIÓN (2 jul, con el dueño):** historia "Argentina vs Argelia" en modo
+placa completa — todos los textos letra por letra perfectos, banderas correctas (Argelia
+vía Intl.DisplayNames), tipografía aproximada convincente, logo real limpio. El ajuste
+conversacional visual también validado: "banderas en fila con VS debajo del título" viajó
+como notaDiseno al redactor y la regeneración lo aplicó exacto. Falta probar: carrusel
+en modo completa (mismo pipeline, por placa).
 
 ### Fase 3 — Flujo de trabajo real
 10. Galería/historial de piezas generadas (ya están en storage; falta listarlas) + duplicar.
