@@ -18,8 +18,9 @@
         "Reservas con goteo constante de ~1/día en la segunda quincena."
       ],
       "voz_cliente": {
-        "fuente": "Dashboard de análisis de reseñas (capturas del dueño, actualizado 29 jun 2026)",
+        "fuente": "Dashboard ValoraIA (capturas del dueño, resumen 29 jun 2026; KPIs de 30 días recibidos el 02/07 tras recargar el panel)",
         "ventana": "últimos 90 días — usar como proxy de junio; el mes que viene con API GBP será exacto",
+        "kpis_mes": { "total_resenas": 209, "valoracion_media": 4.7, "resenas_ultima_semana": 15, "tasa_respuesta": "94%" },
         "sentimiento": "abrumadoramente positivo (donut casi 100% verde, mínima porción negativa)",
         "distribucion_estrellas_aprox": { "5": "~82", "4": "~3", "1": "~2" },
         "temas_positivos": {
