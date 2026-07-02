@@ -20,6 +20,17 @@
 - **Trade-offs documentados:** tipografía exacta (Abuget/Abril) solo en modo clásico — el IA la aproxima desde el Brand Kit; la pizza del modo IA es GENERADA (producto real = modo clásico con banco). Mejora anotada: adjuntar foto real del banco como referencia de producto en modo IA.
 - **Pendiente / próximo paso:** seguir puliendo resultados del modo IA con el dueño; probar **carrusel** en modo completa; Fase 2.5 (crítico visual para el modo clásico + composición en paralelo); Fase 3 (galería/historial, copiar caption, few-shot con copies aprobados).
 
+*(sesión Informe mensual de junio, misma fecha)*
+
+- **Primer informe mensual por local — HECHO y entregado.** 5 informes de local + 1 de gerencia en `informes/2026-06/*.html` (responsive móvil/PC, imprimibles a PDF), copiados también a `Documents/01-Clientes/Pizzeria-Popular/informes/2026-06/` para repartir por WhatsApp. Dos scripts reutilizables: `scripts/extract-informe-junio.js` (Supabase: menú digital por local, web, snapshots Google, Meta ads, chat Pepe → `datos-sistema.json`) y `scripts/build-informes-junio.js` (genera los HTML desde ese JSON + `gbp-manual.json`).
+- **Datos de Google cargados A MANO** desde capturas del dueño (panel Rendimiento de cada ficha + dashboard de reseñas "ValoraIA") porque la API GBP sigue en revisión. Todo consolidado en `informes/2026-06/gbp-manual.json`.
+- **Falsa alarma resuelta:** los "ceros" del 25-30 jun en clics web/llamadas/menú de TODAS las fichas = retraso de consolidación de Google (~5-7 días), NO un link roto — verificado contra el tracker propio (tráfico de Google estable hasta el 30). Los datos completos de junio estarán ~5-8 jul.
+- **Bug de ValoraIA detectado:** al cambiar de local en el selector, el panel no refresca (mostró datos de Luceros bajo "Santa Clara") — recargar con F5 antes de capturar.
+- **Hallazgos clave del mes:** sin gluten = demanda validada por 2 canales (búsqueda #1 en cartas de PSJ/Luceros + reseñas Benidorm); clics ficha→web caen en toda la cadena vs 2025 (la ficha ES la landing); Benidorm = local a estabilizar (4,8→4,7, reservas de ficha desincronizadas todo junio — el dueño las reconectó el 02/07, medir en julio); Luceros +182% "cómo llegar" (Hogueras); Playa San Juan = local modelo (cero quejas recurrentes).
+- **Decisiones del dueño:** reconocimiento al equipo por MENCIONES del camarero en reseñas (NO tarjetas NFC — no mencionar más); en el informe de gerencia de junio se quitó la sección Publicidad y toda mención a las reservas de Benidorm (solo esta edición); el informe sale los primeros días del mes sin esperar la consolidación de Google.
+- **Formato fijo mensual acordado:** ficha Google vs mismo mes año pasado (+ mes anterior de referencia); reseñas/menciones/carta/web vs mes anterior; sección nueva "¿qué pasó con las acciones del mes pasado?" con ✅/❌. Junio queda como línea base versionada.
+- **Pendiente / próximo paso:** el dueño audita las 5 fichas de Google en otro chat (se le dio prompt con el checklist campo por campo + usar la lista de "Punto fuerte del perfil" de cada ficha, ignorando sugerencias de pago); informe de julio con comparativas; si aprueban la API GBP, automatizar la carga de Google.
+
 ## 2026-06-28
 
 > Sesión grande (26→28 jun): de revisar la pauta del Menú Diario salió tracking de intención + informe para socios + una sección "Pauta" entera en el panel.
