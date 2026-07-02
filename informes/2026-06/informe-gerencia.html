@@ -1,79 +1,116 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Informe de Gerencia</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Informe de Gerencia · Junio 2026</title>
 <style>
-  :root { --tinta:#1a1a1a; --gris:#666; --linea:#e3e3e3; --marca:#c62828; --verde:#2e7d32; --fondo:#faf8f5; }
+  :root { --tinta:#22262b; --gris:#5f6a75; --linea:#e6e8ec; --marca:#c62828; --verde:#1e8e3e; --fondo:#f4f5f7; --amarillo:#fff6dd; }
   * { box-sizing: border-box; margin: 0; }
-  body { font-family: Georgia, 'Times New Roman', serif; color: var(--tinta); background: var(--fondo); max-width: 860px; margin: 0 auto; padding: 40px 28px; line-height: 1.55; }
-  header { border-bottom: 3px solid var(--marca); padding-bottom: 14px; margin-bottom: 26px; }
-  .kicker { font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--marca); }
-  h1 { font-size: 30px; margin-top: 4px; }
-  .sub { color: var(--gris); font-size: 14px; margin-top: 2px; }
-  h2 { font-size: 19px; margin: 30px 0 10px; border-bottom: 1px solid var(--linea); padding-bottom: 5px; }
-  h3 { font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--gris); margin: 16px 0 6px; }
-  table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13.5px; margin: 8px 0 4px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); border-bottom: 2px solid var(--tinta); padding: 6px 8px; }
-  td { padding: 7px 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: var(--tinta); background: var(--fondo); max-width: 780px; margin: 0 auto; padding: 20px 14px 40px; line-height: 1.6; font-size: 16px; }
+  header { background: var(--marca); color: #fff; border-radius: 16px; padding: 22px 20px; margin-bottom: 18px; }
+  .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
+  h1 { font-size: clamp(24px, 5.5vw, 32px); margin-top: 4px; line-height: 1.2; }
+  .sub { opacity: .9; font-size: 14px; margin-top: 4px; }
+
+  section { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 18px 18px 20px; margin: 14px 0; }
+  h2 { font-size: 19px; display: flex; align-items: center; gap: 10px; }
+  h2 .n { background: var(--marca); color: #fff; border-radius: 50%; min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; flex: none; }
+  .explica { color: var(--gris); font-size: 14px; margin: 6px 0 14px; }
+  h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; color: var(--gris); margin: 18px 0 8px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+  .stat { background: var(--fondo); border-radius: 12px; padding: 12px 14px; }
+  .stat .v { font-size: 26px; font-weight: 800; line-height: 1.15; }
+  .stat .l { font-size: 13px; color: var(--gris); margin-top: 2px; }
+  .stat .pill { margin-top: 6px; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 20px; padding: 2px 9px; white-space: nowrap; }
+  .pill.verde { background: #e3f3e6; color: var(--verde); }
+  .pill.rojo { background: #fde8e8; color: var(--marca); }
+
+  .barra { display: flex; align-items: center; gap: 10px; margin: 7px 0; font-size: 14.5px; }
+  .barra .txt { flex: 1 1 40%; min-width: 0; }
+  .barra .track { flex: 1 1 60%; background: var(--fondo); border-radius: 20px; height: 18px; overflow: hidden; }
+  .barra .fill { height: 100%; background: var(--verde); border-radius: 20px; min-width: 8%; display: flex; align-items: center; justify-content: flex-end; color: #fff; font-size: 11.5px; font-weight: 700; padding-right: 7px; }
+  .barra.mala .fill { background: #e57373; }
+
+  .destacado { background: var(--amarillo); border: 1px solid #f0dfa8; border-radius: 14px; padding: 14px 16px; margin: 0 0 14px; font-size: 15.5px; }
+  .aviso { background: #fdf1f1; border-left: 4px solid var(--marca); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 10px 0; font-size: 14.5px; }
+  .ok { background: #eef8ef; border-left: 4px solid var(--verde); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 10px 0; font-size: 14.5px; }
+
+  .acciones { counter-reset: acc; }
+  .accion { display: flex; gap: 12px; background: var(--fondo); border-radius: 12px; padding: 12px 14px; margin: 8px 0; font-size: 15px; }
+  .accion::before { counter-increment: acc; content: counter(acc); background: var(--marca); color: #fff; border-radius: 50%; min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex: none; margin-top: 1px; }
+
+  .tabla-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 6px -4px; }
+  table { border-collapse: collapse; font-size: 13.5px; min-width: 640px; width: 100%; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); border-bottom: 2px solid var(--tinta); padding: 6px 8px; position: sticky; left: 0; }
+  td { padding: 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .up { color: var(--verde); font-size: 12px; white-space: nowrap; }
-  .down { color: var(--marca); font-size: 12px; white-space: nowrap; }
-  .kpis { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
-  .kpi { flex: 1 1 120px; background: #fff; border: 1px solid var(--linea); border-radius: 8px; padding: 10px 12px; }
-  .kpi .v { font-size: 24px; font-weight: bold; font-family: Arial, sans-serif; }
-  .kpi .l { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); }
-  ul { padding-left: 20px; margin: 6px 0; }
-  li { margin: 3px 0; }
-  .acciones { background: #fff; border-left: 4px solid var(--marca); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 10px; }
-  .acciones ol { padding-left: 20px; } .acciones li { margin: 6px 0; }
-  .nota { font-size: 12px; color: var(--gris); border-top: 1px solid var(--linea); margin-top: 34px; padding-top: 10px; }
-  .destacado { background: #fff8e1; border: 1px solid #f0e0a0; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 14.5px; }
-  @media print { body { background: #fff; padding: 0; } .kpi, .acciones, .destacado { break-inside: avoid; } }
+  .hint-scroll { display: none; font-size: 12px; color: var(--gris); }
+  @media (max-width: 700px) { .hint-scroll { display: block; margin-bottom: 4px; } }
+
+  ul { padding-left: 20px; margin: 6px 0; } li { margin: 4px 0; }
+  p { margin: 8px 0; }
+  .nota { font-size: 12.5px; color: var(--gris); margin-top: 22px; padding: 0 6px; }
+  @media print { body { background: #fff; padding: 0; font-size: 13px; } section, .stat, .accion, .destacado { break-inside: avoid; } header { border-radius: 0; } }
 </style></head><body>
-<header><div class="kicker">Pizzería Popular · Informe mensual · Junio 2026</div><h1>Informe de Gerencia</h1><div class="sub">Vista de marca · 5 locales · Grupo Ajax</div></header>
+<header><div class="kicker">🍕 Pizzería Popular · Informe de junio 2026</div><h1>Informe de Gerencia</h1><div class="sub">Vista de marca · 5 locales · Grupo Ajax</div></header>
 
-  <div class="destacado"><b>El titular del mes:</b> la marca ganó ~186 reseñas nuevas en dos semanas manteniendo ratings 4,6-4,9, y la ficha de Google consolidada generó <b>~2.985 solicitudes de "cómo llegar"</b> y <b>247 reservas directas</b> en junio. La ficha ES el canal: los clics ficha→web caen en toda la cadena vs 2025 (hasta −30%), pero llamadas y reservas suben — Google retiene al usuario y convierte dentro de la ficha.</div>
+  <div class="destacado">📌 <b>El titular del mes:</b> la marca ganó ~186 reseñas nuevas en dos semanas manteniendo notas de 4,6 a 4,9, y las fichas de Google generaron <b>~2.985 "cómo llegar"</b> y <b>247 reservas directas</b> en junio. La ficha ES el canal: los clics ficha→web caen en toda la cadena vs 2025 (hasta −30%), pero llamadas y reservas suben — Google retiene al usuario y convierte dentro de la ficha.</div>
 
-  <h2>1 · Comparativa de locales</h2>
-  <table>
-  <tr><th>Local</th><th class="num">Rating</th><th class="num">Reseñas</th><th class="num">Nuevas*</th><th class="num">Respuesta</th><th class="num">Cómo llegar</th><th class="num">Reservas ficha</th><th class="num">Llamadas</th><th class="num">Carta digital</th></tr>
+  <section><h2><span class="n">1</span> 🏪 Los 5 locales, lado a lado</h2>
+  <p class="explica">Junio de un vistazo. "Nuevas" = reseñas nuevas del 18 jun al 1 jul. La nota es la media de las reseñas del mes (la global de Google puede diferir: Russafa 4,6).</p>
+  <p class="hint-scroll">👉 Deslizá la tabla hacia el costado para ver todo.</p>
+  <div class="tabla-scroll"><table>
+  <tr><th>Local</th><th class="num">Nota</th><th class="num">Reseñas</th><th class="num">Nuevas</th><th class="num">Respondidas</th><th class="num">Cómo llegar</th><th class="num">Reservas ficha</th><th class="num">Llamadas</th><th class="num">Carta digital</th></tr>
   <tr><td><b>Santa Clara</b></td><td class="num">4.8 ★</td><td class="num">451</td><td class="num">+40</td><td class="num">—</td><td class="num">400</td><td class="num">23</td><td class="num">46</td><td class="num">874</td></tr><tr><td><b>Russafa</b></td><td class="num">4.7 ★</td><td class="num">1290</td><td class="num">+16</td><td class="num">100%</td><td class="num">535</td><td class="num">67</td><td class="num">107</td><td class="num">2654</td></tr><tr><td><b>Benidorm</b></td><td class="num">4.7 ★</td><td class="num">117</td><td class="num">+34</td><td class="num">95%</td><td class="num">503</td><td class="num">0</td><td class="num">101</td><td class="num">2038</td></tr><tr><td><b>Playa San Juan</b></td><td class="num">4.8 ★</td><td class="num">1943</td><td class="num">+59</td><td class="num">100%</td><td class="num">1013</td><td class="num">120</td><td class="num">196</td><td class="num">3949</td></tr><tr><td><b>Luceros</b></td><td class="num">4.9 ★</td><td class="num">1066</td><td class="num">+37</td><td class="num">100%</td><td class="num">534</td><td class="num">37</td><td class="num">133</td><td class="num">1429</td></tr>
-  </table><p style="font-size:12px;color:#666">* Reseñas nuevas medidas del 18 jun al 1 jul (inicio de nuestro registro diario). Rating = valoración media de las reseñas del mes; el rating global de la ficha puede diferir (Russafa 4,6 global). "Cómo llegar", reservas y llamadas: mes completo según ficha de Google. Carta digital: aperturas de junio completo, sistema propio. Boadilla (954 reseñas, 4,7★) sigue fuera del perímetro operativo del informe.</p>
-  <p><b>Lecturas rápidas:</b> Playa San Juan es el local modelo (volumen + cero quejas). Luceros tiene el mejor rating (4,9) y el mayor crecimiento (+182% "cómo llegar", efecto Hogueras). Santa Clara subió de 4,7 a 4,8. <b>Benidorm es el local a estabilizar</b>: bajó de 4,8 a 4,7 con la cola de reseñas negativas más grande — quejas operativas (cierre de cocina, consistencia) con plan en su informe.</p>
+  </table></div>
+  <div class="ok">🏆 <b>Playa San Juan</b> es el local modelo (máximo volumen + cero quejas repetidas). <b>Luceros</b> tiene la mejor nota (4,9) y el mayor crecimiento (+182% "cómo llegar", efecto Hogueras). <b>Santa Clara</b> subió de 4,7 a 4,8.</div>
+  <div class="aviso">⚠️ <b>Benidorm es el local a estabilizar:</b> bajó de 4,8 a 4,7 con la mayor cantidad de reseñas de 1-2★ — quejas operativas (cierre de cocina, consistencia de platos) con plan concreto en su informe.</div>
+  <p style="font-size:13px;color:var(--gris)">Boadilla (954 reseñas, 4,7★) sigue fuera del perímetro operativo del informe.</p></section>
 
-  <h2>2 · Decisiones de marca sobre la mesa</h2>
+  <section><h2><span class="n">2</span> 🎯 Decisiones de marca sobre la mesa</h2>
+  <p class="explica">Cosas que no puede resolver un local solo: son de gerencia.</p>
   <ul>
-    <li><b>Sin gluten:</b> la demanda aparece por dos canales independientes — búsqueda #1 en las cartas digitales de Playa San Juan y Luceros, y quejas explícitas en reseñas de Benidorm. Hoy la carta no tiene respuesta. Decisión de carta a nivel marca.</li>
-    <li><b>La ficha como landing:</b> con los clics ficha→web cayendo en toda la cadena (−3,7% a −30,5% interanual), la ficha tiene que estar impecable (fotos, menú, reservas conectadas, respuesta a reseñas). La higiene pendiente de la auditoría SEO (descripciones, https, dirección de Benidorm, rango de precio) pasa de "deseable" a prioritaria.</li>
-    <li><b>Playbook de eventos:</b> Hogueras + pauta local = +182% de visibilidad en Luceros. Replicable: calendario de eventos por plaza y pauta de €10/día la semana del evento.</li>
-    <li><b>Reseñas por empleado (tarjetas NFC):</b> donde se usa, funciona — la tarjeta líder de Luceros atribuyó 12 reseñas en el mes; la segunda tarjeta, cero. Vale la pena formalizarlo en los 5 locales con el equipo nombrado en reseñas como embajador (Samuel/Juan/Florencia en Santa Clara; Cata/Sergio/Agus/Leila/Inez en PSJ; Cintia/Clara/Valentina/Joaco en Luceros).</li>
-    <li><b>Benidorm reservas:</b> la ficha estuvo todo junio sin sistema de reservas sincronizado (0 reservas con 503 "cómo llegar"). Corregido el 02/07 — verificar impacto en julio.</li>
-  </ul>
+    <li><b>Sin gluten:</b> la demanda aparece por dos canales independientes — es lo que más busca la gente en las cartas digitales de Playa San Juan y Luceros, y hay quejas explícitas en reseñas de Benidorm. Hoy la carta no tiene respuesta. Decisión de carta a nivel marca.</li>
+    <li><b>La ficha como escaparate principal:</b> los clics ficha→web caen en toda la cadena (−3,7% a −30,5% vs 2025). La gente ya no sale de Google: decide ahí. La higiene pendiente de las fichas (descripciones, fotos, https, dirección de Benidorm, rango de precio) pasa de "deseable" a prioritaria.</li>
+    <li><b>Fórmula de eventos:</b> Hogueras + pauta local = +182% de visibilidad en Luceros. Replicable: calendario de eventos por plaza y pauta de €10/día la semana del evento.</li>
+    <li><b>Reseñas por empleado (tarjetas NFC):</b> donde se usa, funciona — la tarjeta líder de Luceros consiguió 12 reseñas en el mes; la segunda, cero. Vale formalizarlo en los 5 locales, con el equipo que ya sale nombrado en reseñas como embajador (Samuel/Juan/Florencia en Santa Clara; Cata/Sergio/Agus/Leila/Inez en PSJ; Cintia/Clara/Valentina/Joaco en Luceros).</li>
+    <li><b>Reservas de Benidorm:</b> la ficha estuvo todo junio sin sistema de reservas conectado (0 reservas con 503 "cómo llegar"). Corregido el 02/07 — verificar impacto en julio.</li>
+  </ul></section>
 
-  <h2>3 · Web de la marca (grupoajax.es)</h2>
-  <div class="kpis">
-    <div class="kpi"><div class="v">5924</div><div class="l">Visitas junio</div></div>
-    <div class="kpi"><div class="v">3283</div><div class="l">Visitantes únicos</div></div>
-    <div class="kpi"><div class="v">7%</div><div class="l">Conversión a acción</div></div>
+  <section><h2><span class="n">3</span> 🌐 La web de la marca</h2>
+  <p class="explica">grupoajax.es en junio, medido con sistema propio.</p>
+  <div class="grid">
+    <div class="stat"><div class="v">5924</div><div class="l">Visitas</div></div>
+    <div class="stat"><div class="v">3283</div><div class="l">Personas distintas</div></div>
+    <div class="stat"><div class="v">7%</div><div class="l">Hicieron algo (reserva, WhatsApp…)</div></div>
   </div>
-  <p><b>Fuentes:</b> grupoajax.es (1922) · directo (1138) · instagram.com (998) · google.com (725) · m.facebook.com (521). Instagram es la primera fuente externa (998), seguida de Google (725) y Facebook (521).</p>
-  <p><b>Acciones hacia locales desde la web:</b> Benidorm 58 · Playa San Juan 38 · Santa Clara 37 · Russafa 31 · Luceros 26 · Boadilla 14 (reserva + WhatsApp + cómo llegar).</p>
+  <h3>De dónde llega la gente</h3>
+  <div class="barra "><div class="txt">Grupoajax.es</div><div class="track"><div class="fill" style="width:100%">1922</div></div></div><div class="barra "><div class="txt">Directo</div><div class="track"><div class="fill" style="width:59%">1138</div></div></div><div class="barra "><div class="txt">Instagram.com</div><div class="track"><div class="fill" style="width:52%">998</div></div></div><div class="barra "><div class="txt">Google.com</div><div class="track"><div class="fill" style="width:38%">725</div></div></div><div class="barra "><div class="txt">M.facebook.com</div><div class="track"><div class="fill" style="width:27%">521</div></div></div>
+  <p>Instagram es la primera fuente externa, seguida de Google y Facebook.</p>
+  <h3>Clics hacia cada local desde la web</h3>
+  <div class="barra "><div class="txt">Benidorm</div><div class="track"><div class="fill" style="width:100%">58</div></div></div><div class="barra "><div class="txt">Playa San Juan</div><div class="track"><div class="fill" style="width:66%">38</div></div></div><div class="barra "><div class="txt">Santa Clara</div><div class="track"><div class="fill" style="width:64%">37</div></div></div><div class="barra "><div class="txt">Russafa</div><div class="track"><div class="fill" style="width:53%">31</div></div></div><div class="barra "><div class="txt">Luceros</div><div class="track"><div class="fill" style="width:45%">26</div></div></div><div class="barra "><div class="txt">Boadilla</div><div class="track"><div class="fill" style="width:24%">14</div></div></div></section>
 
-  <h2>4 · Publicidad</h2>
+  <section><h2><span class="n">4</span> 📢 Publicidad</h2>
   <ul>
-    <li><b>Meta · Menú Diario Valencia</b> (desde ~20 jun): €83,5 invertidos · 82.377 impresiones · 1914 clics · 1183 vistas de landing. Conjuntos Russafa y Santa Clara casi empatados en entrega; la lectura del ganador (por clics de "cómo llegar" en la landing, tracker propio) corresponde al corte del ~7 de julio.</li>
-    <li><b>Meta · Traspaso Santa Clara</b> (Click-to-WhatsApp): €8,27 · 2120 impresiones · 31 clics. Parada dura programada el día 14 de campaña.</li>
-    <li><b>Google Ads · Playa San Juan</b> (PMax, lanzada 28 jun, €4,50/día): sin datos significativos aún — lectura incremental en días 5-10 y evaluación en el informe de julio. Pendientes: campaña en inglés y exclusión de marca como negativa.</li>
-  </ul>
+    <li><b>Meta · Menú Diario Valencia</b> (desde ~20 jun): <b>€83,5</b> invertidos · 82.377 impresiones · 1914 clics · 1183 vistas de la página. Russafa y Santa Clara casi empatados; el ganador se define por los clics de "cómo llegar" en la página (medidor propio) con el corte del ~7 de julio.</li>
+    <li><b>Meta · Traspaso Santa Clara</b> (WhatsApp): €8,27 · 2120 impresiones · 31 clics. Parada programada al día 14 de campaña.</li>
+    <li><b>Google Ads · Playa San Juan</b> (desde el 28 jun, €4,50/día): sin datos significativos aún — evaluación en el informe de julio. Pendientes: campaña en inglés y marca como palabra negativa.</li>
+  </ul></section>
 
-  <h2>5 · Qué pregunta la gente (asistente web "Pepe")</h2>
-  <p>114 mensajes de 59 personas en junio. Consultas repetidas: “alicante” (×2) · “trabajar con ustedes” (×2) · “hola” (×2). Aparece gente preguntando por <b>trabajar en la empresa</b> — puede valer una página/formulario de empleo para captar CVs sin fricción.</p>
+  <section><h2><span class="n">5</span> 💬 Qué pregunta la gente en la web (asistente "Pepe")</h2>
+  <div class="grid">
+    <div class="stat"><div class="v">114</div><div class="l">Mensajes en junio</div></div>
+    <div class="stat"><div class="v">59</div><div class="l">Personas</div></div>
+  </div>
+  <p>Consultas repetidas: “alicante” (×2) · “trabajar con ustedes” (×2) · “hola” (×2). Aparece gente preguntando por <b>trabajar en la empresa</b> — puede valer una página o formulario de empleo para captar CVs sin fricción.</p></section>
 
-  <h2>6 · Acciones de gerencia para julio</h2>
-  <div class="acciones"><ol>
-    <li>Decidir la línea sin gluten (demanda validada en 3 locales por 2 canales).</li>
-    <li>Ejecutar la higiene de fichas pendiente de la auditoría (descripciones, https, dirección Benidorm, precio) — la ficha ya es la landing principal.</li>
-    <li>Formalizar el programa de reseñas por empleado (NFC) en los 5 locales.</li>
-    <li>Seguimiento Benidorm: reservas reconectadas + plan de consistencia (es el único local con rating en baja).</li>
-    <li>Leer el corte de la campaña Menú Diario (~7 jul) y decidir escala o apagado por conjunto.</li>
-    <li>Armar calendario de eventos por plaza para replicar el playbook Hogueras.</li>
-  </ol></div>
-<div class="nota"><b>Nota metodológica.</b> Datos de Google Business Profile cargados manualmente desde el panel de cada ficha (la API oficial sigue en revisión de Google; desde el próximo mes se automatiza). Los últimos 5-7 días de junio aparecen subcontados en algunas métricas de Google por su retraso de consolidación — verificado contra nuestra analítica propia: la actividad real no cayó. "Voz del cliente" proviene del análisis de reseñas (ventana 30 días; temas 90 días) y es aproximado hasta tener la API. Analítica de carta digital y web: sistema propio sin cookies, junio completo. Elaborado por Grupo Ajax · 2 de julio de 2026.</div>
+  <section><h2><span class="n">6</span> ✅ Acciones de gerencia para julio</h2>
+  <div class="acciones">
+    <div class="accion"><div>Decidir la línea <b>sin gluten</b> (demanda validada en 3 locales por 2 canales).</div></div>
+    <div class="accion"><div>Ejecutar la <b>higiene de fichas</b> pendiente (descripciones, https, dirección Benidorm, precio) — la ficha ya es el escaparate principal.</div></div>
+    <div class="accion"><div>Formalizar el <b>programa de reseñas por empleado (NFC)</b> en los 5 locales.</div></div>
+    <div class="accion"><div>Seguimiento <b>Benidorm</b>: reservas reconectadas + plan de consistencia (único local con nota en baja).</div></div>
+    <div class="accion"><div>Leer el corte de la campaña <b>Menú Diario</b> (~7 jul) y decidir escalar o apagar por conjunto.</div></div>
+    <div class="accion"><div>Armar el <b>calendario de eventos por plaza</b> para repetir la fórmula Hogueras.</div></div>
+  </div></section>
+<div class="nota"><b>Cómo se hizo este informe.</b> Los datos de Google se cargaron a mano desde el panel de cada ficha (la conexión automática está en revisión de Google; el mes que viene se automatiza). Los últimos 5-7 días de junio salen bajos en algunas métricas de Google porque Google tarda en publicarlos — lo verificamos con nuestro medidor propio: la actividad real no cayó. La parte de reseñas usa el análisis del dashboard (últimos 30 días; temas: 90 días). La carta digital y la web se miden con sistema propio, junio completo. Grupo Ajax · 2 de julio de 2026.</div>
 </body></html>

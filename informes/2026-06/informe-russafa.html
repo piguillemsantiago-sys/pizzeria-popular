@@ -1,72 +1,122 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pizzería Popular Ruzafa</title>
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pizzería Popular Ruzafa · Junio 2026</title>
 <style>
-  :root { --tinta:#1a1a1a; --gris:#666; --linea:#e3e3e3; --marca:#c62828; --verde:#2e7d32; --fondo:#faf8f5; }
+  :root { --tinta:#22262b; --gris:#5f6a75; --linea:#e6e8ec; --marca:#c62828; --verde:#1e8e3e; --fondo:#f4f5f7; --amarillo:#fff6dd; }
   * { box-sizing: border-box; margin: 0; }
-  body { font-family: Georgia, 'Times New Roman', serif; color: var(--tinta); background: var(--fondo); max-width: 860px; margin: 0 auto; padding: 40px 28px; line-height: 1.55; }
-  header { border-bottom: 3px solid var(--marca); padding-bottom: 14px; margin-bottom: 26px; }
-  .kicker { font-family: Arial, sans-serif; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--marca); }
-  h1 { font-size: 30px; margin-top: 4px; }
-  .sub { color: var(--gris); font-size: 14px; margin-top: 2px; }
-  h2 { font-size: 19px; margin: 30px 0 10px; border-bottom: 1px solid var(--linea); padding-bottom: 5px; }
-  h3 { font-family: Arial, sans-serif; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--gris); margin: 16px 0 6px; }
-  table { width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 13.5px; margin: 8px 0 4px; }
-  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); border-bottom: 2px solid var(--tinta); padding: 6px 8px; }
-  td { padding: 7px 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
-  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  .up { color: var(--verde); font-size: 12px; white-space: nowrap; }
-  .down { color: var(--marca); font-size: 12px; white-space: nowrap; }
-  .kpis { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0; }
-  .kpi { flex: 1 1 120px; background: #fff; border: 1px solid var(--linea); border-radius: 8px; padding: 10px 12px; }
-  .kpi .v { font-size: 24px; font-weight: bold; font-family: Arial, sans-serif; }
-  .kpi .l { font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); }
-  ul { padding-left: 20px; margin: 6px 0; }
-  li { margin: 3px 0; }
-  .acciones { background: #fff; border-left: 4px solid var(--marca); border-radius: 0 8px 8px 0; padding: 14px 18px; margin-top: 10px; }
-  .acciones ol { padding-left: 20px; } .acciones li { margin: 6px 0; }
-  .nota { font-size: 12px; color: var(--gris); border-top: 1px solid var(--linea); margin-top: 34px; padding-top: 10px; }
-  .destacado { background: #fff8e1; border: 1px solid #f0e0a0; border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-size: 14.5px; }
-  @media print { body { background: #fff; padding: 0; } .kpi, .acciones, .destacado { break-inside: avoid; } }
-</style></head><body>
-<header><div class="kicker">Pizzería Popular · Informe mensual · Junio 2026</div><h1>Pizzería Popular Ruzafa</h1><div class="sub">València, C/ de Russafa 34</div></header>
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-family: -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: var(--tinta); background: var(--fondo); max-width: 780px; margin: 0 auto; padding: 20px 14px 40px; line-height: 1.6; font-size: 16px; }
+  header { background: var(--marca); color: #fff; border-radius: 16px; padding: 22px 20px; margin-bottom: 18px; }
+  .kicker { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
+  h1 { font-size: clamp(24px, 5.5vw, 32px); margin-top: 4px; line-height: 1.2; }
+  .sub { opacity: .9; font-size: 14px; margin-top: 4px; }
 
-  <div class="destacado">Google te trajo <b>más negocio con menos ruido</b>: las interacciones bajaron (−5,6% vs 2025) pero las llamadas subieron +20,2%, las reservas +11,7% y las vistas de menú +107%.</div>
-  <h2>1 · Tu ficha de Google en junio</h2>
-  <table><tr><th>Acción del cliente en Google</th><th class="num">Junio</th><th></th></tr>
-  <tr><td>Solicitudes "Cómo llegar"</td><td class="num"><b>535</b></td><td><span class="down">-8.9% vs jun 2025</span></td></tr><tr><td>Clics al sitio web</td><td class="num"><b>229</b></td><td><span class="down">-25.9% vs jun 2025</span></td></tr><tr><td>Llamadas desde la ficha</td><td class="num"><b>107</b></td><td><span class="up">+20.2% vs jun 2025</span></td></tr><tr><td>Reservas desde la ficha</td><td class="num"><b>67</b></td><td><span class="up">+11.7% vs jun 2025</span></td></tr><tr><td>Vieron el menú de la ficha</td><td class="num"><b>89</b></td><td><span class="up">+107.0% vs jun 2025</span></td></tr><tr><td>Clics al chat</td><td class="num"><b>0</b></td><td></td></tr>
-  <tr><td><b>Interacciones totales</b></td><td class="num"><b>1027</b></td><td><span class="down">-5.6% vs jun 2025</span></td></tr></table>
-  <h2>2 · Qué dice la gente (reseñas)</h2>
+  section { background: #fff; border: 1px solid var(--linea); border-radius: 16px; padding: 18px 18px 20px; margin: 14px 0; }
+  h2 { font-size: 19px; display: flex; align-items: center; gap: 10px; }
+  h2 .n { background: var(--marca); color: #fff; border-radius: 50%; min-width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; font-size: 15px; flex: none; }
+  .explica { color: var(--gris); font-size: 14px; margin: 6px 0 14px; }
+  h3 { font-size: 14px; text-transform: uppercase; letter-spacing: .6px; color: var(--gris); margin: 18px 0 8px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; }
+  .stat { background: var(--fondo); border-radius: 12px; padding: 12px 14px; }
+  .stat .v { font-size: 26px; font-weight: 800; line-height: 1.15; }
+  .stat .l { font-size: 13px; color: var(--gris); margin-top: 2px; }
+  .stat .pill { margin-top: 6px; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 700; border-radius: 20px; padding: 2px 9px; white-space: nowrap; }
+  .pill.verde { background: #e3f3e6; color: var(--verde); }
+  .pill.rojo { background: #fde8e8; color: var(--marca); }
+
+  .barra { display: flex; align-items: center; gap: 10px; margin: 7px 0; font-size: 14.5px; }
+  .barra .txt { flex: 1 1 40%; min-width: 0; }
+  .barra .track { flex: 1 1 60%; background: var(--fondo); border-radius: 20px; height: 18px; overflow: hidden; }
+  .barra .fill { height: 100%; background: var(--verde); border-radius: 20px; min-width: 8%; display: flex; align-items: center; justify-content: flex-end; color: #fff; font-size: 11.5px; font-weight: 700; padding-right: 7px; }
+  .barra.mala .fill { background: #e57373; }
+
+  .destacado { background: var(--amarillo); border: 1px solid #f0dfa8; border-radius: 14px; padding: 14px 16px; margin: 0 0 14px; font-size: 15.5px; }
+  .aviso { background: #fdf1f1; border-left: 4px solid var(--marca); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 10px 0; font-size: 14.5px; }
+  .ok { background: #eef8ef; border-left: 4px solid var(--verde); border-radius: 0 10px 10px 0; padding: 10px 14px; margin: 10px 0; font-size: 14.5px; }
+
+  .acciones { counter-reset: acc; }
+  .accion { display: flex; gap: 12px; background: var(--fondo); border-radius: 12px; padding: 12px 14px; margin: 8px 0; font-size: 15px; }
+  .accion::before { counter-increment: acc; content: counter(acc); background: var(--marca); color: #fff; border-radius: 50%; min-width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex: none; margin-top: 1px; }
+
+  .tabla-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 6px -4px; }
+  table { border-collapse: collapse; font-size: 13.5px; min-width: 640px; width: 100%; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--gris); border-bottom: 2px solid var(--tinta); padding: 6px 8px; position: sticky; left: 0; }
+  td { padding: 8px; border-bottom: 1px solid var(--linea); vertical-align: top; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .hint-scroll { display: none; font-size: 12px; color: var(--gris); }
+  @media (max-width: 700px) { .hint-scroll { display: block; margin-bottom: 4px; } }
+
+  ul { padding-left: 20px; margin: 6px 0; } li { margin: 4px 0; }
+  p { margin: 8px 0; }
+  .nota { font-size: 12.5px; color: var(--gris); margin-top: 22px; padding: 0 6px; }
+  @media print { body { background: #fff; padding: 0; font-size: 13px; } section, .stat, .accion, .destacado { break-inside: avoid; } header { border-radius: 0; } }
+</style></head><body>
+<header><div class="kicker">🍕 Pizzería Popular · Informe de junio 2026</div><h1>Pizzería Popular Ruzafa</h1><div class="sub">València, C/ de Russafa 34</div></header>
+
+  <div class="destacado">📌 <b>Lo más importante del mes:</b> Google te trajo <b>más negocio con menos ruido</b>: las visitas a la ficha bajaron un poco (−5,6%) pero las llamadas subieron +20,2%, las reservas +11,7% y las vistas de menú +107% respecto al año pasado.</div>
+  <section><h2><span class="n">1</span> 📍 Tu ficha de Google</h2>
+  <p class="explica">Esto hizo en junio la gente que encontró el restaurante en Google o Google Maps.</p>
+  <div class="grid"><div class="stat"><div class="v">535</div><div class="l">🚗 Pidieron cómo llegar</div><div><span class="pill rojo">▼ 8.9% vs año pasado</span></div></div><div class="stat"><div class="v">107</div><div class="l">📞 Llamaron por teléfono</div><div><span class="pill verde">▲ +20.2% vs año pasado</span></div></div><div class="stat"><div class="v">67</div><div class="l">📅 Reservaron mesa</div><div><span class="pill verde">▲ +11.7% vs año pasado</span></div></div><div class="stat"><div class="v">229</div><div class="l">🌐 Entraron a la web</div><div><span class="pill rojo">▼ 25.9% vs año pasado</span></div></div><div class="stat"><div class="v">89</div><div class="l">🍕 Miraron el menú en Google</div><div><span class="pill verde">▲ +107.0% vs año pasado</span></div></div><div class="stat"><div class="v">0</div><div class="l">💬 Escribieron por chat</div></div></div>
+  <p style="margin-top:10px">En total, <b>1027 interacciones</b> con tu ficha en junio <span class="pill rojo">▼ 5.6% vs año pasado</span>.</p></section>
+  <section><h2><span class="n">2</span> ⭐ Qué dice la gente</h2>
+  <p class="explica">Resumen de las reseñas de Google: lo bueno, lo malo y cómo las estamos gestionando.</p>
   
-  <div class="kpis">
-    <div class="kpi"><div class="v">4.7 ★</div><div class="l">Valoración media</div></div>
-    <div class="kpi"><div class="v">1290</div><div class="l">Reseñas totales en Google</div></div>
-    <div class="kpi"><div class="v">+16</div><div class="l">Nuevas (18 jun→1 jul)</div></div>
-    <div class="kpi"><div class="v">100%</div><div class="l">Tasa de respuesta</div></div>
+  <div class="grid">
+    <div class="stat"><div class="v">⭐ 4.7</div><div class="l">Nota media del mes</div></div>
+    <div class="stat"><div class="v">1290</div><div class="l">Reseñas totales en Google</div></div>
+    <div class="stat"><div class="v">+16</div><div class="l">Nuevas del 18 jun al 1 jul</div></div>
+    <div class="stat"><div class="v">100%</div><div class="l">Reseñas respondidas</div></div>
   </div>
-  <h3>Qué dice la gente para bien</h3><ul><li>Servicio amable y atento <b>22 menciones</b></li><li>Calidad de la pizza <b>18 menciones</b></li><li>Milanesas grandes y sabrosas <b>7 menciones</b></li><li>Ambiente confortable y limpio <b>4 menciones</b></li><li>Promociones 2x1 <b>1 menciones</b></li></ul>
-  <h3>Qué dice para mal / a vigilar</h3><ul><li>Mala atencion puntual <b>2 menciones</b></li><li>Pizza calidad inferior segun algunos <b>2 menciones</b></li></ul>
+  <h3>👍 Lo que más elogian los clientes</h3>
+  <div class="barra "><div class="txt">Servicio amable y atento</div><div class="track"><div class="fill" style="width:100%">22</div></div></div><div class="barra "><div class="txt">Calidad de la pizza</div><div class="track"><div class="fill" style="width:82%">18</div></div></div><div class="barra "><div class="txt">Milanesas grandes y sabrosas</div><div class="track"><div class="fill" style="width:32%">7</div></div></div><div class="barra "><div class="txt">Ambiente confortable y limpio</div><div class="track"><div class="fill" style="width:18%">4</div></div></div><div class="barra "><div class="txt">Promociones 2x1</div><div class="track"><div class="fill" style="width:5%">1</div></div></div>
+  <h3>⚠️ Lo que hay que vigilar</h3>
+  <div class="barra mala"><div class="txt">Mala atencion puntual</div><div class="track"><div class="fill" style="width:100%">2</div></div></div><div class="barra mala"><div class="txt">Pizza calidad inferior segun algunos</div><div class="track"><div class="fill" style="width:100%">2</div></div></div>
   
-  <p><b>Rating durante junio:</b> 5.0 estable con caída fuerte a ~2 el 11-12/06 (reseña 1★) recuperada en días; leve caída el 28-29/06 recuperándose al 01/07</p>
-  <p><b>Cuándo entran las reseñas:</b> Domingo (8) y viernes (~7) al frente; miércoles y sábado los más flojos (~3).</p>
-  <p><b>Gestión de respuestas:</b> Tasa de respuesta 100% — todas las reseñas del mes respondidas.</p>
-  <h2>3 · Tu carta digital (QR)</h2>
+  <h3>Datos útiles</h3>
+  <ul>
+    <li><b>La nota durante el mes:</b> 5.0 estable con caída fuerte a ~2 el 11-12/06 (reseña 1★) recuperada en días; leve caída el 28-29/06 recuperándose al 01/07.</li>
+    <li><b>Cuándo entran las reseñas:</b> Domingo (8) y viernes (~7) al frente; miércoles y sábado los más flojos (~3).</li>
+    <li><b>Respuestas:</b> Tasa de respuesta 100% — todas las reseñas del mes respondidas.</li>
+  </ul></section>
+  <section><h2><span class="n">3</span> 📱 Tu carta digital (el QR de las mesas)</h2>
+  <p class="explica">Lo que hace la gente dentro de la carta que se abre con el QR. Las búsquedas dicen qué quieren y no encuentran.</p>
   
-  <div class="kpis">
-    <div class="kpi"><div class="v">2654</div><div class="l">Aperturas de la carta</div></div>
-    <div class="kpi"><div class="v">1367</div><div class="l">Personas distintas</div></div>
-    <div class="kpi"><div class="v">97.8%</div><div class="l">Desde el móvil</div></div>
+  <div class="grid">
+    <div class="stat"><div class="v">2654</div><div class="l">Veces que se abrió la carta</div></div>
+    <div class="stat"><div class="v">1367</div><div class="l">Personas distintas</div></div>
+    <div class="stat"><div class="v">97.8%</div><div class="l">Desde el móvil</div></div>
   </div>
-  <h3>Qué es lo que más se busca en la carta</h3>
-  <ul><li>“menu” <b>3 búsquedas</b></li><li>“punto” <b>2 búsquedas</b></li><li>“punto roma” <b>2 búsquedas</b></li><li>“punt” <b>2 búsquedas</b></li><li>“sin lactosa” <b>2 búsquedas</b></li></ul>
-  <h3>Platos más mirados</h3><ul><li>Buenos Aires (Fugazzeta) <b>116 vistas</b></li><li>Popular <b>103 vistas</b></li><li>Americana <b>100 vistas</b></li><li>Cacciatore <b>87 vistas</b></li><li>Fugazzeta (Argentina) 800-900 gramos <b>86 vistas</b></li></ul>
-  <h3>De dónde llega la gente a la carta <span style="text-transform:none;letter-spacing:0">(medido desde el 21 jun)</span></h3>
-  <p>QR / directo: <b>642</b> · Web: <b>0</b> · Google: <b>72</b> · Redes: <b>0</b> · Otros: <b>0</b></p>
-  <h2>4 · La web de la marca</h2>
-  <p>Desde la web de la marca (grupoajax.es), en junio este local recibió <b>19 clics de reserva</b>, <b>6 de WhatsApp</b> y <b>6 de "cómo llegar"</b>.</p>
-  <h2>4b · Publicidad en Meta (campaña "Menú Diario", lanzada ~20 jun)</h2>
-  <p>Conjunto <b>Russafa</b>: <b>€41,72</b> invertidos · <b>41.531</b> impresiones · <b>976</b> clics al anuncio · <b>633</b> llegaron a la página del menú diario. La intención real (clic en "Cómo llegar" en la landing) se mide con nuestro tracker y se evalúa con el corte de la campaña (~7 jul).</p>
-  <h2>5 · Lectura del mes</h2>
-  <p>Russafa convierte mejor que el año pasado: menos curiosos, más clientes. La tasa de respuesta de reseñas del 100% es impecable — mantenerla. El punto a vigilar es la consistencia: dos reseñas hablan de "pizza de calidad inferior" y dos de mala atención puntual; con 4,6 ★ (el rating más justo de la cadena) cada reseña pesa. En la carta digital, la Buenos Aires (Fugazzeta) es tu plato estrella (2.654 aperturas de carta en el mes, segunda de la cadena).</p>
-  <h2>6 · Acciones para julio</h2>
-  <div class="acciones"><ol><li>Trabajar la consistencia de la pizza entre turnos (queja repetida: "calidad inferior según algunos") — es lo que separa el 4,6 del 4,8.</li><li>Verificar el chat de la ficha de Google: 0 clics en todo junio (¿está desactivado?).</li><li>Mantener la tasa de respuesta 100% — hoy es el estándar de la cadena.</li><li>El domingo concentra las reseñas (~8): si se piden reseñas en sala, ese es el día.</li></ol></div>
-<div class="nota"><b>Nota metodológica.</b> Datos de Google Business Profile cargados manualmente desde el panel de cada ficha (la API oficial sigue en revisión de Google; desde el próximo mes se automatiza). Los últimos 5-7 días de junio aparecen subcontados en algunas métricas de Google por su retraso de consolidación — verificado contra nuestra analítica propia: la actividad real no cayó. "Voz del cliente" proviene del análisis de reseñas (ventana 30 días; temas 90 días) y es aproximado hasta tener la API. Analítica de carta digital y web: sistema propio sin cookies, junio completo. Elaborado por Grupo Ajax · 2 de julio de 2026.</div>
+  <h3>🔍 Qué es lo que más busca la gente en tu carta</h3>
+  <div class="barra "><div class="txt">“menu”</div><div class="track"><div class="fill" style="width:100%">3</div></div></div><div class="barra "><div class="txt">“punto”</div><div class="track"><div class="fill" style="width:67%">2</div></div></div><div class="barra "><div class="txt">“punto roma”</div><div class="track"><div class="fill" style="width:67%">2</div></div></div><div class="barra "><div class="txt">“punt”</div><div class="track"><div class="fill" style="width:67%">2</div></div></div><div class="barra "><div class="txt">“sin lactosa”</div><div class="track"><div class="fill" style="width:67%">2</div></div></div>
+  <h3>🍽️ Platos más mirados</h3>
+  <div class="barra "><div class="txt">Buenos Aires (Fugazzeta)</div><div class="track"><div class="fill" style="width:100%">116</div></div></div><div class="barra "><div class="txt">Popular</div><div class="track"><div class="fill" style="width:89%">103</div></div></div><div class="barra "><div class="txt">Americana</div><div class="track"><div class="fill" style="width:86%">100</div></div></div><div class="barra "><div class="txt">Cacciatore</div><div class="track"><div class="fill" style="width:75%">87</div></div></div><div class="barra "><div class="txt">Fugazzeta (Argentina) 800-900 gramos</div><div class="track"><div class="fill" style="width:74%">86</div></div></div>
+  <h3>📲 Por dónde llegan a la carta <span style="text-transform:none;letter-spacing:0">(se mide desde el 21 jun)</span></h3>
+  <div class="grid">
+    <div class="stat"><div class="v">642</div><div class="l">QR en mesa / directo</div></div>
+    <div class="stat"><div class="v">0</div><div class="l">Desde la web</div></div>
+    <div class="stat"><div class="v">72</div><div class="l">Desde Google</div></div>
+    <div class="stat"><div class="v">0</div><div class="l">Desde redes</div></div>
+  </div></section>
+  <section><h2><span class="n">4</span> 🌐 Lo que te trajo la web de la marca</h2>
+  <p class="explica">Clics hacia tu local desde la página web (grupoajax.es) durante junio.</p>
+  <div class="grid">
+    <div class="stat"><div class="v">19</div><div class="l">Clics de reserva</div></div>
+    <div class="stat"><div class="v">6</div><div class="l">Clics de WhatsApp</div></div>
+    <div class="stat"><div class="v">6</div><div class="l">Clics de "cómo llegar"</div></div>
+  </div></section>
+  <section><h2><span class="n">5</span> 📢 Tu publicidad en Instagram/Facebook</h2>
+  <p class="explica">Campaña "Menú Diario" activa desde el ~20 de junio. Esto es lo que hizo el anuncio de tu zona.</p>
+  <div class="grid">
+    <div class="stat"><div class="v">€41,72</div><div class="l">Invertido</div></div>
+    <div class="stat"><div class="v">41.531</div><div class="l">Veces que se mostró</div></div>
+    <div class="stat"><div class="v">976</div><div class="l">Clics al anuncio</div></div>
+    <div class="stat"><div class="v">633</div><div class="l">Llegaron a la página</div></div>
+  </div>
+  <p>El resultado que importa (cuántos tocaron "Cómo llegar" en la página) se evalúa con el corte de la campaña, alrededor del 7 de julio.</p></section>
+  <section><h2><span class="n">6</span> 🧭 Lectura del mes</h2>
+  <p>Russafa convierte mejor que el año pasado: menos curiosos, más clientes. Responder el 100% de las reseñas es impecable — mantenerlo. El punto a vigilar es la consistencia: dos reseñas hablan de "pizza de calidad inferior" y dos de mala atención puntual; con nota global 4,6 (la más justa de la cadena) cada reseña pesa. En la carta digital, la Buenos Aires (Fugazzeta) es tu plato estrella.</p></section>
+  <section><h2><span class="n">7</span> ✅ Qué hacer en julio</h2>
+  <p class="explica">Pocas cosas, concretas. Si se hacen estas, el informe de julio mejora solo.</p>
+  <div class="acciones"><div class="accion"><div>Trabajar la consistencia de la pizza entre turnos (queja repetida del mes) — es lo que separa el 4,6 del 4,8.</div></div><div class="accion"><div>Verificar el chat de la ficha de Google: 0 clics en todo junio (¿está desactivado?).</div></div><div class="accion"><div>Mantener el 100% de reseñas respondidas — hoy es el estándar de la cadena.</div></div><div class="accion"><div>El domingo es el día con más reseñas: si se piden reseñas en sala, ese es el día.</div></div></div></section>
+<div class="nota"><b>Cómo se hizo este informe.</b> Los datos de Google se cargaron a mano desde el panel de cada ficha (la conexión automática está en revisión de Google; el mes que viene se automatiza). Los últimos 5-7 días de junio salen bajos en algunas métricas de Google porque Google tarda en publicarlos — lo verificamos con nuestro medidor propio: la actividad real no cayó. La parte de reseñas usa el análisis del dashboard (últimos 30 días; temas: 90 días). La carta digital y la web se miden con sistema propio, junio completo. Grupo Ajax · 2 de julio de 2026.</div>
 </body></html>
