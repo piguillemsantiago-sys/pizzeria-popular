@@ -350,13 +350,6 @@ informeLocal('luceros',
   <h3>Clics hacia cada local desde la web</h3>
   ${barras(Object.fromEntries((web.locales || []).map(l => [l.local, l.total])))}</section>
 
-  <section><h2><span class="n">${N()}</span> 📢 Publicidad</h2>
-  <ul>
-    <li><b>Meta · Menú Diario Valencia</b> (desde ~20 jun): <b>€${fmt(md && md.spend)}</b> invertidos · ${fmt(md && md.impressions)} impresiones · ${fmt(md && md.link_clicks)} clics · ${fmt(md && md.landing_views)} vistas de la página. Russafa y Santa Clara casi empatados; el ganador se define por los clics de "cómo llegar" en la página (medidor propio) con el corte del ~7 de julio.</li>
-    <li><b>Meta · Traspaso Santa Clara</b> (WhatsApp): €${fmt(tras && tras.spend)} · ${fmt(tras && tras.impressions)} impresiones · ${fmt(tras && tras.link_clicks)} clics. Parada programada al día 14 de campaña.</li>
-    <li><b>Google Ads · Playa San Juan</b> (desde el 28 jun, €4,50/día): sin datos significativos aún — evaluación en el informe de julio. Pendientes: campaña en inglés y marca como palabra negativa.</li>
-  </ul></section>
-
   <section><h2><span class="n">${N()}</span> 💬 Qué pregunta la gente en la web (asistente "Pepe")</h2>
   <div class="grid">
     <div class="stat"><div class="v">${fmt(chat.mensajes)}</div><div class="l">Mensajes en junio</div></div>
@@ -370,7 +363,6 @@ informeLocal('luceros',
     <div class="accion"><div>Ejecutar la <b>higiene de fichas</b> pendiente (descripciones, https, dirección Benidorm, precio) — la ficha ya es el escaparate principal.</div></div>
     <div class="accion"><div>Extender a los 5 locales la mecánica de <b>"nombrá a quien te atendió" en la reseña</b> — se mide cada mes por menciones por camarero.</div></div>
     <div class="accion"><div>Seguimiento <b>Benidorm</b>: reservas reconectadas + plan de consistencia (único local con nota en baja).</div></div>
-    <div class="accion"><div>Leer el corte de la campaña <b>Menú Diario</b> (~7 jul) y decidir escalar o apagar por conjunto.</div></div>
     <div class="accion"><div>Armar el <b>calendario de eventos por plaza</b> para repetir la fórmula Hogueras.</div></div>
   </div></section>`;
 
