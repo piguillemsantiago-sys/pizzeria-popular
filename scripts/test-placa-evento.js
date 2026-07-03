@@ -31,6 +31,8 @@ const { elegirFotos } = require('../lib/banco');
   }
 
   p.modoIA = 'completa';
+  // 2º argumento opcional: notas de diseño (simula un ajuste del usuario).
+  if (process.argv[3]) { p.notasDiseno = process.argv[3]; console.log('\nNOTAS DE DISEÑO:', p.notasDiseno); }
   const t0 = Date.now();
   const gen = await generarPlacaCompletaIA(p, 'historia');
   console.log('\nAVISOS DE VERIFICACIÓN:', gen.avisos.length ? '' : '(ninguno — pasó limpia)');
