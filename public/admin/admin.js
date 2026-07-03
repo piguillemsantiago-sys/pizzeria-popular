@@ -1559,7 +1559,11 @@
               // viaja a Gemini como referencia del ambiente de la escena.
               (p.fotoUrl
                 ? '<img src="' + esc(p.fotoUrl) + '" alt="" />' +
-                  '<p class="gen-foto-motivo">📍 Ambientación del local' + (p.motivo ? ': ' + esc(p.motivo) : '') + '</p>'
+                  '<p class="gen-foto-motivo">📍 Ambientación del local' + (p.motivo ? ': ' + esc(p.motivo) : '') + '</p>' +
+                  '<div class="gen-foto-btns">' +
+                    '<button type="button" data-act="otra" data-i="' + i + '" title="Que la IA elija otra foto del local">🔄 Otra</button>' +
+                    '<button type="button" data-act="quitar-ambiente" data-i="' + i + '" title="Componer sin foto del local (Gemini imagina el ambiente)">✕ Quitar</button>' +
+                  '</div>'
                 : '') +
               '<div class="gen-foto-btns">' +
                 '<button type="button" data-act="ia" data-i="' + i + '">🖼 Escena</button>' +
@@ -1663,8 +1667,13 @@
     const orig = btn.textContent;
     btn.textContent = 'Buscando…';
     try {
+      // En placa completa IA la foto es referencia de AMBIENTACIÓN: se le pide
+      // al elector una toma del local, no un primer plano de comida.
+      const esCompleta = p.modoIA === 'completa';
       const r = await api('/api/admin/gen/reelegir', 'POST', {
-        instruccion: genState.instruccion,
+        instruccion: genState.instruccion + (esCompleta
+          ? '\n(Elegí una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida.)'
+          : ''),
         formato: genState.formato,
         placa: { titulo: p.titulo, bajada: p.bajada, cta: p.cta },
         excluir: p.descartadas || [],
@@ -1689,6 +1698,12 @@
     const i = parseInt(btn.dataset.i, 10);
     if (btn.dataset.act === 'otra') {
       onGenOtra(i, btn);
+    } else if (btn.dataset.act === 'quitar-ambiente') {
+      // Saca la foto de ambientación: Gemini imagina el ambiente solo. La firma
+      // del cache cambia, así que el próximo componer regenera la placa.
+      const p = genState.placas[i];
+      p.fotoUrl = null; p.driveId = null; p.bancoId = null; p.motivo = '';
+      renderGenPlacas();
     } else if (btn.dataset.act === 'drive') {
       drivePickCb = (urls) => {
         if (urls.length) {
