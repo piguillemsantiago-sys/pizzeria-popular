@@ -1672,8 +1672,8 @@
       const esCompleta = p.modoIA === 'completa';
       const r = await api('/api/admin/gen/reelegir', 'POST', {
         instruccion: genState.instruccion + (esCompleta
-          ? '\n(Elegí una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida.' +
-            (p.escenaIA ? ' Tiene que coincidir con el TIPO de espacio de esta escena: ' + String(p.escenaIA).slice(0, 160) + '…' : '') + ')'
+          ? '\n(Elegí una foto de las INSTALACIONES del local como referencia de ambientación — NO primeros planos de comida. La foto tiene que mostrar el MISMO tipo de espacio que esta escena: si la escena es un salón interior, elegí SOLO interiores (salón, mesas, barra, horno), NUNCA la fachada ni la calle; si es exterior, fachada o terraza.' +
+            (p.escenaIA ? ' Escena: ' + String(p.escenaIA).slice(0, 160) + '…' : '') + ')'
           : ''),
         formato: genState.formato,
         placa: { titulo: p.titulo, bajada: p.bajada, cta: p.cta },
