@@ -1868,15 +1868,18 @@
         if (!genState.placas[i] || !p) return;
         if (p.iaFotoUrl) genState.placas[i].iaFotoUrl = p.iaFotoUrl;
         if (p.iaPlacaUrl) { genState.placas[i].iaPlacaUrl = p.iaPlacaUrl; genState.placas[i].iaPlacaFirma = p.iaPlacaFirma; }
+        // Avisos de la verificación IA: si el server regeneró trae la lista (aunque
+        // sea vacía); si usó el cache no viene y se conserva la del último render.
+        if (p.avisosIA != null) genState.placas[i].avisosIA = p.avisosIA;
       });
-      if (out.avisos && out.avisos.length) {
-        alert('Avisos de la verificación:\n\n• ' + out.avisos.join('\n• '));
-      }
-      $('genResults').innerHTML = (out.urls || []).map((u, i) =>
-        '<a class="gen-result" href="' + esc(u) + '" target="_blank" rel="noopener">' +
+      $('genResults').innerHTML = (out.urls || []).map((u, i) => {
+        const avisos = (genState.placas[i] && genState.placas[i].avisosIA) || [];
+        return '<a class="gen-result" href="' + esc(u) + '" target="_blank" rel="noopener">' +
           '<img src="' + esc(u) + '" alt="Placa ' + (i + 1) + '" loading="lazy" />' +
           '<span>Placa ' + (i + 1) + ' ⬇</span>' +
-        '</a>').join('');
+          (avisos.length ? '<span class="gen-result-aviso">' + esc(avisos.join(' · ')) + '</span>' : '') +
+        '</a>';
+      }).join('');
       $('genResultBlock').hidden = false;
       $('genResultBlock').scrollIntoView({ behavior: 'smooth' });
     } catch (err) {

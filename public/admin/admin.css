@@ -859,6 +859,10 @@ button { font-family: inherit; cursor: pointer; }
 }
 .gen-result:hover img { transform: translateY(-2px); border-color: var(--pp-gold); }
 .gen-result span { display: block; margin-top: 6px; }
+.gen-result-aviso {
+  color: var(--pp-gold); font-size: .7rem; line-height: 1.45; text-align: left;
+  background: rgba(200, 160, 60, .1); border-radius: 8px; padding: 6px 8px;
+}
 .gen-ajuste { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--pp-line); }
 .gen-ajuste label { display: block; font-size: .82rem; color: var(--pp-muted); margin-bottom: 8px; }
 .gen-ajuste-row { display: flex; gap: 10px; }
