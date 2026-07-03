@@ -765,8 +765,13 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
       const conAmbiente = (copy.placas || []).filter((p) => p.ambienteReal);
       if (conAmbiente.length) {
         try {
+          // La foto debe coincidir con el TIPO de espacio de la escena (un salón
+          // interior no se ambienta con la fachada, y viceversa).
+          const escenas = conAmbiente
+            .map((p, i) => (i + 1) + '. ' + String(p.escenaIA || '').slice(0, 160))
+            .filter((s) => s.length > 3).join('\n');
           const elecciones = await elegirFotos(
-            String(instruccion) + '\n(Estas placas necesitan una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida.)',
+            String(instruccion) + '\n(Estas placas necesitan una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida. Elegí una foto que coincida con el TIPO de espacio de la escena de cada placa:\n' + escenas + ')',
             formato || 'historia', conAmbiente);
           await Promise.all(conAmbiente.map(async (p, i) => {
             const el = elecciones[i];
