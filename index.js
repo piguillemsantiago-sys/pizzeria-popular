@@ -757,8 +757,32 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
     const copy = await generarCopy(String(instruccion), formato);
     // Modo "placa completa IA": Gemini diseña todo (fondo incluido) → no hace
     // falta elegir fotos del banco (ahorra la llamada más lenta del flujo).
+    // Excepción: si la instrucción pide la ambientación REAL de los locales
+    // (ambienteReal), se elige una foto del banco por placa y viaja a Gemini
+    // como referencia visual del ambiente.
     if (modo === 'completa') {
       copy.bancoUsado = false;
+      const conAmbiente = (copy.placas || []).filter((p) => p.ambienteReal);
+      if (conAmbiente.length) {
+        try {
+          const elecciones = await elegirFotos(
+            String(instruccion) + '\n(Estas placas necesitan una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida.)',
+            formato || 'historia', conAmbiente);
+          await Promise.all(conAmbiente.map(async (p, i) => {
+            const el = elecciones[i];
+            if (el && el.driveId) {
+              p.driveId = el.driveId;
+              p.bancoId = el.bancoId;
+              p.fotoUrl = await materializarFoto(el.driveId);
+              p.motivo = el.motivo || '';
+            }
+          }));
+        } catch (e) {
+          copy.bancoAviso = e.code === 'BANCO_VACIO'
+            ? 'Pediste la ambientación de los locales, pero el banco no está indexado: tocá «Sincronizar banco».'
+            : 'No pude elegir la foto del local para ambientar: ' + e.message;
+        }
+      }
       return res.json(copy);
     }
     // Selección automática de fotos del banco (si está indexado).

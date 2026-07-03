@@ -1555,6 +1555,12 @@
             // partir de la escena. Acá solo se muestra/edita la escena base.
             ? '<div class="gen-foto-empty">🧠 Gemini diseña la placa completa<br/><small>' +
                 esc(String(p.iaPrompt || p.escenaIA || '').slice(0, 90)) + '…</small></div>' +
+              // Foto real del local elegida del banco (pedido "ambientación real"):
+              // viaja a Gemini como referencia del ambiente de la escena.
+              (p.fotoUrl
+                ? '<img src="' + esc(p.fotoUrl) + '" alt="" />' +
+                  '<p class="gen-foto-motivo">📍 Ambientación del local' + (p.motivo ? ': ' + esc(p.motivo) : '') + '</p>'
+                : '') +
               '<div class="gen-foto-btns">' +
                 '<button type="button" data-act="ia" data-i="' + i + '">🖼 Escena</button>' +
               '</div>'

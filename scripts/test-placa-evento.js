@@ -4,7 +4,8 @@
 // Imprime el copy, los avisos de verificación y guarda la pieza en /tmp/test-placa.jpg.
 require('dotenv').config();
 const fs = require('fs');
-const { generarCopy, generarPlacaCompletaIA, terminarPlacaIA } = require('../lib/generador');
+const { generarCopy, generarPlacaCompletaIA, terminarPlacaIA, materializarFoto } = require('../lib/generador');
+const { elegirFotos } = require('../lib/banco');
 
 (async () => {
   const instruccion = process.argv[2] ||
@@ -14,6 +15,20 @@ const { generarCopy, generarPlacaCompletaIA, terminarPlacaIA } = require('../lib
   const copy = await generarCopy(instruccion, 'historia');
   const p = copy.placas[0];
   console.log('\nCOPY GENERADO:\n' + JSON.stringify(p, null, 2));
+
+  // Mismo camino que /api/admin/gen/copy: ambientación real → foto del banco.
+  if (p.ambienteReal) {
+    const [el] = await elegirFotos(
+      instruccion + '\n(Estas placas necesitan una foto del LOCAL/instalaciones como referencia de ambientación: salón, interior, horno, fachada — NO primeros planos de comida.)',
+      'historia', [p]);
+    if (el && el.driveId) {
+      p.driveId = el.driveId;
+      p.fotoUrl = await materializarFoto(el.driveId);
+      console.log('\nAMBIENTE (foto real del local):', el.motivo || '(sin motivo)', '→', p.fotoUrl);
+    } else {
+      console.log('\nAMBIENTE: pedido pero el banco no devolvió foto');
+    }
+  }
 
   p.modoIA = 'completa';
   const t0 = Date.now();
