@@ -875,19 +875,31 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
       return Object.keys(m).length ? m : undefined;
     };
 
+    // Guard anti-borrado: vaciar un campo ("") solo vale si la indicación pide
+    // sacar algo. Sin intención de sacar, un "" del modelo (típico cuando el
+    // schema cae al modo sin gramática y completa campos "por las dudas") se
+    // ignora y se conserva el texto actual.
+    const pideSacar = /\b(sac[aá]|quit[aá]|borr[aá]|elimin[aá]|sin|fuera|no (?:quiero|pongas|va|vaya)|s[oó]lo|solamente|nada m[aá]s)\b/i.test(String(instruccion));
+    const campoTxt = (nuevo, viejo) => {
+      if (nuevo == null) return viejo;
+      if (nuevo === '' && viejo && !pideSacar) return viejo;
+      return nuevo;
+    };
+
     // Aplica los cambios de texto/logo sobre las placas actuales (preserva la foto).
     const result = placas.map((orig, i) => {
       const nu = out.placas[i] || {};
       const adj = mergeAdj(orig.adj, adjGlobal);
       return {
         ...orig,
-        titulo: nu.titulo != null ? nu.titulo : orig.titulo,
-        acento: nu.acento != null ? nu.acento : orig.acento,
-        bajada: nu.bajada != null ? nu.bajada : orig.bajada,
-        cta: nu.cta != null ? nu.cta : orig.cta,
-        lugar: nu.lugar != null ? nu.lugar : orig.lugar,
-        banderas: nu.banderas != null ? nu.banderas : (orig.banderas || []),
-        evento: nu.evento != null ? nu.evento : (orig.evento || ''),
+        titulo: campoTxt(nu.titulo, orig.titulo),
+        acento: campoTxt(nu.acento, orig.acento),
+        bajada: campoTxt(nu.bajada, orig.bajada),
+        cta: campoTxt(nu.cta, orig.cta),
+        lugar: campoTxt(nu.lugar, orig.lugar),
+        banderas: (nu.banderas != null && !(Array.isArray(nu.banderas) && !nu.banderas.length && (orig.banderas || []).length && !pideSacar))
+          ? nu.banderas : (orig.banderas || []),
+        evento: campoTxt(nu.evento, orig.evento) || '',
         estilo: nu.estilo || orig.estilo || 'clasico',
         logo: nu.logo || orig.logo || 'wordmark-blanco',
         adj,
