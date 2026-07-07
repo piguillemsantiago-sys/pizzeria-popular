@@ -154,6 +154,7 @@ app.get('/', sendPage('pages/index.html'));
 app.get('/nosotros/', sendPage('pages/nosotros.html'));
 app.get('/restaurantes/', sendPage('pages/restaurantes.html'));
 app.get('/menu-diario/', sendPage('pages/menu-diario.html'));
+app.get('/oportunidad-santaclara/', sendPage('pages/oportunidad-santaclara.html')); // dosier traspaso (noindex, solo por link directo)
 app.get('/carta/', sendPage('pages/carta.html'));
 app.get('/promos/', sendPage('pages/promos.html'));
 app.get('/franquicias/', sendPage('pages/franquicias.html'));
