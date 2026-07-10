@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=43" />
+  <link rel="stylesheet" href="/admin/admin.css?v=44" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -607,10 +607,11 @@
                    el título grande lo pone el usuario en su editor de reel. -->
               <div id="genPortada" hidden>
                 <div class="gen-ptabs">
-                  <button type="button" class="gen-ptab active" data-pmode="generar">🎬 Generar desde un tema</button>
-                  <button type="button" class="gen-ptab" data-pmode="limpiar">🧽 Limpiar un frame</button>
+                  <button type="button" class="gen-ptab active" data-pmode="generar"><b>🎬 Generar desde un tema</b><small>inventa una imagen NUEVA desde el texto</small></button>
+                  <button type="button" class="gen-ptab" data-pmode="limpiar"><b>🧽 Limpiar un frame</b><small>usa TU captura y solo le saca overlays</small></button>
                 </div>
                 <div class="gen-psub" id="genPGenerar">
+                  <p class="gen-pnote">Crea una imagen <b>nueva</b> a partir del texto — no parte de ninguna foto tuya. ¿Tenés una captura y solo querés limpiarla? Usá <b>«Limpiar un frame»</b>.</p>
                   <label>Tema de la portada
                     <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: la pasión por el fútbol · el horno de leña encendido · una noche de pizza y amigos" />
                   </label>

@@ -869,12 +869,19 @@ button { font-family: inherit; cursor: pointer; }
 .gen-ptabs { display: flex; gap: 8px; }
 .gen-ptab {
   flex: 1; padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
   background: var(--pp-card, #16181d); border: 1px solid var(--pp-line);
-  color: var(--pp-muted); font-family: inherit; font-size: .85rem;
+  color: var(--pp-muted); font-family: inherit; font-size: .85rem; text-align: center;
   transition: border-color .15s, color .15s, background .15s;
 }
+.gen-ptab b { font-weight: 600; font-size: .85rem; }
+.gen-ptab small { font-size: .67rem; font-weight: 400; opacity: .72; line-height: 1.2; }
 .gen-ptab:hover { color: var(--pp-text); border-color: var(--pp-gold); }
 .gen-ptab.active { color: var(--pp-text); border-color: var(--pp-gold); background: rgba(200, 160, 60, .12); }
+.gen-pnote {
+  font-size: .78rem; color: var(--pp-muted); line-height: 1.5; margin: 0;
+  background: rgba(255, 255, 255, .03); border-radius: 8px; padding: 9px 11px;
+}
 .gen-psub { display: flex; flex-direction: column; gap: 12px; }
 .gen-psub label { display: block; font-size: .82rem; color: var(--pp-muted); }
 .gen-psub label small { color: var(--pp-muted); opacity: .7; }
