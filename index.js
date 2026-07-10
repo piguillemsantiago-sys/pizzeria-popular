@@ -18,7 +18,7 @@ const { logEvento, getWebStats } = require('./lib/web-stats');
 const { snapshotGoogle, getGoogleStats } = require('./lib/google-stats');
 const metaAds = require('./lib/meta-ads');
 const ig = require('./lib/instagram');
-const { generarCopy, ajustarCopy, generarPiezas, generarImagenIA, afinarPromptIA, sugerirEscenaBlog, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
+const { generarCopy, ajustarCopy, generarPiezas, generarImagenIA, generarPortadaReel, afinarPromptIA, sugerirEscenaBlog, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
 const { sincronizar: sincronizarBanco, estado: estadoBanco, elegirFotos } = require('./lib/banco');
 const { listarReferencias } = require('./lib/referencia');
 const { getBrandKit, saveBrandKit } = require('./lib/brand-kit');
@@ -959,6 +959,30 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
   } catch (e) {
     console.error('[Gen ajustar] Error:', e.message);
     res.status(500).json({ error: 'No pude aplicar el ajuste: ' + e.message });
+  }
+});
+
+// Portada para Reel: imagen 9:16 LIMPIA (sin texto) para usar de portada de un reel.
+// modo 'generar' (tema + color) o 'limpiar' (frame subido en base64). El título grande
+// lo agrega el usuario después en su editor de reel.
+app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
+  try {
+    const { modo, tema, color, frameB64 } = req.body || {};
+    let frameBuf = null;
+    if (modo === 'limpiar') {
+      if (!frameB64) return res.status(400).json({ error: 'Subí un frame del reel para limpiar.' });
+      frameBuf = Buffer.from(String(frameB64).replace(/^data:image\/\w+;base64,/, ''), 'base64');
+    }
+    const buf = await generarPortadaReel({ modo, tema, color, frameBuf });
+    const objectPath = 'social/portada-reel-' + Date.now() + '.jpg';
+    const { error } = await supabaseAdmin.storage.from('ppweb-blog')
+      .upload(objectPath, buf, { contentType: 'image/jpeg' });
+    if (error) throw new Error('Storage: ' + error.message);
+    res.json({ url: supabaseAdmin.storage.from('ppweb-blog').getPublicUrl(objectPath).data.publicUrl });
+  } catch (e) {
+    console.error('[Gen portada] Error:', e.message);
+    const status = e.code === 'NO_KEY' ? 422 : 500;
+    res.status(status).json({ error: e.message });
   }
 });
 

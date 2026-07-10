@@ -1616,6 +1616,7 @@
 
   async function onGenCopy(e) {
     e.preventDefault();
+    if ($('genFormato').value === 'portada') return; // la portada tiene su propio flujo
     const instruccion = $('genInput').value.trim();
     if (!instruccion) return;
     if ($('genModo').value === 'completa' && !genGemini) {
@@ -1848,6 +1849,82 @@
     const inp = e.target.closest('[data-campo]');
     if (!inp) return;
     genState.placas[parseInt(inp.dataset.i, 10)][inp.dataset.campo] = inp.value;
+  }
+
+  // ---- Portada para Reel (modo aparte: no pasa por el flujo de placas) ----
+  let genPFrameData = null; // dataURL del frame subido para "limpiar"
+
+  // Al elegir el formato "Portada", ocultamos el flujo de placas y mostramos el panel
+  // de portada (y viceversa). La caja de ajuste de placas no aplica a la portada.
+  function onGenFormatoChange() {
+    const esPortada = $('genFormato').value === 'portada';
+    ['genModo', 'genChips', 'genInput', 'genHint', 'genCopyBtn'].forEach((id) => {
+      const el = $(id); if (el) el.hidden = esPortada;
+    });
+    $('genPortada').hidden = !esPortada;
+    const aj = document.querySelector('#genResultBlock .gen-ajuste');
+    if (aj) aj.hidden = esPortada;
+    if (esPortada) { $('genPlacas').innerHTML = ''; $('genActions').hidden = true; }
+    $('genResultBlock').hidden = true; // no mezclar una portada con placas de otro modo
+  }
+
+  function onGenPTab(e) {
+    const btn = e.target.closest('.gen-ptab');
+    if (!btn) return;
+    const mode = btn.dataset.pmode;
+    document.querySelectorAll('.gen-ptab').forEach((b) => b.classList.toggle('active', b === btn));
+    $('genPGenerar').hidden = mode !== 'generar';
+    $('genPLimpiar').hidden = mode !== 'limpiar';
+  }
+
+  async function onGenPFile(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    try {
+      genPFrameData = await resizeImage(file); // reusa el resize del panel (máx 2000px, jpeg)
+      $('genPFrameImg').src = genPFrameData;
+      $('genPFramePrev').hidden = false;
+      $('genPLimpBtn').disabled = false;
+    } catch (err) { alert('No pude leer la imagen: ' + (err.message || err)); }
+  }
+
+  async function onGenPortada(modo) {
+    if (!genGemini) {
+      alert('La portada para reel necesita la IA de imágenes activa (falta GEMINI_API_KEY en el servidor).');
+      return;
+    }
+    const body = { modo };
+    if (modo === 'generar') {
+      const tema = $('genPTema').value.trim();
+      if (!tema) { alert('Contame el tema de la portada.'); return; }
+      body.tema = tema;
+      body.color = $('genPColor').value.trim();
+    } else {
+      if (!genPFrameData) { alert('Subí primero un frame del reel.'); return; }
+      body.frameB64 = genPFrameData;
+    }
+    const btn = modo === 'limpiar' ? $('genPLimpBtn') : $('genPGenBtn');
+    const orig = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = modo === 'limpiar' ? 'Limpiando el frame… (~25 s)' : 'Generando la portada… (~25 s)';
+    try {
+      const out = await api('/api/admin/gen/portada', 'POST', body);
+      $('genResults').innerHTML =
+        '<a class="gen-result" href="' + esc(out.url) + '" target="_blank" rel="noopener">' +
+          '<img src="' + esc(out.url) + '" alt="Portada para reel" loading="lazy" />' +
+          '<span>Portada ⬇</span>' +
+        '</a>';
+      const aj = document.querySelector('#genResultBlock .gen-ajuste');
+      if (aj) aj.hidden = true;
+      $('genResultBlock').hidden = false;
+      $('genResultBlock').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = orig;
+    }
   }
 
   async function onGenComponer() {
@@ -2522,6 +2599,12 @@
 
     // Generador
     $('genForm').addEventListener('submit', onGenCopy);
+    $('genFormato').addEventListener('change', onGenFormatoChange);
+    $('genPortada').addEventListener('click', onGenPTab);
+    $('genPGenBtn').addEventListener('click', () => onGenPortada('generar'));
+    $('genPLimpBtn').addEventListener('click', () => onGenPortada('limpiar'));
+    $('genPFile').addEventListener('change', onGenPFile);
+    $('genPTema').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); onGenPortada('generar'); } });
     $('genChips').addEventListener('click', onGenChip);
     $('genInput').addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); $('genForm').requestSubmit(); }

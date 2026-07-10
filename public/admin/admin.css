@@ -863,6 +863,35 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--pp-gold); font-size: .7rem; line-height: 1.45; text-align: left;
   background: rgba(200, 160, 60, .1); border-radius: 8px; padding: 6px 8px;
 }
+
+/* Portada para Reel */
+#genPortada { display: flex; flex-direction: column; gap: 14px; }
+.gen-ptabs { display: flex; gap: 8px; }
+.gen-ptab {
+  flex: 1; padding: 10px 12px; border-radius: 10px; cursor: pointer;
+  background: var(--pp-card, #16181d); border: 1px solid var(--pp-line);
+  color: var(--pp-muted); font-family: inherit; font-size: .85rem;
+  transition: border-color .15s, color .15s, background .15s;
+}
+.gen-ptab:hover { color: var(--pp-text); border-color: var(--pp-gold); }
+.gen-ptab.active { color: var(--pp-text); border-color: var(--pp-gold); background: rgba(200, 160, 60, .12); }
+.gen-psub { display: flex; flex-direction: column; gap: 12px; }
+.gen-psub label { display: block; font-size: .82rem; color: var(--pp-muted); }
+.gen-psub label small { color: var(--pp-muted); opacity: .7; }
+.gen-psub input[type="text"] {
+  width: 100%; margin-top: 6px; box-sizing: border-box;
+  background: var(--pp-input, #0e1013); border: 1px solid var(--pp-line);
+  border-radius: 10px; padding: 12px; color: var(--pp-text);
+  font-family: inherit; font-size: .9rem;
+}
+.gen-pupload {
+  display: block; padding: 22px 14px; text-align: center; cursor: pointer;
+  border: 1.5px dashed var(--pp-line); border-radius: 12px; color: var(--pp-muted);
+  transition: border-color .15s, color .15s;
+}
+.gen-pupload:hover { border-color: var(--pp-gold); color: var(--pp-text); }
+.gen-pupload input[type="file"] { display: none; }
+.gen-pframe img { max-height: 320px; border-radius: 10px; border: 1px solid var(--pp-line); display: block; margin: 0 auto; }
 .gen-ajuste { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--pp-line); }
 .gen-ajuste label { display: block; font-size: .82rem; color: var(--pp-muted); margin-bottom: 8px; }
 .gen-ajuste-row { display: flex; gap: 10px; }

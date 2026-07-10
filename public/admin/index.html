@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=41" />
+  <link rel="stylesheet" href="/admin/admin.css?v=42" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -584,6 +584,7 @@
                   <option value="historia">Historia (1080×1920)</option>
                   <option value="post">Post 4:5 (1080×1350)</option>
                   <option value="carrusel">Carrusel (1080×1350)</option>
+                  <option value="portada">Portada para Reel (1080×1920)</option>
                 </select>
                 <select id="genModo" title="Cómo se arma la placa">
                   <option value="clasico">Clásico — texto nítido de marca</option>
@@ -599,8 +600,34 @@
                 </div>
               </div>
               <textarea id="genInput" rows="4" placeholder="Contame con detalle qué querés. Ej:&#10;Promo: 2×1 en pizzas&#10;Local: Valencia&#10;Cuándo: todos los lunes&#10;Tono: divertido y cercano&#10;Llamado a la acción: vení con un amigo"></textarea>
-              <p class="gen-hint">Cuanto más contexto, mejor sale — o tocá <b>Plantilla</b> para el esqueleto. <span class="gen-hint-kbd"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> para generar</span></p>
+              <p class="gen-hint" id="genHint">Cuanto más contexto, mejor sale — o tocá <b>Plantilla</b> para el esqueleto. <span class="gen-hint-kbd"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> para generar</span></p>
               <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
+
+              <!-- Portada para Reel: modo aparte. Sale una imagen 9:16 LIMPIA (sin texto);
+                   el título grande lo pone el usuario en su editor de reel. -->
+              <div id="genPortada" hidden>
+                <div class="gen-ptabs">
+                  <button type="button" class="gen-ptab active" data-pmode="generar">🎬 Generar desde un tema</button>
+                  <button type="button" class="gen-ptab" data-pmode="limpiar">🧽 Limpiar un frame</button>
+                </div>
+                <div class="gen-psub" id="genPGenerar">
+                  <label>Tema de la portada
+                    <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: la pasión por el fútbol · el horno de leña encendido · una noche de pizza y amigos" />
+                  </label>
+                  <label>Color / paleta <small>(opcional)</small>
+                    <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · azul nocturno" />
+                  </label>
+                  <button type="button" class="btn-primary" id="genPGenBtn">🎬 Generar portada</button>
+                </div>
+                <div class="gen-psub" id="genPLimpiar" hidden>
+                  <label class="gen-pupload">📤 Subí un frame del reel <small>(una captura de la escena)</small>
+                    <input type="file" id="genPFile" accept="image/jpeg,image/png,image/webp" />
+                  </label>
+                  <div class="gen-pframe" id="genPFramePrev" hidden><img id="genPFrameImg" alt="Frame a limpiar" /></div>
+                  <button type="button" class="btn-primary" id="genPLimpBtn" disabled>🧽 Limpiar y usar de portada</button>
+                </div>
+                <p class="gen-hint">La portada sale <b>limpia, sin texto</b> — el tercio inferior queda oscuro para que le pongas el título grande en tu editor de reel.</p>
+              </div>
             </form>
           </div>
 
@@ -957,7 +984,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=54"></script>
+  <script src="/admin/admin.js?v=55"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
