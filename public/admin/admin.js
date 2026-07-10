@@ -1877,16 +1877,32 @@
     $('genPLimpiar').hidden = mode !== 'limpiar';
   }
 
-  async function onGenPFile(e) {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
+  async function setGenPFrame(file) {
     try {
       genPFrameData = await resizeImage(file); // reusa el resize del panel (máx 2000px, jpeg)
       $('genPFrameImg').src = genPFrameData;
       $('genPFramePrev').hidden = false;
       $('genPLimpBtn').disabled = false;
     } catch (err) { alert('No pude leer la imagen: ' + (err.message || err)); }
+  }
+
+  function onGenPFile(e) {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (file) setGenPFrame(file);
+  }
+
+  // Pegar una captura con Ctrl+V (solo cuando el panel "Limpiar un frame" está visible;
+  // si el portapapeles no trae imagen, dejamos pasar el pegado normal).
+  function onGenPPaste(e) {
+    if ($('genPortada').hidden || $('genPLimpiar').hidden) return;
+    const items = (e.clipboardData && e.clipboardData.items) || [];
+    for (const it of items) {
+      if (it.type && it.type.indexOf('image') === 0) {
+        const file = it.getAsFile();
+        if (file) { e.preventDefault(); setGenPFrame(file); return; }
+      }
+    }
   }
 
   async function onGenPortada(modo) {
@@ -2604,6 +2620,7 @@
     $('genPGenBtn').addEventListener('click', () => onGenPortada('generar'));
     $('genPLimpBtn').addEventListener('click', () => onGenPortada('limpiar'));
     $('genPFile').addEventListener('change', onGenPFile);
+    document.addEventListener('paste', onGenPPaste);
     $('genPTema').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); onGenPortada('generar'); } });
     $('genChips').addEventListener('click', onGenChip);
     $('genInput').addEventListener('keydown', (e) => {
