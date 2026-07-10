@@ -1864,29 +1864,29 @@
     $('genPortada').hidden = !esPortada;
     const aj = document.querySelector('#genResultBlock .gen-ajuste');
     if (aj) aj.hidden = esPortada;
-    if (esPortada) { $('genPlacas').innerHTML = ''; $('genActions').hidden = true; }
+    if (esPortada) {
+      $('genPlacas').innerHTML = ''; $('genActions').hidden = true;
+      // Enfocar la caja de pegado: sin foco en un elemento editable, Ctrl+V no dispara.
+      const d = $('genPDrop'); if (d) setTimeout(() => d.focus(), 0);
+    }
     $('genResultBlock').hidden = true; // no mezclar una portada con placas de otro modo
   }
 
-  function onGenPTab(e) {
-    const btn = e.target.closest('.gen-ptab');
-    if (!btn) return;
-    const mode = btn.dataset.pmode;
-    document.querySelectorAll('.gen-ptab').forEach((b) => b.classList.toggle('active', b === btn));
-    $('genPGenerar').hidden = mode !== 'generar';
-    $('genPLimpiar').hidden = mode !== 'limpiar';
-    // Enfocar la caja de pegado: sin foco en un elemento editable, Ctrl+V no dispara
-    // el evento 'paste'. El setTimeout espera a que el panel deje de estar hidden.
-    if (mode === 'limpiar') { const d = $('genPDrop'); if (d) setTimeout(() => d.focus(), 0); }
-  }
-
+  // La captura cargada cambia el botón a "limpiar" (auto). Sin captura, el botón "genera".
   async function setGenPFrame(file) {
     try {
       genPFrameData = await resizeImage(file); // reusa el resize del panel (máx 2000px, jpeg)
       $('genPFrameImg').src = genPFrameData;
       $('genPFramePrev').hidden = false;
-      $('genPLimpBtn').disabled = false;
+      $('genPGo').textContent = '🧽 Limpiar esta captura y usar de portada';
     } catch (err) { alert('No pude leer la imagen: ' + (err.message || err)); }
+  }
+
+  function clearGenPFrame() {
+    genPFrameData = null;
+    $('genPFrameImg').src = '';
+    $('genPFramePrev').hidden = true;
+    $('genPGo').textContent = '🎬 Generar portada desde el tema';
   }
 
   function onGenPFile(e) {
@@ -1909,13 +1909,20 @@
     return null;
   }
 
-  // Pegar una captura con Ctrl+V (solo cuando el panel "Limpiar un frame" está visible;
-  // si el portapapeles no trae imagen, dejamos pasar el pegado normal). El evento burbujea
+  // Pegar una captura con Ctrl+V (solo cuando el panel de portada está visible; si el
+  // portapapeles no trae imagen, dejamos pasar el pegado normal). El evento burbujea
   // desde la caja editable (genPDrop) hasta document, donde está enganchado.
   function onGenPPaste(e) {
-    if ($('genPortada').hidden || $('genPLimpiar').hidden) return;
+    if ($('genPortada').hidden) return;
     const file = extractPastedImage(e);
     if (file) { e.preventDefault(); setGenPFrame(file); }
+  }
+
+  // Un solo botón, decide solo: si hay captura la LIMPIA; si no, GENERA desde el tema.
+  function onGenPortadaAuto() {
+    if (genPFrameData) return onGenPortada('limpiar');
+    if ($('genPTema').value.trim()) return onGenPortada('generar');
+    alert('Pegá o subí una captura para limpiarla, o escribí un tema para generar una nueva.');
   }
 
   async function onGenPortada(modo) {
@@ -1933,7 +1940,7 @@
       if (!genPFrameData) { alert('Subí primero un frame del reel.'); return; }
       body.frameB64 = genPFrameData;
     }
-    const btn = modo === 'limpiar' ? $('genPLimpBtn') : $('genPGenBtn');
+    const btn = $('genPGo');
     const orig = btn.textContent;
     btn.disabled = true;
     btn.textContent = modo === 'limpiar' ? 'Limpiando el frame… (~25 s)' : 'Generando la portada… (~25 s)';
@@ -2629,15 +2636,14 @@
     // Generador
     $('genForm').addEventListener('submit', onGenCopy);
     $('genFormato').addEventListener('change', onGenFormatoChange);
-    $('genPortada').addEventListener('click', onGenPTab);
-    $('genPGenBtn').addEventListener('click', () => onGenPortada('generar'));
-    $('genPLimpBtn').addEventListener('click', () => onGenPortada('limpiar'));
+    $('genPGo').addEventListener('click', onGenPortadaAuto);
+    $('genPFrameX').addEventListener('click', clearGenPFrame);
     $('genPFile').addEventListener('change', onGenPFile);
     document.addEventListener('paste', onGenPPaste);
     // La caja de pegado es contenteditable solo para recibir el paste: bloqueamos el
     // tipeo (todo lo que no sea un atajo Ctrl/Cmd) para que no se ensucie.
     $('genPDrop').addEventListener('keydown', (e) => { if (!(e.ctrlKey || e.metaKey)) e.preventDefault(); });
-    $('genPTema').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); onGenPortada('generar'); } });
+    $('genPTema').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); onGenPortadaAuto(); } });
     $('genChips').addEventListener('click', onGenChip);
     $('genInput').addEventListener('keydown', (e) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); $('genForm').requestSubmit(); }

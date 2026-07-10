@@ -865,24 +865,27 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* Portada para Reel */
-#genPortada { display: flex; flex-direction: column; gap: 14px; }
-.gen-ptabs { display: flex; gap: 8px; }
-.gen-ptab {
-  flex: 1; padding: 10px 12px; border-radius: 10px; cursor: pointer;
-  display: flex; flex-direction: column; align-items: center; gap: 3px;
-  background: var(--pp-card, #16181d); border: 1px solid var(--pp-line);
-  color: var(--pp-muted); font-family: inherit; font-size: .85rem; text-align: center;
-  transition: border-color .15s, color .15s, background .15s;
-}
-.gen-ptab b { font-weight: 600; font-size: .85rem; }
-.gen-ptab small { font-size: .67rem; font-weight: 400; opacity: .72; line-height: 1.2; }
-.gen-ptab:hover { color: var(--pp-text); border-color: var(--pp-gold); }
-.gen-ptab.active { color: var(--pp-text); border-color: var(--pp-gold); background: rgba(200, 160, 60, .12); }
+#genPortada { display: flex; flex-direction: column; gap: 12px; }
 .gen-pnote {
   font-size: .78rem; color: var(--pp-muted); line-height: 1.5; margin: 0;
   background: rgba(255, 255, 255, .03); border-radius: 8px; padding: 9px 11px;
 }
-.gen-psub { display: flex; flex-direction: column; gap: 12px; }
+.gen-ver { float: right; font-size: .62rem; opacity: .5; letter-spacing: .05em; }
+.gen-por { display: flex; align-items: center; gap: 10px; margin: 2px 0; }
+.gen-por::before, .gen-por::after { content: ""; flex: 1; height: 1px; background: var(--pp-line); }
+.gen-por span { color: var(--pp-muted); font-size: .7rem; text-transform: uppercase; letter-spacing: .06em; white-space: nowrap; }
+.gen-pframe { position: relative; }
+.gen-pframe-x {
+  position: absolute; top: 8px; right: 8px; cursor: pointer; font-size: .72rem;
+  background: rgba(0, 0, 0, .6); color: #fff; border: none; border-radius: 8px; padding: 5px 9px;
+}
+.gen-pframe-x:hover { background: rgba(0, 0, 0, .85); }
+#genPortada > label { display: flex; flex-direction: column; gap: 6px; font-size: .82rem; color: var(--pp-muted); }
+#genPortada > label small { opacity: .7; }
+#genPortada > label input[type="text"] {
+  background: var(--pp-input, #0e1013); border: 1px solid var(--pp-line);
+  border-radius: 10px; padding: 12px; color: var(--pp-text); font-family: inherit; font-size: .9rem;
+}
 .gen-psub label { display: block; font-size: .82rem; color: var(--pp-muted); }
 .gen-psub label small { color: var(--pp-muted); opacity: .7; }
 .gen-psub input[type="text"] {

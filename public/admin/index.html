@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=44" />
+  <link rel="stylesheet" href="/admin/admin.css?v=45" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -603,34 +603,30 @@
               <p class="gen-hint" id="genHint">Cuanto más contexto, mejor sale — o tocá <b>Plantilla</b> para el esqueleto. <span class="gen-hint-kbd"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> para generar</span></p>
               <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
 
-              <!-- Portada para Reel: modo aparte. Sale una imagen 9:16 LIMPIA (sin texto);
-                   el título grande lo pone el usuario en su editor de reel. -->
+              <!-- Portada para Reel: sale una imagen 9:16 LIMPIA (sin texto); el título
+                   grande lo pone el usuario en su editor de reel. Sin pestañas: si hay
+                   captura la LIMPIA, si no hay y hay tema GENERA una nueva (auto). -->
               <div id="genPortada" hidden>
-                <div class="gen-ptabs">
-                  <button type="button" class="gen-ptab active" data-pmode="generar"><b>🎬 Generar desde un tema</b><small>inventa una imagen NUEVA desde el texto</small></button>
-                  <button type="button" class="gen-ptab" data-pmode="limpiar"><b>🧽 Limpiar un frame</b><small>usa TU captura y solo le saca overlays</small></button>
+                <p class="gen-pnote"><b>¿Tenés una captura del reel?</b> Pegala o subila y te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <b>¿No tenés?</b> Escribí un <b>tema</b> más abajo y te <b>genero</b> una nueva. <span class="gen-ver" id="genVer">v58</span></p>
+                <!-- contenteditable = recibe foco, y así el navegador dispara el evento
+                     'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
+                <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 Pegá tu captura con Ctrl+V — te la limpio</div>
+                <label class="gen-plink">📤 …o elegí un archivo desde tu compu
+                  <input type="file" id="genPFile" accept="image/jpeg,image/png,image/webp" />
+                </label>
+                <div class="gen-pframe" id="genPFramePrev" hidden>
+                  <img id="genPFrameImg" alt="Captura a limpiar" />
+                  <button type="button" class="gen-pframe-x" id="genPFrameX" title="Quitar la captura">✕ quitar</button>
                 </div>
-                <div class="gen-psub" id="genPGenerar">
-                  <p class="gen-pnote">Crea una imagen <b>nueva</b> a partir del texto — no parte de ninguna foto tuya. ¿Tenés una captura y solo querés limpiarla? Usá <b>«Limpiar un frame»</b>.</p>
-                  <label>Tema de la portada
-                    <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: la pasión por el fútbol · el horno de leña encendido · una noche de pizza y amigos" />
-                  </label>
-                  <label>Color / paleta <small>(opcional)</small>
-                    <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · azul nocturno" />
-                  </label>
-                  <button type="button" class="btn-primary" id="genPGenBtn">🎬 Generar portada</button>
-                </div>
-                <div class="gen-psub" id="genPLimpiar" hidden>
-                  <!-- contenteditable = recibe foco, y así el navegador dispara el evento
-                       'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
-                  <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 Pegá una captura con Ctrl+V</div>
-                  <label class="gen-plink">📤 …o elegí un archivo desde tu compu
-                    <input type="file" id="genPFile" accept="image/jpeg,image/png,image/webp" />
-                  </label>
-                  <div class="gen-pframe" id="genPFramePrev" hidden><img id="genPFrameImg" alt="Frame a limpiar" /></div>
-                  <button type="button" class="btn-primary" id="genPLimpBtn" disabled>🧽 Limpiar y usar de portada</button>
-                </div>
-                <p class="gen-hint">La portada sale <b>limpia, sin texto</b> — el tercio inferior queda oscuro para que le pongas el título grande en tu editor de reel.</p>
+                <div class="gen-por"><span>o generá una nueva desde un tema</span></div>
+                <label>Tema de la portada
+                  <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: la pasión por el fútbol · el horno de leña encendido · una noche de pizza y amigos" />
+                </label>
+                <label>Color / paleta <small>(opcional)</small>
+                  <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · azul nocturno" />
+                </label>
+                <button type="button" class="btn-primary" id="genPGo">🎬 Generar portada desde el tema</button>
+                <p class="gen-hint">Sale una imagen <b>limpia, sin texto</b> — el tercio inferior queda oscuro para que le pongas el título en tu editor de reel.</p>
               </div>
             </form>
           </div>
@@ -988,7 +984,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=57"></script>
+  <script src="/admin/admin.js?v=58"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
