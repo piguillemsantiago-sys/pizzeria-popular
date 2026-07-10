@@ -4,6 +4,13 @@
 
 ## 2026-07-10
 
+*(sesión Carta digital — descripción de la Rosti)*
+
+- **Pizza Rosti: se agregó "aceite chilli y limón" a la descripción.** Item maestro `menu_items` id `4f717975-0cd9-4d52-ab1e-edecfe1542e3`, **sin overrides por local** → el cambio aplica a los 6 locales de una. La descripción es JSON multiidioma: se actualizaron **los 9 idiomas** (es/en/de/fr/it/pt/ru/uk/zh), no solo español, para no dejar la carta incoherente. ES final: *"…frutos secos, aceite chilli y limón"* (puse acento en "limón").
+- **Activado flag 🌶️ Picante** en la Rosti (`labels: ["picante"]`, antes vacío) — ahora que lleva aceite chilli.
+- **Editado directo en Supabase** (`menu_items`), NO vía el panel /admin. Producción (grupoajax.es en el VPS) lee la carta en vivo desde el mismo Supabase → **sin deploy ni build**, ya se ve en carta pública + QR. Verificado releyendo de la base.
+- Limpieza: terminadas **5 instancias locales de node** colgadas de sesiones viejas (3/5/7/10 jul), quedaban 0.
+
 *(sesión Generador — nuevo modo "Portada para Reel")*
 
 - **Nuevo formato "Portada para Reel" (1080×1920)** en el generador, con dos comportamientos **auto-detectados**: pegás/subís una captura (Ctrl+V) → **limpia el frame** (la MISMA imagen, sin subtítulos/stickers/UI, escena intacta); escribís un tema → **genera una portada editorial nueva**. Un solo panel + un botón que cambia de texto solo según lo que haya (imagen→"🧽 Limpiar", tema→"🎬 Generar"). Se quitaron 2 pestañas que confundían al dueño.
