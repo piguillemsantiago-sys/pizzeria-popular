@@ -607,7 +607,10 @@
                    grande lo pone el usuario en su editor de reel. Sin pestañas: si hay
                    captura la LIMPIA, si no hay y hay tema GENERA una nueva (auto). -->
               <div id="genPortada" hidden>
-                <p class="gen-pnote"><b>¿Tenés una captura del reel?</b> Pegala o subila y te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <b>¿No tenés?</b> Escribí un <b>tema</b> más abajo y te <b>genero</b> una nueva. <span class="gen-ver" id="genVer">v58</span></p>
+                <p class="gen-pnote"><b>¿Tenés una captura del reel?</b> Pegala o subila y te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <b>¿No tenés?</b> Escribí un <b>tema</b> más abajo y te <b>genero</b> una nueva. <span class="gen-ver" id="genVer">v59</span></p>
+                <label>Título de la portada <small>(opcional — te lo escribo grande y legible encima)</small>
+                  <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: FLAN MIXTO · POSTRE DE LA CASA · ¿QUIÉN GANA HOY?" />
+                </label>
                 <!-- contenteditable = recibe foco, y así el navegador dispara el evento
                      'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
                 <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 Pegá tu captura con Ctrl+V — te la limpio</div>
@@ -626,7 +629,7 @@
                   <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · azul nocturno" />
                 </label>
                 <button type="button" class="btn-primary" id="genPGo">🎬 Generar portada desde el tema</button>
-                <p class="gen-hint">Sale una imagen <b>limpia, sin texto</b> — el tercio inferior queda oscuro para que le pongas el título en tu editor de reel.</p>
+                <p class="gen-hint">Si escribís un <b>título</b> arriba, te lo pongo grande sobre la portada (texto exacto, nunca inventado). Si lo dejás vacío, sale <b>limpia, sin texto</b>.</p>
               </div>
             </form>
           </div>
@@ -984,7 +987,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=58"></script>
+  <script src="/admin/admin.js?v=59"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

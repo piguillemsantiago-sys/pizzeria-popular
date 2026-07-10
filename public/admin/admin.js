@@ -1931,6 +1931,8 @@
       return;
     }
     const body = { modo };
+    const titulo = $('genPTitulo') ? $('genPTitulo').value.trim() : '';
+    if (titulo) body.titulo = titulo; // título opcional, se dibuja con texto exacto encima
     if (modo === 'generar') {
       const tema = $('genPTema').value.trim();
       if (!tema) { alert('Contame el tema de la portada.'); return; }
