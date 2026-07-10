@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=42" />
+  <link rel="stylesheet" href="/admin/admin.css?v=43" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -620,7 +620,10 @@
                   <button type="button" class="btn-primary" id="genPGenBtn">🎬 Generar portada</button>
                 </div>
                 <div class="gen-psub" id="genPLimpiar" hidden>
-                  <label class="gen-pupload">📤 Subí un frame del reel <small>— o pegá una captura con <kbd>Ctrl</kbd>+<kbd>V</kbd></small>
+                  <!-- contenteditable = recibe foco, y así el navegador dispara el evento
+                       'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
+                  <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 Pegá una captura con Ctrl+V</div>
+                  <label class="gen-plink">📤 …o elegí un archivo desde tu compu
                     <input type="file" id="genPFile" accept="image/jpeg,image/png,image/webp" />
                   </label>
                   <div class="gen-pframe" id="genPFramePrev" hidden><img id="genPFrameImg" alt="Frame a limpiar" /></div>
@@ -984,7 +987,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=56"></script>
+  <script src="/admin/admin.js?v=57"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

@@ -1875,6 +1875,9 @@
     document.querySelectorAll('.gen-ptab').forEach((b) => b.classList.toggle('active', b === btn));
     $('genPGenerar').hidden = mode !== 'generar';
     $('genPLimpiar').hidden = mode !== 'limpiar';
+    // Enfocar la caja de pegado: sin foco en un elemento editable, Ctrl+V no dispara
+    // el evento 'paste'. El setTimeout espera a que el panel deje de estar hidden.
+    if (mode === 'limpiar') { const d = $('genPDrop'); if (d) setTimeout(() => d.focus(), 0); }
   }
 
   async function setGenPFrame(file) {
@@ -1892,17 +1895,27 @@
     if (file) setGenPFrame(file);
   }
 
-  // Pegar una captura con Ctrl+V (solo cuando el panel "Limpiar un frame" está visible;
-  // si el portapapeles no trae imagen, dejamos pasar el pegado normal).
-  function onGenPPaste(e) {
-    if ($('genPortada').hidden || $('genPLimpiar').hidden) return;
+  // Saca la primera imagen del portapapeles (índice, no for..of: DataTransferItemList
+  // no siempre es iterable con for..of en todos los motores).
+  function extractPastedImage(e) {
     const items = (e.clipboardData && e.clipboardData.items) || [];
-    for (const it of items) {
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
       if (it.type && it.type.indexOf('image') === 0) {
-        const file = it.getAsFile();
-        if (file) { e.preventDefault(); setGenPFrame(file); return; }
+        const f = it.getAsFile();
+        if (f) return f;
       }
     }
+    return null;
+  }
+
+  // Pegar una captura con Ctrl+V (solo cuando el panel "Limpiar un frame" está visible;
+  // si el portapapeles no trae imagen, dejamos pasar el pegado normal). El evento burbujea
+  // desde la caja editable (genPDrop) hasta document, donde está enganchado.
+  function onGenPPaste(e) {
+    if ($('genPortada').hidden || $('genPLimpiar').hidden) return;
+    const file = extractPastedImage(e);
+    if (file) { e.preventDefault(); setGenPFrame(file); }
   }
 
   async function onGenPortada(modo) {
@@ -2621,6 +2634,9 @@
     $('genPLimpBtn').addEventListener('click', () => onGenPortada('limpiar'));
     $('genPFile').addEventListener('change', onGenPFile);
     document.addEventListener('paste', onGenPPaste);
+    // La caja de pegado es contenteditable solo para recibir el paste: bloqueamos el
+    // tipeo (todo lo que no sea un atajo Ctrl/Cmd) para que no se ensucie.
+    $('genPDrop').addEventListener('keydown', (e) => { if (!(e.ctrlKey || e.metaKey)) e.preventDefault(); });
     $('genPTema').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); onGenPortada('generar'); } });
     $('genChips').addEventListener('click', onGenChip);
     $('genInput').addEventListener('keydown', (e) => {

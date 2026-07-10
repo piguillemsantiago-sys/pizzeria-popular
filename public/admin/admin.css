@@ -884,13 +884,17 @@ button { font-family: inherit; cursor: pointer; }
   border-radius: 10px; padding: 12px; color: var(--pp-text);
   font-family: inherit; font-size: .9rem;
 }
-.gen-pupload {
-  display: block; padding: 22px 14px; text-align: center; cursor: pointer;
+.gen-pdrop {
+  padding: 26px 14px; text-align: center; cursor: text; outline: none;
   border: 1.5px dashed var(--pp-line); border-radius: 12px; color: var(--pp-muted);
-  transition: border-color .15s, color .15s;
+  font-size: .9rem; transition: border-color .15s, color .15s, background .15s;
 }
-.gen-pupload:hover { border-color: var(--pp-gold); color: var(--pp-text); }
-.gen-pupload input[type="file"] { display: none; }
+.gen-pdrop:hover, .gen-pdrop:focus {
+  border-color: var(--pp-gold); color: var(--pp-text); background: rgba(200, 160, 60, .07);
+}
+.gen-plink { display: block; text-align: center; font-size: .8rem; color: var(--pp-muted); cursor: pointer; }
+.gen-plink:hover { color: var(--pp-gold); }
+.gen-plink input[type="file"] { display: none; }
 .gen-pframe img { max-height: 320px; border-radius: 10px; border: 1px solid var(--pp-line); display: block; margin: 0 auto; }
 .gen-ajuste { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--pp-line); }
 .gen-ajuste label { display: block; font-size: .82rem; color: var(--pp-muted); margin-bottom: 8px; }
