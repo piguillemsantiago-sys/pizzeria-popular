@@ -2,6 +2,18 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-10
+
+*(sesión Generador — nuevo modo "Portada para Reel")*
+
+- **Nuevo formato "Portada para Reel" (1080×1920)** en el generador, con dos comportamientos **auto-detectados**: pegás/subís una captura (Ctrl+V) → **limpia el frame** (la MISMA imagen, sin subtítulos/stickers/UI, escena intacta); escribís un tema → **genera una portada editorial nueva**. Un solo panel + un botón que cambia de texto solo según lo que haya (imagen→"🧽 Limpiar", tema→"🎬 Generar"). Se quitaron 2 pestañas que confundían al dueño.
+- **Causa raíz de la fricción = JS cacheado.** El dueño no hacía hard-refresh y veía la versión vieja (caía siempre en "generar", el pegado "no andaba"). Se agregó **marcador de versión visible** (`v59` en el panel) para diagnosticar. Recordatorio: al editar `admin.js`/`admin.css` bumpear el `?v=N`.
+- **Título opcional**: se dibuja con **texto EXACTO por sharp** (Montserrat de marca) + scrim inferior para legibilidad sobre cualquier foto — **nunca lo inventa la IA**. Aplica a los dos modos; vacío = imagen limpia. `overlayTituloPortada`.
+- **Prompt del modo generar con zonas estrictas** (top 15% header / centro 20-55% sujeto / 40% inferior oscuro para el título) — lo pasó el dueño, se agregó **tal cual** (regla: en ajuste, su pedido explícito manda).
+- **Header de marca** (wordmark blanco real vía `prepararLogo`) en la franja superior — **solo modo generar**; "limpiar" respeta el frame. Convirtió la banda oscura vacía (letterbox) en un masthead editorial.
+- Verificado con **renders reales** (VPS: Gemini + fontconfig) y **Playwright** (pegado real). Deploy con `bash deploy.sh`.
+- **Pendiente / próximo paso (seguir MAÑANA — el dueño NO está conforme aún):** pulir la portada. Puntos abiertos: ¿header también en "limpiar" (consistencia de marca)?; tamaño/posición de header y título; suavizar la costura dura de la franja superior; el modo generar todavía saca la banda top algo grande/con costura.
+
 ## 2026-07-02
 
 - **Informe de pauta (`grupoajax.es/informe-pauta/`) refrescado 2 veces.** Página estática con datos hardcodeados en el objeto `DATA` (`public/informe-pauta/index.html`); NO se conecta en vivo. Se actualizó primero al **1 jul** y después al **2 jul** leyendo el snapshot diario que el cron ya guarda en `ppweb_meta_ads` (NO se pega a Meta desde local: el `META_ADS_TOKEN` vive solo en el VPS). Campaña = `PP_MenuDiario_Valencia_TestCreativa` (id `120247415943190097`); conjuntos "Russafa" y "Santa Clara"; anuncios mapeados por nombre (`*_milanesa/_ñoqui/_pizza`). El campo `clicks` de la página = `link_clicks` (inline), NO `clicks` totales. El "total" usa el reach DEDUP de nivel campaña (no la suma de conjuntos).
