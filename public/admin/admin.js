@@ -1962,7 +1962,10 @@
       }
     } else {
       const titulo = $('genPTitulo') ? $('genPTitulo').value.trim() : '';
-      if (titulo) body.titulo = titulo; // título opcional, se dibuja con texto exacto encima
+      if (titulo) {
+        body.titulo = titulo; // título opcional, se dibuja con texto exacto encima
+        if ($('genPDiseno')) body.diseno = $('genPDiseno').value; // diseño de marca elegido
+      }
       if (!genPFrameData) { alert('Subí primero un frame del reel.'); return; }
       body.frameB64 = genPFrameData;
     }

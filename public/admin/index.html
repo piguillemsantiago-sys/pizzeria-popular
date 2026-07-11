@@ -618,9 +618,20 @@
                   <img id="genPFrameImg" alt="Captura a limpiar" />
                   <button type="button" class="gen-pframe-x" id="genPFrameX" title="Quitar la captura">✕ quitar</button>
                 </div>
-                <label id="genPTituloWrap" hidden>Título opcional sobre la captura <small>(texto exacto, estilo de marca; con <b>|</b> agregás el remate en cursiva)</small>
-                  <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: Flan Mixto | con dulce de leche y crema" />
-                </label>
+                <div id="genPTituloWrap" hidden>
+                  <label>Título opcional sobre la captura <small>(texto exacto; con <b>|</b> agregás la segunda línea)</small>
+                    <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: Flan Mixto | con dulce de leche y crema" />
+                  </label>
+                  <label>Diseño del título
+                    <select id="genPDiseno">
+                      <option value="milanesa">1 · Serif + cursiva dorada (Milanesa)</option>
+                      <option value="boadilla">2 · Mayúsculas + cursiva (Boadilla)</option>
+                      <option value="firma">3 · Cursiva gigante (la firma)</option>
+                      <option value="dorado">4 · Mayúsculas + palabra dorada</option>
+                      <option value="arriba">5 · Texto arriba (plato libre)</option>
+                    </select>
+                  </label>
+                </div>
                 <div class="gen-por"><span>o generá una nueva desde un tema</span></div>
                 <label>Tema de la portada
                   <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: hoy pasamos el partido · promo 2x1 de los martes · el horno de leña encendido" />
@@ -996,7 +1007,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=60"></script>
+  <script src="/admin/admin.js?v=61"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

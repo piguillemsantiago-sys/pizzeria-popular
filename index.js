@@ -967,7 +967,7 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
 // lo agrega el usuario después en su editor de reel.
 app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
   try {
-    const { modo, tema, color, frameB64, titulo, campos } = req.body || {};
+    const { modo, tema, color, frameB64, titulo, campos, diseno } = req.body || {};
     let buf, copy;
     if (modo === 'generar') {
       // Portada editorial "Método Ana": el PRO pinta todo + logo real. Devuelve
@@ -977,7 +977,7 @@ app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
     } else {
       if (!frameB64) return res.status(400).json({ error: 'Subí un frame del reel para limpiar.' });
       const frameBuf = Buffer.from(String(frameB64).replace(/^data:image\/\w+;base64,/, ''), 'base64');
-      buf = await generarPortadaReel({ modo, frameBuf, titulo });
+      buf = await generarPortadaReel({ modo, frameBuf, titulo, diseno });
     }
     const objectPath = 'social/portada-reel-' + Date.now() + '.jpg';
     const { error } = await supabaseAdmin.storage.from('ppweb-blog')
