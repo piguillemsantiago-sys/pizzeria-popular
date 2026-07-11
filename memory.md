@@ -2,7 +2,16 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
-## 2026-07-10
+## 2026-07-12
+
+*(sesión Generador — portada para reel, continuación del 10-11 jul)*
+
+- **Método Ana Milici portado y superado:** el modelo PRO (`gemini-3-pro-image-preview`, env `GEMINI_PORTADA_MODEL`) pinta la tipografía INTEGRADA a la captura (oclusión, luz, materiales) y el logo real va SIEMPRE por código. **2 estilos de la casa fijados con el dueño** en el selector del panel (v62): "✨ IA · Firma dorada" (default, cursiva dorada + bajada blanca) y "✨ IA · Póster" (caps condensadas blanco/dorado), + "IA libre". Elegidas y demos en `Documents\01-Clientes\Pizzeria-Popular\portadas-elegidas\` (v1..v4 + simulaciones `-GRID`).
+- **Cursiva de marca REAL:** `muestraScriptMarca` renderiza el texto exacto en Abuget (.ttf vía fontconfig) y se lo pasa al PRO como imagen de referencia para copiar trazos — describirla con palabras daba una brush genérica (queja del dueño). También legibilidad endurecida: sombra profunda por letra + oscurecer el fondo detrás del texto (el dorado se perdía sobre tonos claros).
+- **Márgenes del grid resueltos ESTRUCTURALMENTE** (queja real: título cortado y borde-a-borde en el tile del perfil): la tipografía se diseña DENTRO de la ventana 3:4 del grid (y 240–1680) y se reintegra a la portada 9:16 con fundido de 90px → imposible que el texto quede fuera del recorte. El verificador ahora devuelve `textoTopPct/textoBottomPct/tocaBordeLateral` y el CÓDIGO gatea con hasta 2 reintentos. **Descartados con evidencia:** coordenadas numéricas en el prompt (las ignora) y guía dibujada sobre la foto (la copiaba en la salida).
+- **Bug arreglado:** sin `|` la IA inventaba una bajada ("POSTRE CON DULCE DE LECHE Y CREMA") porque el brief siempre pedía línea secundaria → briefs ahora son funciones de `sec` (`PORTADA_IA_SIN_SEC`). Probado en VPS: título solo = título solo.
+- **UX:** logo a 240 del borde (medido de las placas; fuera del tile a propósito — ahí IG dibuja el contador). La cursiva respeta el texto exacto: minúsculas = firma linda, MAYÚSCULAS = rígida. Marcador v62 verificado en vivo con curl.
+- Pendiente: validación del dueño en producción; los commits del día están locales (los pushea `/handoff`); oferta abierta: podar los 11 diseños numerados del selector (confunden — le pasó al dueño con el "5").
 
 *(sesión Carta digital — descripción de la Rosti)*
 
