@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=45" />
+  <link rel="stylesheet" href="/admin/admin.css?v=46" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -607,13 +607,10 @@
                    grande lo pone el usuario en su editor de reel. Sin pestañas: si hay
                    captura la LIMPIA, si no hay y hay tema GENERA una nueva (auto). -->
               <div id="genPortada" hidden>
-                <p class="gen-pnote"><b>¿Tenés una captura del reel?</b> Pegala o subila y te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <b>¿No tenés?</b> Escribí un <b>tema</b> más abajo y te <b>genero</b> una nueva. <span class="gen-ver" id="genVer">v59</span></p>
-                <label>Título de la portada <small>(opcional — te lo escribo grande y legible encima)</small>
-                  <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: FLAN MIXTO · POSTRE DE LA CASA · ¿QUIÉN GANA HOY?" />
-                </label>
+                <p class="gen-pnote"><b>Escribí un tema</b> y te armo una portada editorial completa (foto + textos + <b>logo real</b>) estilo revista. <b>¿Tenés una captura del reel?</b> Pegala o subila y en vez de generar, te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <span class="gen-ver" id="genVer">v60</span></p>
                 <!-- contenteditable = recibe foco, y así el navegador dispara el evento
                      'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
-                <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 Pegá tu captura con Ctrl+V — te la limpio</div>
+                <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 ¿Tenés una captura? Pegala con Ctrl+V y te la limpio</div>
                 <label class="gen-plink">📤 …o elegí un archivo desde tu compu
                   <input type="file" id="genPFile" accept="image/jpeg,image/png,image/webp" />
                 </label>
@@ -621,15 +618,27 @@
                   <img id="genPFrameImg" alt="Captura a limpiar" />
                   <button type="button" class="gen-pframe-x" id="genPFrameX" title="Quitar la captura">✕ quitar</button>
                 </div>
+                <label id="genPTituloWrap" hidden>Título opcional sobre la captura <small>(texto exacto, se dibuja encima)</small>
+                  <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: FLAN MIXTO · POSTRE DE LA CASA" />
+                </label>
                 <div class="gen-por"><span>o generá una nueva desde un tema</span></div>
                 <label>Tema de la portada
-                  <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: la pasión por el fútbol · el horno de leña encendido · una noche de pizza y amigos" />
+                  <input type="text" id="genPTema" autocomplete="off" placeholder="Ej: hoy pasamos el partido · promo 2x1 de los martes · el horno de leña encendido" />
                 </label>
                 <label>Color / paleta <small>(opcional)</small>
-                  <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · azul nocturno" />
+                  <input type="text" id="genPColor" autocomplete="off" placeholder="Ej: rojo profundo · ámbar cálido · dorado ember" />
                 </label>
                 <button type="button" class="btn-primary" id="genPGo">🎬 Generar portada desde el tema</button>
-                <p class="gen-hint">Si escribís un <b>título</b> arriba, te lo pongo grande sobre la portada (texto exacto, nunca inventado). Si lo dejás vacío, sale <b>limpia, sin texto</b>.</p>
+                <div id="genPCopyBox" class="gen-pcopy" hidden>
+                  <p class="gen-hint"><b>Textos de la portada</b> — editá y rehacé si querés cambiar algo (se vuelve a pintar la imagen):</p>
+                  <label>Título <input type="text" id="genPCTitulo" autocomplete="off" /></label>
+                  <label>Palabra a resaltar <small>(va en el bloque dorado)</small>
+                    <input type="text" id="genPCResaltar" autocomplete="off" />
+                  </label>
+                  <label>Subtítulo <input type="text" id="genPCSubtitulo" autocomplete="off" /></label>
+                  <button type="button" class="btn-secondary" id="genPRehacer">🔁 Rehacer con estos textos</button>
+                </div>
+                <p class="gen-hint">La IA escribe el copy con la voz de PP y pinta la portada; el <b>logo real</b> va arriba. Los partidos se muestran <b>por TV</b> (honesto), nunca "pantalla gigante".</p>
               </div>
             </form>
           </div>
@@ -987,7 +996,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=59"></script>
+  <script src="/admin/admin.js?v=60"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

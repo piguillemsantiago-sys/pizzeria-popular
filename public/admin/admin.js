@@ -1853,6 +1853,7 @@
 
   // ---- Portada para Reel (modo aparte: no pasa por el flujo de placas) ----
   let genPFrameData = null; // dataURL del frame subido para "limpiar"
+  let genPortadaCopy = null; // copy de la última portada editorial (para editar/rehacer)
 
   // Al elegir el formato "Portada", ocultamos el flujo de placas y mostramos el panel
   // de portada (y viceversa). La caja de ajuste de placas no aplica a la portada.
@@ -1866,6 +1867,8 @@
     if (aj) aj.hidden = esPortada;
     if (esPortada) {
       $('genPlacas').innerHTML = ''; $('genActions').hidden = true;
+      if ($('genPCopyBox')) $('genPCopyBox').hidden = true;      // caja de textos: recién tras generar
+      if ($('genPTituloWrap')) $('genPTituloWrap').hidden = true; // título: solo cuando hay captura (limpiar)
       // Enfocar la caja de pegado: sin foco en un elemento editable, Ctrl+V no dispara.
       const d = $('genPDrop'); if (d) setTimeout(() => d.focus(), 0);
     }
@@ -1878,6 +1881,8 @@
       genPFrameData = await resizeImage(file); // reusa el resize del panel (máx 2000px, jpeg)
       $('genPFrameImg').src = genPFrameData;
       $('genPFramePrev').hidden = false;
+      if ($('genPTituloWrap')) $('genPTituloWrap').hidden = false; // el título aplica al limpiar
+      if ($('genPCopyBox')) $('genPCopyBox').hidden = true;        // los textos editoriales no aplican al limpiar
       $('genPGo').textContent = '🧽 Limpiar esta captura y usar de portada';
     } catch (err) { alert('No pude leer la imagen: ' + (err.message || err)); }
   }
@@ -1886,6 +1891,8 @@
     genPFrameData = null;
     $('genPFrameImg').src = '';
     $('genPFramePrev').hidden = true;
+    if ($('genPTituloWrap')) $('genPTituloWrap').hidden = true;
+    if ($('genPTitulo')) $('genPTitulo').value = '';
     $('genPGo').textContent = '🎬 Generar portada desde el tema';
   }
 
@@ -1925,27 +1932,44 @@
     alert('Pegá o subí una captura para limpiarla, o escribí un tema para generar una nueva.');
   }
 
-  async function onGenPortada(modo) {
+  function fillGenPCopy(copy) {
+    if (!copy) return;
+    if ($('genPCTitulo')) $('genPCTitulo').value = copy.titulo || '';
+    if ($('genPCResaltar')) $('genPCResaltar').value = copy.resaltar || '';
+    if ($('genPCSubtitulo')) $('genPCSubtitulo').value = copy.subtitulo || '';
+  }
+
+  // modo 'generar' (editorial PRO + logo real) o 'limpiar' (frame). usarCampos =
+  // rehacer una portada editorial con los textos editados (reusa el hero/color previos).
+  async function onGenPortada(modo, usarCampos) {
     if (!genGemini) {
       alert('La portada para reel necesita la IA de imágenes activa (falta GEMINI_API_KEY en el servidor).');
       return;
     }
     const body = { modo };
-    const titulo = $('genPTitulo') ? $('genPTitulo').value.trim() : '';
-    if (titulo) body.titulo = titulo; // título opcional, se dibuja con texto exacto encima
     if (modo === 'generar') {
-      const tema = $('genPTema').value.trim();
-      if (!tema) { alert('Contame el tema de la portada.'); return; }
-      body.tema = tema;
       body.color = $('genPColor').value.trim();
+      if (usarCampos && genPortadaCopy) {
+        body.campos = Object.assign({}, genPortadaCopy, {
+          titulo: $('genPCTitulo').value.trim() || genPortadaCopy.titulo,
+          resaltar: $('genPCResaltar').value.trim() || genPortadaCopy.resaltar,
+          subtitulo: $('genPCSubtitulo').value.trim(),
+        });
+      } else {
+        const tema = $('genPTema').value.trim();
+        if (!tema) { alert('Contame el tema de la portada.'); return; }
+        body.tema = tema;
+      }
     } else {
+      const titulo = $('genPTitulo') ? $('genPTitulo').value.trim() : '';
+      if (titulo) body.titulo = titulo; // título opcional, se dibuja con texto exacto encima
       if (!genPFrameData) { alert('Subí primero un frame del reel.'); return; }
       body.frameB64 = genPFrameData;
     }
-    const btn = $('genPGo');
+    const btn = usarCampos ? $('genPRehacer') : $('genPGo');
     const orig = btn.textContent;
     btn.disabled = true;
-    btn.textContent = modo === 'limpiar' ? 'Limpiando el frame… (~25 s)' : 'Generando la portada… (~25 s)';
+    btn.textContent = modo === 'limpiar' ? 'Limpiando el frame… (~25 s)' : 'Pintando la portada… (~30 s)';
     try {
       const out = await api('/api/admin/gen/portada', 'POST', body);
       $('genResults').innerHTML =
@@ -1956,6 +1980,14 @@
       const aj = document.querySelector('#genResultBlock .gen-ajuste');
       if (aj) aj.hidden = true;
       $('genResultBlock').hidden = false;
+      // La portada editorial devuelve el copy usado → mostrar los campos editables.
+      if (out.copy) {
+        genPortadaCopy = out.copy;
+        fillGenPCopy(out.copy);
+        if ($('genPCopyBox')) $('genPCopyBox').hidden = false;
+      } else if ($('genPCopyBox')) {
+        $('genPCopyBox').hidden = true;
+      }
       $('genResultBlock').scrollIntoView({ behavior: 'smooth' });
     } catch (err) {
       alert(err.message);
@@ -2639,6 +2671,7 @@
     $('genForm').addEventListener('submit', onGenCopy);
     $('genFormato').addEventListener('change', onGenFormatoChange);
     $('genPGo').addEventListener('click', onGenPortadaAuto);
+    if ($('genPRehacer')) $('genPRehacer').addEventListener('click', () => onGenPortada('generar', true));
     $('genPFrameX').addEventListener('click', clearGenPFrame);
     $('genPFile').addEventListener('change', onGenPFile);
     document.addEventListener('paste', onGenPPaste);
