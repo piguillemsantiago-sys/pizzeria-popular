@@ -30,7 +30,9 @@
       throw new Error('no autorizado');
     }
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(json.error || 'Error del servidor.');
+    if (!res.ok) throw new Error(json.error || (res.status === 504 || res.status === 502
+      ? 'La espera se cortó porque tardó demasiado (el motor pudo haber seguido trabajando). Tocá el botón de nuevo para reintentar.'
+      : 'Error del servidor.'));
     return json;
   }
 
