@@ -2079,7 +2079,15 @@
     if (!genState.placas.length) return;
     const btn = $('genAjusteBtn');
     btn.disabled = true;
-    btn.textContent = 'Ajustando…';
+    // Cronómetro con fase: un ajuste completo (textos + imagen PRO + control)
+    // tarda minutos — sin esto parece colgado y el usuario pierde la confianza.
+    const t0 = Date.now();
+    let fase = 'Ajustando textos';
+    const tick = setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      btn.textContent = fase + '… ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    }, 1000);
+    btn.textContent = fase + '…';
     try {
       const out = await api('/api/admin/gen/ajustar', 'POST', {
         instruccion,
@@ -2087,6 +2095,7 @@
         caption: genState.caption,
         placas: genState.placas,
       });
+      fase = 'Regenerando la imagen (2-4 min, el control puede reintentarla)';
       genState.placas = out.placas || genState.placas;
       if (out.caption != null) {
         genState.caption = out.caption;
@@ -2100,6 +2109,7 @@
     } catch (err) {
       alert(err.message);
     } finally {
+      clearInterval(tick);
       btn.disabled = false;
       btn.textContent = 'Aplicar y rehacer';
     }
