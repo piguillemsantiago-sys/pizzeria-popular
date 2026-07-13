@@ -1027,3 +1027,10 @@ button { font-family: inherit; cursor: pointer; }
   .gen-placa-grid { grid-template-columns: 1fr; }
   .gen-ajuste-row { flex-direction: column; }
 }
+
+/* Ajustes avanzados del Generador (flujo de un paso, 13/7): formulario plegado */
+.gen-avanzado { margin: 14px 0; }
+.gen-avanzado > summary { cursor: pointer; color: #8a8aa3; font-size: 13.5px; padding: 10px 14px; border: 1px dashed rgba(255,255,255,.16); border-radius: 10px; user-select: none; list-style: none; }
+.gen-avanzado > summary::-webkit-details-marker { display: none; }
+.gen-avanzado > summary:hover { color: #fff; border-color: rgba(255,255,255,.32); }
+.gen-avanzado[open] > summary { margin-bottom: 12px; color: #fff; }

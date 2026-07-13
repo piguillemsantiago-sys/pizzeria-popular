@@ -1541,6 +1541,7 @@
     if (!genState.placas.length) {
       box.innerHTML = '';
       $('genActions').hidden = true;
+      $('genAvanzado').hidden = true;
       return;
     }
     box.innerHTML = genState.placas.map((p, i) =>
@@ -1592,6 +1593,7 @@
         '</div>' +
       '</div>').join('');
     $('genActions').hidden = false;
+    $('genAvanzado').hidden = false; // plegado: el que quiera afinar, lo abre
   }
 
   // Guía de contexto: la plantilla deja el esqueleto a completar; los ejemplos
@@ -1655,11 +1657,15 @@
       if (out.avisos && out.avisos.length) {
         alert('Avisos antes de componer (revisalos):\n\n• ' + out.avisos.join('\n• '));
       }
+      // Flujo de un paso (13/7): el copy pasa directo a componer — el dueño ve
+      // la placa terminada, no el formulario (queda plegado en Ajustes avanzados).
+      btn.textContent = 'Copy listo — componiendo las piezas…';
+      await onGenComponer();
     } catch (err) {
       alert(err.message);
     } finally {
       btn.disabled = false;
-      btn.textContent = 'Generar copy';
+      btn.textContent = '🎬 Generar placas';
     }
   }
 
@@ -1867,7 +1873,7 @@
     const aj = document.querySelector('#genResultBlock .gen-ajuste');
     if (aj) aj.hidden = esPortada;
     if (esPortada) {
-      $('genPlacas').innerHTML = ''; $('genActions').hidden = true;
+      $('genPlacas').innerHTML = ''; $('genActions').hidden = true; $('genAvanzado').hidden = true;
       if ($('genPCopyBox')) $('genPCopyBox').hidden = true;      // caja de textos: recién tras generar
       if ($('genPTituloWrap')) $('genPTituloWrap').hidden = true; // título: solo cuando hay captura (limpiar)
       // Enfocar la caja de pegado: sin foco en un elemento editable, Ctrl+V no dispara.
@@ -2004,7 +2010,7 @@
   async function onGenComponer() {
     const sinFoto = genState.placas.findIndex((p) => p.modoIA !== 'completa' && !p.fotoUrl && !p.iaPrompt);
     if (sinFoto !== -1) {
-      alert('La placa ' + (sinFoto + 1) + ' no tiene foto. Elegila del banco (📁) o generala con IA (🤖).');
+      alert('La placa ' + (sinFoto + 1) + ' no tiene foto. Abrí «🔧 Ajustes avanzados» y elegila del banco (📁) o generala con IA (🤖).');
       return;
     }
     const btn = $('genComponerBtn');
@@ -2023,6 +2029,7 @@
           estilo: p.estilo || undefined,
           driveId: p.driveId || undefined,
           fotoUrl: p.fotoUrl || undefined, iaPrompt: p.iaPrompt || undefined,
+          fotoProductoUrl: p.fotoProductoUrl || undefined, // referencia de producto real (modo IA)
           iaModo: p.iaModo || undefined, iaRef: p.iaRef || undefined,
           logo: p.logo || undefined,
           adj: p.adj || undefined,
@@ -2059,7 +2066,7 @@
       alert(err.message);
     } finally {
       btn.disabled = false;
-      btn.textContent = '🎨 Componer piezas';
+      btn.textContent = '🎨 Recomponer con mis cambios';
     }
   }
 

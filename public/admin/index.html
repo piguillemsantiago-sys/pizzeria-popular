@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=46" />
+  <link rel="stylesheet" href="/admin/admin.css?v=47" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -601,13 +601,13 @@
               </div>
               <textarea id="genInput" rows="4" placeholder="Contame con detalle qué querés. Ej:&#10;Promo: 2×1 en pizzas&#10;Local: Valencia&#10;Cuándo: todos los lunes&#10;Tono: divertido y cercano&#10;Llamado a la acción: vení con un amigo"></textarea>
               <p class="gen-hint" id="genHint">Cuanto más contexto, mejor sale — o tocá <b>Plantilla</b> para el esqueleto. <span class="gen-hint-kbd"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> para generar</span></p>
-              <button type="submit" class="btn-primary" id="genCopyBtn">Generar copy</button>
+              <button type="submit" class="btn-primary" id="genCopyBtn">🎬 Generar placas</button>
 
               <!-- Portada para Reel: sale una imagen 9:16 LIMPIA (sin texto); el título
                    grande lo pone el usuario en su editor de reel. Sin pestañas: si hay
                    captura la LIMPIA, si no hay y hay tema GENERA una nueva (auto). -->
               <div id="genPortada" hidden>
-                <p class="gen-pnote"><b>Escribí un tema</b> y te armo una portada editorial completa (foto + textos + <b>logo real</b>) estilo revista. <b>¿Tenés una captura del reel?</b> Pegala o subila y en vez de generar, te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <span class="gen-ver" id="genVer">v64</span></p>
+                <p class="gen-pnote"><b>Escribí un tema</b> y te armo una portada editorial completa (foto + textos + <b>logo real</b>) estilo revista. <b>¿Tenés una captura del reel?</b> Pegala o subila y en vez de generar, te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <span class="gen-ver" id="genVer">v65</span></p>
                 <!-- contenteditable = recibe foco, y así el navegador dispara el evento
                      'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
                 <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 ¿Tenés una captura? Pegala con Ctrl+V y te la limpio</div>
@@ -655,11 +655,15 @@
             </form>
           </div>
 
-          <div id="genPlacas"></div>
-
-          <div class="gen-actions" id="genActions" hidden>
-            <button class="btn-primary" id="genComponerBtn">🎨 Componer piezas</button>
-          </div>
+          <!-- Flujo de un paso (13/7): la placa terminada aparece directo; el
+               formulario por placa queda plegado acá para afinar sin regenerar. -->
+          <details class="gen-avanzado" id="genAvanzado" hidden>
+            <summary>🔧 Ajustes avanzados — textos, fotos y campos de cada placa</summary>
+            <div id="genPlacas"></div>
+            <div class="gen-actions" id="genActions" hidden>
+              <button class="btn-primary" id="genComponerBtn">🎨 Recomponer con mis cambios</button>
+            </div>
+          </details>
 
           <div class="pepe-block" id="genCaptionBlock" hidden>
             <h2>Caption para Instagram <small>copiá y pegá</small></h2>
@@ -1009,7 +1013,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=64"></script>
+  <script src="/admin/admin.js?v=65"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
