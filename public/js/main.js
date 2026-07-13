@@ -315,6 +315,22 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
   var btn = document.getElementById('spinningPizza');
   if (!btn || document.querySelector('.ppchat-panel')) return;
 
+  // Idioma del widget según la página (las /en/ saludan en inglés).
+  var isEN = location.pathname === '/en' || location.pathname.indexOf('/en/') === 0;
+  var T = isEN ? {
+    saludo: 'Hi! 🔥 I\'m Pepe, Pizzería Popular\'s virtual assistant. How can I help?',
+    placeholder: 'Write to Pepe…',
+    online: 'Online · Pizzería Popular',
+    errorRed: 'Connection error. Please try again.',
+    errorResp: 'I couldn\'t answer that. Please try again.',
+  } : {
+    saludo: '¡Hola! 🔥 Soy Pepe, el asistente virtual de Pizzería Popular. ¿En qué te puedo ayudar?',
+    placeholder: 'Escribile a Pepe…',
+    online: 'En línea · Pizzería Popular',
+    errorRed: 'Hubo un error de conexión. Probá de nuevo.',
+    errorResp: 'No pude responder. Probá de nuevo.',
+  };
+
   var panel = document.createElement('div');
   panel.className = 'ppchat-panel';
   panel.hidden = true;
@@ -323,12 +339,12 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       '<div class="ppchat-avatar"><img src="/images/pepe-robot.svg" alt="" /></div>' +
       '<div class="ppchat-id">' +
         '<span class="ppchat-name">Pepe</span>' +
-        '<span class="ppchat-role"><span class="ppchat-online"></span>En línea · Pizzería Popular</span>' +
+        '<span class="ppchat-role"><span class="ppchat-online"></span>' + T.online + '</span>' +
       '</div>' +
       '<button class="ppchat-close" aria-label="Cerrar">✕</button>' +
     '</div>' +
-    '<div class="ppchat-log"><div class="ppchat-msg bot">¡Hola! 🔥 Soy Pepe, el asistente virtual de Pizzería Popular. ¿En qué te puedo ayudar?</div></div>' +
-    '<form class="ppchat-form"><input type="text" placeholder="Escribile a Pepe…" autocomplete="off" />' +
+    '<div class="ppchat-log"><div class="ppchat-msg bot">' + T.saludo + '</div></div>' +
+    '<form class="ppchat-form"><input type="text" placeholder="' + T.placeholder + '" autocomplete="off" />' +
     '<button type="submit" aria-label="Enviar">➤</button></form>';
 
   document.body.appendChild(panel);
@@ -348,6 +364,21 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
       sessionStorage.setItem('pepeSession', sessionId);
     }
   } catch (e) { sessionId = 's-' + Date.now(); }
+
+  // La conversación sobrevive a la navegación: si el visitante toca un link
+  // que le pasó Pepe y vuelve, retoma donde estaba (misma pestaña).
+  function saveHistory() {
+    try { sessionStorage.setItem('pepeHistory', JSON.stringify(history.slice(-20))); } catch (e) {}
+  }
+  try {
+    var prev = JSON.parse(sessionStorage.getItem('pepeHistory') || '[]');
+    if (Array.isArray(prev) && prev.length) {
+      history = prev.slice(-20);
+      history.forEach(function (h) {
+        if (h && h.content) add(String(h.content), h.role === 'user' ? 'user' : 'bot');
+      });
+    }
+  } catch (e) {}
 
   function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -455,13 +486,14 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
           add(data.reply, 'bot');
           history.push({ role: 'user', content: text });
           history.push({ role: 'assistant', content: data.reply });
+          saveHistory();
         } else {
-          add(data.error || 'No pude responder. Probá de nuevo.', 'bot');
+          add(data.error || T.errorResp, 'bot');
         }
       })
       .catch(function () {
         thinking.remove();
-        add('Hubo un error de conexión. Probá de nuevo.', 'bot');
+        add(T.errorRed, 'bot');
       })
       .finally(function () {
         sendBtn.disabled = false;
@@ -476,7 +508,7 @@ document.querySelectorAll('.tl-outer').forEach(outer => {
     var hint = document.createElement('div');
     hint.className = 'pepe-hint';
     hint.innerHTML =
-      '<span class="pepe-hint-text">¡Hola! 👋 ¿En qué te ayudo?</span>' +
+      '<span class="pepe-hint-text">' + (isEN ? 'Hi! 👋 How can I help?' : '¡Hola! 👋 ¿En qué te ayudo?') + '</span>' +
       '<button class="pepe-hint-x" aria-label="Cerrar aviso">✕</button>';
 
     var hideTimer;
