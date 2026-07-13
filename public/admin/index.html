@@ -607,7 +607,7 @@
                    grande lo pone el usuario en su editor de reel. Sin pestañas: si hay
                    captura la LIMPIA, si no hay y hay tema GENERA una nueva (auto). -->
               <div id="genPortada" hidden>
-                <p class="gen-pnote"><b>Escribí un tema</b> y te armo una portada editorial completa (foto + textos + <b>logo real</b>) estilo revista. <b>¿Tenés una captura del reel?</b> Pegala o subila y en vez de generar, te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <span class="gen-ver" id="genVer">v62</span></p>
+                <p class="gen-pnote"><b>Escribí un tema</b> y te armo una portada editorial completa (foto + textos + <b>logo real</b>) estilo revista. <b>¿Tenés una captura del reel?</b> Pegala o subila y en vez de generar, te la <b>limpio</b> (la misma imagen, sin subtítulos ni stickers). <span class="gen-ver" id="genVer">v63</span></p>
                 <!-- contenteditable = recibe foco, y así el navegador dispara el evento
                      'paste'. Sin un elemento editable enfocado, Ctrl+V no hace nada. -->
                 <div class="gen-pdrop" id="genPDrop" contenteditable="true" spellcheck="false" role="textbox" aria-label="Pegá una captura del reel">📋 ¿Tenés una captura? Pegala con Ctrl+V y te la limpio</div>
@@ -623,21 +623,13 @@
                     <input type="text" id="genPTitulo" autocomplete="off" placeholder="Ej: Flan Mixto | con dulce de leche y crema" />
                   </label>
                   <label>Diseño del título
+                    <!-- Los 11 diseños de código siguen vivos en el motor
+                         (overlayTituloCaptura) — se podaron del selector el
+                         13/7 porque confundían al dueño. -->
                     <select id="genPDiseno">
-                      <option value="ia-firma" selected>✨ IA · Firma dorada (estilo de la casa, ~50 s)</option>
-                      <option value="ia-poster">✨ IA · Póster (estilo de la casa, ~50 s)</option>
-                      <option value="ia">✨ IA libre (la IA elige el tratamiento, ~50 s)</option>
-                      <option value="milanesa">1 · Serif + cursiva dorada (Milanesa)</option>
-                      <option value="boadilla">2 · Mayúsculas + cursiva (Boadilla)</option>
-                      <option value="firma">3 · Cursiva gigante (la firma)</option>
-                      <option value="dorado">4 · Mayúsculas + palabra dorada</option>
-                      <option value="arriba">5 · Texto arriba (plato libre)</option>
-                      <option value="marco">6 · Marco editorial (alineado izq.)</option>
-                      <option value="sello">7 · Sello de la casa (círculo)</option>
-                      <option value="neon">8 · Neón cálido (cursiva glow)</option>
-                      <option value="cinta">9 · Cinta editorial (banda inclinada)</option>
-                      <option value="vidrio">10 · Tarjeta de vidrio (esmerilado)</option>
-                      <option value="poster">11 · Póster tipográfico (cursiva montada)</option>
+                      <option value="ia-firma" selected>✨ Firma dorada (estilo de la casa, 1-2 min)</option>
+                      <option value="ia-poster">✨ Póster (estilo de la casa, 1-2 min)</option>
+                      <option value="ia">✨ Libre (la IA elige el tratamiento, 1-2 min)</option>
                     </select>
                   </label>
                 </div>
@@ -1017,7 +1009,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=62"></script>
+  <script src="/admin/admin.js?v=63"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
