@@ -1637,6 +1637,7 @@
         titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
         cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'clasico',
         fotoUrl: p.fotoUrl || null, driveId: p.driveId || null,
+        fotoProductoUrl: p.fotoProductoUrl || null,
         bancoId: p.bancoId || null, descartadas: p.bancoId ? [p.bancoId] : [],
         iaPrompt: null, motivo: p.motivo || '', logo: 'iso-blanco',
         escenaIA: p.escenaIA || '',

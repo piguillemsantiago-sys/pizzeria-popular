@@ -788,6 +788,31 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
             : 'No pude elegir la foto del local para ambientar: ' + e.message;
         }
       }
+      // Ídem con el PRODUCTO real (productoReal): una foto del plato de verdad
+      // viaja a Gemini para que la comida generada se vea como la nuestra.
+      const conProducto = (copy.placas || []).filter((p) => p.productoReal);
+      if (conProducto.length) {
+        try {
+          const escenas = conProducto
+            .map((p, i) => (i + 1) + '. ' + String(p.escenaIA || '').slice(0, 160))
+            .filter((s) => s.length > 3).join('\n');
+          const elecciones = await elegirFotos(
+            String(instruccion) + '\n(Estas placas necesitan una foto REAL del PRODUCTO como referencia del plato: primeros planos o planos cortos de NUESTRA comida acorde a la escena de cada placa — pizza, milanesa, postre, etc. NUNCA fachadas, salones ni fotos sin comida. Escenas:\n' + escenas + ')',
+            formato || 'historia', conProducto);
+          await Promise.all(conProducto.map(async (p, i) => {
+            const el = elecciones[i];
+            if (el && el.driveId) {
+              p.fotoProductoUrl = await materializarFoto(el.driveId);
+              p.motivoProducto = el.motivo || '';
+            }
+          }));
+        } catch (e) {
+          // Referencia opcional: la placa sale igual (100% generada, como antes).
+          if (!copy.bancoAviso) copy.bancoAviso = e.code === 'BANCO_VACIO'
+            ? 'La comida saldría más fiel con el banco indexado: tocá «Sincronizar banco».'
+            : 'No pude elegir la foto de producto de referencia: ' + e.message;
+        }
+      }
       return res.json(copy);
     }
     // Selección automática de fotos del banco (si está indexado).
