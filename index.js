@@ -974,11 +974,24 @@ async function trabajoGenAjustar({ instruccion, formato, placas, caption }) {
     // tamaño, colores, escena) no pasan por el retoque de sharp — el modelo de
     // ajuste los devuelve como notaDiseno por placa y acá se acumulan (últimas 3)
     // para que el redactor de prompts los teja en el próximo prompt.
-    for (const p of result) {
+    for (let i = 0; i < result.length; i++) {
+      const p = result[i];
+      const orig = placas[i] || {};
       if (p._notaDiseno && p.modoIA === 'completa') {
         const notas = String(p.notasDiseno || '').split(' | ').filter(Boolean);
         notas.push(p._notaDiseno);
         p.notasDiseno = notas.slice(-3).join(' | ');
+      }
+      // EDICIÓN QUIRÚRGICA: si esta placa completa ya tiene imagen y el ajuste la
+      // tocó (textos o pedido visual), la instrucción cruda viaja como _edicionIA
+      // → componer EDITA la imagen existente (misma escena) en vez de regenerarla.
+      // Cambiar la foto/escena sigue regenerando de cero (_cambiarFoto la pisa).
+      const claves = ['titulo', 'acento', 'bajada', 'cta', 'lugar', 'evento'];
+      const cambio = !!p._notaDiseno ||
+        claves.some((k) => String(p[k] || '') !== String(orig[k] || '')) ||
+        JSON.stringify(p.banderas || []) !== JSON.stringify(orig.banderas || []);
+      if (p.modoIA === 'completa' && p.iaPlacaUrl && cambio && !p._cambiarFoto) {
+        p._edicionIA = String(instruccion);
       }
       delete p._notaDiseno;
     }

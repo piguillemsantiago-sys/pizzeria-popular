@@ -2060,6 +2060,7 @@
           notasDiseno: p.notasDiseno || undefined,
           iaPlacaUrl: p.iaPlacaUrl || undefined,
           iaPlacaFirma: p.iaPlacaFirma || undefined,
+          _edicionIA: p._edicionIA || undefined, // edición quirúrgica: editar la placa existente
         })),
       });
       // Guardar los caches que devolvió el server (imagen de fondo IA / placa
@@ -2071,6 +2072,7 @@
         // Avisos de la verificación IA: si el server regeneró trae la lista (aunque
         // sea vacía); si usó el cache no viene y se conserva la del último render.
         if (p.avisosIA != null) genState.placas[i].avisosIA = p.avisosIA;
+        delete genState.placas[i]._edicionIA; // consumida por este componer
       });
       $('genResults').innerHTML = (out.urls || []).map((u, i) => {
         const avisos = (genState.placas[i] && genState.placas[i].avisosIA) || [];
