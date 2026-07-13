@@ -793,11 +793,14 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
       const conProducto = (copy.placas || []).filter((p) => p.productoReal);
       if (conProducto.length) {
         try {
+          // La foto debe coincidir con el PLATO NOMBRADO en los textos, no solo
+          // con la escena (una "napolitana" no se referencia con una a caballo).
           const escenas = conProducto
-            .map((p, i) => (i + 1) + '. ' + String(p.escenaIA || '').slice(0, 160))
-            .filter((s) => s.length > 3).join('\n');
+            .map((p, i) => (i + 1) + '. ' + [p.titulo, p.bajada].filter(Boolean).join(' — ').slice(0, 120) +
+              ' · escena: ' + String(p.escenaIA || '').slice(0, 140))
+            .join('\n');
           const elecciones = await elegirFotos(
-            String(instruccion) + '\n(Estas placas necesitan una foto REAL del PRODUCTO como referencia del plato: primeros planos o planos cortos de NUESTRA comida acorde a la escena de cada placa — pizza, milanesa, postre, etc. NUNCA fachadas, salones ni fotos sin comida. Escenas:\n' + escenas + ')',
+            String(instruccion) + '\n(Estas placas necesitan una foto REAL del PRODUCTO como referencia del plato: primeros planos o planos cortos de NUESTRA comida. La foto tiene que mostrar el MISMO plato que NOMBRAN los textos de cada placa (si dice "napolitana", foto de napolitana — no otra variante). NUNCA fachadas, salones ni fotos sin comida. Placas:\n' + escenas + ')',
             formato || 'historia', conProducto);
           await Promise.all(conProducto.map(async (p, i) => {
             const el = elecciones[i];
