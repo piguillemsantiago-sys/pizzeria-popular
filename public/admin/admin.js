@@ -36,6 +36,24 @@
     return json;
   }
 
+  // Los trabajos largos del generador corren de fondo en el servidor: el POST
+  // devuelve { jobId } al instante y acá se pregunta cada 4s hasta que termina.
+  // Ningún timeout de conexión puede matar la generación: la conexión larga no
+  // existe más. Tolera hasta 3 fallos de red seguidos (wifi parpadeando).
+  async function apiJob(path, body) {
+    const out = await api(path, 'POST', body);
+    if (!out.jobId) return out; // compatibilidad: respuesta directa
+    let fallos = 0;
+    for (;;) {
+      await new Promise((r) => setTimeout(r, 4000));
+      let j;
+      try { j = await api('/api/admin/gen/job/' + out.jobId); fallos = 0; }
+      catch (e) { if (++fallos >= 3) throw e; continue; }
+      if (j.estado === 'listo') return j.resultado;
+      if (j.estado === 'error') throw new Error(j.error || 'La generación falló.');
+    }
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"]/g, (c) =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -1636,7 +1654,7 @@
       genState.instruccion = instruccion;
       const esCompleta = genState.modo === 'completa';
       btn.textContent = esCompleta ? 'Escribiendo el copy… (~20 s)' : 'Eligiendo texto y fotos… (~30 s)';
-      const out = await api('/api/admin/gen/copy', 'POST', { instruccion, formato: genState.formato, modo: genState.modo });
+      const out = await apiJob('/api/admin/gen/copy', { instruccion, formato: genState.formato, modo: genState.modo });
       genState.placas = (out.placas || []).map((p) => ({
         titulo: p.titulo || '', acento: p.acento || '', bajada: p.bajada || '',
         cta: p.cta || '', lugar: p.lugar || '', estilo: p.estilo || 'clasico',
@@ -1983,7 +2001,7 @@
     btn.disabled = true;
     btn.textContent = modo === 'limpiar' ? 'Limpiando el frame… (~25 s)' : 'Pintando la portada… (~30 s)';
     try {
-      const out = await api('/api/admin/gen/portada', 'POST', body);
+      const out = await apiJob('/api/admin/gen/portada', body);
       $('genResults').innerHTML =
         '<a class="gen-result" href="' + esc(out.url) + '" target="_blank" rel="noopener">' +
           '<img src="' + esc(out.url) + '" alt="Portada para reel" loading="lazy" />' +
@@ -2022,7 +2040,7 @@
       ? 'Diseñando con IA y verificando… (~40 s por placa)'
       : 'Componiendo… (~' + (genState.placas.length * 8) + ' s)';
     try {
-      const out = await api('/api/admin/gen/piezas', 'POST', {
+      const out = await apiJob('/api/admin/gen/piezas', {
         formato: genState.formato,
         placas: genState.placas.map((p) => ({
           titulo: p.titulo, acento: p.acento, bajada: p.bajada, cta: p.cta, lugar: p.lugar,
@@ -2089,7 +2107,7 @@
     }, 1000);
     btn.textContent = fase + '…';
     try {
-      const out = await api('/api/admin/gen/ajustar', 'POST', {
+      const out = await apiJob('/api/admin/gen/ajustar', {
         instruccion,
         formato: genState.formato,
         caption: genState.caption,

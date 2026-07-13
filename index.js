@@ -747,13 +747,46 @@ app.post('/api/admin/gen/reelegir', requireAdmin, async (req, res) => {
   }
 });
 
+// ---- Trabajos largos del generador en segundo plano ----
+// Los POST pesados (copy/ajustar/portada/piezas) devuelven { jobId } al instante
+// y siguen trabajando; el panel pregunta GET /gen/job/:id cada pocos segundos.
+// Así ningún timeout de proxy/conexión puede matar una generación en curso: la
+// conexión larga desapareció del sistema.
+const genJobs = new Map();
+function lanzarJobGen(fn) {
+  const id = require('crypto').randomUUID();
+  genJobs.set(id, { estado: 'corriendo' });
+  (async () => {
+    try {
+      const resultado = await fn();
+      genJobs.set(id, { estado: 'listo', resultado });
+    } catch (e) {
+      console.error('[Gen job] Error:', e.message);
+      genJobs.set(id, { estado: 'error', error: e.message });
+    }
+    // El resultado espera 30 min a ser retirado; después se limpia solo.
+    setTimeout(() => genJobs.delete(id), 30 * 60 * 1000);
+  })();
+  return id;
+}
+app.get('/api/admin/gen/job/:id', requireAdmin, (req, res) => {
+  const j = genJobs.get(req.params.id);
+  if (!j) return res.status(404).json({ error: 'Ese trabajo ya no existe (probablemente se reinició el servidor). Volvé a generar.' });
+  if (j.estado === 'listo') return res.json({ estado: 'listo', resultado: j.resultado });
+  if (j.estado === 'error') return res.json({ estado: 'error', error: j.error });
+  res.json({ estado: 'corriendo' });
+});
+
 // La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
-  try {
-    const { instruccion, formato, modo } = req.body;
-    if (!instruccion || !String(instruccion).trim()) {
-      return res.status(400).json({ error: 'Contame qué querés comunicar.' });
-    }
+  const { instruccion, formato, modo } = req.body;
+  if (!instruccion || !String(instruccion).trim()) {
+    return res.status(400).json({ error: 'Contame qué querés comunicar.' });
+  }
+  res.json({ jobId: lanzarJobGen(() => trabajoGenCopy({ instruccion, formato, modo })) });
+});
+async function trabajoGenCopy({ instruccion, formato, modo }) {
+  {
     const copy = await generarCopy(String(instruccion), formato);
     // Modo "placa completa IA": Gemini diseña todo (fondo incluido) → no hace
     // falta elegir fotos del banco (ahorra la llamada más lenta del flujo).
@@ -816,7 +849,7 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
             : 'No pude elegir la foto de producto de referencia: ' + e.message;
         }
       }
-      return res.json(copy);
+      return copy;
     }
     // Selección automática de fotos del banco (si está indexado).
     try {
@@ -846,12 +879,9 @@ app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
       copy.avisos = (copy.avisos || []).concat(
         sinFoto + ' placa(s) quedaron sin foto: elegila a mano o tocá «Dame otra».');
     }
-    res.json(copy);
-  } catch (e) {
-    console.error('[Gen copy] Error:', e.message);
-    res.status(500).json({ error: 'No pude generar el copy: ' + e.message });
+    return copy;
   }
-});
+}
 
 // Afinar el prompt de imagen: un experto reteje el borrador de escena + los
 // elementos a destacar en un solo prompt fotográfico pulido para Gemini.
@@ -874,14 +904,17 @@ app.post('/api/admin/gen/prompt-experto', requireAdmin, async (req, res) => {
 // Ajuste conversacional: el usuario ya vio las piezas y pide cambios en
 // lenguaje natural. La IA reescribe copy/logo y, si hace falta, cambia la foto.
 app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
-  try {
-    const { instruccion, formato, placas, caption } = req.body;
-    if (!instruccion || !String(instruccion).trim()) {
-      return res.status(400).json({ error: 'Contame qué querés ajustar.' });
-    }
-    if (!Array.isArray(placas) || !placas.length) {
-      return res.status(400).json({ error: 'No hay piezas para ajustar.' });
-    }
+  const { instruccion, formato, placas, caption } = req.body;
+  if (!instruccion || !String(instruccion).trim()) {
+    return res.status(400).json({ error: 'Contame qué querés ajustar.' });
+  }
+  if (!Array.isArray(placas) || !placas.length) {
+    return res.status(400).json({ error: 'No hay piezas para ajustar.' });
+  }
+  res.json({ jobId: lanzarJobGen(() => trabajoGenAjustar({ instruccion, formato, placas, caption })) });
+});
+async function trabajoGenAjustar({ instruccion, formato, placas, caption }) {
+  {
     // En paralelo: copy/foto/estilo/logo (ajustarCopy) + diseño tamaño/posición/ocultar
     // (interpretarRetoque). Una sola caja maneja TODO. El diseño se mergea acumulativo
     // sobre el adj que ya traía cada placa (rondas sucesivas suman, no pisan).
@@ -983,19 +1016,19 @@ app.post('/api/admin/gen/ajustar', requireAdmin, async (req, res) => {
       delete p._fotoHint;
     }
 
-    res.json({ placas: result, caption: out.caption != null ? out.caption : caption });
-  } catch (e) {
-    console.error('[Gen ajustar] Error:', e.message);
-    res.status(500).json({ error: 'No pude aplicar el ajuste: ' + e.message });
+    return { placas: result, caption: out.caption != null ? out.caption : caption };
   }
-});
+}
 
 // Portada para Reel: imagen 9:16 LIMPIA (sin texto) para usar de portada de un reel.
 // modo 'generar' (tema + color) o 'limpiar' (frame subido en base64). El título grande
 // lo agrega el usuario después en su editor de reel.
 app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
-  try {
-    const { modo, tema, color, frameB64, titulo, campos, diseno } = req.body || {};
+  const { modo, tema, color, frameB64, titulo, campos, diseno } = req.body || {};
+  if (modo !== 'generar' && !frameB64) {
+    return res.status(400).json({ error: 'Subí un frame del reel para limpiar.' });
+  }
+  res.json({ jobId: lanzarJobGen(async () => {
     let buf, copy;
     if (modo === 'generar') {
       // Portada editorial "Método Ana": el PRO pinta todo + logo real. Devuelve
@@ -1003,7 +1036,6 @@ app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
       const out = await generarPortadaEditorial({ tema, color, campos });
       buf = out.buf; copy = out.copy;
     } else {
-      if (!frameB64) return res.status(400).json({ error: 'Subí un frame del reel para limpiar.' });
       const frameBuf = Buffer.from(String(frameB64).replace(/^data:image\/\w+;base64,/, ''), 'base64');
       buf = await generarPortadaReel({ modo, frameBuf, titulo, diseno });
     }
@@ -1012,29 +1044,18 @@ app.post('/api/admin/gen/portada', requireAdmin, async (req, res) => {
       .upload(objectPath, buf, { contentType: 'image/jpeg' });
     if (error) throw new Error('Storage: ' + error.message);
     const url = supabaseAdmin.storage.from('ppweb-blog').getPublicUrl(objectPath).data.publicUrl;
-    res.json(copy ? { url, copy } : { url });
-  } catch (e) {
-    console.error('[Gen portada] Error:', e.message);
-    const status = e.code === 'NO_KEY' ? 422 : 500;
-    res.status(status).json({ error: e.message });
-  }
+    return copy ? { url, copy } : { url };
+  }) });
 });
 
 // Compone las piezas finales (foto + gráfica de marca) y las sube al storage.
 app.post('/api/admin/gen/piezas', requireAdmin, async (req, res) => {
-  try {
-    const { formato, placas } = req.body;
-    if (!Array.isArray(placas) || !placas.length) {
-      return res.status(400).json({ error: 'No hay placas para componer.' });
-    }
-    const { urls, placas: outPlacas, avisos } = await generarPiezas(formato, placas.slice(0, 6));
-    // placas trae la iaFotoUrl/iaPlacaUrl cacheadas; avisos, la verificación de placas IA.
-    res.json({ urls, placas: outPlacas, avisos });
-  } catch (e) {
-    console.error('[Gen piezas] Error:', e.message);
-    const status = e.code === 'NO_KEY' ? 422 : 500;
-    res.status(status).json({ error: e.message });
+  const { formato, placas } = req.body;
+  if (!Array.isArray(placas) || !placas.length) {
+    return res.status(400).json({ error: 'No hay placas para componer.' });
   }
+  // placas trae la iaFotoUrl/iaPlacaUrl cacheadas; avisos, la verificación de placas IA.
+  res.json({ jobId: lanzarJobGen(() => generarPiezas(formato, placas.slice(0, 6))) });
 });
 
 // ---- Inteligencia: tablero + informes semanales ----
