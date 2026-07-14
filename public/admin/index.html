@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=47" />
+  <link rel="stylesheet" href="/admin/admin.css?v=48" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -576,7 +576,39 @@
           </div>
           <p class="gen-gemini-tag" id="genGeminiTag" hidden>🤖 IA de imágenes: inactiva (falta GEMINI_API_KEY)</p>
 
-          <div class="assistant">
+          <!-- ============ GENERADOR DE HISTORIAS v2 (14/7) ============
+               Reconstruido paso a paso con el dueño: tipo de diseño → idea o
+               textual → dirección canon + control → retoques quirúrgicos. -->
+          <div class="assistant gen2" id="gen2">
+            <div class="assistant-head">✨ Generador de historias <span>elegí el diseño, contame qué querés, y me encargo del resto</span></div>
+            <div class="gen2-tipos" id="gen2Tipos">
+              <button type="button" class="gen2-tipo active" data-tipo="informativo">📣 <b>Informativo</b><small>el texto manda</small></button>
+              <button type="button" class="gen2-tipo" data-tipo="producto">🍕 <b>Producto</b><small>la foto manda</small></button>
+              <button type="button" class="gen2-tipo" data-tipo="partido">⚽ <b>Partido</b><small>póster de hincha</small></button>
+              <button type="button" class="gen2-tipo" data-tipo="celebracion">🥂 <b>Celebración</b><small>festivo dorado</small></button>
+            </div>
+            <div class="gen2-modo">
+              <label><input type="radio" name="gen2Modo" value="idea" checked /> 💡 <b>Le doy la idea</b> <small>el sistema escribe los textos</small></label>
+              <label><input type="radio" name="gen2Modo" value="literal" /> ✍️ <b>Textual</b> <small>lo que escribo sale tal cual, letra por letra</small></label>
+            </div>
+            <textarea id="gen2Texto" rows="4" placeholder="Contame qué querés comunicar, con los datos (fecha, hora, local).&#10;Ej: promocioná el aniversario de Playa San Juan, 25 de julio a las 20:00"></textarea>
+            <button type="button" class="btn-primary" id="gen2Btn">🎬 Generar historia</button>
+            <p class="gen-hint">Opus dirige y revisa · Gemini PRO pinta · el logo real lo pone el código. Tarda 2-4 min. <span class="gen-ver">g2 · v70</span></p>
+            <div id="gen2Result" hidden>
+              <a id="gen2Link" href="#" target="_blank" rel="noopener"><img id="gen2Img" alt="Historia generada" /></a>
+              <p class="gen-hint gen2-avisos" id="gen2Avisos" hidden></p>
+              <div class="gen-ajuste">
+                <label for="gen2Retoque">¿Querés cambiar algo? Retoque quirúrgico: cambia SOLO lo que pedís (la escena queda igual)</label>
+                <div class="gen-ajuste-row">
+                  <input type="text" id="gen2Retoque" placeholder="Ej: sacá el botón · cambiá la hora a 22:00 · el título más chico" autocomplete="off" />
+                  <button type="button" class="btn-primary" id="gen2RetoqueBtn">Aplicar retoque</button>
+                </div>
+              </div>
+            </div>
+            <p class="gen-hint gen2-portada-link"><a href="#" id="gen2Portada">🧽 ¿Portada de reel? Abrir la herramienta de portadas</a></p>
+          </div>
+
+          <div class="assistant" id="genViejo" hidden>
             <div class="assistant-head">✨ Piezas para redes <span>contame qué querés y elijo el texto y las fotos del banco</span></div>
             <form class="assistant-form gen-form" id="genForm">
               <div class="gen-row1">
@@ -1013,7 +1045,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=69"></script>
+  <script src="/admin/admin.js?v=70"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

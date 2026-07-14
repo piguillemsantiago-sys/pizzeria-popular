@@ -2135,6 +2135,67 @@
     }
   }
 
+  /* ============ GENERADOR DE HISTORIAS v2 (14/7) ============
+     El dueño da la información (idea o textual); el motor nuevo (gen2) dirige,
+     pinta, controla y pone el logo por código. Retoques quirúrgicos sobre la
+     imagen existente. El generador viejo quedó oculto (#genViejo). */
+  const gen2State = { tipo: 'informativo', url: null, textos: [] };
+
+  function gen2Cron(btn, fase) {
+    const t0 = Date.now();
+    btn.disabled = true;
+    btn.textContent = fase + '…';
+    const tick = setInterval(() => {
+      const s = Math.floor((Date.now() - t0) / 1000);
+      btn.textContent = fase + '… ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    }, 1000);
+    return (label) => { clearInterval(tick); btn.disabled = false; btn.textContent = label; };
+  }
+
+  function gen2Render(out) {
+    gen2State.url = out.url;
+    gen2State.textos = out.textos || [];
+    $('gen2Img').src = out.url;
+    $('gen2Link').href = out.url;
+    const avisos = out.avisos || [];
+    $('gen2Avisos').hidden = !avisos.length;
+    $('gen2Avisos').textContent = avisos.join(' · ');
+    $('gen2Result').hidden = false;
+    $('gen2Result').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  async function onGen2Generar() {
+    const texto = $('gen2Texto').value.trim();
+    if (!texto) { alert('Contame qué querés comunicar (con fecha, hora y local si aplica).'); return; }
+    const modo = (document.querySelector('input[name="gen2Modo"]:checked') || {}).value || 'idea';
+    const fin = gen2Cron($('gen2Btn'), 'Dirigiendo, pintando y revisando (2-4 min)');
+    try {
+      const out = await apiJob('/api/admin/gen2/historia', { tipo: gen2State.tipo, modo, texto });
+      gen2Render(out);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      fin('🎬 Generar historia');
+    }
+  }
+
+  async function onGen2Retoque() {
+    const instruccion = $('gen2Retoque').value.trim();
+    if (!instruccion || !gen2State.url) return;
+    const fin = gen2Cron($('gen2RetoqueBtn'), 'Retocando (1-3 min)');
+    try {
+      const out = await apiJob('/api/admin/gen2/retoque', {
+        url: gen2State.url, instruccion, textos: gen2State.textos,
+      });
+      gen2Render(out);
+      $('gen2Retoque').value = '';
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      fin('Aplicar retoque');
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -2745,6 +2806,33 @@
       if (b) b.classList.toggle('on');
     });
     $('genAjusteBtn').addEventListener('click', onGenAjustar);
+    // Generador de historias v2
+    if ($('gen2Btn')) {
+      document.querySelectorAll('.gen2-tipo').forEach((b) => b.addEventListener('click', () => {
+        document.querySelectorAll('.gen2-tipo').forEach((x) => x.classList.toggle('active', x === b));
+        gen2State.tipo = b.dataset.tipo;
+      }));
+      $('gen2Btn').addEventListener('click', onGen2Generar);
+      $('gen2RetoqueBtn').addEventListener('click', onGen2Retoque);
+      $('gen2Texto').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); onGen2Generar(); }
+      });
+      $('gen2Retoque').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); onGen2Retoque(); }
+      });
+      // La herramienta de portadas vive en el generador anterior (oculto):
+      // este link lo muestra ya posicionado en modo portada.
+      $('gen2Portada').addEventListener('click', (e) => {
+        e.preventDefault();
+        const viejo = $('genViejo');
+        viejo.hidden = !viejo.hidden;
+        if (!viejo.hidden) {
+          $('genFormato').value = 'portada';
+          $('genFormato').dispatchEvent(new Event('change'));
+          viejo.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
     $('genAjusteInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); onGenAjustar(); }
     });

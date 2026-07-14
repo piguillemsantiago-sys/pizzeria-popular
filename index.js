@@ -777,6 +777,25 @@ app.get('/api/admin/gen/job/:id', requireAdmin, (req, res) => {
   res.json({ estado: 'corriendo' });
 });
 
+// ---- Generador de historias v2 (14 jul): director Opus + canon + Gemini PRO +
+// control visual + logo por código. Ver lib/generador2.js. ----
+const gen2 = require('./lib/generador2');
+app.post('/api/admin/gen2/historia', requireAdmin, (req, res) => {
+  const { tipo, modo, texto } = req.body || {};
+  if (!texto || !String(texto).trim()) return res.status(400).json({ error: 'Contame qué querés comunicar.' });
+  if (!['informativo', 'producto', 'partido', 'celebracion'].includes(tipo)) {
+    return res.status(400).json({ error: 'Elegí un tipo de diseño.' });
+  }
+  res.json({ jobId: lanzarJobGen(() => gen2.generarHistoria({ tipo, modo, texto })) });
+});
+app.post('/api/admin/gen2/retoque', requireAdmin, (req, res) => {
+  const { url, instruccion, textos } = req.body || {};
+  if (!url || !instruccion || !String(instruccion).trim()) {
+    return res.status(400).json({ error: 'Falta la historia o el retoque a aplicar.' });
+  }
+  res.json({ jobId: lanzarJobGen(() => gen2.retocarHistoria({ url, instruccion, textos })) });
+});
+
 // La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   const { instruccion, formato, modo } = req.body;

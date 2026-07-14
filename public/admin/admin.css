@@ -1034,3 +1034,19 @@ button { font-family: inherit; cursor: pointer; }
 .gen-avanzado > summary::-webkit-details-marker { display: none; }
 .gen-avanzado > summary:hover { color: #fff; border-color: rgba(255,255,255,.32); }
 .gen-avanzado[open] > summary { margin-bottom: 12px; color: #fff; }
+
+/* ============ Generador de historias v2 (14/7) ============ */
+.gen2-tipos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 10px; }
+.gen2-tipo { background: rgba(255,255,255,.04); border: 1.5px solid rgba(255,255,255,.14); border-radius: 12px; padding: 12px 8px; cursor: pointer; color: inherit; font: inherit; text-align: center; transition: border-color .15s, background .15s; display: flex; flex-direction: column; gap: 2px; align-items: center; }
+.gen2-tipo small { opacity: .65; font-size: .78em; }
+.gen2-tipo:hover { border-color: rgba(216,164,96,.55); }
+.gen2-tipo.active { border-color: #d8a460; background: rgba(216,164,96,.12); }
+.gen2-modo { display: flex; gap: 18px; flex-wrap: wrap; margin: 4px 0 10px; }
+.gen2-modo label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+.gen2-modo small { opacity: .6; }
+.gen2 textarea { width: 100%; }
+#gen2Result { margin-top: 16px; }
+#gen2Img { max-width: 340px; width: 100%; border-radius: 14px; display: block; box-shadow: 0 8px 30px rgba(0,0,0,.45); }
+.gen2-avisos { color: #e8b96a; }
+.gen2-portada-link { margin-top: 14px; opacity: .8; }
+@media (max-width: 720px) { .gen2-tipos { grid-template-columns: repeat(2, 1fr); } }
