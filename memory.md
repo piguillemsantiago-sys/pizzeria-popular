@@ -2,6 +2,19 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-13
+
+*(sesión Promos + auditoría de Pepe)*
+
+- **Grilla de /promos/ adaptable:** el dueño ocultó el 2×1 de Milanesas (excepción del mié 15/7 por el partido de Argentina) y quedaba un hueco negro — la grilla estaba clavada en `repeat(4, 1fr)`. Ahora `repeat(auto-fit, minmax(280px, 1fr))`: 3 promos llenan la fila, con 4 vuelve sola al layout original. Verificado con renders de ambos casos + bump `?v=20260713-promos`.
+- **Pepe seguía prometiendo la promo oculta:** estaba duplicada como texto fijo en su Cerebro (entrada #6, desactivada). Regla: promos SOLO desde el panel (web+Pepe se actualizan juntos, cache 60s). La excepción del 15/7 se cargó como entrada fechada auto-vencible (#20).
+- **Pepe ahora sabe la fecha:** bloque CALENDARIO (hoy/mañana/pasado mañana precalculados, Europe/Madrid) en `fechaBlock()` — sin eso no podía razonar "este miércoles"; con solo hoy+mañana le erraba la etiqueta relativa. También: **sin emojis de bandera** (Windows los muestra como letras "AR") — regla en prompt + filtro regex en la salida.
+- **Auditoría completa de Pepe → todo aplicado:** Cerebro depurado 18→8 entradas (contradicción Menú del Día resuelta: **NO incluye bebida**; email empleo unificado a pizzeriapopular@grupoajax.es — ambas por "entrada más nueva gana", sin confirmación explícita del dueño). `cartaBlock()`: Pepe recibe la carta maestra real (163 ítems con ingredientes y precios, cache 10 min) → responde sabores/tamaños/precios que antes perdía (quejas reales en logs del 5 y 11 jul). `max_tokens` 320→480.
+- **Widget:** historial persistente en sessionStorage (la conversación sobrevive al click en un link — antes moría), saludo/placeholder/errores en inglés en /en/, regla dura de idioma (respondía en español a preguntas en inglés). Bump `main.js?v=20260713-pepe` en 32 páginas.
+- **Panel:** "reglas de oro" del Cerebro visibles sobre el formulario (un hecho por entrada, promos nunca acá, borrar lo que se corrige, excepciones con fecha).
+- 8 commits pusheados a GitHub y deployados al VPS; toda la batería verificada con consultas reales a producción.
+- **Pendiente jueves 16/7:** volver a "Mostrar" las 2 cards de Milanesas (ES+EN) en el panel. La nota de Pepe caduca sola.
+
 ## 2026-07-12
 
 *(sesión Generador — portada para reel, continuación del 10-11 jul)*
