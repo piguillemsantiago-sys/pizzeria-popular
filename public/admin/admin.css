@@ -1050,3 +1050,11 @@ button { font-family: inherit; cursor: pointer; }
 .gen2-avisos { color: #e8b96a; }
 .gen2-portada-link { margin-top: 14px; opacity: .8; }
 @media (max-width: 720px) { .gen2-tipos { grid-template-columns: repeat(2, 1fr); } }
+
+/* ============ Generador de portadas de reel (15/7) ============ */
+.portada-modelos { grid-template-columns: repeat(5, 1fr); }
+#portadas input[type="file"] { display: block; width: 100%; margin: 8px 0 12px; padding: 10px; border: 1px dashed rgba(255,255,255,.2); border-radius: 10px; background: rgba(255,255,255,.03); color: inherit; font: inherit; }
+#portadas input[type="text"] { width: 100%; margin-bottom: 12px; }
+#portadaResult { margin-top: 16px; }
+#portadaImg { max-width: 340px; width: 100%; border-radius: 14px; display: block; box-shadow: 0 8px 30px rgba(0,0,0,.45); }
+@media (max-width: 720px) { .portada-modelos { grid-template-columns: repeat(2, 1fr); } }

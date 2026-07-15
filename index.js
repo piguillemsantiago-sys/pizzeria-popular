@@ -796,6 +796,19 @@ app.post('/api/admin/gen2/retoque', requireAdmin, (req, res) => {
   res.json({ jobId: lanzarJobGen(() => gen2.retocarHistoria({ url, instruccion, textos })) });
 });
 
+// ---- Generador de portadas de reel (15 jul): modelos fijos diseñados con el
+// dueño. La IA pinta, el código posiciona. Ver lib/portadas.js. ----
+const portadas = require('./lib/portadas');
+app.post('/api/admin/gen2/portada', requireAdmin, (req, res) => {
+  const { modelo, texto, foto } = req.body || {};
+  if (!foto) return res.status(400).json({ error: 'Subí el frame o la captura del reel.' });
+  if (!texto || !String(texto).trim()) return res.status(400).json({ error: 'Escribí el texto de la portada.' });
+  if (!['auto', 'producto', 'partido', 'elegante', 'impacto'].includes(modelo)) {
+    return res.status(400).json({ error: 'Elegí un modelo de portada.' });
+  }
+  res.json({ jobId: lanzarJobGen(() => portadas.generarPortada({ modelo, texto, foto })) });
+});
+
 // La IA escribe el copy Y elige del banco la foto acorde a cada placa.
 app.post('/api/admin/gen/copy', requireAdmin, async (req, res) => {
   const { instruccion, formato, modo } = req.body;

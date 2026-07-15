@@ -2196,6 +2196,54 @@
     }
   }
 
+  /* ==== Generador de portadas de reel (15/7): modelos fijos del dueño.
+     La IA pinta, el código posiciona (tipografías, logo, zona segura 3:4). */
+  const portadaState = { modelo: 'auto', foto: null };
+
+  function onPortadaFoto() {
+    const f = ($('portadaFoto').files || [])[0];
+    portadaState.foto = null;
+    if (!f) return;
+    const lector = new FileReader();
+    lector.onload = () => {
+      // Achicar en el navegador: alcanza con 1440px de ancho y viaja liviano.
+      const img = new Image();
+      img.onload = () => {
+        const esc = Math.min(1, 1440 / img.width);
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * esc);
+        c.height = Math.round(img.height * esc);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        portadaState.foto = c.toDataURL('image/jpeg', 0.92);
+      };
+      img.src = lector.result;
+    };
+    lector.readAsDataURL(f);
+  }
+
+  async function onPortadaGenerar() {
+    const texto = $('portadaTexto').value.trim();
+    if (!portadaState.foto) { alert('Subí el frame o la captura del reel.'); return; }
+    if (!texto) { alert('Escribí el texto de la portada (ej: "flan mixto").'); return; }
+    const fin = gen2Cron($('portadaBtn'), 'Limpiando, componiendo y revisando (1-3 min)');
+    try {
+      const out = await apiJob('/api/admin/gen2/portada', {
+        modelo: portadaState.modelo, texto, foto: portadaState.foto,
+      });
+      $('portadaImg').src = out.url;
+      $('portadaLink').href = out.url;
+      const avisos = out.avisos || [];
+      $('portadaAvisos').hidden = !avisos.length;
+      $('portadaAvisos').textContent = avisos.join(' · ');
+      $('portadaResult').hidden = false;
+      $('portadaResult').scrollIntoView({ behavior: 'smooth' });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      fin('🎬 Generar portada');
+    }
+  }
+
   /* ==================== PESTAÑAS ==================== */
   function switchTab(tab) {
     document.querySelectorAll('.admin-tab').forEach((t) =>
@@ -2808,8 +2856,8 @@
     $('genAjusteBtn').addEventListener('click', onGenAjustar);
     // Generador de historias v2
     if ($('gen2Btn')) {
-      document.querySelectorAll('.gen2-tipo').forEach((b) => b.addEventListener('click', () => {
-        document.querySelectorAll('.gen2-tipo').forEach((x) => x.classList.toggle('active', x === b));
+      document.querySelectorAll('#gen2Tipos .gen2-tipo').forEach((b) => b.addEventListener('click', () => {
+        document.querySelectorAll('#gen2Tipos .gen2-tipo').forEach((x) => x.classList.toggle('active', x === b));
         gen2State.tipo = b.dataset.tipo;
       }));
       $('gen2Btn').addEventListener('click', onGen2Generar);
@@ -2820,17 +2868,22 @@
       $('gen2Retoque').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); onGen2Retoque(); }
       });
-      // La herramienta de portadas vive en el generador anterior (oculto):
-      // este link lo muestra ya posicionado en modo portada.
+      // El link lleva al generador de portadas nuevo (tarjeta de abajo).
       $('gen2Portada').addEventListener('click', (e) => {
         e.preventDefault();
-        const viejo = $('genViejo');
-        viejo.hidden = !viejo.hidden;
-        if (!viejo.hidden) {
-          $('genFormato').value = 'portada';
-          $('genFormato').dispatchEvent(new Event('change'));
-          viejo.scrollIntoView({ behavior: 'smooth' });
-        }
+        $('portadas').scrollIntoView({ behavior: 'smooth' });
+      });
+    }
+    // Generador de portadas de reel
+    if ($('portadaBtn')) {
+      document.querySelectorAll('#portadaModelos .gen2-tipo').forEach((b) => b.addEventListener('click', () => {
+        document.querySelectorAll('#portadaModelos .gen2-tipo').forEach((x) => x.classList.toggle('active', x === b));
+        portadaState.modelo = b.dataset.modelo;
+      }));
+      $('portadaFoto').addEventListener('change', onPortadaFoto);
+      $('portadaBtn').addEventListener('click', onPortadaGenerar);
+      $('portadaTexto').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); onPortadaGenerar(); }
       });
     }
     $('genAjusteInput').addEventListener('keydown', (e) => {
