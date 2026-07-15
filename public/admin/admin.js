@@ -2200,10 +2200,8 @@
      La IA pinta, el código posiciona (tipografías, logo, zona segura 3:4). */
   const portadaState = { modelo: 'auto', foto: null };
 
-  function onPortadaFoto() {
-    const f = ($('portadaFoto').files || [])[0];
-    portadaState.foto = null;
-    if (!f) return;
+  function portadaCargarArchivo(f) {
+    if (!f || !f.type || !f.type.startsWith('image/')) return;
     const lector = new FileReader();
     lector.onload = () => {
       // Achicar en el navegador: alcanza con 1440px de ancho y viaja liviano.
@@ -2215,10 +2213,32 @@
         c.height = Math.round(img.height * esc);
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
         portadaState.foto = c.toDataURL('image/jpeg', 0.92);
+        $('portadaPrevImg').src = portadaState.foto;
+        $('portadaPrev').hidden = false;
       };
       img.src = lector.result;
     };
     lector.readAsDataURL(f);
+  }
+
+  function onPortadaFoto() {
+    portadaState.foto = null;
+    $('portadaPrev').hidden = true;
+    portadaCargarArchivo(($('portadaFoto').files || [])[0]);
+  }
+
+  // Pegar la captura con Ctrl+V en cualquier lado de la pestaña del generador.
+  function onPortadaPaste(e) {
+    if (!$('portadaBtn')) return;
+    const items = (e.clipboardData || {}).items || [];
+    for (const it of items) {
+      if (it.type && it.type.startsWith('image/')) {
+        e.preventDefault();
+        portadaCargarArchivo(it.getAsFile());
+        $('portadas').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+    }
   }
 
   async function onPortadaGenerar() {
@@ -2885,6 +2905,7 @@
       $('portadaTexto').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') { e.preventDefault(); onPortadaGenerar(); }
       });
+      document.addEventListener('paste', onPortadaPaste);
     }
     $('genAjusteInput').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') { e.preventDefault(); onGenAjustar(); }

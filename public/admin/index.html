@@ -7,7 +7,7 @@
   <title>Panel · Pizzería Popular</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/admin/admin.css?v=49" />
+  <link rel="stylesheet" href="/admin/admin.css?v=50" />
   <link rel="stylesheet" href="/admin/menu.css?v=3c" />
 </head>
 <body class="admin-app">
@@ -593,7 +593,7 @@
             </div>
             <textarea id="gen2Texto" rows="4" placeholder="Contame qué querés comunicar, con los datos (fecha, hora, local).&#10;Ej: promocioná el aniversario de Playa San Juan, 25 de julio a las 20:00"></textarea>
             <button type="button" class="btn-primary" id="gen2Btn">🎬 Generar historia</button>
-            <p class="gen-hint">Opus dirige y revisa · Gemini PRO pinta · el logo real lo pone el código. Tarda 2-4 min. <span class="gen-ver">g2 · v71</span></p>
+            <p class="gen-hint">Opus dirige y revisa · Gemini PRO pinta · el logo real lo pone el código. Tarda 2-4 min. <span class="gen-ver">g2 · v72</span></p>
             <div id="gen2Result" hidden>
               <a id="gen2Link" href="#" target="_blank" rel="noopener"><img id="gen2Img" alt="Historia generada" /></a>
               <p class="gen-hint gen2-avisos" id="gen2Avisos" hidden></p>
@@ -621,8 +621,9 @@
               <button type="button" class="gen2-tipo" data-modelo="elegante">✨ <b>Elegante</b><small>cursiva nocturna</small></button>
               <button type="button" class="gen2-tipo" data-modelo="impacto">⚡ <b>Impacto</b><small>banda diagonal</small></button>
             </div>
-            <label class="gen-hint" for="portadaFoto">📷 Frame o captura del reel (aunque tenga el play y los subtítulos encima: la limpio solo)</label>
+            <label class="gen-hint" for="portadaFoto">📷 Frame o captura del reel — <b>pegala con Ctrl+V</b> o elegí el archivo (aunque tenga el play y los subtítulos encima: la limpio solo)</label>
             <input type="file" id="portadaFoto" accept="image/*" />
+            <div class="portada-prev" id="portadaPrev" hidden><img id="portadaPrevImg" alt="Captura cargada" /><span>✓ Captura cargada</span></div>
             <input type="text" id="portadaTexto" placeholder='Texto de la portada. Ej: flan mixto · Argentina vs Inglaterra, semifinal, hoy 21:00' autocomplete="off" />
             <button type="button" class="btn-primary" id="portadaBtn">🎬 Generar portada</button>
             <p class="gen-hint">Texto y logo reales por código, dentro de la zona que Instagram no recorta. Sale en 1080x1920. Tarda 1-3 min.</p>
@@ -1069,7 +1070,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=71"></script>
+  <script src="/admin/admin.js?v=72"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
