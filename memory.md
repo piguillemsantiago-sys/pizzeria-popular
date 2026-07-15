@@ -2,6 +2,27 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-15
+
+*(sesión Blog — post de la semifinal, madrugada del 14 al 15)*
+
+- **Post publicado ES+EN:** «Argentina–Inglaterra: la semifinal del Mundial se vive en Popular» (`/blog/argentina-inglaterra-semifinal-mundial/`, fecha 14/7). El blog estaba 5 semanas sin publicar (último: 7/6); este era el urgente por vencimiento (partido HOY mié 15/7). Sin sección de promos (pedido del dueño). Sin Boadilla, sin "pantalla gigante", sin horario inventado. Directo en `ppweb_posts` (Supabase) → sin deploy.
+- **Hero propio generado con IA (Grok, 2 candidatas):** hinchada argentina + camisetas inglesas, horno a leña, pizzas y fainá. Se descartó la candidata con banderines de texto pseudo-IA. Comprimida con sharp (1920px, 315 KB) y subida a `ppweb-blog/blog/hero-argentina-inglaterra-semifinal.jpg`. La 1ª versión reusaba el hero del post del Mundial de mayo — el dueño la rebotó ("ya pusimos esa una vez"): hero SIEMPRE nuevo por post.
+- **Cerebro #25:** partidos por TV confirmados solo en Valencia (Santa Clara, Russafa), Alicante (Luceros, Playa San Juan) y Benidorm; para Boadilla derivar al local (Pepe prometía "pantallas en todos lados"). Verificado: Pepe recomienda el partido y avisa solo que hoy no hay 2×1 de milanesas.
+- **Feedback del dueño sobre placas (Flan mixto):** el logo tiene que ser MÁS GRANDE / más visible. Y planteó la necesidad de fondo: quiere un **generador de portadas que ya sepa los diseños validados** (los de antes + los de ahora) sin tener que darle indicaciones cada vez → destilar las reglas aprendidas en el generador como defaults. QUEDÓ PENDIENTE, retomar acá. → **HECHO en la sesión de la tarde (abajo).**
+
+*(sesión Portadas de reel: diseño con el dueño + generador en el panel, tarde)*
+
+- **Portadas de reel diseñadas con el dueño**: la captura pegada en el chat se extrae del transcript de la sesión, Gemini la limpia (play/subtítulos/tarjetas) y se probaron ~20 variantes reales. Modelos FIJADOS: A1-banderas (partido), B3-noche (elegante), C2-split (impacto) y el de producto (serif Abril + cursiva Abuget dorada + logo, 100% por código). Entregables en `generador-nuevo-tipos/` (Documents).
+- **Generador de Portadas EN EL PANEL** (`lib/portadas.js` + `POST /api/admin/gen2/portada` + tarjeta "🎬 Portada de reel", assets v72): frame + texto + modelo (o automático). Circuito: Opus dirige → Gemini limpia/pinta → sharp posiciona (tipografías reales, logo real, zona segura 3:4 de la grilla) → Opus controla mirando también el recorte 3:4 real. La captura se puede **pegar con Ctrl+V** (miniatura de confirmación).
+- **Regla madre nueva: la IA pinta, el código posiciona** — Gemini ignora posiciones en % (falló 2 veces); todo texto/logo con posición crítica va por sharp+SVG.
+- **Auditoría a pedido del dueño** (harto de corregir de a uno): 5 fallas corregidas — mínimo de letra que le ganaba al margen lateral (palabras largas al borde), jerarquía serif/cursiva desproporcionada, logo montado sobre la banda del modelo impacto, secundario redundante del director, control que ahora marca logo-sobre-gráfica. Batería de 7 textos: margen ≥66px en todos; los 4 modelos probados E2E en producción.
+- Bugs técnicos cazados: `metadata()` tras `trim()` de sharp devuelve el lienzo original (medir con `toBuffer({resolveWithObject})`); la Abuget mide mucho más ancho que su cuerpo (colas); el promedio de luminancia engaña en fondos bimodales → el modelo producto lleva cama oscura fija abajo para el logo blanco.
+- **gen2 (historias) también blindado hoy**: buscador propio de foto de plato (mira las 782 fotos de comida, ya no se corta en 450 por usos), regla dura "sin foto real validada no se genera", filtro anti-placas-con-texto del banco, coherencia del plan del director (textos citados en prompt, cursiva ∈ textos).
+- Pendiente: uso real del generador de portadas unos días; tipo "boceto/caricatura" en sesión propia (definir estilo de ilustración de la casa).
+- **Pendiente HOY 15/7:** después del partido (o mañana 16), volver a "Mostrar" las 2 cards de Milanesas (ES+EN) en el panel de promos.
+- Próximo post del backlog: #1 guía SEO de Benidorm.
+
 ## 2026-07-13
 
 *(sesión Promos + auditoría de Pepe)*
