@@ -2342,8 +2342,8 @@
         $('gmTotal').textContent = m.total_mes;
         $('gmResp').textContent = m.respondidas_mes + ' / ' + m.pendientes_mes;
         $('gmTasa').textContent = m.tasa_respuesta != null ? m.tasa_respuesta + '%' : '—';
-        $('gmMedia').textContent = m.puntuacion_media_mes ? m.puntuacion_media_mes.toFixed(2) : '—';
-        $('gmTiempo').textContent = m.tiempo_medio_respuesta_horas ? m.tiempo_medio_respuesta_horas + ' h' : '—';
+        $('gmMedia').textContent = m.puntuacion_media_mes ? m.puntuacion_media_mes.toFixed(2).replace('.', ',') : '—';
+        $('gmTiempo').textContent = m.tiempo_medio_respuesta_horas ? String(m.tiempo_medio_respuesta_horas).replace('.', ',') + ' h' : '—';
         const d = m.distribucion_estrellas || {};
         $('gmDistrib').textContent = `5★:${d[5] || 0}  4★:${d[4] || 0}  3★:${d[3] || 0}  2★:${d[2] || 0}  1★:${d[1] || 0}`;
       } catch (e) { /* toast ya */ }
@@ -2355,42 +2355,43 @@
       if (!body) return;
       try {
         const local = $('gmLocal').value;
-        const qs = '?estado=pendiente&limit=5' + (local ? '&local_id=' + local : '');
+        const qs = '?estado=pendiente&limit=6' + (local ? '&local_id=' + local : '');
         const r = await call('/api/admin/resenas/historial' + qs, 'GET');
         $('gmPendCount').textContent = r.total;
         if (!r.items.length) {
-          body.innerHTML = '<tr><td class="rg-empty">Sin pendientes. 🎉</td></tr>';
+          body.innerHTML = '<div class="rg-empty">Sin pendientes. 🎉</div>';
           return;
         }
         body.innerHTML = r.items.map((it, idx) => `
-          <tr>
-            <td style="white-space:nowrap;">${gmFmtDate(it.fecha_resena)}</td>
-            <td>${esc(GM_LOCAL_NAMES[it.local_id] || it.local_id)}</td>
-            <td><span class="rg-stars-mini">${gmStars(it.estrellas)}</span></td>
-            <td><div class="rg-truncate">${esc(it.texto_original || '(solo estrellas)')}</div></td>
-            <td><button class="rg-btn-ghost" data-idx="${idx}">Responder</button></td>
-          </tr>`).join('');
+          <div class="gm-pcard${it.estrellas <= 3 ? ' neg' : ''}">
+            <div class="who"><span><span class="rg-stars-mini">${gmStars(it.estrellas)}</span> · ${esc(GM_LOCAL_NAMES[it.local_id] || it.local_id)}</span><span>${gmFmtDate(it.fecha_resena)}</span></div>
+            <div class="txt">${esc(it.texto_original || '(reseña sin texto, solo estrellas)')}</div>
+            <div class="act"><button class="${it.estrellas <= 3 ? 'rg-btn' : 'rg-btn-ghost'}" data-idx="${idx}">Responder</button></div>
+          </div>`).join('');
         body.querySelectorAll('button').forEach((b) =>
           b.addEventListener('click', () => openDetail(r.items[parseInt(b.dataset.idx, 10)])));
       } catch (e) {
-        body.innerHTML = '<tr><td class="rg-empty">No se pudo cargar.</td></tr>';
+        body.innerHTML = '<div class="rg-empty">No se pudo cargar.</div>';
       }
     }
 
-    // ---- Salud por local: estimación pública + exactos del histórico sincronizado ----
+    // ---- Salud por local: tarjetas (estimación pública + exactos del histórico) ----
     function spark(evolucion) {
-      if (!evolucion || evolucion.length < 2) return '<span style="opacity:.4;">—</span>';
-      const BARS = '▁▂▃▄▅▆▇';
-      // Normalizado al rango del propio local: si se mueve entre 4,6 y 4,8,
-      // que la curva se VEA (con escala absoluta 4-5 queda todo aplanado).
-      const medias = evolucion.map((p) => p.media);
-      const min = Math.min(...medias), max = Math.max(...medias);
-      const rango = (max - min) || 1;
-      const chars = evolucion.map((p) => BARS[Math.round(((p.media - min) / rango) * 6)]).join('');
-      const first = evolucion[0], last = evolucion[evolucion.length - 1];
-      return '<span class="rg-spark" title="' +
-        evolucion.map((p) => p.mes + ': ' + p.media + '★ (' + p.n + ')').join('\n') + '">' + chars + '</span>' +
-        (last.media >= first.media ? '' : ' <span style="color:#c0492f;font-size:11px;">▾</span>');
+      if (!evolucion || evolucion.length < 2) return '';
+      // SVG normalizado al rango del propio local (escala absoluta aplanaría todo).
+      const v = evolucion.map((p) => p.media);
+      const W = 64, H = 22, P = 3;
+      const mn = Math.min(...v), mx = Math.max(...v), r = (mx - mn) || 1;
+      const pts = v.map((n, i) => {
+        const x = P + i * (W - 2 * P) / (v.length - 1);
+        const y = H - P - ((n - mn) / r) * (H - 2 * P);
+        return x.toFixed(1) + ',' + y.toFixed(1);
+      });
+      const last = pts[pts.length - 1].split(',');
+      const title = evolucion.map((p) => p.mes + ': ' + p.media + '★ (' + p.n + ')').join('\n');
+      return '<svg width="64" height="22" viewBox="0 0 64 22" style="vertical-align:middle;"><title>' + esc(title) + '</title>' +
+        '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#b97f1c" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round" opacity=".9"/>' +
+        '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="2.2" fill="#b97f1c"/></svg>';
     }
 
     async function loadPanel() {
@@ -2402,40 +2403,53 @@
           api('/api/admin/resenas/salud').catch(() => null),
         ]);
         if (!d || !d.configurado || !(d.locales || []).length) {
-          body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">Todavía no hay datos de Google. Se cargan solos.</td></tr>';
+          body.innerHTML = '<div class="rg-empty">Todavía no hay datos de Google. Se cargan solos.</div>';
           return;
         }
         const salud = (sal && sal.locales) || {};
         body.innerHTML = d.locales.map((l) => {
           const s = salud[l.slug] || {};
           const nu = l.nuevas7 != null ? l.nuevas7 : l.nuevas30;
-          const nuTxt = nu == null ? '<span style="opacity:.5;">—</span>'
-            : (nu > 0 ? '<b style="color:#3a9d5d;">+' + nu + '</b>'
-              : (nu < 0 ? '<b style="color:#c0492f;">' + nu + '</b>' : '0'));
+          const nuTxt = nu == null ? ''
+            : (nu > 0 ? '<span><b>+' + nu + '</b> esta semana</span>'
+              : '<span><b style="color:#c73a2e;">' + nu + '</b> esta semana</span>');
+
+          const chip = (s.exacto && s.tasa_respuesta != null)
+            ? '<span class="gm-chip ' + (s.tasa_respuesta >= 80 ? 'ok' : 'warn') + '">' + s.tasa_respuesta + '% resp.</span>'
+            : '<span class="gm-chip est">estimado</span>';
+
           const rating = s.exacto
-            ? '<b>' + s.media.toFixed(2).replace('.', ',') + '★</b><span class="rg-exacto">exacto</span>'
-            : '<b>' + l.rating + '★</b>';
-          const subir = s.exacto
-            ? (s.faltan_5 == null ? '🏆 tope'
-              : '<b>' + fmtNum(s.faltan_5) + '</b> × 5★ → ' + String(s.target).replace('.', ',') + '★')
-            : ((l.rating >= 5) ? '🏆 tope'
-              : (l.faltan != null ? '~' + fmtNum(l.faltan) + ' → ' + String(l.target).replace('.', ',') + '★'
-                : '<span style="opacity:.5;">—</span>'));
-          const tasa = s.exacto && s.tasa_respuesta != null
-            ? (s.tasa_respuesta >= 80 ? '<b style="color:#3a9d5d;">' : s.tasa_respuesta >= 50 ? '<b style="color:#d4a853;">' : '<b style="color:#c0492f;">') + s.tasa_respuesta + '%</b>'
-            : '<span style="opacity:.5;">—</span>';
-          return '<tr>' +
-            '<td>' + esc(l.name) + ' <small style="opacity:.6;">' + esc(l.city) + '</small></td>' +
-            '<td>' + rating + '</td>' +
-            '<td>' + fmtNum(s.exacto ? s.total : l.reviews) + '</td>' +
-            '<td>' + nuTxt + '</td>' +
-            '<td>' + tasa + '</td>' +
-            '<td>' + spark(s.evolucion) + '</td>' +
-            '<td><span style="opacity:.85;">' + subir + '</span></td>' +
-          '</tr>';
+            ? '<div class="gm-crating">' + s.media.toFixed(2).replace('.', ',') + '<small>★</small></div>'
+            : '<div class="gm-crating dim">' + String(l.rating).replace('.', ',') + '<small>★</small></div>';
+
+          const total = fmtNum(s.exacto ? s.total : l.reviews) + ' reseñas';
+
+          let barra = '';
+          if (s.exacto && s.faltan_5 == null) {
+            barra = '<div class="gm-cbar"><div class="lbl"><span>🏆 En el tope</span><span></span></div>' +
+              '<div class="gm-ctrack"><div class="gm-cfill" style="width:100%"></div></div></div>';
+          } else if (s.exacto) {
+            const pct = Math.max(4, Math.min(96, Math.round(((s.media - (s.target - 0.1)) / 0.1) * 100)));
+            barra = '<div class="gm-cbar"><div class="lbl"><span>Camino a <b>' + String(s.target).replace('.', ',') + '★</b></span>' +
+              '<span>faltan ' + fmtNum(s.faltan_5) + ' de 5★</span></div>' +
+              '<div class="gm-ctrack"><div class="gm-cfill" style="width:' + pct + '%"></div></div></div>';
+          } else if (l.faltan != null) {
+            barra = '<div class="gm-cbar"><div class="lbl"><span>Camino a <b>' + String(l.target).replace('.', ',') + '★</b></span>' +
+              '<span>~' + fmtNum(l.faltan) + ' (estimado)</span></div>' +
+              '<div class="gm-ctrack"><div class="gm-cfill dim" style="width:50%"></div></div></div>';
+          }
+
+          return '<div class="gm-card">' +
+            '<div class="gm-chead"><div><div class="gm-cname">' + esc(l.name) + '</div>' +
+            '<div class="gm-ccity">' + esc(l.city) + ' · ' + total + (s.exacto ? ' <span class="rg-exacto">exacto</span>' : '') + '</div></div>' +
+            chip + '</div>' +
+            '<div class="gm-crow">' + rating +
+            '<div class="gm-cmeta">' + nuTxt + spark(s.evolucion) + '</div></div>' +
+            barra +
+          '</div>';
         }).join('');
       } catch (e) {
-        body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">No se pudo cargar.</td></tr>';
+        body.innerHTML = '<div class="rg-empty">No se pudo cargar.</div>';
       }
     }
 
@@ -2460,8 +2474,8 @@
           '<div style="font-size:13px;line-height:1.7;color:' + color + ';">' + pre + ' ' + esc(x.tema) +
           ' <small style="opacity:.55;">×' + (x.veces || 1) + '</small></div>';
         const cols = [];
-        cols.push(insBloque('👍 Lo que valoran', d.positivo, linea('#3a9d5d', '•')));
-        cols.push(insBloque('👎 A mejorar', d.negativo, linea('#c0492f', '•')) ||
+        cols.push(insBloque('👍 Lo que valoran', d.positivo, linea('#4a7c3f', '•')));
+        cols.push(insBloque('👎 A mejorar', d.negativo, linea('#c73a2e', '•')) ||
           '<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">👎 A mejorar</div><div style="opacity:.45;font-size:12.5px;">sin quejas repetidas en la muestra</div></div>');
         cols.push(insBloque('🧑‍🍳 Empleados mencionados', d.empleados, (e2) =>
           '<div style="font-size:13px;line-height:1.7;"><b>' + esc(e2.nombre) + '</b> <small style="opacity:.55;">×' + (e2.menciones || 1) + '</small>' +

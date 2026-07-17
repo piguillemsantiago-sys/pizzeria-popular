@@ -57,34 +57,47 @@
         </section>
         <section class="dash-section" id="section-google-maps" hidden>
           <style>
-          #section-google-maps {
-            --gold:#d4a853; --gold-soft:rgba(212,168,83,.15);
-            --rg-bg:#11111b; --rg-card:#1a1a26; --rg-card-hover:#21212f;
-            --rg-input:#15151f; --rg-border:rgba(255,255,255,.09);
-            --rg-text:#e9e9f2; --rg-muted:#8a8aa3;
-            --rg-radius:14px; --rg-radius-sm:9px;
-            --rg-warn:#ffd166; --rg-ok:#34d399; --rg-bad:#f87171;
+          /* Piel "Manteca" (B1) — SOLO esta sección; el resto del admin sigue oscuro. */
+          @font-face {
+            font-family:'Abril Fatface';
+            src:url('/fonts/AbrilFatface-Regular.ttf') format('truetype');
+            font-display:swap;
           }
+          #section-google-maps {
+            --gold:#b97f1c; --gold-soft:rgba(185,127,28,.12);
+            --acc:#c73a2e;
+            --rg-bg:#f1e7d2; --rg-card:#fffdf7; --rg-card-hover:#fbf6ea;
+            --rg-input:#fbf7ee; --rg-border:#e7dcc5;
+            --rg-text:#33281c; --rg-muted:#8d7e67;
+            --rg-radius:14px; --rg-radius-sm:9px;
+            --rg-warn:#d99a2b; --rg-ok:#4a7c3f; --rg-bad:#c73a2e;
+            --disp:'Abril Fatface', Georgia, serif;
+            background:#f7f0e2; border-radius:18px; padding:22px 24px 30px;
+            color:var(--rg-text);
+            box-shadow:inset 0 0 0 1px #e7dcc5;
+          }
+          #section-google-maps .panel-head h1 { color:var(--rg-text); font-family:var(--disp); font-weight:400; letter-spacing:.01em; }
           #section-google-maps .rg-note { background:var(--gold-soft); border:1px solid rgba(212,168,83,.35); color:var(--rg-text); border-radius:var(--rg-radius-sm); padding:10px 14px; font-size:12.5px; margin-bottom:16px; line-height:1.5; }
           #section-google-maps .rg-note b { color:var(--gold); }
           #section-google-maps .rg-localsel { background:var(--rg-input); color:var(--rg-text); border:1px solid var(--rg-border); padding:7px 11px; border-radius:var(--rg-radius-sm); font-size:13px; }
 
           #section-google-maps .rg-zone { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--rg-muted); margin:26px 0 10px; display:flex; align-items:center; gap:10px; }
-          #section-google-maps .rg-zone::after { content:''; flex:1; height:1px; background:var(--rg-border); }
+          #section-google-maps .rg-zone::after { content:''; flex:1; height:2px; background:repeating-linear-gradient(90deg,#d9cdb0 0 6px,transparent 6px 12px); }
           #section-google-maps .rg-range { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:4px; }
           #section-google-maps .rg-range .rg-field input { padding:6px 8px; font-size:13px; }
           #section-google-maps .rg-preset { background:transparent; color:var(--rg-muted); border:1px solid var(--rg-border); padding:6px 10px; border-radius:20px; cursor:pointer; font-size:12px; }
-          #section-google-maps .rg-preset:hover, #section-google-maps .rg-preset.active { color:var(--gold); border-color:var(--gold); }
+          #section-google-maps .rg-preset:hover, #section-google-maps .rg-preset.active { color:var(--acc); border-color:var(--acc); font-weight:700; }
           #section-google-maps .rg-spark { font-family:monospace; font-size:13px; letter-spacing:1px; color:var(--gold); opacity:.9; }
-          #section-google-maps .rg-exacto { display:inline-block; font-size:9px; padding:1px 6px; border-radius:8px; font-weight:700; background:rgba(52,211,153,.18); color:var(--rg-ok); vertical-align:middle; margin-left:5px; }
+          #section-google-maps .rg-exacto { display:inline-block; font-size:9px; padding:1px 6px; border-radius:8px; font-weight:700; background:rgba(74,124,63,.12); color:var(--rg-ok); vertical-align:middle; margin-left:5px; }
           #section-google-maps .rg-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:16px; }
           #section-google-maps .rg-metric { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:14px 16px; }
           #section-google-maps .rg-metric-label { font-size:11px; color:var(--rg-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
-          #section-google-maps .rg-metric-value { font-size:24px; font-weight:700; color:var(--gold); }
+          #section-google-maps .rg-metric { box-shadow:0 2px 10px -7px rgba(80,60,30,.3); }
+          #section-google-maps .rg-metric-value { font-size:26px; font-weight:400; color:var(--rg-text); font-family:var(--disp); }
           #section-google-maps .rg-metric-sub { font-size:11px; color:var(--rg-muted); margin-top:4px; }
 
-          #section-google-maps .rg-card { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:18px; margin-bottom:16px; }
-          #section-google-maps .rg-card h2 { font-size:14px; font-weight:700; color:var(--gold); text-transform:uppercase; letter-spacing:.5px; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
+          #section-google-maps .rg-card { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:18px; margin-bottom:16px; box-shadow:0 2px 10px -7px rgba(80,60,30,.3); }
+          #section-google-maps .rg-card h2 { font-size:13px; font-weight:700; color:#7c6b52; text-transform:uppercase; letter-spacing:.8px; margin:0 0 14px; display:flex; align-items:center; gap:8px; }
           #section-google-maps .rg-card h2 .count { background:var(--gold-soft); color:var(--gold); font-size:11px; padding:2px 8px; border-radius:10px; font-weight:700; }
 
           #section-google-maps .rg-form-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
@@ -94,14 +107,14 @@
           #section-google-maps .rg-field input:focus, #section-google-maps .rg-field select:focus, #section-google-maps .rg-field textarea:focus { outline:0; border-color:var(--gold); }
 
           #section-google-maps .rg-stars { display:flex; gap:4px; align-items:center; padding:6px 0; }
-          #section-google-maps .rg-star { font-size:24px; color:#3a3a55; cursor:pointer; transition:transform .1s; user-select:none; }
+          #section-google-maps .rg-star { font-size:24px; color:#ded1b8; cursor:pointer; transition:transform .1s; user-select:none; }
           #section-google-maps .rg-star:hover { transform:scale(1.15); }
-          #section-google-maps .rg-star.active { color:var(--gold); text-shadow:0 0 6px rgba(212,168,83,.5); }
+          #section-google-maps .rg-star.active { color:#d99a2b; }
           #section-google-maps .rg-textarea { width:100%; min-height:90px; resize:vertical; }
 
-          #section-google-maps .rg-btn { background:var(--gold); color:#1a1a2e; border:0; padding:10px 18px; border-radius:var(--rg-radius-sm); font-weight:700; cursor:pointer; font-size:14px; }
-          #section-google-maps .rg-btn:hover { background:#e0b760; }
-          #section-google-maps .rg-btn:disabled { background:#5a5a7a; color:var(--rg-muted); cursor:not-allowed; }
+          #section-google-maps .rg-btn { background:var(--acc); color:#fff; border:0; padding:10px 18px; border-radius:var(--rg-radius-sm); font-weight:700; cursor:pointer; font-size:14px; }
+          #section-google-maps .rg-btn:hover { background:#d64a3d; }
+          #section-google-maps .rg-btn:disabled { background:#cbbfa8; color:#fffdf7; cursor:not-allowed; }
           #section-google-maps .rg-btn-sec { background:var(--rg-border); color:var(--rg-text); border:0; padding:8px 14px; border-radius:var(--rg-radius-sm); font-weight:600; cursor:pointer; font-size:13px; }
           #section-google-maps .rg-btn-ghost { background:transparent; color:var(--rg-muted); border:1px solid var(--rg-border); padding:6px 10px; border-radius:var(--rg-radius-sm); cursor:pointer; font-size:12px; }
           #section-google-maps .rg-btn-ghost:hover { color:var(--rg-text); border-color:var(--gold); }
@@ -126,9 +139,9 @@
           #section-google-maps .rg-truncate { max-width:380px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
           #section-google-maps .rg-stars-mini { color:var(--gold); font-size:13px; letter-spacing:1px; }
           #section-google-maps .rg-badge { display:inline-block; font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700; text-transform:uppercase; }
-          #section-google-maps .rg-badge-pendiente { background:rgba(255,209,102,.2); color:var(--rg-warn); }
-          #section-google-maps .rg-badge-respondida { background:rgba(52,211,153,.2); color:var(--rg-ok); }
-          #section-google-maps .rg-badge-descartada { background:rgba(138,138,163,.2); color:var(--rg-muted); }
+          #section-google-maps .rg-badge-pendiente { background:rgba(217,154,43,.16); color:#a8761a; }
+          #section-google-maps .rg-badge-respondida { background:rgba(74,124,63,.12); color:var(--rg-ok); }
+          #section-google-maps .rg-badge-descartada { background:rgba(141,126,103,.15); color:var(--rg-muted); }
 
           #section-google-maps .rg-filters { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:12px; }
           #section-google-maps .rg-filters .rg-field { min-width:120px; }
@@ -136,8 +149,8 @@
 
           #section-google-maps .rg-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; z-index:9000; }
           #section-google-maps .rg-modal-overlay.open { display:flex; }
-          #section-google-maps .rg-modal { background:var(--rg-card); border:1px solid var(--gold); border-radius:var(--rg-radius); padding:18px; max-width:640px; width:92%; max-height:84vh; overflow-y:auto; }
-          #section-google-maps .rg-modal h3 { color:var(--gold); margin:0 0 10px; font-size:15px; }
+          #section-google-maps .rg-modal { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:18px; max-width:640px; width:92%; max-height:84vh; overflow-y:auto; color:var(--rg-text); }
+          #section-google-maps .rg-modal h3 { color:var(--rg-text); margin:0 0 10px; font-size:16px; font-family:var(--disp); font-weight:400; }
           #section-google-maps .rg-modal .rg-meta { font-size:12px; color:var(--rg-muted); margin-bottom:10px; }
           #section-google-maps .rg-modal pre { background:var(--rg-bg); padding:12px; border-radius:var(--rg-radius-sm); white-space:pre-wrap; word-break:break-word; font-family:inherit; font-size:13px; line-height:1.5; border:1px solid var(--rg-border); margin:0 0 10px; }
           #section-google-maps .rg-modal-label { font-size:11px; color:var(--rg-muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:.5px; }
@@ -145,7 +158,38 @@
           #section-google-maps .rg-modal textarea:focus { outline:0; border-color:var(--gold); }
           #section-google-maps .rg-modal-foot { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
 
+          /* ---- Tarjetas de salud por local (estructura "semáforo") ---- */
+          #section-google-maps .gm-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(310px,1fr)); gap:14px; }
+          #section-google-maps .gm-card { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:18px 20px 16px; box-shadow:0 2px 10px -7px rgba(80,60,30,.3); }
+          #section-google-maps .gm-chead { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+          #section-google-maps .gm-cname { font-weight:400; font-size:17px; font-family:var(--disp); }
+          #section-google-maps .gm-ccity { font-size:11.5px; color:var(--rg-muted); margin-top:2px; }
+          #section-google-maps .gm-chip { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.04em; border-radius:20px; padding:3px 10px; white-space:nowrap; }
+          #section-google-maps .gm-chip.ok { background:rgba(74,124,63,.1); color:var(--rg-ok); }
+          #section-google-maps .gm-chip.warn { background:rgba(217,154,43,.14); color:#a8761a; }
+          #section-google-maps .gm-chip.est { background:transparent; border:1px solid var(--rg-border); color:var(--rg-muted); }
+          #section-google-maps .gm-crow { display:flex; align-items:flex-end; gap:14px; margin:12px 0 4px; }
+          #section-google-maps .gm-crating { font-size:44px; font-weight:400; line-height:.9; color:var(--rg-text); letter-spacing:-.01em; font-family:var(--disp); font-variant-numeric:tabular-nums; }
+          #section-google-maps .gm-crating small { font-size:16px; color:var(--rg-muted); font-family:inherit; }
+          #section-google-maps .gm-crating.dim { color:var(--rg-muted); }
+          #section-google-maps .gm-cmeta { display:flex; flex-direction:column; gap:3px; font-size:11.5px; color:var(--rg-muted); padding-bottom:3px; }
+          #section-google-maps .gm-cmeta b { color:var(--rg-ok); font-weight:800; }
+          #section-google-maps .gm-cbar { margin-top:12px; }
+          #section-google-maps .gm-cbar .lbl { display:flex; justify-content:space-between; font-size:11px; color:var(--rg-muted); margin-bottom:5px; }
+          #section-google-maps .gm-cbar .lbl b { color:#a8761a; }
+          #section-google-maps .gm-ctrack { height:6px; border-radius:4px; background:#efe5cf; overflow:hidden; }
+          #section-google-maps .gm-cfill { height:100%; border-radius:4px; background:#d99a2b; }
+          #section-google-maps .gm-cfill.dim { opacity:.35; }
+          /* ---- Tarjetas de pendientes ---- */
+          #section-google-maps .gm-pend { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:12px; }
+          #section-google-maps .gm-pcard { background:var(--rg-card); border:1px solid var(--rg-border); border-left:4px solid var(--rg-warn); border-radius:var(--rg-radius-sm); padding:14px 16px; display:flex; flex-direction:column; gap:8px; box-shadow:0 2px 10px -7px rgba(80,60,30,.3); }
+          #section-google-maps .gm-pcard.neg { border-left-color:var(--rg-bad); }
+          #section-google-maps .gm-pcard .who { display:flex; justify-content:space-between; gap:10px; font-size:12px; color:var(--rg-muted); }
+          #section-google-maps .gm-pcard .txt { font-size:13.5px; line-height:1.55; color:var(--rg-text); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+          #section-google-maps .gm-pcard .act { display:flex; justify-content:flex-end; margin-top:auto; }
+
           @media (max-width:800px) {
+            #section-google-maps { padding:14px 12px 22px; border-radius:12px; }
             #section-google-maps .rg-metrics { grid-template-columns:repeat(2,1fr); }
             #section-google-maps .rg-form-row { grid-template-columns:1fr; }
             #section-google-maps .rg-variants { grid-template-columns:1fr; }
@@ -184,12 +228,8 @@
           <!-- Pendientes de responder -->
           <div class="rg-card" id="gmPend">
             <h2>⏳ Pendientes de responder <span class="count" id="gmPendCount">0</span></h2>
-            <div style="overflow-x:auto;">
-              <table class="rg-table">
-                <tbody id="gmPendBody">
-                  <tr><td class="rg-empty">Cargando…</td></tr>
-                </tbody>
-              </table>
+            <div class="gm-pend" id="gmPendBody">
+              <div class="rg-empty">Cargando…</div>
             </div>
           </div>
 
@@ -232,22 +272,12 @@
           <!-- ══ ZONA SALUD POR LOCAL ══ -->
           <div class="rg-zone">Salud por local</div>
 
-          <div class="rg-card" id="gmPanel">
-            <h2>📊 Reseñas por local <small>rating · nuevas · tendencia · cuánto falta para subir</small></h2>
-            <div style="overflow-x:auto;">
-              <table class="rg-table" id="gmPanelTable">
-                <thead>
-                  <tr><th>Local</th><th>Rating</th><th>Total</th><th>Nuevas (7d)</th><th>Tasa resp.</th><th>Tendencia</th><th>Para subir</th></tr>
-                </thead>
-                <tbody id="gmPanelBody">
-                  <tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">Cargando…</td></tr>
-                </tbody>
-              </table>
-            </div>
-            <p class="rg-note" style="margin-top:10px;font-size:11.5px;" id="gmPanelNote">
-              <b>Nuevas (7d)</b> es exacto. <b>«Para subir»</b> es estimación mientras no haya histórico sincronizado; con la etiqueta <span class="rg-exacto">exacto</span> el rating tiene decimales reales y «para subir» es matemático (reseñas 5★ que faltan). <b>Tendencia</b> = media mensual de los últimos meses.
-            </p>
+          <div class="gm-cards" id="gmPanelBody">
+            <div class="rg-empty">Cargando…</div>
           </div>
+          <p class="rg-note" style="margin-top:14px;font-size:11.5px;" id="gmPanelNote">
+            <b>Nuevas de la semana</b> es un dato exacto. El rating y el <b>«camino a»</b> son estimaciones mientras no haya histórico sincronizado; con la etiqueta <span class="rg-exacto">exacto</span> el rating tiene decimales reales y las reseñas que faltan son cálculo matemático.
+          </p>
 
           <!-- ══ ZONA INSIGHTS ══ -->
           <div class="rg-zone">Insights</div>
@@ -1123,7 +1153,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=74"></script>
+  <script src="/admin/admin.js?v=75"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

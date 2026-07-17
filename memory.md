@@ -2,6 +2,16 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-17
+
+- **Carta digital: quitada la pizza Cancha** (pedido del cliente). Desactivada a nivel maestro AJAX en Supabase (`menu_items.is_active=false`, id `3b5f0448…`), NO borrada — reactivable desde el panel de admin. Verificado el menú efectivo de los 6 locales + maestro: ya no aparece en ninguno. Sin tocar código ni deploy (el menú público de Railway lee la misma base).
+
+*(sesión Portada de la final Argentina vs España)*
+
+- **Portada del reel de la FINAL entregada**: "COMUNICADO IMPORTANTE" en cinta dorada + banderas reales AR/ES + "VS" + "ARGENTINA / ESPAÑA" gigante estilo póster de hincha, sobre la captura del reel limpiada por Gemini (sin chip "Editar portada", subtítulo ni barra de player). Logo blanco arriba a la izquierda (la cabeza del protagonista ocupa el centro). Entregable: `generador-nuevo-tipos/portada-final-argentina-espana.jpg` (1080x1920).
+- **La ventana 3:4 volvió a ser necesaria**: el primer render pintó "ARGENTINA/ESPAÑA" por debajo del recorte de la grilla (Gemini ignora la zona segura por prompt, otra vez). Se resolvió con la arquitectura del generador viejo: pintar DENTRO de la ventana 3:4 exacta (y 240-1680, aspecto 3:4) y reintegrar al 9:16 con fundido de 90px + empalme de degradé por código en el pie. Iteraciones cazadas por autocrítica antes de mostrar: caja gris con bordes (repintado sin caja), costura horizontal (empalme), doble degradé que apagó "ESPAÑA" (rehecho desde la versión limpia con un solo empalme angosto).
+- **Pendiente anotado**: portar la ventana 3:4 al modelo `partido` de `lib/portadas.js` (hoy depende del reintento del control) y agregar variante "comunicado" (cinta dorada, sin horario) para que esto salga solo desde el panel.
+
 ## 2026-07-16
 
 - **Cierre formal de la sesión 13-15/7** con `/handoff`: handoff.md al día (Pepe auditado, post de la semifinal, generador de portadas v72, feedback del dueño) y **43 commits locales pusheados** a GitHub — incluía toda la sesión de portadas de la tarde del 15 que estaba sin subir. Sin trabajo nuevo de código hoy.
