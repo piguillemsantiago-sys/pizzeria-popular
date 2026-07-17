@@ -27,6 +27,25 @@
   h1 .em{color:var(--gold)}
   .sub{text-align:center; color:var(--muted); font-size:clamp(15px,2.4vw,19px); margin-top:14px; font-weight:500}
 
+  /* Inversión por local */
+  .invest{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:34px}
+  .icard{
+    background:rgba(36,28,26,.55); border:1px solid var(--line); border-radius:22px;
+    padding:24px 22px; transition:border-color .2s ease;
+  }
+  .icard:hover{border-color:rgba(216,164,96,.45)}
+  .icard.total{background:rgba(216,164,96,.09); border-color:rgba(216,164,96,.35)}
+  .iloc{font-family:'Abril Fatface',serif; font-size:22px; line-height:1.1}
+  .ispend{font-size:clamp(34px,4.5vw,42px); font-weight:800; color:var(--gold); letter-spacing:-.01em; margin-top:10px; line-height:1}
+  .inote{font-size:13.5px; color:var(--muted); font-weight:600; margin-top:6px}
+  .istats{list-style:none; margin-top:16px; border-top:1px solid var(--line); padding-top:14px}
+  .istats li{font-size:14.5px; color:var(--muted); font-weight:500; padding:4px 0}
+  .istats li b{color:var(--cream); font-weight:800; font-size:16px}
+  .icost{
+    margin-top:14px; background:rgba(0,0,0,.25); border-radius:10px; padding:10px 14px;
+    font-size:13.5px; font-weight:700; color:var(--gold); line-height:1.4;
+  }
+
   /* Toggle */
   .toggle{display:flex; justify-content:center; gap:10px; margin:30px 0 8px; flex-wrap:wrap}
   .toggle button{
@@ -99,12 +118,24 @@
   .badge-soon{display:inline-block; background:rgba(216,164,96,.16); border:1px solid rgba(216,164,96,.4); color:var(--gold); font-weight:700; font-size:12.5px; padding:5px 12px; border-radius:999px; margin-top:10px}
   .step .desc{color:var(--muted); font-size:15px; margin-top:14px; line-height:1.55}
 
+  /* Decisión */
+  .decide{margin-top:36px}
+  .dlist{list-style:none; margin:14px 0 20px}
+  .dlist li{
+    padding:9px 0 9px 26px; position:relative; color:var(--muted); line-height:1.55;
+    border-bottom:1px solid rgba(237,232,217,.07);
+  }
+  .dlist li:last-child{border-bottom:none}
+  .dlist li::before{content:"·"; position:absolute; left:8px; color:var(--gold); font-weight:800; font-size:22px; line-height:1.1}
+  .dlist li b{color:var(--cream)}
+
   /* Footer */
   .foot{margin-top:36px; padding-top:26px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; line-height:1.7}
   .foot b{color:var(--cream)}
   .brand{text-align:center; font-family:'Abril Fatface',serif; font-size:20px; color:rgba(237,232,217,.45); margin-top:24px}
 
   @media(max-width:680px){
+    .invest{grid-template-columns:1fr}
     .step{padding:22px 18px}
     .step .head{flex-wrap:wrap; gap:12px}
     .step .big{text-align:left; width:100%}
@@ -120,7 +151,44 @@
 
   <div class="eyebrow">Pizzería Popular · Menú Diario</div>
   <h1>El recorrido del <span class="em">cliente</span></h1>
-  <div class="sub">Cómo funciona el anuncio, paso a paso · activa desde el 25 de junio · datos al 2 de julio</div>
+  <div class="sub">Cuánto se invirtió, qué resultados dio y cómo funciona, paso a paso · activa desde el 25 de junio · datos al 17 de julio (23 días)</div>
+
+  <!-- INVERSIÓN POR LOCAL -->
+  <div class="invest">
+    <div class="icard">
+      <div class="iloc">Russafa</div>
+      <div class="ispend">€149,80</div>
+      <div class="inote">~€6,50 por día</div>
+      <ul class="istats">
+        <li><b>48.373</b> personas vieron el anuncio</li>
+        <li><b>2.192</b> entraron a ver el menú</li>
+        <li><b>29</b> pidieron cómo llegar al local</li>
+      </ul>
+      <div class="icost">€5,17 por cada persona con intención de ir</div>
+    </div>
+    <div class="icard">
+      <div class="iloc">Santa Clara</div>
+      <div class="ispend">€149,76</div>
+      <div class="inote">~€6,50 por día</div>
+      <ul class="istats">
+        <li><b>42.240</b> personas vieron el anuncio</li>
+        <li><b>2.120</b> entraron a ver el menú</li>
+        <li><b>17</b> pidieron cómo llegar al local</li>
+      </ul>
+      <div class="icost">€8,81 por cada persona con intención de ir</div>
+    </div>
+    <div class="icard total">
+      <div class="iloc">Total campaña</div>
+      <div class="ispend">€299,56</div>
+      <div class="inote">23 días · los dos locales</div>
+      <ul class="istats">
+        <li><b>73.340</b> personas distintas alcanzadas</li>
+        <li><b>4.312</b> visitas a la página del menú</li>
+        <li><b>46</b> "cómo llegar" + <b>3</b> WhatsApp</li>
+      </ul>
+      <div class="icost">€6,11 por cada persona con intención de ir</div>
+    </div>
+  </div>
 
   <div class="toggle">
     <button data-loc="total" class="active">Los dos locales</button>
@@ -196,9 +264,32 @@
     <br><span class="badge-soon">🔗 Medido con el tracker propio de la web · desde el 26 de junio</span></div>
   </div>
 
+  <!-- DECISIÓN -->
+  <div class="step decide">
+    <div class="head">
+      <div class="ico">🧭</div>
+      <div class="ht"><div class="pn">Para decidir</div><div class="tt">¿Seguir con la pauta?</div></div>
+    </div>
+    <div class="desc">
+      Lo que dicen los números después de 23 días:
+      <ul class="dlist">
+        <li><b>Es barato.</b> Cada visita a la página del menú costó €0,07 y cada persona con intención de venir, €6,11. Llegar a 73.000 personas de la zona por €300 no tiene equivalente en canales tradicionales.</li>
+        <li><b>Rinde más en Russafa.</b> Cada "cómo llegar" a Russafa costó €5,17; a Santa Clara, €8,81.</li>
+        <li><b>Hay desgaste.</b> Las primeras dos semanas hubo ~3 "cómo llegar" por día; las últimas, ~1,3 por día. Es normal: el público cercano ya vio las mismas fotos varias veces.</li>
+      </ul>
+      Los caminos posibles:
+      <ul class="dlist">
+        <li><b>Seguir igual</b> — €6,50 por día por local, resultados estables pero en baja suave.</li>
+        <li><b>Seguir con fotos nuevas</b> — la pizza fue la imagen que más hizo tocar en proporción y casi no se mostró; renovar creativos suele recuperar el ritmo.</li>
+        <li><b>Sumar el paso de reservas</b> — volver a mostrar anuncios solo a las 4.300 personas que ya entraron al menú, ahora invitando a reservar.</li>
+        <li><b>Pausar</b> — la página del menú queda publicada y la campaña se puede reactivar cuando quieran.</li>
+      </ul>
+    </div>
+  </div>
+
   <div class="foot">
     <b>Vieron</b> = personas distintas que cruzaron el anuncio · <b>Tocaron</b> = hicieron clic para ver el menú · <b>Entraron</b> = abrieron la página del menú · <b>Cómo llegar</b> = tocaron el botón del mapa (la señal más fuerte de que van a venir).<br>
-    Son <b>datos al 2 de julio</b> (~7 días corriendo): con la semana completa, la muestra ya es sólida y la imagen que gana en cada local está clara.
+    Son <b>datos al 17 de julio</b> (23 días corriendo, del 25 de junio al 17 de julio). La inversión y el recorrido salen del reporte de Meta; los "cómo llegar" y WhatsApp se miden con el tracker propio de la web.
   </div>
   <div class="brand">Pizzería Popular</div>
 
@@ -206,9 +297,9 @@
 
 <script>
   const DATA = {
-    total:      { reach:34839, impr:86091, clicks:2051, lpv:1269, intent:19, click:{Milanesa:1095,'Ñoquis':796,Pizza:160}, lpvb:{Milanesa:728,'Ñoquis':457,Pizza:84} },
-    russafa:    { reach:21737, impr:43858, clicks:1038, lpv:680,  intent:10, click:{Milanesa:909,'Ñoquis':66,Pizza:63},    lpvb:{Milanesa:607,'Ñoquis':43,Pizza:30} },
-    santaclara: { reach:19395, impr:42233, clicks:1013, lpv:589,  intent:9,  click:{Milanesa:186,'Ñoquis':730,Pizza:97},   lpvb:{Milanesa:121,'Ñoquis':414,Pizza:54} },
+    total:      { reach:73340, impr:201889, clicks:7028, lpv:4312, intent:46, click:{Milanesa:3428,'Ñoquis':3132,Pizza:468}, lpvb:{Milanesa:2192,'Ñoquis':1875,Pizza:245} },
+    russafa:    { reach:48373, impr:106072, clicks:3466, lpv:2192, intent:29, click:{Milanesa:3139,'Ñoquis':134,Pizza:193},  lpvb:{Milanesa:2013,'Ñoquis':74,Pizza:105} },
+    santaclara: { reach:42240, impr:95817,  clicks:3562, lpv:2120, intent:17, click:{Milanesa:289,'Ñoquis':2998,Pizza:275},  lpvb:{Milanesa:179,'Ñoquis':1801,Pizza:140} },
   };
   const IMGS = ['Milanesa','Ñoquis','Pizza'];
   const fmt = n => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
