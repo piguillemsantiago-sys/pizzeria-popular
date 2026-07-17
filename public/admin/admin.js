@@ -2306,14 +2306,42 @@
       catch (e) { showToast('Error: ' + (e.message || 'servidor')); throw e; }
     }
 
-    // ---- Métricas ----
-    async function loadMetrics() {
+    // ---- Rango global de fechas (afecta métricas e insights) ----
+    function rangoQs() {
+      const p = new URLSearchParams();
       const local = $('gmLocal').value;
-      const q = local ? '?local_id=' + local : '';
+      if (local) p.set('local_id', local);
+      if ($('gmRDesde').value) p.set('desde', $('gmRDesde').value);
+      else p.set('desde', '2015-01-01'); // "Todo": sin preset activo = histórico completo
+      if ($('gmRHasta').value) p.set('hasta', $('gmRHasta').value);
+      return '?' + p.toString();
+    }
+    document.querySelectorAll('#section-google-maps .rg-preset').forEach((b) =>
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#section-google-maps .rg-preset').forEach((x) => x.classList.remove('active'));
+        b.classList.add('active');
+        const days = parseInt(b.dataset.days, 10);
+        if (days > 0) {
+          const d = new Date(Date.now() - days * 24 * 3600 * 1000);
+          $('gmRDesde').value = d.toISOString().slice(0, 10);
+          $('gmRHasta').value = '';
+        } else {
+          $('gmRDesde').value = ''; $('gmRHasta').value = '';
+        }
+        loadMetrics(); loadInsights();
+      }));
+    $('gmRAplicar').addEventListener('click', () => {
+      document.querySelectorAll('#section-google-maps .rg-preset').forEach((x) => x.classList.remove('active'));
+      loadMetrics(); loadInsights();
+    });
+
+    // ---- Métricas del período ----
+    async function loadMetrics() {
       try {
-        const m = await call('/api/admin/resenas/metricas' + q, 'GET');
+        const m = await call('/api/admin/resenas/metricas' + rangoQs(), 'GET');
         $('gmTotal').textContent = m.total_mes;
         $('gmResp').textContent = m.respondidas_mes + ' / ' + m.pendientes_mes;
+        $('gmTasa').textContent = m.tasa_respuesta != null ? m.tasa_respuesta + '%' : '—';
         $('gmMedia').textContent = m.puntuacion_media_mes ? m.puntuacion_media_mes.toFixed(2) : '—';
         $('gmTiempo').textContent = m.tiempo_medio_respuesta_horas ? m.tiempo_medio_respuesta_horas + ' h' : '—';
         const d = m.distribucion_estrellas || {};
@@ -2321,59 +2349,137 @@
       } catch (e) { /* toast ya */ }
     }
 
-    // ---- Panel: reseñas por local (rating, total, nuevas 7d, faltan para subir) ----
+    // ---- Pendientes de responder (lo accionable del día) ----
+    async function loadPend() {
+      const body = $('gmPendBody');
+      if (!body) return;
+      try {
+        const local = $('gmLocal').value;
+        const qs = '?estado=pendiente&limit=5' + (local ? '&local_id=' + local : '');
+        const r = await call('/api/admin/resenas/historial' + qs, 'GET');
+        $('gmPendCount').textContent = r.total;
+        if (!r.items.length) {
+          body.innerHTML = '<tr><td class="rg-empty">Sin pendientes. 🎉</td></tr>';
+          return;
+        }
+        body.innerHTML = r.items.map((it, idx) => `
+          <tr>
+            <td style="white-space:nowrap;">${gmFmtDate(it.fecha_resena)}</td>
+            <td>${esc(GM_LOCAL_NAMES[it.local_id] || it.local_id)}</td>
+            <td><span class="rg-stars-mini">${gmStars(it.estrellas)}</span></td>
+            <td><div class="rg-truncate">${esc(it.texto_original || '(solo estrellas)')}</div></td>
+            <td><button class="rg-btn-ghost" data-idx="${idx}">Responder</button></td>
+          </tr>`).join('');
+        body.querySelectorAll('button').forEach((b) =>
+          b.addEventListener('click', () => openDetail(r.items[parseInt(b.dataset.idx, 10)])));
+      } catch (e) {
+        body.innerHTML = '<tr><td class="rg-empty">No se pudo cargar.</td></tr>';
+      }
+    }
+
+    // ---- Salud por local: estimación pública + exactos del histórico sincronizado ----
+    function spark(evolucion) {
+      if (!evolucion || evolucion.length < 2) return '<span style="opacity:.4;">—</span>';
+      const BARS = '▁▂▃▄▅▆▇';
+      // Normalizado al rango del propio local: si se mueve entre 4,6 y 4,8,
+      // que la curva se VEA (con escala absoluta 4-5 queda todo aplanado).
+      const medias = evolucion.map((p) => p.media);
+      const min = Math.min(...medias), max = Math.max(...medias);
+      const rango = (max - min) || 1;
+      const chars = evolucion.map((p) => BARS[Math.round(((p.media - min) / rango) * 6)]).join('');
+      const first = evolucion[0], last = evolucion[evolucion.length - 1];
+      return '<span class="rg-spark" title="' +
+        evolucion.map((p) => p.mes + ': ' + p.media + '★ (' + p.n + ')').join('\n') + '">' + chars + '</span>' +
+        (last.media >= first.media ? '' : ' <span style="color:#c0492f;font-size:11px;">▾</span>');
+    }
+
     async function loadPanel() {
       const body = $('gmPanelBody');
       if (!body) return;
       try {
-        const d = await call('/api/admin/analitica/google', 'GET');
+        const [d, sal] = await Promise.all([
+          call('/api/admin/analitica/google', 'GET'),
+          api('/api/admin/resenas/salud').catch(() => null),
+        ]);
         if (!d || !d.configurado || !(d.locales || []).length) {
-          body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:18px;opacity:.6;">Todavía no hay datos de Google. Se cargan solos.</td></tr>';
+          body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">Todavía no hay datos de Google. Se cargan solos.</td></tr>';
           return;
         }
+        const salud = (sal && sal.locales) || {};
         body.innerHTML = d.locales.map((l) => {
+          const s = salud[l.slug] || {};
           const nu = l.nuevas7 != null ? l.nuevas7 : l.nuevas30;
           const nuTxt = nu == null ? '<span style="opacity:.5;">—</span>'
             : (nu > 0 ? '<b style="color:#3a9d5d;">+' + nu + '</b>'
               : (nu < 0 ? '<b style="color:#c0492f;">' + nu + '</b>' : '0'));
-          const subir = (l.rating >= 5) ? '🏆 tope'
-            : (l.faltan != null ? '~' + fmtNum(l.faltan) + ' → ' + String(l.target).replace('.', ',') + '★'
-              : '<span style="opacity:.5;">—</span>');
+          const rating = s.exacto
+            ? '<b>' + s.media.toFixed(2).replace('.', ',') + '★</b><span class="rg-exacto">exacto</span>'
+            : '<b>' + l.rating + '★</b>';
+          const subir = s.exacto
+            ? (s.faltan_5 == null ? '🏆 tope'
+              : '<b>' + fmtNum(s.faltan_5) + '</b> × 5★ → ' + String(s.target).replace('.', ',') + '★')
+            : ((l.rating >= 5) ? '🏆 tope'
+              : (l.faltan != null ? '~' + fmtNum(l.faltan) + ' → ' + String(l.target).replace('.', ',') + '★'
+                : '<span style="opacity:.5;">—</span>'));
+          const tasa = s.exacto && s.tasa_respuesta != null
+            ? (s.tasa_respuesta >= 80 ? '<b style="color:#3a9d5d;">' : s.tasa_respuesta >= 50 ? '<b style="color:#d4a853;">' : '<b style="color:#c0492f;">') + s.tasa_respuesta + '%</b>'
+            : '<span style="opacity:.5;">—</span>';
           return '<tr>' +
             '<td>' + esc(l.name) + ' <small style="opacity:.6;">' + esc(l.city) + '</small></td>' +
-            '<td><b>' + l.rating + '★</b></td>' +
-            '<td>' + fmtNum(l.reviews) + '</td>' +
+            '<td>' + rating + '</td>' +
+            '<td>' + fmtNum(s.exacto ? s.total : l.reviews) + '</td>' +
             '<td>' + nuTxt + '</td>' +
+            '<td>' + tasa + '</td>' +
+            '<td>' + spark(s.evolucion) + '</td>' +
             '<td><span style="opacity:.85;">' + subir + '</span></td>' +
           '</tr>';
         }).join('');
       } catch (e) {
-        body.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:18px;opacity:.6;">No se pudo cargar.</td></tr>';
+        body.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">No se pudo cargar.</td></tr>';
       }
     }
 
-    // ---- "Lo que dice la gente" — por local (positivos / negativos del texto de reseñas) ----
-    async function loadVoz() {
-      const body = $('gmVozBody');
+    // ---- Insights IA: temas, empleados, platos, idiomas ----
+    function insBloque(titulo, items, fmt) {
+      if (!items || !items.length) return '';
+      return '<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">' + titulo + '</div>' +
+        items.map(fmt).join('') + '</div>';
+    }
+    async function loadInsights() {
+      const body = $('gmInsightsBody');
       if (!body) return;
+      body.innerHTML = '<div class="rg-loading"><div class="rg-spinner"></div><div style="margin-top:10px;">Analizando reseñas con IA…</div></div>';
       try {
-        const d = await call('/api/admin/resenas/voz', 'GET');
-        const locs = (d && d.porLocal) || [];
-        if (!locs.length) {
-          body.innerHTML = '<p style="opacity:.6;">Todavía no hay reseñas con texto para analizar.</p>';
+        const d = await call('/api/admin/resenas/insights' + rangoQs(), 'GET');
+        $('gmInsightsMuestra').textContent = d.muestra ? 'muestra: ' + d.muestra + ' reseñas con texto' : '';
+        if (d.sinDatos) {
+          body.innerHTML = '<p style="opacity:.6;">Todavía no hay reseñas con texto para analizar en este rango.</p>';
           return;
         }
-        body.innerHTML = locs.map((l) => {
-          const pos = (l.positivo || []).length
-            ? '<div style="color:#3a9d5d;font-size:13px;margin:3px 0;line-height:1.6;">👍 ' + l.positivo.map(esc).join(' · ') + '</div>' : '';
-          const neg = (l.negativo || []).length
-            ? '<div style="color:#c0492f;font-size:13px;margin:3px 0;line-height:1.6;">👎 ' + l.negativo.map(esc).join(' · ') + '</div>'
-            : '<div style="opacity:.45;font-size:12.5px;margin:3px 0;">👎 sin quejas en la muestra</div>';
-          return '<div style="padding:11px 0;border-top:1px solid rgba(128,128,128,.18);">' +
-            '<div style="font-weight:700;margin-bottom:3px;">' + esc(l.local) + '</div>' + pos + neg + '</div>';
-        }).join('');
+        const linea = (color, pre) => (x) =>
+          '<div style="font-size:13px;line-height:1.7;color:' + color + ';">' + pre + ' ' + esc(x.tema) +
+          ' <small style="opacity:.55;">×' + (x.veces || 1) + '</small></div>';
+        const cols = [];
+        cols.push(insBloque('👍 Lo que valoran', d.positivo, linea('#3a9d5d', '•')));
+        cols.push(insBloque('👎 A mejorar', d.negativo, linea('#c0492f', '•')) ||
+          '<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">👎 A mejorar</div><div style="opacity:.45;font-size:12.5px;">sin quejas repetidas en la muestra</div></div>');
+        cols.push(insBloque('🧑‍🍳 Empleados mencionados', d.empleados, (e2) =>
+          '<div style="font-size:13px;line-height:1.7;"><b>' + esc(e2.nombre) + '</b> <small style="opacity:.55;">×' + (e2.menciones || 1) + '</small>' +
+          (e2.nota ? ' <span style="opacity:.7;">— ' + esc(e2.nota) + '</span>' : '') + '</div>'));
+        cols.push(insBloque('🍕 Platos que la gente nombra', d.platos, (p) =>
+          '<div style="font-size:13px;line-height:1.7;">' + esc(p.plato) + ' <small style="opacity:.55;">×' + (p.menciones || 1) + '</small></div>'));
+        const idi = d.idiomas || {};
+        const idiTot = (idi.es || 0) + (idi.en || 0) + (idi.fr || 0) + (idi.otros || 0);
+        if (idiTot) {
+          const pct = (n) => Math.round((n || 0) / idiTot * 100);
+          cols.push('<div><div style="font-weight:700;margin-bottom:6px;font-size:13px;">🌍 Idiomas</div>' +
+            '<div style="font-size:13px;line-height:1.7;">🇪🇸 ' + pct(idi.es) + '% · 🇬🇧 ' + pct(idi.en) + '% · 🇫🇷 ' + pct(idi.fr) + '%' +
+            (idi.otros ? ' · otros ' + pct(idi.otros) + '%' : '') + '</div></div>');
+        }
+        body.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px;">' +
+          cols.filter(Boolean).map((c) => '<div>' + c + '</div>').join('') + '</div>';
       } catch (e) {
-        body.innerHTML = '<p style="opacity:.6;">No se pudo cargar.</p>';
+        body.innerHTML = '<p style="opacity:.6;">No se pudo cargar el análisis.</p>';
       }
     }
 
@@ -2442,7 +2548,7 @@
         const nuevas = (r.resultados || []).reduce((s, x) => s + (x.nuevas || 0), 0);
         const errores = (r.resultados || []).filter((x) => x.error);
         showToast('✓ ' + nuevas + ' reseñas nuevas' + (errores.length ? ' · ' + errores.length + ' locales con error' : ''));
-        loadMetrics(); loadHistorial();
+        loadMetrics(); loadHistorial(); loadPend(); loadPanel();
       } catch (e) { /* toast ya */ }
       finally { btn.disabled = false; btn.textContent = label; }
     }
@@ -2469,7 +2575,7 @@
     $('gmLocal').addEventListener('change', () => {
       const v = $('gmLocal').value;
       if (v && !$('gmFLocal').value) $('gmFLocal').value = v;
-      loadMetrics(); loadHistorial();
+      loadMetrics(); loadHistorial(); loadPend(); loadInsights();
     });
 
     // ---- Generar variantes ----
@@ -2672,9 +2778,10 @@
 
     // Carga inicial
     loadGbp();
+    loadPend();
     loadPanel();
-    loadVoz();
     loadMetrics();
+    loadInsights();
     loadHistorial();
   }
 

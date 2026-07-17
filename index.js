@@ -1267,6 +1267,19 @@ app.get('/api/admin/resenas/voz', requireAdmin, requireOwner, async (req, res) =
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
+// Salud por local: exactos del histórico sincronizado (media real, distribución,
+// faltan-para-subir matemático, tasa de respuesta, evolución mensual).
+app.get('/api/admin/resenas/salud', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.salud()); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Insights IA: temas repetidos, empleados más mencionados, platos, idiomas.
+app.get('/api/admin/resenas/insights', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await resenas.insights(req.query)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
 app.put('/api/admin/resenas/:id', requireAdmin, requireOwner, async (req, res) => {
   try { res.json(await resenas.actualizar(req.params.id, req.body || {})); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }

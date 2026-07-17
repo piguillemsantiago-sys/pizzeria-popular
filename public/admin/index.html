@@ -69,7 +69,15 @@
           #section-google-maps .rg-note b { color:var(--gold); }
           #section-google-maps .rg-localsel { background:var(--rg-input); color:var(--rg-text); border:1px solid var(--rg-border); padding:7px 11px; border-radius:var(--rg-radius-sm); font-size:13px; }
 
-          #section-google-maps .rg-metrics { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+          #section-google-maps .rg-zone { font-size:11px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--rg-muted); margin:26px 0 10px; display:flex; align-items:center; gap:10px; }
+          #section-google-maps .rg-zone::after { content:''; flex:1; height:1px; background:var(--rg-border); }
+          #section-google-maps .rg-range { display:flex; gap:8px; flex-wrap:wrap; align-items:end; margin-bottom:4px; }
+          #section-google-maps .rg-range .rg-field input { padding:6px 8px; font-size:13px; }
+          #section-google-maps .rg-preset { background:transparent; color:var(--rg-muted); border:1px solid var(--rg-border); padding:6px 10px; border-radius:20px; cursor:pointer; font-size:12px; }
+          #section-google-maps .rg-preset:hover, #section-google-maps .rg-preset.active { color:var(--gold); border-color:var(--gold); }
+          #section-google-maps .rg-spark { font-family:monospace; font-size:13px; letter-spacing:1px; color:var(--gold); opacity:.9; }
+          #section-google-maps .rg-exacto { display:inline-block; font-size:9px; padding:1px 6px; border-radius:8px; font-weight:700; background:rgba(52,211,153,.18); color:var(--rg-ok); vertical-align:middle; margin-left:5px; }
+          #section-google-maps .rg-metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:16px; }
           #section-google-maps .rg-metric { background:var(--rg-card); border:1px solid var(--rg-border); border-radius:var(--rg-radius); padding:14px 16px; }
           #section-google-maps .rg-metric-label { font-size:11px; color:var(--rg-muted); text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
           #section-google-maps .rg-metric-value { font-size:24px; font-weight:700; color:var(--gold); }
@@ -170,55 +178,92 @@
             </div>
           </div>
 
-          <!-- Panel: reseñas por local (rating, total, nuevas, faltan para subir) -->
-          <div class="rg-card" id="gmPanel">
-            <h2>📊 Reseñas por local <small>rating · total · nuevas · cuánto falta para subir</small></h2>
+          <!-- ══ ZONA HOY: lo accionable ══ -->
+          <div class="rg-zone">Hoy</div>
+
+          <!-- Pendientes de responder -->
+          <div class="rg-card" id="gmPend">
+            <h2>⏳ Pendientes de responder <span class="count" id="gmPendCount">0</span></h2>
             <div style="overflow-x:auto;">
-              <table class="rg-table" id="gmPanelTable">
-                <thead>
-                  <tr><th>Local</th><th>Rating</th><th>Total</th><th>Nuevas (7d)</th><th>Para subir</th></tr>
-                </thead>
-                <tbody id="gmPanelBody">
-                  <tr><td colspan="5" style="text-align:center;padding:18px;opacity:.6;">Cargando…</td></tr>
+              <table class="rg-table">
+                <tbody id="gmPendBody">
+                  <tr><td class="rg-empty">Cargando…</td></tr>
                 </tbody>
               </table>
             </div>
-            <p class="rg-note" style="margin-top:10px;font-size:11.5px;">
-              <b>Nuevas (7d)</b> es un dato exacto. <b>«Para subir»</b> es una <b>estimación</b> (Google oculta el promedio real y lo redondea); pasará a exacto cuando se active la conexión con la API.
-            </p>
           </div>
 
-          <!-- Lo que dice la gente -->
-          <div class="rg-card" id="gmVoz">
-            <h2>🗣️ Lo que dice la gente <small>por local · resumen IA del texto de las reseñas</small></h2>
-            <div id="gmVozBody"><p style="opacity:.6;">Cargando…</p></div>
-            <p class="rg-note" style="margin-top:10px;font-size:11.5px;">
-              Sale del <b>texto de las reseñas</b> que muestra Google (muestra chica, casi toda 5★). Los <b>positivos</b> son confiables; los <b>negativos</b> casi no aparecen hasta activar la API (o cargando a mano las reseñas de 1-2★).
-            </p>
+          <!-- Rango de fechas (afecta métricas e insights) -->
+          <div class="rg-range">
+            <button class="rg-preset" data-days="30">30 días</button>
+            <button class="rg-preset" data-days="90">90 días</button>
+            <button class="rg-preset" data-days="365">Año</button>
+            <button class="rg-preset active" data-days="0">Todo</button>
+            <div class="rg-field"><label>Desde</label><input type="date" id="gmRDesde"></div>
+            <div class="rg-field"><label>Hasta</label><input type="date" id="gmRHasta"></div>
+            <button class="rg-btn-sec" id="gmRAplicar">Aplicar</button>
           </div>
 
-          <!-- Métricas -->
+          <!-- Métricas del período -->
           <div class="rg-metrics">
             <div class="rg-metric">
-              <div class="rg-metric-label">Reseñas del mes</div>
+              <div class="rg-metric-label">Reseñas</div>
               <div class="rg-metric-value" id="gmTotal">—</div>
             </div>
             <div class="rg-metric">
-              <div class="rg-metric-label">Respondidas / Pendientes</div>
+              <div class="rg-metric-label">Respondidas / Pend.</div>
               <div class="rg-metric-value" id="gmResp">— / —</div>
             </div>
             <div class="rg-metric">
-              <div class="rg-metric-label">Puntuación media (mes)</div>
+              <div class="rg-metric-label">Tasa de respuesta</div>
+              <div class="rg-metric-value" id="gmTasa">—</div>
+            </div>
+            <div class="rg-metric">
+              <div class="rg-metric-label">Puntuación media</div>
               <div class="rg-metric-value" id="gmMedia">—</div>
               <div class="rg-metric-sub" id="gmDistrib"></div>
             </div>
             <div class="rg-metric">
-              <div class="rg-metric-label">Tiempo medio respuesta</div>
+              <div class="rg-metric-label">Tiempo medio resp.</div>
               <div class="rg-metric-value" id="gmTiempo">—</div>
             </div>
           </div>
 
-          <!-- Nueva reseña -->
+          <!-- ══ ZONA SALUD POR LOCAL ══ -->
+          <div class="rg-zone">Salud por local</div>
+
+          <div class="rg-card" id="gmPanel">
+            <h2>📊 Reseñas por local <small>rating · nuevas · tendencia · cuánto falta para subir</small></h2>
+            <div style="overflow-x:auto;">
+              <table class="rg-table" id="gmPanelTable">
+                <thead>
+                  <tr><th>Local</th><th>Rating</th><th>Total</th><th>Nuevas (7d)</th><th>Tasa resp.</th><th>Tendencia</th><th>Para subir</th></tr>
+                </thead>
+                <tbody id="gmPanelBody">
+                  <tr><td colspan="7" style="text-align:center;padding:18px;opacity:.6;">Cargando…</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="rg-note" style="margin-top:10px;font-size:11.5px;" id="gmPanelNote">
+              <b>Nuevas (7d)</b> es exacto. <b>«Para subir»</b> es estimación mientras no haya histórico sincronizado; con la etiqueta <span class="rg-exacto">exacto</span> el rating tiene decimales reales y «para subir» es matemático (reseñas 5★ que faltan). <b>Tendencia</b> = media mensual de los últimos meses.
+            </p>
+          </div>
+
+          <!-- ══ ZONA INSIGHTS ══ -->
+          <div class="rg-zone">Insights</div>
+
+          <div class="rg-card" id="gmInsights">
+            <h2>🧠 Lo que dice la gente <small id="gmInsightsMuestra"></small></h2>
+            <div id="gmInsightsBody"><p style="opacity:.6;">Cargando…</p></div>
+            <p class="rg-note" style="margin-top:10px;font-size:11.5px;">
+              Análisis IA del <b>texto real</b> de las reseñas guardadas (respeta el local y el rango de fechas de arriba). Con el histórico completo sincronizado, la muestra pasa de decenas a miles y aparecen las quejas reales.
+            </p>
+          </div>
+
+          <!-- ══ ZONA RESPONDER / HISTÓRICO ══ -->
+          <div class="rg-zone">Responder</div>
+
+          <!-- Nueva reseña (carga manual, Fase 1) -->
           <div class="rg-card">
             <h2>+ Nueva reseña</h2>
             <div class="rg-form-row">
@@ -1078,7 +1123,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=73"></script>
+  <script src="/admin/admin.js?v=74"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
