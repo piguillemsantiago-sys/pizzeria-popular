@@ -25,6 +25,8 @@ const { getBrandKit, saveBrandKit } = require('./lib/brand-kit');
 const menu = require('./lib/menu');
 const menuAnalytics = require('./lib/menu-analytics');
 const resenas = require('./lib/google-reviews');
+const googleOAuth = require('./lib/google-oauth');
+const gbp = require('./lib/gbp');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -1227,8 +1229,8 @@ app.post('/api/admin/pauta/snapshot', requireAdmin, requireOwner, async (req, re
 // ========== PANEL ADMIN — RESEÑAS GOOGLE (sección Google Maps) ==========
 // Gestión de reseñas con IA. Fase 1 (semi-manual): generar 3 respuestas con el
 // tono Popular → elegir/editar → guardar en pp_resenas_google. Solo dueño.
-// Ver lib/google-reviews.js. Fase 2 (cuando Google apruebe la Business Profile
-// API): backfill + cron + publicación automática de respuestas.
+// Ver lib/google-reviews.js. Fase 2 (jul 2026, API aprobada): OAuth + sync
+// automático de reseñas + publicación de respuestas. Ver lib/gbp.js.
 
 // Gate dueño-only: además de admin, role 'dueno' (mismo criterio que /api/admin/me).
 async function requireOwner(req, res, next) {
@@ -1281,6 +1283,53 @@ app.post('/api/admin/resenas/notificar-telegram', requireAdmin, requireOwner, as
   if (!Number.isInteger(estrellas)) return res.status(400).json({ error: 'estrellas inválido' });
   if (!texto_original) return res.status(400).json({ error: 'texto_original requerido' });
   try { res.json(await resenas.notificarTelegram({ local_id, estrellas, texto_original, cliente_nombre })); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// ---- Fase 2: Business Profile API (OAuth + sync + publicar) ----
+
+// Estado de la conexión (para pintar la tarjeta GBP del panel).
+app.get('/api/admin/google/gbp/estado', requireAdmin, requireOwner, (req, res) => {
+  try { res.json(gbp.estado()); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Devuelve la URL de consentimiento; el panel la abre en una pestaña nueva.
+app.get('/api/admin/google/oauth/start', requireAdmin, requireOwner, (req, res) => {
+  try { res.json({ url: googleOAuth.authUrl() }); }
+  catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Callback del consentimiento. Llega por redirect del navegador (sin Bearer):
+// lo protege el state de un solo uso generado en /start.
+app.get('/api/admin/google/oauth/callback', async (req, res) => {
+  const { code, state, error } = req.query;
+  if (error) return res.redirect('/admin/?google=denegado');
+  if (!code || !googleOAuth.validState(state)) return res.redirect('/admin/?google=error');
+  try {
+    await googleOAuth.exchangeCode(code);
+    res.redirect('/admin/?google=ok');
+  } catch (e) {
+    console.error('[Google OAuth] Callback:', e.message);
+    res.redirect('/admin/?google=error');
+  }
+});
+
+// Descubre la cuenta y mapea las locations contra los placeId conocidos.
+app.post('/api/admin/google/gbp/descubrir', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbp.descubrir()); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Sincroniza reseñas. body {full:true} = backfill histórico completo.
+app.post('/api/admin/google/gbp/sync', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbp.sync({ full: !!(req.body && req.body.full) })); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Publica en Google la respuesta elegida/editada de una reseña sincronizada.
+app.post('/api/admin/resenas/:id/publicar', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbp.publicar(req.params.id)); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
@@ -1373,6 +1422,20 @@ cron.schedule('0 3 * * 0', () => {
 // ========== CRON: Snapshot diario de reseñas Google (todos los días, 3:15am) ==========
 cron.schedule('15 3 * * *', () => {
   snapshotGoogle().catch(err => console.error('[Cron Google snapshot] Error:', err.message));
+});
+
+// ========== CRON: Sync de reseñas Google vía GBP API (cada 15 min) ==========
+// Incremental: corta apenas encuentra una página sin cambios. Si el OAuth no
+// está conectado o los locales no están mapeados, no hace nada (silencioso).
+cron.schedule('*/15 * * * *', async () => {
+  if (!googleOAuth.conectado() || !gbp.mapeado()) return;
+  try {
+    const r = await gbp.sync({ full: false });
+    const nuevas = r.resultados.reduce((s, x) => s + (x.nuevas || 0), 0);
+    if (nuevas > 0) console.log('[Cron GBP] ' + nuevas + ' reseñas nuevas sincronizadas.');
+  } catch (e) {
+    console.error('[Cron GBP] Error:', e.message);
+  }
 });
 
 // ========== CRON: Snapshot diario de Meta Ads (todos los días, 4am) ==========

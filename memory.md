@@ -2,6 +2,12 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-16
+
+- **Cierre formal de la sesión 13-15/7** con `/handoff`: handoff.md al día (Pepe auditado, post de la semifinal, generador de portadas v72, feedback del dueño) y **43 commits locales pusheados** a GitHub — incluía toda la sesión de portadas de la tarde del 15 que estaba sin subir. Sin trabajo nuevo de código hoy.
+- **Pendiente de HOY jueves 16/7:** volver a "Mostrar" las 2 cards de **Milanesas (ES+EN)** en el panel de promos — la web y Pepe se acomodan solos (cache 60s); la nota #20 del Cerebro ya caducó sola por texto.
+- Siguientes en cola: feedback del dueño al generador de portadas (logo más grande + diseños validados como defaults) y post #1 del backlog (guía SEO Benidorm).
+
 ## 2026-07-15
 
 *(sesión Blog — post de la semifinal, madrugada del 14 al 15)*

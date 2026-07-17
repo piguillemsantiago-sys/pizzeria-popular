@@ -4,6 +4,8 @@ node_modules/
 Thumbs.db
 *.log
 google-drive-key.json
+google-oauth-token.json
+gbp-locations.json
 comp.jpg
 boot.out
 boot.err

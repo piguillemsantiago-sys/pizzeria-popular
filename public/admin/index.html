@@ -158,9 +158,16 @@
             </select>
           </div>
 
-          <div class="rg-note">
-            <b>Modo manual (Fase 1).</b> Pegá la reseña, generá la respuesta con IA en el tono Popular y copiala a Google.
-            La conexión automática con Google (traer reseñas y publicar respuestas sin copiar/pegar) se activa en cuanto Google apruebe la API.
+          <!-- Conexión con Google (Fase 2) -->
+          <div class="rg-card" id="gmGbpCard">
+            <h2>🔗 Conexión con Google</h2>
+            <div id="gmGbpEstado" style="font-size:13px;line-height:1.7;margin-bottom:12px;opacity:.85;">Cargando…</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="rg-btn" id="gmGbpConectar" hidden>Conectar con Google</button>
+              <button class="rg-btn-sec" id="gmGbpDescubrir" hidden>Detectar locales</button>
+              <button class="rg-btn-sec" id="gmGbpSync" hidden>Sincronizar ahora</button>
+              <button class="rg-btn-ghost" id="gmGbpBackfill" hidden>Traer TODO el histórico</button>
+            </div>
           </div>
 
           <!-- Panel: reseñas por local (rating, total, nuevas, faltan para subir) -->
@@ -329,6 +336,7 @@
                 <button class="rg-btn-ghost" id="gmDClose">Cerrar</button>
                 <button class="rg-btn-sec" id="gmDRegenerar">✨ Regenerar con IA</button>
                 <button class="rg-btn" id="gmDGuardar">Guardar cambios</button>
+                <button class="rg-btn" id="gmDPublicar" hidden>📤 Publicar en Google</button>
               </div>
             </div>
           </div>
@@ -1070,7 +1078,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=72"></script>
+  <script src="/admin/admin.js?v=73"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

@@ -2377,6 +2377,81 @@
       }
     }
 
+    // ---- Conexión con Google (Fase 2: Business Profile API) ----
+    async function loadGbp() {
+      // Aviso post-OAuth: Google redirige a /admin/?google=ok|error|denegado.
+      const qs = new URLSearchParams(location.search);
+      if (qs.has('google')) {
+        const v = qs.get('google');
+        showToast(v === 'ok' ? '✓ Google conectado' : 'No se pudo conectar con Google (' + v + ')');
+        history.replaceState(null, '', location.pathname);
+      }
+
+      const est = $('gmGbpEstado');
+      const bC = $('gmGbpConectar'), bD = $('gmGbpDescubrir'), bS = $('gmGbpSync'), bB = $('gmGbpBackfill');
+      [bC, bD, bS, bB].forEach((b) => { b.hidden = true; });
+      try {
+        const d = await api('/api/admin/google/gbp/estado');
+        if (!d.oauth_configurado) {
+          est.innerHTML = 'Falta configurar las credenciales OAuth en el servidor (<code>GOOGLE_OAUTH_CLIENT_ID/SECRET</code>).';
+          return;
+        }
+        if (!d.conectado) {
+          est.textContent = 'La API de Google está aprobada. Autorizá una vez con la cuenta que administra las fichas y las reseñas se sincronizan solas.';
+          bC.hidden = false;
+          return;
+        }
+        const locs = Object.keys(d.locales || {});
+        if (!locs.length) {
+          est.textContent = 'Conectado ✓ — falta detectar los locales de la cuenta.';
+          bD.hidden = false;
+          return;
+        }
+        est.innerHTML = 'Conectado ✓ — sincronizando cada 15 min: <b>' +
+          locs.map((s) => esc(GM_LOCAL_NAMES[s] || s)).join(' · ') + '</b>' +
+          (d.mapeado_el ? ' <small style="opacity:.6;">(mapeado ' + gmFmtDate(d.mapeado_el) + ')</small>' : '');
+        bD.hidden = false; bS.hidden = false; bB.hidden = false;
+      } catch (e) {
+        est.textContent = 'No se pudo consultar el estado.';
+      }
+    }
+
+    $('gmGbpConectar').addEventListener('click', async () => {
+      try {
+        const r = await call('/api/admin/google/oauth/start', 'GET');
+        location.href = r.url;
+      } catch (e) { /* toast ya */ }
+    });
+
+    $('gmGbpDescubrir').addEventListener('click', async () => {
+      const btn = $('gmGbpDescubrir');
+      btn.disabled = true; btn.textContent = 'Detectando…';
+      try {
+        const r = await call('/api/admin/google/gbp/descubrir', 'POST');
+        const n = Object.keys(r.locales || {}).length;
+        showToast(n ? '✓ ' + n + ' locales detectados' : 'No se encontraron locales que coincidan');
+        loadGbp();
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = 'Detectar locales'; }
+    });
+
+    async function runSync(full, btn, label) {
+      btn.disabled = true; btn.textContent = 'Sincronizando…';
+      try {
+        const r = await call('/api/admin/google/gbp/sync', 'POST', { full });
+        const nuevas = (r.resultados || []).reduce((s, x) => s + (x.nuevas || 0), 0);
+        const errores = (r.resultados || []).filter((x) => x.error);
+        showToast('✓ ' + nuevas + ' reseñas nuevas' + (errores.length ? ' · ' + errores.length + ' locales con error' : ''));
+        loadMetrics(); loadHistorial();
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = label; }
+    }
+    $('gmGbpSync').addEventListener('click', () => runSync(false, $('gmGbpSync'), 'Sincronizar ahora'));
+    $('gmGbpBackfill').addEventListener('click', () => {
+      if (!confirm('Trae TODO el histórico de reseñas de Google (miles). Se hace una sola vez y puede tardar unos minutos. ¿Seguir?')) return;
+      runSync(true, $('gmGbpBackfill'), 'Traer TODO el histórico');
+    });
+
     // ---- Estrellas ----
     function paintStars() {
       document.querySelectorAll('#gmFStars .rg-star').forEach((s) =>
@@ -2526,9 +2601,13 @@
       detail = it;
       $('gmDTitle').textContent = `${gmStars(it.estrellas)}  ·  Popular ${GM_LOCAL_NAMES[it.local_id] || it.local_id}`;
       $('gmDMeta').textContent = `${gmFmtDate(it.fecha_resena)}  ·  ${it.cliente_nombre || 'Anónimo'}  ·  ${it.idioma_detectado || '—'}  ·  ${it.estado}`;
-      $('gmDOriginal').textContent = it.texto_original;
+      $('gmDOriginal').textContent = it.texto_original || '(reseña sin texto, solo estrellas)';
       $('gmDRespTextarea').value = it.respuesta_editada || it.respuesta_elegida || '';
       $('gmDVariants').innerHTML = '';
+      // Publicar en Google: solo reseñas que vinieron de la API.
+      const pub = $('gmDPublicar');
+      pub.hidden = !(it.origen === 'google' && it.google_review_id);
+      pub.textContent = it.respuesta_publicada ? '📤 Republicar en Google' : '📤 Publicar en Google';
       $('gmModal').classList.add('open');
     }
     function closeDetail() { $('gmModal').classList.remove('open'); detail = null; }
@@ -2574,7 +2653,25 @@
       finally { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
     });
 
+    // Publica la respuesta del textarea en la ficha de Google (guarda antes).
+    $('gmDPublicar').addEventListener('click', async () => {
+      if (!detail) return;
+      const nueva = $('gmDRespTextarea').value.trim();
+      if (!nueva) { showToast('La respuesta no puede quedar vacía'); return; }
+      if (!confirm('La respuesta se publica en la ficha PÚBLICA de Google. ¿Publicar?')) return;
+      const btn = $('gmDPublicar');
+      btn.disabled = true; btn.textContent = 'Publicando…';
+      try {
+        await call('/api/admin/resenas/' + detail.id, 'PUT', { respuesta_editada: nueva });
+        await call('/api/admin/resenas/' + detail.id + '/publicar', 'POST');
+        showToast('✓ Respuesta publicada en Google');
+        closeDetail(); loadMetrics(); loadHistorial();
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = '📤 Publicar en Google'; }
+    });
+
     // Carga inicial
+    loadGbp();
     loadPanel();
     loadVoz();
     loadMetrics();
