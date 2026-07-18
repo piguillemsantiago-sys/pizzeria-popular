@@ -2,6 +2,15 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-18
+
+*(sesión Portada del reel "¿Cuál es tu cábala?")*
+
+- **Portada del reel de cábalas entregada y publicada (estilo A1)**: tras ~7 propuestas, el dueño eligió replicar los 2 estilos del feed real — "fijadas" (foto oscurecida + Montserrat blanca + Abuget cursiva, por código) y "A1" (bandera sticker con esquina doblada + kicker dorado "COPA DEL MUNDO" + condensada gastada, pintado por Gemini con la portada ARGENTINA/INGLATERRA como referencia al lado). Ganó la A1. Entregables en `generador-nuevo-tipos/`: `cabala-fijadas.jpg`, `cabala-a1.jpg`, `cabala-a1-cara-baja.jpg` (+ 3 exploraciones libres descartadas: hinchada/editorial/neón).
+- **Fix "cara cortada en el grid"**: la miniatura del feed cortaba la frente de la protagonista → se desplazó la foto 230px hacia abajo (ojos al ~35% del recorte, como la portada del comunicado), rellenando el techo faltante con outpaint de Gemini (paneles + luces, indistinguible) y repintando el diseño sobre la base nueva. Receta nueva: **"bajar la cara" = shift + outpaint del techo + repintar**.
+- **Método que funcionó**: replicar = referencia real al lado (extraída de los entregables, no de memoria); ventana 3:4 + fundido 90px + degradé de pie para el empalme; captura del chat extraída del transcript de la sesión; limpieza de UI de Instagram con Gemini reconstruyendo la bandera detrás.
+- Pendiente (sigue): portar ventana 3:4 + variante "comunicado" al modelo `partido` de `lib/portadas.js`; sumar "A1-cábala" (pregunta + bandera única) como variante si el dueño lo vuelve a pedir.
+
 ## 2026-07-17
 
 - **Carta digital: quitada la pizza Cancha** (pedido del cliente). Desactivada a nivel maestro AJAX en Supabase (`menu_items.is_active=false`, id `3b5f0448…`), NO borrada — reactivable desde el panel de admin. Verificado el menú efectivo de los 6 locales + maestro: ya no aparece en ninguno. Sin tocar código ni deploy (el menú público de Railway lee la misma base).
