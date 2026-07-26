@@ -2893,7 +2893,7 @@
         await call('/api/admin/resenas/' + detail.id, 'PUT', { respuesta_editada: nueva, estado: 'respondida' });
         try { await navigator.clipboard.writeText(nueva); } catch (e) {}
         showToast('Cambios guardados y copiados');
-        closeDetail(); loadMetrics(); loadHistorial();
+        closeDetail(); loadMetrics(); loadHistorial(); loadPend();
       } catch (e) { /* toast ya */ }
       finally { btn.disabled = false; btn.textContent = 'Guardar cambios'; }
     });
@@ -2910,7 +2910,7 @@
         await call('/api/admin/resenas/' + detail.id, 'PUT', { respuesta_editada: nueva });
         await call('/api/admin/resenas/' + detail.id + '/publicar', 'POST');
         showToast('✓ Respuesta publicada en Google');
-        closeDetail(); loadMetrics(); loadHistorial();
+        closeDetail(); loadMetrics(); loadHistorial(); loadPend();
       } catch (e) { /* toast ya */ }
       finally { btn.disabled = false; btn.textContent = '📤 Publicar en Google'; }
     });
