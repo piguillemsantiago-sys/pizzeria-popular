@@ -2328,11 +2328,20 @@
         } else {
           $('gmRDesde').value = ''; $('gmRHasta').value = '';
         }
-        loadMetrics(); loadInsights();
+        aplicarRangoGlobal();
       }));
+    // El rango global discrimina TODA la sección: métricas, salud por local,
+    // pendientes, insights y también el histórico (le copia las fechas).
+    function aplicarRangoGlobal() {
+      $('gmHDesde').value = $('gmRDesde').value;
+      $('gmHHasta').value = $('gmRHasta').value;
+      hOffset = 0;
+      loadMetrics(); loadInsights(); loadPanel(); loadPend(); loadHistorial();
+    }
+
     $('gmRAplicar').addEventListener('click', () => {
       document.querySelectorAll('#section-google-maps .rg-preset').forEach((x) => x.classList.remove('active'));
-      loadMetrics(); loadInsights();
+      aplicarRangoGlobal();
     });
 
     // ---- Métricas del período ----
@@ -2355,7 +2364,9 @@
       if (!body) return;
       try {
         const local = $('gmLocal').value;
-        const qs = '?estado=pendiente&limit=6' + (local ? '&local_id=' + local : '');
+        const qs = '?estado=pendiente&limit=6' + (local ? '&local_id=' + local : '') +
+          ($('gmRDesde').value ? '&desde=' + $('gmRDesde').value : '') +
+          ($('gmRHasta').value ? '&hasta=' + $('gmRHasta').value : '');
         const r = await call('/api/admin/resenas/historial' + qs, 'GET');
         $('gmPendCount').textContent = r.total;
         if (!r.items.length) {
@@ -2394,20 +2405,33 @@
         '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="2.2" fill="#b97f1c"/></svg>';
     }
 
+    // Rango REAL elegido por el usuario (sin el default 2015 de rangoQs):
+    // solo manda desde/hasta si hay algo cargado en los inputs.
+    function rangoRealQs() {
+      const p = new URLSearchParams();
+      if ($('gmRDesde').value) p.set('desde', $('gmRDesde').value);
+      if ($('gmRHasta').value) p.set('hasta', $('gmRHasta').value);
+      const s = p.toString();
+      return s ? '?' + s : '';
+    }
+
     async function loadPanel() {
       const body = $('gmPanelBody');
       if (!body) return;
       try {
         const [d, sal] = await Promise.all([
           call('/api/admin/analitica/google', 'GET'),
-          api('/api/admin/resenas/salud').catch(() => null),
+          api('/api/admin/resenas/salud' + rangoRealQs()).catch(() => null),
         ]);
         if (!d || !d.configurado || !(d.locales || []).length) {
           body.innerHTML = '<div class="rg-empty">Todavía no hay datos de Google. Se cargan solos.</div>';
           return;
         }
         const salud = (sal && sal.locales) || {};
-        body.innerHTML = d.locales.map((l) => {
+        const enRango = !!(sal && sal.rango);
+        const localSel = $('gmLocal').value;
+        const visibles = localSel ? d.locales.filter((l) => l.slug === localSel) : d.locales;
+        body.innerHTML = visibles.map((l) => {
           const s = salud[l.slug] || {};
           const nu = l.nuevas7 != null ? l.nuevas7 : l.nuevas30;
           const nuTxt = nu == null ? ''
@@ -2416,16 +2440,20 @@
 
           const chip = (s.exacto && s.tasa_respuesta != null)
             ? '<span class="gm-chip ' + (s.tasa_respuesta >= 80 ? 'ok' : 'warn') + '">' + s.tasa_respuesta + '% resp.</span>'
-            : '<span class="gm-chip est">estimado</span>';
+            : (enRango ? '' : '<span class="gm-chip est">estimado</span>');
 
           const rating = s.exacto
             ? '<div class="gm-crating">' + s.media.toFixed(2).replace('.', ',') + '<small>★</small></div>'
-            : '<div class="gm-crating dim">' + String(l.rating).replace('.', ',') + '<small>★</small></div>';
+            : (enRango
+              ? '<div class="gm-crating dim">—</div>'
+              : '<div class="gm-crating dim">' + String(l.rating).replace('.', ',') + '<small>★</small></div>');
 
-          const total = fmtNum(s.exacto ? s.total : l.reviews) + ' reseñas';
+          const total = fmtNum(s.exacto ? s.total : (enRango ? 0 : l.reviews)) + (enRango ? ' reseñas en el período' : ' reseñas');
 
           let barra = '';
-          if (s.exacto && s.faltan_5 == null) {
+          if (enRango) {
+            barra = ''; // el "camino a X★" es del histórico completo, no de un rango
+          } else if (s.exacto && s.faltan_5 == null) {
             barra = '<div class="gm-cbar"><div class="lbl"><span>🏆 En el tope</span><span></span></div>' +
               '<div class="gm-ctrack"><div class="gm-cfill" style="width:100%"></div></div></div>';
           } else if (s.exacto) {
@@ -2663,7 +2691,8 @@
     $('gmLocal').addEventListener('change', () => {
       const v = $('gmLocal').value;
       if (v && !$('gmFLocal').value) $('gmFLocal').value = v;
-      loadMetrics(); loadHistorial(); loadPend(); loadInsights();
+      $('gmHLocal').value = v; hOffset = 0;
+      loadMetrics(); loadHistorial(); loadPend(); loadInsights(); loadPanel();
     });
 
     // ---- Generar variantes ----

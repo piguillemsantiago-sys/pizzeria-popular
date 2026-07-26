@@ -1271,7 +1271,7 @@ app.get('/api/admin/resenas/voz', requireAdmin, requireOwner, async (req, res) =
 // Salud por local: exactos del histórico sincronizado (media real, distribución,
 // faltan-para-subir matemático, tasa de respuesta, evolución mensual).
 app.get('/api/admin/resenas/salud', requireAdmin, requireOwner, async (req, res) => {
-  try { res.json(await resenas.salud()); }
+  try { res.json(await resenas.salud(req.query)); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
