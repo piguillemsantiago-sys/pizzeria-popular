@@ -2336,7 +2336,7 @@
       $('gmHDesde').value = $('gmRDesde').value;
       $('gmHHasta').value = $('gmRHasta').value;
       hOffset = 0;
-      loadMetrics(); loadInsights(); loadPanel(); loadPend(); loadHistorial();
+      loadMetrics(); loadInsights(); loadPanel(); loadPend(); loadHistorial(); loadRendimiento();
     }
 
     $('gmRAplicar').addEventListener('click', () => {
@@ -2435,6 +2435,45 @@
       if ($('gmRHasta').value) p.set('hasta', $('gmRHasta').value);
       const s = p.toString();
       return s ? '?' + s : '';
+    }
+
+    // ---- Rendimiento oficial (Performance API) ----
+    async function loadRendimiento() {
+      const cards = $('gmPerfCards'), kwBody = $('gmPerfKwBody');
+      if (!cards) return;
+      try {
+        const p = new URLSearchParams();
+        if ($('gmLocal').value) p.set('local_id', $('gmLocal').value);
+        if ($('gmRDesde').value) p.set('desde', $('gmRDesde').value);
+        if ($('gmRHasta').value) p.set('hasta', $('gmRHasta').value);
+        const d = await api('/api/admin/google/rendimiento' + (p.toString() ? '?' + p.toString() : ''));
+        const pct = (parte, todo) => (todo > 0 ? Math.round((parte / todo) * 100) : 0);
+        const card = (label, val, sub) =>
+          '<div class="rg-metric"><div class="rg-metric-label">' + label + '</div>' +
+          '<div class="rg-metric-value">' + fmtNum(val) + '</div>' +
+          (sub ? '<div class="rg-metric-sub">' + sub + '</div>' : '') + '</div>';
+        const partes = [
+          card('👀 Vistas del perfil', d.vistas_perfil,
+            pct(d.vistas_maps, d.vistas_perfil) + '% Maps · ' + pct(d.vistas_busqueda, d.vistas_perfil) + '% Búsqueda · ' + pct(d.vistas_movil, d.vistas_perfil) + '% móvil'),
+          card('📞 Llamadas', d.llamadas, null),
+          card('🧭 Cómo llegar', d.como_llegar, null),
+          card('🌐 Clicks a la web', d.clicks_web, null),
+          card('💬 Chats', d.chats, null),
+          card('📅 Reservas', d.reservas, null),
+        ];
+        if (d.pedidos_comida > 0) partes.push(card('🛵 Pedidos de comida', d.pedidos_comida, null));
+        if (d.clicks_menu > 0) partes.push(card('📖 Clicks al menú', d.clicks_menu, null));
+        cards.innerHTML = partes.join('');
+        $('gmPerfKwNota').textContent = d.locales.length > 1 ? '(todos los locales)' : '(' + (GM_LOCAL_NAMES[d.locales[0]] || d.locales[0]) + ')';
+        kwBody.innerHTML = (d.busquedas && d.busquedas.length)
+          ? '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + d.busquedas.map((k) =>
+              '<span style="background:var(--rg-input);border:1px solid var(--rg-border);border-radius:16px;padding:5px 12px;font-size:12.5px;">' +
+              esc(k.termino) + ' <b style="color:var(--gold);">' + (k.aproximado ? '~' : '') + fmtNum(k.veces) + '</b></span>').join('') + '</div>'
+          : '<div class="rg-empty">Sin datos de búsquedas todavía.</div>';
+      } catch (e) {
+        cards.innerHTML = '<div class="rg-empty" style="grid-column:1/-1;">No se pudo cargar el rendimiento.</div>';
+        kwBody.innerHTML = '';
+      }
     }
 
     async function loadPanel() {
@@ -2714,7 +2753,7 @@
       const v = $('gmLocal').value;
       if (v && !$('gmFLocal').value) $('gmFLocal').value = v;
       $('gmHLocal').value = v; hOffset = 0;
-      loadMetrics(); loadHistorial(); loadPend(); loadInsights(); loadPanel();
+      loadMetrics(); loadHistorial(); loadPend(); loadInsights(); loadPanel(); loadRendimiento();
     });
 
     // ---- Generar variantes ----
@@ -2924,6 +2963,7 @@
     // Carga inicial
     loadGbp();
     loadNovedades();
+    loadRendimiento();
     loadPend();
     loadPanel();
     loadMetrics();

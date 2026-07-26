@@ -283,6 +283,20 @@
             </div>
           </div>
 
+          <!-- ══ ZONA RENDIMIENTO (Performance API) ══ -->
+          <div class="rg-zone">Rendimiento en Google</div>
+
+          <div class="rg-metrics" id="gmPerfCards">
+            <div class="rg-empty" style="grid-column:1/-1;">Cargando rendimiento…</div>
+          </div>
+          <div class="rg-card" id="gmPerfKw" style="margin-top:4px;">
+            <h2>🔎 Con qué búsquedas te encuentran <small id="gmPerfKwNota" style="opacity:.6;font-weight:400;"></small></h2>
+            <div id="gmPerfKwBody"><div class="rg-empty">Cargando…</div></div>
+          </div>
+          <p class="rg-note" style="margin-top:10px;font-size:11.5px;">
+            Datos <b>oficiales de Google</b> por día y por local (vistas del perfil, llamadas, cómo llegar, web…). Respetan el local y el rango de fechas de arriba; sin rango se muestran los <b>últimos 30 días</b>. Google publica con ~3-5 días de retraso, por eso los últimos días pueden venir en cero. Las búsquedas son de los últimos 3 meses cerrados.
+          </p>
+
           <!-- ══ ZONA SALUD POR LOCAL ══ -->
           <div class="rg-zone">Salud por local</div>
 
@@ -1167,7 +1181,7 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <script src="/admin/admin.js?v=80"></script>
+  <script src="/admin/admin.js?v=81"></script>
   <!-- Menú Digital: libs (Chart.js para analytics · SortableJS para reordenar) + módulo -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>

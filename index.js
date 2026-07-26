@@ -30,6 +30,7 @@ const gbp = require('./lib/gbp');
 const gbpPosts = require('./lib/gbp-posts');
 const autoResenas = require('./lib/auto-resenas');
 const gbpFotos = require('./lib/gbp-fotos');
+const gbpPerformance = require('./lib/gbp-performance');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -1346,6 +1347,12 @@ app.post('/api/admin/google/gbp/sync', requireAdmin, requireOwner, async (req, r
 // Publica en Google la respuesta elegida/editada de una reseña sincronizada.
 app.post('/api/admin/resenas/:id/publicar', requireAdmin, requireOwner, async (req, res) => {
   try { res.json(await gbp.publicar(req.params.id)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Rendimiento oficial de las fichas (Performance API, respeta local y fechas).
+app.get('/api/admin/google/rendimiento', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbpPerformance.rendimiento(req.query)); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
