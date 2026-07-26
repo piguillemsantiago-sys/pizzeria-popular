@@ -2572,6 +2572,80 @@
       runSync(true, $('gmGbpBackfill'), 'Traer TODO el histórico');
     });
 
+    // ---- Novedades (Google Posts): cola supervisada ----
+    async function loadNovedades() {
+      const body = $('gmNovBody'), pub = $('gmNovPub');
+      try {
+        const d = await api('/api/admin/gbp-posts');
+        const pend = d.pendientes || [];
+        $('gmNovCount').textContent = pend.length;
+        if (!pend.length) {
+          body.innerHTML = '<div class="rg-empty">No hay borradores pendientes. Los lunes a las 9:00 se generan solos, o tocá «Generar borradores ahora».</div>';
+        } else {
+          body.innerHTML = pend.map((p) => (
+            '<div style="border:1px solid var(--rg-border);border-radius:var(--rg-radius-sm);padding:14px;margin:10px 0;background:var(--rg-card);" data-nov="' + p.id + '" data-nov-local="' + esc(p.local_id) + '">' +
+              '<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">' +
+                (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="" style="width:110px;height:110px;object-fit:cover;border-radius:8px;flex:none;">' : '') +
+                '<div style="flex:1;min-width:220px;">' +
+                  '<div style="font-weight:700;margin-bottom:6px;">' + esc(GM_LOCAL_NAMES[p.local_id] || p.local_id) +
+                    ' <small style="opacity:.6;font-weight:400;">· ' + (p.tipo === 'promo' ? 'promo' : 'contenido de la casa') + (p.tema ? ' · ' + esc(p.tema) : '') + '</small></div>' +
+                  '<textarea class="rg-textarea" data-nov-txt style="width:100%;min-height:96px;">' + esc(p.resumen) + '</textarea>' +
+                  '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
+                    '<button class="rg-btn" data-nov-pub>Publicar</button>' +
+                    '<button class="rg-btn-ghost" data-nov-del>Descartar</button>' +
+                    '<small style="opacity:.6;align-self:center;">Botón del post: ' + (p.cta === 'LEARN_MORE' ? 'Más información → /promos/' : 'Llamar') + '</small>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+            '</div>'
+          )).join('');
+        }
+        const pubs = d.publicados || [];
+        pub.innerHTML = pubs.length
+          ? '<div style="font-size:12px;opacity:.75;line-height:1.9;"><b>Últimos publicados:</b> ' +
+            pubs.map((p) => esc(GM_LOCAL_NAMES[p.local_id] || p.local_id) + ' (' + gmFmtDate(p.publicado_en) + ')').join(' · ') + '</div>'
+          : '';
+      } catch (e) {
+        body.innerHTML = '<div class="rg-empty">No se pudo cargar la cola de novedades.</div>';
+      }
+    }
+
+    $('gmNovBody').addEventListener('click', async (e) => {
+      const card = e.target.closest('[data-nov]');
+      if (!card) return;
+      const id = card.dataset.nov;
+      const local = GM_LOCAL_NAMES[card.dataset.novLocal] || card.dataset.novLocal;
+      const txt = card.querySelector('[data-nov-txt]').value.trim();
+      if (e.target.hasAttribute('data-nov-pub')) {
+        if (!txt) { showToast('El texto no puede quedar vacío'); return; }
+        if (!confirm('La novedad se publica en la ficha PÚBLICA de Google de ' + local + '. ¿Publicar?')) return;
+        e.target.disabled = true; e.target.textContent = 'Publicando…';
+        try {
+          await call('/api/admin/gbp-posts/' + id + '/publicar', 'POST', { resumen: txt });
+          showToast('✓ Novedad publicada en la ficha de ' + local);
+          loadNovedades();
+        } catch (err2) { e.target.disabled = false; e.target.textContent = 'Publicar'; }
+      } else if (e.target.hasAttribute('data-nov-del')) {
+        try {
+          await call('/api/admin/gbp-posts/' + id, 'PATCH', { estado: 'descartado' });
+          loadNovedades();
+        } catch (err2) { /* toast ya */ }
+      }
+    });
+
+    $('gmNovGenerar').addEventListener('click', async () => {
+      const btn = $('gmNovGenerar');
+      btn.disabled = true; btn.textContent = 'Generando…';
+      try {
+        const r = await call('/api/admin/gbp-posts/generar', 'POST');
+        const n = (r.resultados || []).filter((x) => x.id).length;
+        const skips = (r.resultados || []).filter((x) => x.skip).length;
+        showToast(n ? '✓ ' + n + ' borradores nuevos' : (skips ? 'Todos los locales ya tienen novedad de esta semana' : 'No se generó nada'));
+        loadNovedades();
+      } catch (e) { /* toast ya */ }
+      finally { btn.disabled = false; btn.textContent = 'Generar borradores ahora'; }
+    });
+
     // ---- Estrellas ----
     function paintStars() {
       document.querySelectorAll('#gmFStars .rg-star').forEach((s) =>
@@ -2792,6 +2866,7 @@
 
     // Carga inicial
     loadGbp();
+    loadNovedades();
     loadPend();
     loadPanel();
     loadMetrics();

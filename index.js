@@ -27,6 +27,7 @@ const menuAnalytics = require('./lib/menu-analytics');
 const resenas = require('./lib/google-reviews');
 const googleOAuth = require('./lib/google-oauth');
 const gbp = require('./lib/gbp');
+const gbpPosts = require('./lib/gbp-posts');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -1346,6 +1347,28 @@ app.post('/api/admin/resenas/:id/publicar', requireAdmin, requireOwner, async (r
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
+// ---- Novedades de Google (localPosts): cola supervisada ----
+app.get('/api/admin/gbp-posts', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbpPosts.listar()); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.post('/api/admin/gbp-posts/generar', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbpPosts.generarBorradores()); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Publica un borrador (el texto editado viaja en el body y se guarda).
+app.post('/api/admin/gbp-posts/:id/publicar', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbpPosts.publicar(req.params.id, req.body && req.body.resumen)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+app.patch('/api/admin/gbp-posts/:id', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await gbpPosts.guardar(req.params.id, req.body || {})); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
 // ========== PANEL ADMIN — MENÚ DIGITAL ==========
 // Portado de habit-tracker. Mismo proyecto Supabase; el menú PÚBLICO y los QR
 // siguen viviendo en Railway. Acá solo va el plano de CONTROL (admin).
@@ -1448,6 +1471,19 @@ cron.schedule('*/15 * * * *', async () => {
     if (nuevas > 0) console.log('[Cron GBP] ' + nuevas + ' reseñas nuevas sincronizadas.');
   } catch (e) {
     console.error('[Cron GBP] Error:', e.message);
+  }
+});
+
+// ========== CRON: Borradores de Novedades de Google (lunes 9am) ==========
+// Genera UN borrador por local y lo deja en la cola del panel. NO publica.
+cron.schedule('0 9 * * 1', async () => {
+  if (!googleOAuth.conectado() || !gbp.mapeado() || !process.env.ANTHROPIC_API_KEY) return;
+  try {
+    const r = await gbpPosts.generarBorradores();
+    const nuevos = r.resultados.filter((x) => x.id).length;
+    if (nuevos) console.log('[Cron GBP Posts] ' + nuevos + ' borradores nuevos en la cola.');
+  } catch (e) {
+    console.error('[Cron GBP Posts] Error:', e.message);
   }
 });
 
