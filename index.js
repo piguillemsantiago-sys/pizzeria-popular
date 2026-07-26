@@ -29,6 +29,7 @@ const googleOAuth = require('./lib/google-oauth');
 const gbp = require('./lib/gbp');
 const gbpPosts = require('./lib/gbp-posts');
 const autoResenas = require('./lib/auto-resenas');
+const gbpFotos = require('./lib/gbp-fotos');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -1479,6 +1480,14 @@ cron.schedule('*/15 * * * *', async () => {
   // Pre-redactar la respuesta de las que quedan para humano (publicación 1-click).
   try { await autoResenas.prepararBorradores({ limit: 10 }); }
   catch (e) { console.error('[Borradores] Error:', e.message); }
+});
+
+// ========== CRON: Foto fresca semanal en las fichas (miércoles 11am) ==========
+// Google premia la recencia de fotos; rota el banco de fotos reales.
+cron.schedule('0 11 * * 3', async () => {
+  if (!googleOAuth.conectado() || !gbp.mapeado()) return;
+  try { await gbpFotos.subirSemana(); }
+  catch (e) { console.error('[GBP Fotos] Error:', e.message); }
 });
 
 // ========== CRON: Borradores de Novedades de Google (lunes 9am) ==========
