@@ -168,4 +168,4 @@ function ratingsExist() {
   return fs.existsSync(DATA_FILE);
 }
 
-module.exports = { updateRatings, loadRatings, ratingsExist, DATA_FILE };
+module.exports = { updateRatings, loadRatings, ratingsExist, DATA_FILE, LOCALS };
