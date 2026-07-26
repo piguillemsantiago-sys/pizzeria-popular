@@ -2915,6 +2915,12 @@
       finally { btn.disabled = false; btn.textContent = '📤 Publicar en Google'; }
     });
 
+    // Click en cualquier parte del campo de fecha abre el calendario
+    // (por defecto Chrome solo lo abre tocando el iconito).
+    document.querySelectorAll('#section-google-maps input[type="date"]').forEach((inp) => {
+      inp.addEventListener('click', () => { try { inp.showPicker(); } catch (_) {} });
+    });
+
     // Carga inicial
     loadGbp();
     loadNovedades();
