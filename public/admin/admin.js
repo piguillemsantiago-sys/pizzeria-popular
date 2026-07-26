@@ -2373,14 +2373,36 @@
           body.innerHTML = '<div class="rg-empty">Sin pendientes. 🎉</div>';
           return;
         }
-        body.innerHTML = r.items.map((it, idx) => `
+        body.innerHTML = r.items.map((it, idx) => {
+          const borrador = it.google_review_id && (it.respuesta_editada || it.respuesta_elegida);
+          const accion = borrador
+            ? `<textarea class="rg-textarea" data-pend-txt="${idx}" style="margin-top:8px;">${esc(borrador)}</textarea>
+               <div class="act"><button class="rg-btn" data-pub="${idx}">📤 Publicar</button><button class="rg-btn-ghost" data-idx="${idx}">Más opciones</button></div>`
+            : `<div class="act"><button class="${it.estrellas <= 3 ? 'rg-btn' : 'rg-btn-ghost'}" data-idx="${idx}">Responder</button></div>`;
+          return `
           <div class="gm-pcard${it.estrellas <= 3 ? ' neg' : ''}">
             <div class="who"><span><span class="rg-stars-mini">${gmStars(it.estrellas)}</span> · ${esc(GM_LOCAL_NAMES[it.local_id] || it.local_id)}</span><span>${gmFmtDate(it.fecha_resena)}</span></div>
             <div class="txt">${esc(it.texto_original || '(reseña sin texto, solo estrellas)')}</div>
-            <div class="act"><button class="${it.estrellas <= 3 ? 'rg-btn' : 'rg-btn-ghost'}" data-idx="${idx}">Responder</button></div>
-          </div>`).join('');
-        body.querySelectorAll('button').forEach((b) =>
+            ${accion}
+          </div>`;
+        }).join('');
+        body.querySelectorAll('button[data-idx]').forEach((b) =>
           b.addEventListener('click', () => openDetail(r.items[parseInt(b.dataset.idx, 10)])));
+        body.querySelectorAll('button[data-pub]').forEach((b) =>
+          b.addEventListener('click', async () => {
+            const i = parseInt(b.dataset.pub, 10);
+            const it = r.items[i];
+            const texto = body.querySelector('[data-pend-txt="' + i + '"]').value.trim();
+            if (!texto) { showToast('La respuesta no puede quedar vacía'); return; }
+            if (!confirm('La respuesta se publica en la ficha PÚBLICA de Google. ¿Publicar?')) return;
+            b.disabled = true; b.textContent = 'Publicando…';
+            try {
+              await call('/api/admin/resenas/' + it.id, 'PUT', { respuesta_editada: texto });
+              await call('/api/admin/resenas/' + it.id + '/publicar', 'POST');
+              showToast('✓ Respuesta publicada en Google');
+              loadPend(); loadMetrics(); loadHistorial();
+            } catch (e) { b.disabled = false; b.textContent = '📤 Publicar'; }
+          }));
       } catch (e) {
         body.innerHTML = '<div class="rg-empty">No se pudo cargar.</div>';
       }

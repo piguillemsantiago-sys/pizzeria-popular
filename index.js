@@ -1476,6 +1476,9 @@ cron.schedule('*/15 * * * *', async () => {
   // Auto-responder 4-5★ (plantillas del dueño; lo mejorable queda para humano).
   try { await autoResenas.autoResponder({ limit: 30 }); }
   catch (e) { console.error('[Auto reseñas] Error:', e.message); }
+  // Pre-redactar la respuesta de las que quedan para humano (publicación 1-click).
+  try { await autoResenas.prepararBorradores({ limit: 10 }); }
+  catch (e) { console.error('[Borradores] Error:', e.message); }
 });
 
 // ========== CRON: Borradores de Novedades de Google (lunes 9am) ==========
