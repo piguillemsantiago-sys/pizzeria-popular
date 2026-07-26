@@ -28,6 +28,7 @@ const resenas = require('./lib/google-reviews');
 const googleOAuth = require('./lib/google-oauth');
 const gbp = require('./lib/gbp');
 const gbpPosts = require('./lib/gbp-posts');
+const autoResenas = require('./lib/auto-resenas');
 
 const app = express();
 app.set('trust proxy', 1); // detrás de Nginx — req.ip = IP real del visitante
@@ -1472,6 +1473,9 @@ cron.schedule('*/15 * * * *', async () => {
   } catch (e) {
     console.error('[Cron GBP] Error:', e.message);
   }
+  // Auto-responder 4-5★ (plantillas del dueño; lo mejorable queda para humano).
+  try { await autoResenas.autoResponder({ limit: 30 }); }
+  catch (e) { console.error('[Auto reseñas] Error:', e.message); }
 });
 
 // ========== CRON: Borradores de Novedades de Google (lunes 9am) ==========
