@@ -1489,6 +1489,19 @@ cron.schedule('*/15 * * * *', async () => {
   catch (e) { console.error('[Borradores] Error:', e.message); }
 });
 
+// ========== CRON: Pre-calentar caches del panel Google (7:30am) ==========
+// Salud, insights y rendimiento tienen cache diario: calcularlos temprano
+// hace que la primera carga del panel sea instantánea.
+cron.schedule('30 7 * * *', async () => {
+  if (!googleOAuth.conectado() || !gbp.mapeado()) return;
+  try { await resenas.salud(); } catch (e) { console.error('[Warm salud]', e.message); }
+  try { await gbpPerformance.rendimiento({}); } catch (e) { console.error('[Warm rendimiento]', e.message); }
+  if (process.env.ANTHROPIC_API_KEY) {
+    try { await resenas.insights({}); } catch (e) { console.error('[Warm insights]', e.message); }
+  }
+  console.log('[Warm] caches del panel Google listos.');
+});
+
 // ========== CRON: Foto fresca semanal en las fichas (miércoles 11am) ==========
 // Google premia la recencia de fotos; rota el banco de fotos reales.
 cron.schedule('0 11 * * 3', async () => {

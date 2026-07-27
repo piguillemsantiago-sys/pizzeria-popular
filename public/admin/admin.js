@@ -2954,6 +2954,25 @@
       finally { btn.disabled = false; btn.textContent = '📤 Publicar en Google'; }
     });
 
+    // ---- Feedback de carga: cada zona "late" mientras se recarga ----
+    function cargando(ids, on) {
+      ids.forEach((id) => { const el = $(id); if (el) el.classList.toggle('rg-cargando', on); });
+    }
+    function conCarga(fn, ids) {
+      return async function () {
+        cargando(ids, true);
+        try { return await fn.apply(this, arguments); }
+        finally { cargando(ids, false); }
+      };
+    }
+    loadMetrics = conCarga(loadMetrics, ['gmMetricsGrid']);
+    loadPanel = conCarga(loadPanel, ['gmPanelBody']);
+    loadPend = conCarga(loadPend, ['gmPend']);
+    loadNovedades = conCarga(loadNovedades, ['gmNov']);
+    loadInsights = conCarga(loadInsights, ['gmInsights']);
+    loadHistorial = conCarga(loadHistorial, ['gmHBody']);
+    loadRendimiento = conCarga(loadRendimiento, ['gmPerfCards', 'gmPerfKw']);
+
     // Click en cualquier parte del campo de fecha abre el calendario
     // (por defecto Chrome solo lo abre tocando el iconito).
     document.querySelectorAll('#section-google-maps input[type="date"]').forEach((inp) => {
