@@ -2566,23 +2566,28 @@
       body.innerHTML = '<div class="rg-loading"><div class="rg-spinner"></div><div style="margin-top:10px;">Analizando reseñas con IA…</div></div>';
       try {
         const d = await call('/api/admin/resenas/insights' + rangoQs(), 'GET');
-        $('gmInsightsMuestra').textContent = d.muestra ? 'muestra: ' + d.muestra + ' reseñas con texto' : '';
+        // Empleados y platos se cuentan sobre TODAS las del rango; los temas los
+        // estima la IA sobre la muestra que leyó (por eso el ≈ en esos bloques).
+        $('gmInsightsMuestra').textContent = d.muestra
+          ? 'muestra: ' + fmtNum(d.muestra) + ' reseñas con texto' +
+            (d.analizadas && d.analizadas < d.muestra ? ' · la IA leyó ' + fmtNum(d.analizadas) + ' repartidas en el período' : '')
+          : '';
         if (d.sinDatos) {
           body.innerHTML = '<p style="opacity:.6;">Todavía no hay reseñas con texto para analizar en este rango.</p>';
           return;
         }
         const linea = (color, pre) => (x) =>
           '<div style="font-size:13px;line-height:1.7;color:' + color + ';">' + pre + ' ' + esc(x.tema) +
-          ' <small style="opacity:.55;">×' + (x.veces || 1) + '</small></div>';
+          ' <small style="opacity:.55;" title="estimado por la IA sobre la muestra">≈' + (x.veces || 1) + '</small></div>';
         const cols = [];
         cols.push(insBloque('👍 Lo que valoran', d.positivo, linea('#4a7c3f', '•')));
         cols.push(insBloque('👎 A mejorar', d.negativo, linea('#c73a2e', '•')) ||
           '<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">👎 A mejorar</div><div style="opacity:.45;font-size:12.5px;">sin quejas repetidas en la muestra</div></div>');
         cols.push(insBloque('🧑‍🍳 Empleados mencionados', d.empleados, (e2) =>
-          '<div style="font-size:13px;line-height:1.7;"><b>' + esc(e2.nombre) + '</b> <small style="opacity:.55;">×' + (e2.menciones || 1) + '</small>' +
+          '<div style="font-size:13px;line-height:1.7;"><b>' + esc(e2.nombre) + '</b> <small style="opacity:.55;" title="reseñas del período que lo nombran">×' + fmtNum(e2.menciones || 0) + '</small>' +
           (e2.nota ? ' <span style="opacity:.7;">— ' + esc(e2.nota) + '</span>' : '') + '</div>'));
         cols.push(insBloque('🍕 Platos que la gente nombra', d.platos, (p) =>
-          '<div style="font-size:13px;line-height:1.7;">' + esc(p.plato) + ' <small style="opacity:.55;">×' + (p.menciones || 1) + '</small></div>'));
+          '<div style="font-size:13px;line-height:1.7;">' + esc(p.plato) + ' <small style="opacity:.55;" title="reseñas del período que lo nombran">×' + fmtNum(p.menciones || 0) + '</small></div>'));
         const idi = d.idiomas || {};
         const idiTot = (idi.es || 0) + (idi.en || 0) + (idi.fr || 0) + (idi.otros || 0);
         if (idiTot) {
