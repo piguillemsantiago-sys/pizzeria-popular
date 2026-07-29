@@ -2438,6 +2438,15 @@
     }
 
     // ---- Rendimiento oficial (Performance API) ----
+    const GM_MESES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    function mesTxt(iso) {  // '2026-04' → 'abr 2026'
+      const [a, m] = String(iso).split('-');
+      return GM_MESES[parseInt(m, 10) - 1] + ' ' + a;
+    }
+    function mesesTxt(desde, hasta) {
+      return desde === hasta ? mesTxt(desde) : mesTxt(desde) + ' – ' + mesTxt(hasta);
+    }
+
     async function loadRendimiento() {
       const cards = $('gmPerfCards'), kwBody = $('gmPerfKwBody');
       if (!cards) return;
@@ -2464,7 +2473,10 @@
         if (d.pedidos_comida > 0) partes.push(card('🛵 Pedidos de comida', d.pedidos_comida, null));
         if (d.clicks_menu > 0) partes.push(card('📖 Clicks al menú', d.clicks_menu, null));
         cards.innerHTML = partes.join('');
-        $('gmPerfKwNota').textContent = d.locales.length > 1 ? '(todos los locales)' : '(' + (GM_LOCAL_NAMES[d.locales[0]] || d.locales[0]) + ')';
+        const quien = d.locales.length > 1 ? 'todos los locales' : (GM_LOCAL_NAMES[d.locales[0]] || d.locales[0]);
+        // Google solo publica búsquedas por mes cerrado → el período puede ser
+        // más corto que el rango elegido; decirlo para que no confunda.
+        $('gmPerfKwNota').textContent = '(' + quien + (d.busquedas_desde ? ' · ' + mesesTxt(d.busquedas_desde, d.busquedas_hasta) : '') + ')';
         kwBody.innerHTML = (d.busquedas && d.busquedas.length)
           ? '<div style="display:flex;flex-wrap:wrap;gap:8px;">' + d.busquedas.map((k) =>
               '<span style="background:var(--rg-input);border:1px solid var(--rg-border);border-radius:16px;padding:5px 12px;font-size:12.5px;">' +
