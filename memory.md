@@ -2,6 +2,18 @@
 
 > Bitácora día a día del proyecto. Entradas nuevas arriba.
 
+## 2026-07-29
+
+*(sesión Auditoría de la sección Reseñas Google del panel)*
+
+- **Las tarjetas de reseñas estaban clavadas en 1000**: `metricas()` pedía `.limit(10000)` pero PostgREST corta en 1000 filas por request. Playa San Juan mostraba 1000 reseñas / 4,79★ / "100%" cuando eran **1432 / 4,77★ / 1 pendiente**, y el "tiempo medio de respuesta 83,8h" era el promedio de un subconjunto arbitrario (real: 238,9h). Ahora pagina igual que `salud()`. El filtro POR LOCAL siempre estuvo bien aplicado — verificado contra la Performance API (PSJ 97.481 vistas vs 669.978 de todos los locales, idéntico a lo que mostraba el panel).
+- **Las menciones por empleado las inventaba la IA**: el modelo devolvía él mismo el `menciones:N`. Martina daba 127 cuando eran 81, y en tres corridas de la MISMA consulta dio 127/97/94; el ranking estaba mal (Cata es la más nombrada, 105, y salía tercera) y se perdían nombres (Tati 24, Sol 14). **Decisión: la IA descubre nombres y declara variantes de escritura; el conteo lo hace el código con regex sobre TODAS las reseñas del rango y el texto completo.** Mismo criterio para platos. Los temas positivo/negativo siguen siendo estimación → se muestran con ≈.
+- **Insights analizaba 1500 de 5173 reseñas** (las más recientes) → con rango largo el análisis era en realidad del último mes. Ahora la muestra que lee la IA se reparte a lo largo del período y el conteo va sobre el universo completo.
+- **Bug que rompía "Todos · Todo"**: el `slice(0,300)` partía emojis al medio, quedaba un surrogate huérfano y Anthropic rechazaba el request entero → el análisis nunca cargaba. Helper `recortar()` a prueba de emojis (también en `vozCliente`). `max_tokens` 2000 → 4000.
+- **Otros arreglos**: las búsquedas de la Performance API ignoraban el filtro de fechas (eran siempre los últimos 3 meses cerrados) → ahora siguen el rango, recortado a meses cerrados, y el panel dice qué período cubre; `metricas()` filtra `origen='google'` como `salud()` (6 reseñas de prueba de Fase 1 ya no cuentan); tasa de respuesta ya no redondea 99,93 a "100%"; paginado de `salud()` con ORDER BY.
+- Deployado al VPS (commits `dd83584` + `b773e3a`, `admin.js?v=84`).
+- **Pendiente / sabido**: los bordes del rango se calculan en UTC y el VPS está en UTC, pero España va +2h → "hasta el 29/07" incluye hasta las 01:59 del 30 hora española (~1 reseña de diferencia). No se tocó. Latentes sin impacto hoy: `chat-stats.js` trae 1000 logs y `scripts/extract-informe-junio.js` pide 5000 (capado a 1000) — hay 208 chat logs en total.
+
 ## 2026-07-18
 
 *(sesión Portada del reel "¿Cuál es tu cábala?")*
