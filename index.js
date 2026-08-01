@@ -25,6 +25,8 @@ const { getBrandKit, saveBrandKit } = require('./lib/brand-kit');
 const menu = require('./lib/menu');
 const menuAnalytics = require('./lib/menu-analytics');
 const resenas = require('./lib/google-reviews');
+const menciones = require('./lib/menciones');
+const mencionesPdf = require('./lib/menciones-pdf');
 const googleOAuth = require('./lib/google-oauth');
 const gbp = require('./lib/gbp');
 const gbpPosts = require('./lib/gbp-posts');
@@ -1282,6 +1284,27 @@ app.get('/api/admin/resenas/salud', requireAdmin, requireOwner, async (req, res)
 app.get('/api/admin/resenas/insights', requireAdmin, requireOwner, async (req, res) => {
   try { res.json(await resenas.insights(req.query)); }
   catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// Menciones del equipo: quién es nombrado en las reseñas del rango elegido y
+// con qué frases. Mismo filtro de local y fechas que el resto de la sección.
+app.get('/api/admin/resenas/menciones', requireAdmin, requireOwner, async (req, res) => {
+  try { res.json(await menciones.menciones(req.query)); }
+  catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
+
+// El mismo informe en PDF, para imprimirlo o mandárselo al camarero.
+// ?empleado=Cata → informe individual (más frases y portada personal).
+app.get('/api/admin/resenas/menciones/pdf', requireAdmin, requireOwner, async (req, res) => {
+  try {
+    const personal = !!req.query.empleado;
+    const informe = await menciones.menciones({ ...req.query, frases: personal ? 40 : 10 });
+    const pdf = await mencionesPdf.generar(informe, { personal });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition',
+      'attachment; filename="' + mencionesPdf.nombreArchivo(informe, personal) + '"');
+    res.send(pdf);
+  } catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
 app.put('/api/admin/resenas/:id', requireAdmin, requireOwner, async (req, res) => {

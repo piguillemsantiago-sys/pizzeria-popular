@@ -2336,6 +2336,7 @@
       $('gmHDesde').value = $('gmRDesde').value;
       $('gmHHasta').value = $('gmRHasta').value;
       hOffset = 0;
+      resetMenciones();
       loadMetrics(); loadInsights(); loadPanel(); loadPend(); loadHistorial(); loadRendimiento();
     }
 
@@ -2602,6 +2603,87 @@
         body.innerHTML = '<p style="opacity:.6;">No se pudo cargar el análisis.</p>';
       }
     }
+
+    // ---- Menciones al equipo: ranking + informe PDF por persona ----
+    // No se calcula solo al cambiar el rango (cuesta una pasada de IA): se pide
+    // con el botón. Lo que se ve en pantalla y lo que sale en el PDF son el
+    // mismo cálculo sobre el mismo rango.
+    function mencQs(extra) {
+      const p = new URLSearchParams(rangoQs().slice(1));
+      Object.entries(extra || {}).forEach(([k, v]) => { if (v) p.set(k, v); });
+      return '?' + p.toString();
+    }
+
+    function resetMenciones() {
+      const body = $('gmMencBody');
+      if (!body) return;
+      body.innerHTML = '';
+      $('gmMencPdf').hidden = true;
+      $('gmMencRango').textContent = '';
+    }
+
+    // El PDF viaja con el Bearer de la sesión: un <a href> pelado devuelve 401.
+    async function descargarPdf(url, boton) {
+      const antes = boton.textContent;
+      boton.disabled = true; boton.textContent = 'Generando…';
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) { location.href = '/admin/login/'; return; }
+        const res = await fetch(url, { headers: { Authorization: 'Bearer ' + session.access_token } });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          showToast('No se pudo generar el PDF: ' + (j.error || res.status));
+          return;
+        }
+        const cd = res.headers.get('content-disposition') || '';
+        const m = cd.match(/filename="([^"]+)"/);
+        const blob = await res.blob();
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = m ? m[1] : 'menciones.pdf';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+      } catch (e) {
+        showToast('No se pudo generar el PDF');
+      } finally {
+        boton.disabled = false; boton.textContent = antes;
+      }
+    }
+
+    async function loadMenciones() {
+      const body = $('gmMencBody');
+      if (!body) return;
+      body.innerHTML = '<div class="rg-loading"><div class="rg-spinner"></div><div style="margin-top:10px;">Buscando nombres en las reseñas del período…</div></div>';
+      $('gmMencPdf').hidden = true;
+      try {
+        const d = await call('/api/admin/resenas/menciones' + mencQs(), 'GET');
+        $('gmMencRango').textContent = d.local + ' · ' + fmtNum(d.totales.conNombre) +
+          ' de ' + fmtNum(d.totales.conTexto) + ' reseñas con texto nombran a alguien';
+        if (!d.empleados.length) {
+          body.innerHTML = '<p style="opacity:.6;">Nadie del equipo aparece nombrado en este período.</p>';
+          return;
+        }
+        const max = d.empleados[0].menciones || 1;
+        body.innerHTML = '<div class="gm-menc-lista">' + d.empleados.map((e, i) => {
+          const pct = Math.max(4, Math.round(e.menciones / max * 100));
+          return '<div class="gm-menc-fila">' +
+            '<div class="gm-menc-nombre">' + (i === 0 ? '🥇 ' : '') + esc(e.nombre) + '</div>' +
+            '<div class="gm-menc-barra"><span style="width:' + pct + '%;' + (i === 0 ? 'background:var(--gold);' : '') + '"></span></div>' +
+            '<div class="gm-menc-num">' + fmtNum(e.menciones) + '</div>' +
+            '<button class="rg-btn-ghost" data-emp="' + esc(e.nombre) + '">📄 PDF</button>' +
+            '</div>';
+        }).join('') + '</div>';
+        body.querySelectorAll('button[data-emp]').forEach((b) =>
+          b.addEventListener('click', () => descargarPdf('/api/admin/resenas/menciones/pdf' + mencQs({ empleado: b.dataset.emp }), b)));
+        $('gmMencPdf').hidden = false;
+      } catch (e) {
+        body.innerHTML = '<p style="opacity:.6;">No se pudieron calcular las menciones.</p>';
+      }
+    }
+
+    $('gmMencVer').addEventListener('click', loadMenciones);
+    $('gmMencPdf').addEventListener('click', (ev) =>
+      descargarPdf('/api/admin/resenas/menciones/pdf' + mencQs(), ev.currentTarget));
 
     // ---- Conexión con Google (Fase 2: Business Profile API) ----
     async function loadGbp() {
