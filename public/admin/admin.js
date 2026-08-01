@@ -2584,9 +2584,11 @@
         cols.push(insBloque('👍 Lo que valoran', d.positivo, linea('#4a7c3f', '•')));
         cols.push(insBloque('👎 A mejorar', d.negativo, linea('#c73a2e', '•')) ||
           '<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">👎 A mejorar</div><div style="opacity:.45;font-size:12.5px;">sin quejas repetidas en la muestra</div></div>');
-        cols.push(insBloque('🧑‍🍳 Empleados mencionados', d.empleados, (e2) =>
-          '<div style="font-size:13px;line-height:1.7;"><b>' + esc(e2.nombre) + '</b> <small style="opacity:.55;" title="reseñas del período que lo nombran">×' + fmtNum(e2.menciones || 0) + '</small>' +
-          (e2.nota ? ' <span style="opacity:.7;">— ' + esc(e2.nota) + '</span>' : '') + '</div>'));
+        // Los nombres del equipo se fueron a "Menciones al equipo" (acá abajo):
+        // ahí el conteo es exacto y sale el PDF. Tener los dos daba números
+        // distintos para lo mismo.
+        cols.push('<div style="margin-bottom:14px;"><div style="font-weight:700;margin-bottom:6px;font-size:13px;">🧑‍🍳 Empleados mencionados</div>' +
+          '<div style="font-size:12.5px;line-height:1.6;opacity:.7;">Pasaron a <b>🏅 Menciones al equipo</b>, acá abajo: conteo exacto por persona y PDF para entregarles.</div></div>');
         cols.push(insBloque('🍕 Platos que la gente nombra', d.platos, (p) =>
           '<div style="font-size:13px;line-height:1.7;">' + esc(p.plato) + ' <small style="opacity:.55;" title="reseñas del período que lo nombran">×' + fmtNum(p.menciones || 0) + '</small></div>'));
         const idi = d.idiomas || {};
