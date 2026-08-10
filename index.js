@@ -1546,6 +1546,17 @@ cron.schedule('0 9 * * 1', async () => {
   }
 });
 
+// ========== CRON: Publica las Novedades aprobadas al llegar su franja ==========
+// El dueño aprueba cuando quiere; el post sale en el horario del local (Playa
+// San Juan al mediodía, Luceros y Benidorm de noche). Corre cada hora en punto:
+// el server va en UTC, así que la franja se calcula en lib/gbp-posts.js contra
+// la hora de España y acá solo se pregunta qué venció.
+cron.schedule('2 * * * *', async () => {
+  if (!googleOAuth.conectado() || !gbp.mapeado()) return;
+  try { await gbpPosts.publicarProgramados(); }
+  catch (e) { console.error('[Cron GBP Posts agenda] Error:', e.message); }
+});
+
 // ========== CRON: Snapshot diario de Meta Ads (todos los días, 4am) ==========
 cron.schedule('0 4 * * *', () => {
   if (!metaAds.configurado()) return;

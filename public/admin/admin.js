@@ -2288,6 +2288,22 @@
     return new Date(iso).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: '2-digit' });
   }
 
+  // Ajusta un textarea al alto real de su contenido (con tope, para no empujar
+  // los botones fuera de pantalla si alguien pega un texto larguísimo).
+  function gmAutoAlto(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(340, Math.max(96, ta.scrollHeight + 2)) + 'px';
+  }
+
+  // Franja de publicación de una novedad, siempre en hora de España.
+  function gmFmtFranja(iso) {
+    if (!iso) return 'sin fecha';
+    return new Date(iso).toLocaleString('es-ES', {
+      timeZone: 'Europe/Madrid', weekday: 'short', day: '2-digit', month: 'short',
+      hour: '2-digit', minute: '2-digit',
+    });
+  }
+
   async function loadResenas() {
     resenasLoaded = true;
     let stars = 0;
@@ -2774,19 +2790,28 @@
             '<div style="border:1px solid var(--rg-border);border-radius:var(--rg-radius-sm);padding:14px;margin:10px 0;background:var(--rg-card);" data-nov="' + p.id + '" data-nov-local="' + esc(p.local_id) + '">' +
               '<div style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;">' +
                 (p.imagen_url ? '<img src="' + esc(p.imagen_url) + '" alt="" style="width:110px;height:110px;object-fit:cover;border-radius:8px;flex:none;">' : '') +
-                '<div style="flex:1;min-width:220px;">' +
+                '<div style="flex:1;min-width:180px;">' +
                   '<div style="font-weight:700;margin-bottom:6px;">' + esc(GM_LOCAL_NAMES[p.local_id] || p.local_id) +
-                    ' <small style="opacity:.6;font-weight:400;">· ' + (p.tipo === 'promo' ? 'promo' : 'contenido de la casa') + (p.tema ? ' · ' + esc(p.tema) : '') + '</small></div>' +
-                  '<textarea class="rg-textarea" data-nov-txt style="width:100%;min-height:96px;">' + esc(p.resumen) + '</textarea>' +
-                  '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">' +
-                    '<button class="rg-btn" data-nov-pub>Publicar</button>' +
+                    ' <small style="opacity:.6;font-weight:400;">' + (p.tipo === 'promo' ? '· promo ' : '') + (p.tema ? '· ' + esc(p.tema) : '') + '</small></div>' +
+                  '<textarea class="rg-textarea" data-nov-txt style="width:100%;">' + esc(p.resumen) + '</textarea>' +
+                  '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;">' +
+                    (p.estado === 'aprobado'
+                      ? '<span class="rg-btn-ghost" style="cursor:default;">✓ Agendado</span>'
+                      : '<button class="rg-btn" data-nov-prog>Aprobar y agendar</button>') +
+                    '<button class="rg-btn-ghost" data-nov-pub>Publicar ya</button>' +
                     '<button class="rg-btn-ghost" data-nov-del>Descartar</button>' +
-                    '<small style="opacity:.6;align-self:center;">Botón del post: ' + (p.cta === 'LEARN_MORE' ? 'Más información → /promos/' : 'Llamar') + '</small>' +
                   '</div>' +
+                  // La franja va afuera del botón: metida adentro, en el móvil el
+                  // botón se iba de pantalla.
+                  '<small style="display:block;margin-top:7px;opacity:.6;">Sale el <b>' + esc(gmFmtFranja(p.programado_para)) + '</b> · botón del post: ' + (p.cta === 'LEARN_MORE' ? 'Más información' : 'Llamar') + '</small>' +
                 '</div>' +
               '</div>' +
             '</div>'
           )).join('');
+          // El alto se MIDE sobre el texto ya renderizado, no se estima: el post
+          // bilingüe de Benidorm es el doble de largo y con un alto fijo quedaba
+          // cortada la mitad en inglés, que es justo lo que hay que revisar.
+          body.querySelectorAll('[data-nov-txt]').forEach(gmAutoAlto);
         }
         const pubs = d.publicados || [];
         pub.innerHTML = pubs.length
@@ -2798,21 +2823,34 @@
       }
     }
 
+    $('gmNovBody').addEventListener('input', (e) => {
+      if (e.target.hasAttribute && e.target.hasAttribute('data-nov-txt')) gmAutoAlto(e.target);
+    });
+
     $('gmNovBody').addEventListener('click', async (e) => {
       const card = e.target.closest('[data-nov]');
       if (!card) return;
       const id = card.dataset.nov;
       const local = GM_LOCAL_NAMES[card.dataset.novLocal] || card.dataset.novLocal;
       const txt = card.querySelector('[data-nov-txt]').value.trim();
-      if (e.target.hasAttribute('data-nov-pub')) {
+      if (e.target.hasAttribute('data-nov-prog')) {
         if (!txt) { showToast('El texto no puede quedar vacío'); return; }
-        if (!confirm('La novedad se publica en la ficha PÚBLICA de Google de ' + local + '. ¿Publicar?')) return;
+        const label = e.target.textContent;
+        e.target.disabled = true; e.target.textContent = 'Agendando…';
+        try {
+          const r = await call('/api/admin/gbp-posts/' + id, 'PATCH', { resumen: txt, estado: 'aprobado' });
+          showToast('✓ ' + local + ': sale el ' + gmFmtFranja(r && r.programado_para));
+          loadNovedades();
+        } catch (err2) { e.target.disabled = false; e.target.textContent = label; }
+      } else if (e.target.hasAttribute('data-nov-pub')) {
+        if (!txt) { showToast('El texto no puede quedar vacío'); return; }
+        if (!confirm('La novedad se publica AHORA MISMO en la ficha PÚBLICA de Google de ' + local + '. ¿Publicar?')) return;
         e.target.disabled = true; e.target.textContent = 'Publicando…';
         try {
           await call('/api/admin/gbp-posts/' + id + '/publicar', 'POST', { resumen: txt });
           showToast('✓ Novedad publicada en la ficha de ' + local);
           loadNovedades();
-        } catch (err2) { e.target.disabled = false; e.target.textContent = 'Publicar'; }
+        } catch (err2) { e.target.disabled = false; e.target.textContent = 'Publicar ya'; }
       } else if (e.target.hasAttribute('data-nov-del')) {
         try {
           await call('/api/admin/gbp-posts/' + id, 'PATCH', { estado: 'descartado' });
