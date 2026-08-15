@@ -15,7 +15,7 @@ const { chat, rateOk, reloadKnowledge } = require('./lib/chatbot');
 const { logTurn, getStats, analyze, getLatestInsight } = require('./lib/chat-stats');
 const { getOverview, getInformes, generarInforme, emailInforme } = require('./lib/intel');
 const { logEvento, getWebStats } = require('./lib/web-stats');
-const { snapshotGoogle, getGoogleStats } = require('./lib/google-stats');
+const { snapshotGoogle, getGoogleStats, volcarRatingsARestaurants } = require('./lib/google-stats');
 const metaAds = require('./lib/meta-ads');
 const ig = require('./lib/instagram');
 const { generarCopy, ajustarCopy, generarPiezas, generarImagenIA, generarPortadaReel, generarPortadaEditorial, afinarPromptIA, sugerirEscenaBlog, geminiDisponible, materializarFoto, interpretarRetoque } = require('./lib/generador');
@@ -1479,11 +1479,14 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(PUBLIC, 'pages/404.html'));
 });
 
-// ========== CRON: Update Google ratings every 7 days (Sunday 3am) ==========
-cron.schedule('0 3 * * 0', () => {
-  console.log('[Cron] Running weekly Google ratings update...');
+// ========== CRON: Ratings de Google, todos los días 3am ==========
+// Era semanal y la portada de la web se veía con datos de hasta 6 días atrás.
+// Son 6 llamadas a Places por día: entra de sobra en el tramo gratis.
+cron.schedule('0 3 * * *', () => {
+  console.log('[Cron] Running daily Google ratings update...');
   updateRatings()
     .then(() => snapshotGoogle())
+    .then(() => volcarRatingsARestaurants())
     .catch(err => console.error('[Cron] Error:', err.message));
 });
 
