@@ -1549,6 +1549,17 @@ cron.schedule('0 9 * * 1', async () => {
   }
 });
 
+// ========== CRON: Informe semanal por local en PDF por mail (lunes 9:00 España) ==========
+// Semana lunes-domingo recién cerrada; destinatarios por local en lib/informe-semanal.js.
+cron.schedule('0 9 * * 1', async () => {
+  try {
+    const r = await require('./lib/informe-semanal').enviarTodos();
+    console.log('[Cron InformeSemanal] ' + r.filter((x) => !x.error).length + '/' + r.length + ' enviados.');
+  } catch (e) {
+    console.error('[Cron InformeSemanal] Error:', e.message);
+  }
+}, { timezone: 'Europe/Madrid' });
+
 // ========== CRON: Publica las Novedades aprobadas al llegar su franja ==========
 // El dueño aprueba cuando quiere; el post sale en el horario del local (Playa
 // San Juan al mediodía, Luceros y Benidorm de noche). Corre cada hora en punto:
