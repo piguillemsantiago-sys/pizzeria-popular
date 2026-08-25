@@ -2713,7 +2713,8 @@
 
       const est = $('gmGbpEstado');
       const bC = $('gmGbpConectar'), bD = $('gmGbpDescubrir'), bS = $('gmGbpSync'), bB = $('gmGbpBackfill');
-      [bC, bD, bS, bB].forEach((b) => { b.hidden = true; });
+      const bR = $('gmGbpReautorizar');
+      [bC, bD, bS, bB, bR].forEach((b) => { b.hidden = true; });
       try {
         const d = await api('/api/admin/google/gbp/estado');
         if (!d.oauth_configurado) {
@@ -2735,17 +2736,22 @@
           locs.map((s) => esc(GM_LOCAL_NAMES[s] || s)).join(' · ') + '</b>' +
           (d.mapeado_el ? ' <small style="opacity:.6;">(mapeado ' + gmFmtDate(d.mapeado_el) + ')</small>' : '');
         bD.hidden = false; bS.hidden = false; bB.hidden = false;
+        // Reautorizar sirve cuando se suman permisos nuevos (ej. enviar los
+        // informes por Gmail): el refresh_token viejo no los incluye.
+        bR.hidden = false;
       } catch (e) {
         est.textContent = 'No se pudo consultar el estado.';
       }
     }
 
-    $('gmGbpConectar').addEventListener('click', async () => {
+    async function gmGbpAutorizar() {
       try {
         const r = await call('/api/admin/google/oauth/start', 'GET');
         location.href = r.url;
       } catch (e) { /* toast ya */ }
-    });
+    }
+    $('gmGbpConectar').addEventListener('click', gmGbpAutorizar);
+    $('gmGbpReautorizar').addEventListener('click', gmGbpAutorizar);
 
     $('gmGbpDescubrir').addEventListener('click', async () => {
       const btn = $('gmGbpDescubrir');
