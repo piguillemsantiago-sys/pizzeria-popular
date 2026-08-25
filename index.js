@@ -1552,11 +1552,25 @@ cron.schedule('0 9 * * 1', async () => {
 // ========== CRON: Informe semanal por local en PDF por mail (lunes 9:00 España) ==========
 // Semana lunes-domingo recién cerrada; destinatarios por local en lib/informe-semanal.js.
 cron.schedule('0 9 * * 1', async () => {
+  try { await require('./lib/informe-semanal').procesarSemana(); }
+  catch (e) { console.error('[Cron InformeSemanal] Error:', e.message); }
+}, { timezone: 'Europe/Madrid' });
+
+// ========== CRON: Reintento de los informes que quedaron pendientes ==========
+// Si el lunes a las 9 el TPV todavía no había sincronizado, el informe no se
+// manda (mejor eso que un dato malo). Esta pasada vuelve a intentarlo cada
+// hora hasta las 20:00 del martes, resincronizando antes: la mayoría de las
+// veces sale solo, sin que nadie toque nada. Agarra únicamente los locales
+// que faltan (la bitácora pp_informes_envios evita mandar dos veces).
+cron.schedule('30 10-20 * * 1,2', async () => {
   try {
-    const r = await require('./lib/informe-semanal').enviarTodos();
-    console.log('[Cron InformeSemanal] ' + r.filter((x) => !x.error).length + '/' + r.length + ' enviados.');
+    const inf = require('./lib/informe-semanal');
+    // A las 20:30 del martes ya no hay más reintentos: ahí sí se avisa.
+    const ahora = new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Madrid' }));
+    const ultima = ahora.getDay() === 2 && ahora.getHours() >= 20;
+    await inf.procesarSemana(null, { ultimaPasada: ultima });
   } catch (e) {
-    console.error('[Cron InformeSemanal] Error:', e.message);
+    console.error('[Cron InformeSemanal reintento] Error:', e.message);
   }
 }, { timezone: 'Europe/Madrid' });
 
