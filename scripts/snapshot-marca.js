@@ -27,12 +27,11 @@ const LOCALES = {
   '1': 'playa-san-juan',
   '2': 'russafa',
   '3': 'luceros',
-  '5': 'santa-clara',
   '6': 'benidorm',
 };
 const NOMBRE = {
   'luceros': 'Luceros', 'playa-san-juan': 'Playa San Juan',
-  'russafa': 'Russafa', 'santa-clara': 'Santa Clara', 'benidorm': 'Benidorm',
+  'russafa': 'Russafa', 'benidorm': 'Benidorm', // santa-clara (wp 5) cerró 1/9/2026
 };
 
 const conexion = () => {
