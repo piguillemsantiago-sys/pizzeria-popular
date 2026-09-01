@@ -46,8 +46,8 @@
 
   <!-- Dotted connecting lines between pin groups -->
   <g stroke="#C5A572" stroke-width="1" stroke-dasharray="2 6" opacity="0.28" fill="none">
-    <line x1="345" y1="228" x2="538" y2="252"/>
-    <line x1="538" y1="252" x2="510" y2="300"/>
+    <line x1="345" y1="228" x2="552" y2="262"/>
+    <line x1="552" y1="262" x2="510" y2="300"/>
   </g>
 
   <!-- Pins with halo -->
@@ -55,11 +55,6 @@
   <circle cx="345" cy="228" r="38" fill="url(#pinGlow)"/>
   <circle cx="345" cy="228" r="6" fill="#C5A572"/>
   <circle cx="345" cy="228" r="3" fill="#fff" opacity="0.75"/>
-
-  <!-- Santa Clara (Valencia) -->
-  <circle cx="538" cy="252" r="34" fill="url(#pinGlow)"/>
-  <circle cx="538" cy="252" r="5.5" fill="#C5A572"/>
-  <circle cx="538" cy="252" r="2.6" fill="#fff" opacity="0.75"/>
 
   <!-- Russafa (Valencia) -->
   <circle cx="552" cy="262" r="28" fill="url(#pinGlowSmall)"/>

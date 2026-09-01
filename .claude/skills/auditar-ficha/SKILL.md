@@ -6,7 +6,7 @@ description: Genera o refresca la checklist SEO de una ficha de Google Business 
 # /auditar-ficha <local> — Higiene de ficha GBP por local
 
 Locales en alcance: `luceros`, `playa-san-juan`, `benidorm`, `russafa`,
-`santa-clara`. **Boadilla EXCLUIDA** (no tocar esa ficha). Las guías viven en
+(`santa-clara` cerró el 1/9/2026, no se audita). **Boadilla EXCLUIDA** (no tocar esa ficha). Las guías viven en
 `gbp-fichas/<local>.md` + `gbp-fichas/00-resumen.md`.
 
 ## Paso 1 — Estado público real

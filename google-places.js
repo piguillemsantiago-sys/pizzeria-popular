@@ -5,12 +5,6 @@ const DATA_FILE = path.join(__dirname, 'public', 'data', 'google-ratings.json');
 
 const LOCALS = [
   {
-    slug: 'santa-clara',
-    name: 'Santa Clara',
-    city: 'Valencia',
-    placeId: 'ChIJ8_E-Pt5PYA0RfVfE8o6CzOQ',
-  },
-  {
     slug: 'russafa',
     name: 'Russafa',
     city: 'Valencia',

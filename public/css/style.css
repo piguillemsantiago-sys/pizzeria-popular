@@ -537,12 +537,12 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
 .locales { background: var(--dark2); padding: 55px 5%; position: relative; overflow: hidden; }
 .locales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; padding: 0 1rem; }
 .locales-5 { grid-template-columns: repeat(5, 1fr); }
-.locales-6 { grid-template-columns: repeat(6, 1fr); }
-/* Desktop real (≥1024px): 6 locales en una fila (6×1), altura natural por card,
+.locales-6 { grid-template-columns: repeat(5, 1fr); } /* 5 locales desde 1/9/2026 (cerró Santa Clara); la clase queda por el sistema de card compacta */
+/* Desktop real (≥1024px): 5 locales en una fila (5×1), altura natural por card,
    sin espacios muertos. Botones pegados al bloque de features. */
 @media (min-width: 1024px) {
   .locales-6 {
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
     align-items: start;            /* cada card su alto natural, sin estirar */
   }
