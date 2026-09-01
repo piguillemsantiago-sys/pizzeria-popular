@@ -538,20 +538,20 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
 .locales-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 2rem; padding: 0 1rem; }
 .locales-5 { grid-template-columns: repeat(5, 1fr); }
 .locales-6 { grid-template-columns: repeat(5, 1fr); } /* 5 locales desde 1/9/2026 (cerró Santa Clara); la clase queda por el sistema de card compacta */
-/* Desktop real (≥1024px): 5 locales en una fila (5×1), altura natural por card,
+/* Desktop real (≥1024px): 5 locales en una fila (5×1), misma altura por fila,
    sin espacios muertos. Botones pegados al bloque de features. */
 @media (min-width: 1024px) {
   .locales-6 {
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
-    align-items: start;            /* cada card su alto natural, sin estirar */
+    align-items: stretch;          /* misma altura en toda la fila: los pies quedan alineados */
   }
   .locales-6 .local-card {
     display: flex;
     flex-direction: column;
     height: auto;
     min-height: 0;
-    align-self: start;
+    align-self: stretch;
     padding: 2.2rem 1rem 1.25rem;  /* top deja sitio al province-badge */
   }
   /* Nada estira los bloques intermedios */
@@ -563,8 +563,10 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
     min-height: 2.5em;
     margin-bottom: 0.2rem;
   }
-  /* Dirección: menos aire alrededor */
+  /* Dirección: menos aire alrededor; un pelo más chica para que "C. del
+     Condestable Zaragoza, 42" entre en una línea desde 1280px */
   .locales-6 .local-card .local-address {
+    font-size: 0.84rem;
     margin-top: 0.3rem;
     margin-bottom: 0.6rem;
   }
@@ -608,10 +610,10 @@ html[lang="en"] .mobile-menu::after { content: 'MENU'; }
     padding: 0.2rem 0.55rem;
     letter-spacing: 0.04em;
   }
-  /* Botones pegados a las features (sin margin-top:auto), compactos */
+  /* Botones anclados al pie de la card (misma altura en la fila) */
   .locales-6 .local-card .local-btns {
-    margin-top: 0.8rem;
-    padding-top: 0;
+    margin-top: auto;
+    padding-top: 0.8rem;
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -3769,4 +3771,36 @@ main.article { background: var(--cream); display: block; }
     transform: translateY(0) scale(.9);
   }
   .ppchat-panel.show { transform: translateY(0) scale(1); }
+}
+
+/* ═══ Estrellas con media (4.6 → ★★★★ + media): la mitad izquierda se pinta con
+   --star (hereda el color del contexto, también en hover) ═══ */
+.local-rating .rating-stars { --star: #FFC107; }
+.locales-6 .local-card .local-rating .rating-stars { --star: #F0C674; }
+.local-card:hover .rating-stars { --star: var(--dark); }
+.star-ico { --star: #F5C66B; }
+.star-half {
+  background: linear-gradient(90deg, var(--star, #F0C674) 50%, rgba(255,255,255,.28) 50%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ═══ 5 locales sin huecos. Medido: ≤480 son 2 columnas, 481–1100 son 3, desde
+   1101 son 5. En 2 col la 5ª card va centrada; en 3 col la 2ª fila (2 cards)
+   se centra con un grid de 6 pistas (cada card ocupa 2). ═══ */
+@media (max-width: 480px) {
+  .locales-6 .local-card:last-child:nth-child(odd) {
+    grid-column: 1 / -1; width: calc(50% - 6px); justify-self: center;
+  }
+}
+@media (min-width: 481px) and (max-width: 1100px) {
+  .locales-6 { grid-template-columns: repeat(6, 1fr) !important; }
+  .locales-6 .local-card { grid-column: span 2; }
+  .locales-6 .local-card:nth-child(4) { grid-column: 2 / span 2; }
+  .locales-6 .local-card:nth-child(5) { grid-column: 4 / span 2; }
+}
+
+/* 769–1023: la regla genérica de subpágina (.local-card padding 1.5rem) dejaba
+   el nombre pisando el badge de provincia (medido: 8–10px). Aire arriba. */
+@media (min-width: 481px) and (max-width: 1023px) {
+  .locales-6 .local-card { padding-top: 2.6rem; }
 }

@@ -60,6 +60,10 @@ app.use(express.static(PUBLIC, {
   setHeaders: (res, filePath) => {
     if (/\.(mp4|webm)$/i.test(filePath)) {
       res.setHeader('Cache-Control', 'public, max-age=2592000, immutable'); // 30 días
+    } else if (/\.(css|js)$/i.test(filePath)) {
+      // CSS/JS: el navegador revalida siempre (ETag → 304). Sin esto Chrome los
+      // retiene días por heurística y un cambio de layout no se ve.
+      res.setHeader('Cache-Control', 'no-cache');
     }
   },
 }));

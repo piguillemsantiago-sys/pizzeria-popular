@@ -13,6 +13,14 @@
   var isEn = location.pathname.indexOf('/en/') === 0;
   var googleBadge = isEn ? 'on Google' : 'en Google';
 
+  // Estrellas como las muestra Google: redondeo a la media más cercana
+  // (4.6/4.7 → 4½, 4.8 → 5). La media es un ★ pintado a la mitad (.star-half).
+  function starsHtml(rating) {
+    var r = Math.round(rating * 2) / 2;
+    var full = Math.floor(r), half = r - full === 0.5 ? 1 : 0;
+    return '★'.repeat(full) + (half ? '<span class="star-half">★</span>' : '') + '☆'.repeat(5 - full - half);
+  }
+
   fetch('/data/google-ratings.json')
     .then(function (r) { return r.json(); })
     .then(function (data) {
@@ -45,15 +53,10 @@
         } else if (field === 'reviews') {
           el.textContent = local.reviews.toLocaleString('es-ES');
         } else if (field === 'stars') {
-          var full = Math.floor(local.rating);
-          var half = local.rating - full >= 0.3 ? 1 : 0;
-          var empty = 5 - full - half;
-          el.textContent = '★'.repeat(full) + (half ? '☆' : '') + '☆'.repeat(empty);
+          el.innerHTML = starsHtml(local.rating);
         } else if (field === 'rating-line') {
           // Format: [4.8] [★★★★★] [244 opiniones] [EN GOOGLE]
-          var f = Math.floor(local.rating);
-          var h = local.rating - f >= 0.3 ? 1 : 0;
-          var stars = '★'.repeat(f) + (h ? '☆' : '') + '☆'.repeat(5 - f - h);
+          var stars = starsHtml(local.rating);
           var reviewsLabel = el.getAttribute('data-reviews-label') || 'opiniones';
           el.innerHTML =
             '<span class="rating-num">' + local.rating.toFixed(1) + '</span>' +
