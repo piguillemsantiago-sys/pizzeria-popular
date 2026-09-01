@@ -22,12 +22,13 @@ Pilares: SEO local · Cultura · Producto · Marca · Estacional · Evento · No
 | 5 | Qué hace única a la pizza argentina (vs. la italiana) | Cultura | pizza argentina | pendiente |
 | 6 | Dónde comer pizza en Russafa (Valencia) | SEO local | pizzería en Russafa | pendiente |
 | 7 | La milanesa napolitana: el plato argentino que conquistó España | Producto/Cultura | milanesa napolitana | pendiente |
-| 8 | Pizza argentina en Santa Clara, Valencia | SEO local | pizza Santa Clara Valencia | pendiente |
+| 8 | ~~Pizza argentina en Santa Clara, Valencia~~ | SEO local | — | descartado: el local cerró el 1/9/2026 |
 | 9 | Empanadas argentinas: el bocado que no puede faltar | Producto/Cultura | empanadas argentinas | pendiente |
 | 10 | Masa de fermentación lenta: el secreto de nuestra pizza | Producto | masa fermentación lenta | pendiente |
 | 11 | La mejor pizza argentina en Alicante | SEO local | mejor pizza Alicante | pendiente |
 | 12 | "Hola mi vida": la calidez argentina en cada mesa | Marca | (branding) | pendiente |
 | 13 | Slot flexible — novedad del momento | Novedades | (según la noticia) | pendiente |
+| 14 | Vuelta a la rutina con menú del día (precios por local: Russafa 14,90 · Luceros 15,30 · PSJ 19,50 · Benidorm sin menú) | Estacional | menú del día Valencia | **publicado 1/9/2026** (post de base, ES+EN, slug `menu-del-dia-vuelta-a-la-rutina`) |
 
 ## Notas
 - **NO incluir Boadilla del Monte** en el contenido de blog.
@@ -38,5 +39,7 @@ Pilares: SEO local · Cultura · Producto · Marca · Estacional · Evento · No
   marca argentina. Confirmar con el cliente que los locales transmiten.
 - **Hogueras**: el post #3 liga la fiesta de Alicante con los locales de
   Luceros (Plaza de los Luceros) y Playa de San Juan.
-- Locales activos cubiertos con SEO local: Benidorm, Russafa, Santa Clara,
-  Luceros, Playa San Juan, Alicante (general).
+- Locales activos cubiertos con SEO local: Benidorm, Russafa, Luceros, Playa
+  San Juan, Alicante (general). Santa Clara cerró el 1/9/2026.
+- Los posts nuevos van a la base (`ppweb_posts`, ES+EN) y se sirven en
+  `/blog/<slug>/`; no hace falta deploy. Precios SIEMPRE por local (difieren).
