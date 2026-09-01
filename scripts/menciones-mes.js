@@ -36,10 +36,14 @@ const hasta = new Date(Date.UTC(Y, M, 0)).toISOString().slice(0, 10); // último
 const DIR = path.join(__dirname, '..', 'informes', periodo);
 const OUT = path.join(DIR, 'menciones');
 fs.mkdirSync(OUT, { recursive: true });
+// Los nombres descubiertos por la IA quedan en disco: volver a correr el informe
+// del mes da exactamente los mismos nombres (y no paga otra pasada de IA).
+process.env.MENCIONES_CACHE_DIR = path.join(OUT, 'cache');
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const fmt = (n) => String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 const coma = (n) => (n === null || n === undefined) ? '—' : String(n).replace('.', ',');
+const pts = (p) => (Number.isInteger(p) ? String(p) : Number(p).toFixed(1)).replace('.', ',');
 
 (async () => {
   const informes = [];
@@ -61,23 +65,23 @@ const coma = (n) => (n === null || n === undefined) ? '—' : String(n).replace(
       d.menciones.actual = {
         totales: inf.totales,
         empleados: inf.empleados.map((e) => ({
-          nombre: e.nombre, menciones: e.menciones, promedio: e.promedio,
+          nombre: e.nombre, menciones: e.menciones, solas: e.solas, compartidas: e.compartidas, puntos: e.puntos, promedio: e.promedio,
           frase: (e.frases && e.frases[0]) ? e.frases[0].texto.slice(0, 220) : '',
         })),
       };
       fs.writeFileSync(datosPath, JSON.stringify(d, null, 2));
     }
-    console.log(`${inf.local}: ${inf.totales.resenas} reseñas · ${inf.totales.conNombre} nombran a alguien · ` +
-      inf.empleados.map((e) => `${e.nombre} ${e.menciones}`).join(' · '));
+    console.log(`${inf.local}: ${inf.totales.resenas} reseñas · ${inf.totales.conNombre} nombran a alguien · ${inf.totales.compartidas} compartidas · ${pts(inf.totales.puntos)} puntos a pagar · ` +
+      inf.empleados.map((e) => `${e.nombre} ${e.menciones} (${pts(e.puntos)})`).join(' · '));
   }
 
   // ---- Resumen de todos los locales (para liquidar) ----
   const bloques = informes.map((inf) => {
     const filas = inf.empleados.map((e) => `<tr>
-      <td>${esc(e.nombre)}</td><td class="n"><b>${fmt(e.menciones)}</b></td>
+      <td>${esc(e.nombre)}</td><td class="n">${fmt(e.menciones)}</td><td class="n">${fmt(e.solas)}</td><td class="n">${e.compartidas ? fmt(e.compartidas) : '·'}</td><td class="n pagar"><b>${pts(e.puntos)}</b></td>
       ${[5, 4, 3, 2, 1].map((s) => `<td class="n">${e.estrellas[s] ? fmt(e.estrellas[s]) : '·'}</td>`).join('')}
       <td class="n">${coma(e.promedio)} ★</td></tr>`).join('');
-    const totalMenciones = inf.empleados.reduce((a, e) => a + e.menciones, 0);
+    const totalPuntos = inf.totales.puntos || 0;
     const nomina = NOMINA[inf.local_id];
     return `<section>
       <h2>${esc(inf.local)}</h2>
@@ -85,10 +89,10 @@ const coma = (n) => (n === null || n === undefined) ? '—' : String(n).replace(
         <div class="stat"><div class="v">${fmt(inf.totales.resenas)}</div><div class="l">Reseñas en ${MES}</div></div>
         <div class="stat"><div class="v">${fmt(inf.totales.conTexto)}</div><div class="l">Con texto escrito</div></div>
         <div class="stat"><div class="v">${fmt(inf.totales.conNombre)}</div><div class="l">Nombran a alguien del equipo</div></div>
-        <div class="stat"><div class="v">${fmt(totalMenciones)}</div><div class="l">Menciones a pagar (suma del ranking)</div></div>
+        <div class="stat"><div class="v">${pts(totalPuntos)}</div><div class="l">Puntos a pagar (${fmt(inf.totales.compartidas || 0)} reseñas compartidas a 0,5)</div></div>
       </div>
       ${inf.empleados.length ? `<table class="tabla">
-        <thead><tr><th>Persona</th><th class="n">Reseñas que la nombran</th><th class="n">5★</th><th class="n">4★</th><th class="n">3★</th><th class="n">2★</th><th class="n">1★</th><th class="n">Media</th></tr></thead>
+        <thead><tr><th>Persona</th><th class="n">Reseñas que la nombran</th><th class="n">Sola</th><th class="n">Compartida</th><th class="n pagar">A pagar</th><th class="n">5★</th><th class="n">4★</th><th class="n">3★</th><th class="n">2★</th><th class="n">1★</th><th class="n">Media</th></tr></thead>
         <tbody>${filas}</tbody>
       </table>` : '<p class="vacio">Nadie del equipo aparece nombrado en las reseñas del mes.</p>'}
       ${nomina ? `<p class="nota-chica">Nómina cargada para este local (formas en que la gente lo escribe, según el dueño): ${Object.entries(nomina).map(([n, v]) => `<b>${esc(n)}</b>${v.length ? ' (' + v.join(', ') + ')' : ''}`).join(' · ')}.</p>` : ''}
@@ -103,10 +107,11 @@ const coma = (n) => (n === null || n === undefined) ? '—' : String(n).replace(
   .tabla th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--suave); }
   .tabla td.n, .tabla th.n { text-align: right; font-variant-numeric: tabular-nums; }
   .tabla tbody tr:nth-child(odd) { background: var(--fondo2, #faf7f2); }
+  .tabla td.pagar, .tabla th.pagar { background: rgba(216, 164, 96, .18); }
   @media print { section { break-inside: avoid; } }
 </style></head><body>
 <header><div class="kicker">🍕 Pizzería Popular · Reseñas de Google</div><h1>Menciones al equipo · ${MES} ${Y}</h1><div class="sub">Cuántas reseñas de Google del ${desde.split('-').reverse().join('/')} al ${hasta.split('-').reverse().join('/')} nombran a cada persona, por local</div></header>
-<div class="destacado">📌 <b>Cómo se cuenta:</b> una reseña suma <b>una vez</b> por persona nombrada, aunque el nombre aparezca varias veces en el texto. Se unifican las formas en que la gente escribe cada nombre (apodo, con o sin K, tipeos, letras repetidas). El conteo es exacto sobre el texto de cada reseña, no una estimación. El PDF de cada local trae, persona por persona, las frases textuales de los clientes.</div>
+<div class="destacado">📌 <b>Cómo se cuenta:</b> una reseña que nombra a <b>una sola persona</b> vale <b>1 punto</b> para ella; si nombra a <b>dos o más</b>, vale <b>0,5 para cada una</b> (columna “A pagar”). Se cuenta una vez por reseña aunque el nombre se repita en el texto, y se unifican las formas en que la gente escribe cada nombre (apodo, con o sin K, tipeos, letras repetidas). El conteo es exacto sobre el texto de cada reseña, no una estimación. El PDF de cada local trae, persona por persona, las frases textuales de los clientes, y marca cuáles son compartidas.</div>
 ${bloques}
 <div class="nota"><b>Fuente.</b> Reseñas de Google sincronizadas por el sistema cada 15 minutos. Grupo Ajax · ${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.</div>
 </body></html>`;
