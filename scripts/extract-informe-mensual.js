@@ -13,6 +13,9 @@ const { rendimiento } = require('../lib/gbp-performance');
 const { menciones, textoOriginal } = require('../lib/menciones');
 const menuAnalytics = require('../lib/menu-analytics');
 const menu = require('../lib/menu');
+const extras = require('./informe-extras');
+let restoo = null;
+try { restoo = require('../lib/restoo'); } catch (e) { restoo = null; }
 
 const NOMBRES = {
   'luceros': 'Luceros', 'playa-san-juan': 'Playa San Juan', 'russafa': 'Russafa',
@@ -48,6 +51,11 @@ function ultimoDia(p) {
 const ACTUAL = periodo;
 const PREVIO = mesAnterior(periodo);
 const ANO_ANT = mesAnoAnterior(periodo);
+
+// Los nombres del equipo que descubrió la IA quedan en disco por mes: el informe
+// mensual y el de menciones (menciones-mes.js) tienen que decir lo mismo.
+process.env.MENCIONES_CACHE_DIR = process.env.MENCIONES_CACHE_DIR
+  || require('path').join(__dirname, '..', 'informes', periodo, 'menciones', 'cache');
 
 // ---------- 1. Ficha de Google (estacional -> YoY) ----------
 async function bloqueGoogle() {
@@ -220,6 +228,16 @@ async function bloqueWeb(p) {
     menciones: { actual: await bloqueMenciones(ACTUAL), previo: await bloqueMenciones(PREVIO) },
     carta: { actual: await bloqueCarta(ACTUAL), previo: await bloqueCarta(PREVIO) },
     web: await bloqueWeb(ACTUAL),
+    // Secciones nuevas (1 sep 2026): franjas vs año anterior, 12 meses, reservas.
+    franjas: {
+      actual: await extras.franjasDe(supabaseAdmin, localId, ACTUAL).catch((e) => ({ error: e.message })),
+      ano_anterior: await extras.franjasDe(supabaseAdmin, localId, ANO_ANT).catch((e) => ({ error: e.message })),
+    },
+    tendencia: await extras.tendenciaDe(supabaseAdmin, rendimiento, localId, ACTUAL).catch((e) => ({ error: e.message })),
+    reservas: {
+      actual: await extras.reservasDe(restoo, localId, ACTUAL),
+      ano_anterior: await extras.reservasDe(restoo, localId, ANO_ANT),
+    },
     generado: new Date().toISOString(),
   };
   process.stdout.write(JSON.stringify(out, null, 2));

@@ -26,7 +26,7 @@ for (const L of LOCALES) {
   const f = path.join(DIR, `informe-${L}.html`);
   if (!fs.existsSync(f)) { console.error('falta ' + f); process.exit(1); }
   const html = fs.readFileSync(f, 'utf8');
-  if (!css) css = html.slice(html.indexOf('<style>'), html.indexOf('</style>') + 8);
+  if (!css) css = html.slice(html.indexOf('<style>'), html.lastIndexOf('</style>') + 8);
   const cuerpo = html.slice(html.indexOf('<body>') + 6, html.lastIndexOf('</body>'));
   bloques.push(`<div class="informe">${cuerpo}</div>`);
   console.log('  + ' + L);

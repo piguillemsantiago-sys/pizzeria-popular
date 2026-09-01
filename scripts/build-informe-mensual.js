@@ -12,6 +12,7 @@ const path = require('path');
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
   'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const jsonPath = process.argv[2];
 const nombreMes = (p) => MESES[Number(p.split('-')[1]) - 1];
 const anio = (p) => p.split('-')[0];
 const mesSiguiente = (p) => {
@@ -79,6 +80,7 @@ function estrellas(n) {
 }
 
 const { CSS } = require('./informe-css');
+const extras = require('./informe-extras');
 
 function construir(d, texto) {
   const P = d.periodo, MES = nombreMes(P), ANIO = anio(P);
@@ -138,6 +140,9 @@ function construir(d, texto) {
   const RUIDO = /ignore all previous|select |script>|http/i;
   const searches = (carta.top_searches || []).filter((s) => !RUIDO.test(s.query));
 
+  const H = { fmt, esc, pill, variacion, stat, N, MES, MES_YOY, hayBase: hayYoY };
+  const DIR_INFORME = path.dirname(jsonPath);
+
   const cuerpo = `
   <div class="destacado">📌 <b>Lo más importante del mes:</b> ${texto.destacado}</div>
 
@@ -191,6 +196,8 @@ function construir(d, texto) {
   ${barras(busq.map((b) => [b.termino, b.veces]), 'neutra')}
   ${pctGen !== null ? `<div class="ok">💡 El <b>${pctGen}%</b> de esas 8 búsquedas <b>no incluye tu nombre</b>: es gente buscando “restaurantes” o “pizza” en la zona que termina viendo tu ficha. La ficha no solo te encuentra quien ya te conoce — también te descubre gente nueva.</div>` : ''}` : ''}
   </section>`}
+  ${extras.seccionReservas(d, H)}
+  ${extras.seccionFranjas(d, H)}
 
   <section><h2><span class="n">${N()}</span> ⭐ Qué dice la gente</h2>
   <p class="explica">Las reseñas de Google de ${MES}. Acá sí se compara <b>contra ${MES_PREV}</b>: la calidad y la gestión no dependen de la temporada.</p>
@@ -282,6 +289,9 @@ function construir(d, texto) {
   </div>
   </section>
 
+  ${extras.seccionTendencia(d, H)}
+  ${extras.seccionCadena(d, H, DIR_INFORME)}
+
   ${texto.seguimiento && texto.seguimiento.length ? `<section><h2><span class="n">${N()}</span> 🔁 ¿Qué pasó con las acciones de ${MES_PREV}?</h2>
   <p class="explica">Lo que se dejó como tarea en el informe anterior, y qué efecto tuvo. Sin esto, el informe es solo una foto.</p>
   <div class="acciones">${texto.seguimiento.map((a) => `<div class="accion seg ${a.estado}"><div><span class="ico">${{ ok: '✅', mal: '❌', parcial: '🟡', na: '➖' }[a.estado] || '➖'}</span> <b>${a.accion}</b>${a.efecto ? ` — ${a.efecto}` : ''}</div></div>`).join('')}</div>
@@ -304,7 +314,7 @@ function construir(d, texto) {
   </div>
   </section>`;
 
-  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pizzería Popular ${d.local} · ${MES} ${ANIO}</title>${CSS}</head><body>
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pizzería Popular ${d.local} · ${MES} ${ANIO}</title>${CSS}<style>${extras.CSS_EXTRAS}</style></head><body>
 <header><div class="kicker">🍕 Pizzería Popular · Informe de ${MES} ${ANIO}</div><h1>${d.local}</h1><div class="sub">${DIRECCIONES[d.local_id] || ''}</div></header>
 ${cuerpo}
 <div class="nota"><b>Cómo se hizo este informe.</b> Los datos de la ficha vienen directo de la API de Google (ya no se cargan a mano) y por eso se pueden comparar con ${MES_YOY}. Las palabras de búsqueda las publica Google con más retraso que el resto. Las reseñas salen de nuestro sistema, que las sincroniza cada 15 minutos; el conteo de menciones al equipo es determinístico (se buscan el nombre y sus variantes en cada texto), no estimado. La carta digital y la web se miden con sistema propio. Los puntos de mejora operativos están en la <b>auditoría del local ya presentada</b>, que se trabaja aparte de este informe. Grupo Ajax · ${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.</div>
@@ -314,7 +324,6 @@ ${cuerpo}
 // ---------- textos por local (lo único que se escribe a mano) ----------
 const TEXTOS = Object.assign({}, require('./textos-informe-mensual.js'), require('./textos-informe-2026-08.js'));
 
-const jsonPath = process.argv[2];
 if (!jsonPath) { console.error('Uso: node scripts/build-informe-mensual.js <ruta-json> [salida.html]'); process.exit(1); }
 const datos = JSON.parse((function (s) { s = String(s); if (s.trimStart().startsWith('{')) return s.trimStart(); const i = s.indexOf('\n{'); return i >= 0 ? s.slice(i + 1) : s; })(fs.readFileSync(jsonPath, 'utf8')));
 const clave = `${datos.local_id}|${datos.periodo}`;
