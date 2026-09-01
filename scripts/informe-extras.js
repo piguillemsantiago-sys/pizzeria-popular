@@ -2,7 +2,8 @@
 //   - Franjas del mes (mañana / mediodía / noche) vs mismo mes del año anterior.
 //   - Tendencia de 12 meses (reseñas, nota, vistas de la ficha, comensales).
 //   - Reservas (RESTOO) — se dibuja solo cuando la API devuelve datos.
-//   - Lugar en la cadena: el local contra los demás locales del mismo mes.
+//   - (Descartado por el dueño el 1 sep 2026: "lugar en la cadena" — no quiere
+//     competencia entre locales. seccionCadena() queda sin usar a propósito.)
 //
 // Mitad "extract" (saca datos de Supabase / GBP / RESTOO) y mitad "build" (HTML).
 // Sin euros: este informe lo lee el encargado y puede terminar en el equipo. El

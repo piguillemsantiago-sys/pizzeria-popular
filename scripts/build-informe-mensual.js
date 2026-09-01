@@ -290,7 +290,6 @@ function construir(d, texto) {
   </section>
 
   ${extras.seccionTendencia(d, H)}
-  ${extras.seccionCadena(d, H, DIR_INFORME)}
 
   ${texto.seguimiento && texto.seguimiento.length ? `<section><h2><span class="n">${N()}</span> 🔁 ¿Qué pasó con las acciones de ${MES_PREV}?</h2>
   <p class="explica">Lo que se dejó como tarea en el informe anterior, y qué efecto tuvo. Sin esto, el informe es solo una foto.</p>

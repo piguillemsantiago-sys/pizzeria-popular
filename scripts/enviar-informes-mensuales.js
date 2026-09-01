@@ -1,7 +1,10 @@
 // Manda el paquete mensual de cada local por mail, con los mismos destinatarios
 // del informe semanal (lib/informe-semanal.js) y el dueño en copia.
-// Uso: node scripts/enviar-informes-mensuales.js <YYYY-MM> [--prueba] [local ...]
-//   --prueba → TODO va solo a la copia (para ver cómo llega), nadie del local lo recibe.
+// Uso: node scripts/enviar-informes-mensuales.js <YYYY-MM> [--prueba] [--simular] [--adjuntos=mensual,ventas,equipo,menciones] [--mensaje=...] [local ...]
+//   --prueba   → TODO va solo a la copia (para ver cómo llega), nadie del local lo recibe.
+//   --simular  → no manda nada: imprime destinatarios, asunto y adjuntos.
+//   --adjuntos → cuáles de los 4 PDF van (por defecto los 4). Ej.: reenviar solo mensual+menciones.
+//   --mensaje  → párrafo propio al principio del mail (ej. "Versión actualizada...").
 //
 // Adjuntos por local: informe mensual (ficha + reseñas + carta), informe de ventas
 // (versión dueño), "El mes del equipo" (ventas sin euros, para colgar en cocina)
@@ -22,6 +25,10 @@ const { getAccessToken, conectado } = require('../lib/google-oauth');
 const args = process.argv.slice(2);
 const periodo = args.find((a) => /^\d{4}-\d{2}$/.test(a));
 const prueba = args.includes('--prueba');
+const simular = args.includes('--simular');
+const opt = (k) => { const a = args.find((x) => x.startsWith('--' + k + '=')); return a ? a.slice(k.length + 3) : null; };
+const ADJUNTOS = (opt('adjuntos') || 'mensual,ventas,equipo,menciones').split(',').map((x) => x.trim()).filter(Boolean);
+const MENSAJE = opt('mensaje');
 const soloLocales = args.filter((a) => !/^\d{4}-\d{2}$/.test(a) && !a.startsWith('--'));
 if (!periodo) { console.error('Uso: node scripts/enviar-informes-mensuales.js <YYYY-MM> [--prueba] [local...]'); process.exit(1); }
 
@@ -55,6 +62,11 @@ function adjunto(ruta, nombre) {
 }
 
 async function enviar(msg) {
+  if (simular) {
+    console.log('[simular] → ' + msg.to.join(', ') + (msg.cc && msg.cc.length ? ' cc ' + msg.cc.join(', ') : '')
+      + '\n   asunto: ' + msg.subject + '\n   adjuntos: ' + msg.adjuntos.map((a) => a.nombre).join(' · '));
+    return 'simulado';
+  }
   if (!from) throw new Error('Falta MAIL_FROM (o SMTP_USER) para el remitente.');
   if (conectado() && process.env.MAIL_VIA !== 'smtp') {
     try { return await enviarGmail(msg); }
@@ -134,22 +146,26 @@ const marco = (titulo, cuerpo) => `<div style="max-width:600px;margin:0 auto;fon
     const L = LOCALES[slug];
     if (!L) { console.error('Local desconocido: ' + slug); continue; }
     const t = TEXTOS[`${slug}|${periodo}`] || {};
-    const adjuntos = [
-      adjunto(path.join(DIR, `informe-${slug}.pdf`), `Informe mensual ${L.nombre} - ${MES} ${Y}.pdf`),
-      adjunto(path.join(VENTAS, `informe-${L.ventas}-${MES}-${Y}.pdf`), `Informe de ventas ${L.nombre} - ${MES} ${Y}.pdf`),
-      adjunto(path.join(VENTAS, 'equipo', `informe-equipo-${L.ventas}-${MES}-${Y}.pdf`), `El mes del equipo ${L.nombre} - ${MES} ${Y}.pdf`),
-      adjunto(path.join(DIR, 'menciones', `Menciones equipo - ${L.nombre} - ${Mes} de ${Y}.pdf`), `Menciones al equipo ${L.nombre} - ${MES} ${Y}.pdf`),
-    ];
+    const TODOS = {
+      mensual: () => adjunto(path.join(DIR, `informe-${slug}.pdf`), `Informe mensual ${L.nombre} - ${MES} ${Y}.pdf`),
+      ventas: () => adjunto(path.join(VENTAS, `informe-${L.ventas}-${MES}-${Y}.pdf`), `Informe de ventas ${L.nombre} - ${MES} ${Y}.pdf`),
+      equipo: () => adjunto(path.join(VENTAS, 'equipo', `informe-equipo-${L.ventas}-${MES}-${Y}.pdf`), `El mes del equipo ${L.nombre} - ${MES} ${Y}.pdf`),
+      menciones: () => adjunto(path.join(DIR, 'menciones', `Menciones equipo - ${L.nombre} - ${Mes} de ${Y}.pdf`), `Menciones al equipo ${L.nombre} - ${MES} ${Y}.pdf`),
+    };
+    const adjuntos = ADJUNTOS.filter((k) => TODOS[k]).map((k) => TODOS[k]());
+    const ITEMS = {
+      mensual: `<li><strong>Informe mensual</strong>: ficha de Google, franjas del mes, reseñas una por una, equipo, carta digital, últimos 12 meses, qué pasó con las acciones del mes anterior y qué hacer en ${MESES[M % 12]}.</li>`,
+      ventas: `<li><strong>Informe de ventas</strong> (para el encargado): facturación, producto, operación y recomendaciones.</li>`,
+      equipo: `<li><strong>El mes del equipo</strong>: la misma hoja sin cifras de dinero, para compartir con el personal.</li>`,
+      menciones: `<li><strong>Menciones al equipo</strong>: cuántas reseñas de Google nombran a cada persona, con las frases de los clientes. Es la base de la comisión: una reseña que nombra a una sola persona vale 1; si nombra a dos o más, 0,5 para cada una (columna “a pagar”).</li>`,
+    };
     const to = prueba ? COPIA : DESTINOS[slug];
     const cc = prueba ? [] : COPIA;
     if (!to || !to.length) throw new Error('Sin destinatarios para ' + slug);
     const html = marco(`${L.nombre} — informe de ${MES} ${Y}`, `
-      <p style="font-size:14px;line-height:1.6;">Va el cierre de <strong>${MES}</strong> del local, en cuatro PDF:</p>
+      ${MENSAJE ? `<p style="font-size:14px;line-height:1.6;">${MENSAJE}</p>` : `<p style="font-size:14px;line-height:1.6;">Va el cierre de <strong>${MES}</strong> del local, en ${adjuntos.length === 1 ? 'un PDF' : adjuntos.length + ' PDF'}:</p>`}
       <ol style="font-size:14px;line-height:1.7;padding-left:20px;">
-        <li><strong>Informe mensual</strong>: ficha de Google, reseñas una por una, equipo, carta digital, qué pasó con las acciones de julio y qué hacer en ${MESES[M % 12]}.</li>
-        <li><strong>Informe de ventas</strong> (para el encargado): facturación, producto, operación y recomendaciones.</li>
-        <li><strong>El mes del equipo</strong>: la misma hoja sin cifras de dinero, para compartir con el personal.</li>
-        <li><strong>Menciones al equipo</strong>: cuántas reseñas de Google nombran a cada persona, con las frases de los clientes — es la base de la comisión por reseña con nombre.</li>
+        ${ADJUNTOS.filter((k) => ITEMS[k]).map((k) => ITEMS[k]).join('\n        ')}
       </ol>
       ${t.destacado ? `<div style="background:#faf7f2;border-left:4px solid #D8A460;padding:10px 14px;font-size:14px;line-height:1.6;margin:14px 0;">📌 <strong>Lo más importante del mes:</strong> ${t.destacado}</div>` : ''}
       <p style="font-size:14px;line-height:1.6;">Al final del informe mensual hay una sección <strong>“Ahora te toca a vos”</strong>: 3 cosas que querés que reforcemos desde las redes en ${MESES[M % 12]}. Con eso armamos el plan del mes.</p>`);
@@ -160,21 +176,21 @@ const marco = (titulo, cuerpo) => `<div style="max-width:600px;margin:0 auto;fon
 
   // Cierre para la copia: lo transversal + lo que no tiene local destinatario.
   if (!soloLocales.length) {
-    const extras = [
-      adjunto(path.join(DIR, 'menciones', `resumen-menciones-${periodo}.pdf`), `Menciones al equipo - todos los locales - ${MES} ${Y}.pdf`),
-      adjunto(path.join(DIR, `informe-direccion-${periodo}.pdf`), `Informe de direccion - ${MES} ${Y}.pdf`),
-      adjunto(path.join(DIR, `informe-todos-los-locales-${periodo}.pdf`), `Informes mensuales - todos los locales - ${MES} ${Y}.pdf`),
-    ];
-    for (const [f, n] of [[`informe-boadilla-${MES}-${Y}.pdf`, `Informe de ventas Boadilla - ${MES} ${Y}.pdf`], [`equipo/informe-equipo-boadilla-${MES}-${Y}.pdf`, `El mes del equipo Boadilla - ${MES} ${Y}.pdf`]]) {
+    const completo = !opt('adjuntos');
+    const extras = [];
+    if (ADJUNTOS.includes('menciones')) extras.push(adjunto(path.join(DIR, 'menciones', `resumen-menciones-${periodo}.pdf`), `Menciones al equipo - todos los locales - ${MES} ${Y}.pdf`));
+    if (completo) extras.push(adjunto(path.join(DIR, `informe-direccion-${periodo}.pdf`), `Informe de direccion - ${MES} ${Y}.pdf`));
+    if (ADJUNTOS.includes('mensual')) extras.push(adjunto(path.join(DIR, `informe-todos-los-locales-${periodo}.pdf`), `Informes mensuales - todos los locales - ${MES} ${Y}.pdf`));
+    if (completo) for (const [f, n] of [[`informe-boadilla-${MES}-${Y}.pdf`, `Informe de ventas Boadilla - ${MES} ${Y}.pdf`], [`equipo/informe-equipo-boadilla-${MES}-${Y}.pdf`, `El mes del equipo Boadilla - ${MES} ${Y}.pdf`]]) {
       const p = path.join(VENTAS, f); if (fs.existsSync(p)) extras.push(adjunto(p, n));
     }
     const html = marco(`Cierre de ${MES} ${Y} — resumen`, `
-      <p style="font-size:14px;line-height:1.6;">Ya salieron los informes de ${enviados.map((e) => LOCALES[e.local].nombre).join(', ')}. Acá va lo que no es de un local en particular:</p>
+      <p style="font-size:14px;line-height:1.6;">${MENSAJE ? MENSAJE + ' ' : ''}Ya salieron los informes de ${enviados.map((e) => LOCALES[e.local].nombre).join(', ')}. Acá va lo que no es de un local en particular:</p>
       <ul style="font-size:14px;line-height:1.7;padding-left:20px;">
-        <li><strong>Menciones al equipo, todos los locales</strong>: una tabla por local con reseñas que nombran a cada persona y su reparto por estrellas — para liquidar la comisión.</li>
-        <li><strong>Informe de dirección</strong>: lo que solo se ve mirando los locales juntos.</li>
-        <li><strong>Todos los informes mensuales en un solo PDF</strong>.</li>
-        <li><strong>Boadilla</strong>: ventas (dueño y equipo) — no tiene destinatario propio.</li>
+        ${ADJUNTOS.includes('menciones') ? '<li><strong>Menciones al equipo, todos los locales</strong>: una tabla por local con reseñas que nombran a cada persona, cuántas son compartidas y los puntos a pagar (1 sola / 0,5 compartida).</li>' : ''}
+        ${completo ? '<li><strong>Informe de dirección</strong>: lo que solo se ve mirando los locales juntos.</li>' : ''}
+        ${ADJUNTOS.includes('mensual') ? '<li><strong>Todos los informes mensuales en un solo PDF</strong>.</li>' : ''}
+        ${completo ? '<li><strong>Boadilla</strong>: ventas (dueño y equipo) — no tiene destinatario propio.</li>' : ''}
       </ul>`);
     const id = await enviar({ to: COPIA, cc: [], subject: `Cierre de ${MES} ${Y} — menciones de todos los locales y dirección${prueba ? ' [PRUEBA]' : ''}`, html, adjuntos: extras });
     console.log(`✓ Cierre → ${COPIA.join(', ')} (${id})`);
